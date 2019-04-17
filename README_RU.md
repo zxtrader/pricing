@@ -1,54 +1,97 @@
-# ZXTrader's Price Service Russian version
+# ZXTrader's Price Service
 
-ZXTrader Price Service - это сервис, который агрегирует исторические цены по крипто-валютам с других сайтов\приложений и предоставляет универсальный API для получения этих данных.
+ZXTrader's Price Service - сервис исторических цен. Сервис является кеширующим агрегатором цен из внешних источников. Позволяет работать в режиме Demand(кеширование только запрашиваемых данных) и Sync(полное кеширование)
 
-# Как запустить сервис
-## Build
+## Configuration
+Сервис ориентирован на запуск в Docker контейнере и большая часть параметров устанваливается через переменные окружения. Специфические настройки вынесены в конфигурационный INI файл
+
+### Environment variables
+| Name | Default Value | Description |
+| - | - | - |
+| PRICE_MODE | demand | Режим работы сервиса. В случае режима sync требутся соответсвующая секция в INI файле |
+| DATASTORAGE_URL | redis://localhost:6379 | URL для подключения к хранилищу данных |
+| HTTP_ENABLE | yes | Включает HTTP ендпоинт |
+| HTTP_HOST | 127.0.0.1 | Указывает IP/имя слушающего хоста для HTTP ендпоинта |
+| HTTP_PORT | 8080 | Указывает номер слушающего порта для HTTP ендпоинта  |
+| HTTPS_ENABLE | no | Включает HTTPS ендпоинт |
+| HTTPS_HOST | 127.0.0.1 | Указывает IP/имя слушающего хоста для HTTPS ендпоинта |
+| HTTPS_PORT | 8443 | Указывает номер слушающего порта для HTTPS ендпоинта  |
+| HTTPS_CACERTS | | Список доверенных CA сертификатов. Путь к файлу или base64 строка разделенные запятыми |
+| HTTPS_CERT | | Сертификат сервиса. Путь к файлу или base64 строка  |
+| HTTPS_KEY | | Приватный ключ сервиса. Путь к файлу или base64 строка |
+| HTTPS_KEY_PHASSPHRASE | | Пароль от приватного ключа сервиса (указанного в HTTPS_KEY) |
+
+### Settings file
+```
+# Задаем список провайдеров цен
+sources=cryptocompare zxtrader
+
+# Настраиваем провадер CryptoCompare. Смотрите https://min-api.cryptocompare.com/
+source.cryptocompare.url = http://blabla
+source.cryptocompare.limit.parallel: 5
+source.cryptocompare.limit.perSecond = 15
+source.cryptocompare.limit.perMinute = 300
+source.cryptocompare.limit.perHour = 8000
+source.cryptocompare.timeout = 3000
+
+# Настраиваем провадер ZXTrader
+source.zxtrader.url = http://blabla
+source.zxtrader.limit.parallel: 5
+source.zxtrader.limit.perSecond = 15
+source.zxtrader.limit.perMinute = 300
+source.zxtrader.limit.perHour = 8000
+source.zxtrader.timeout = 3000
+
+# Настройки режима работа sync
+sync.pairs=BTC:ETH,BTC:ZEC,BTC:USD,EUR:USD,EUR:BTC
+```
+
+## Service mode
+* Demand - кешируются цены только по запросу пользователя (в случае недоступности внешних источников, отсутствующие в кеше цены - недоступны)
+* Sync - сервис автоматически кеширует все требуемые цены (требует много места в DataStorage в сравнении с режимом Demand)
+
+
+## How to launch the service
+
+### As Docker container
 ```bash
-$ npm insatall
+$ docker run --name zxtrader-price-service zxtrader/price-service-bundle:latest
+```
+
+### Build from sources
+```bash
+$ npm install
 $ npm run build
+$ npm start
 ```
-## Launch
-After build
+
+## How to use the service
+
+### HTTP(S)
+HTTP Query grammar looks like (see complete grammar):
+[![Query grammar](docs/http-query-grammar.png)](docs/http-query-grammar.md)
+
+Simple query with result as text
 ```bash
-$ npm run start
+$ curl --header 'Accept: text/plain' https://service.zxtrader.com/price/v1/20180808190523:USD:BTC
+13400.89
 ```
-Или
+Simple query with result as JSON
 ```bash
-$ node src/index.js
-```
-
-# Как использовать сервис
-## Апи запросы
-
-Для того что бы получить цену из сервиса по какой-то валютной паре вам не обходимо обратить к сервису через API.
-
-Пример обращение:
-```bash
-GET: localhost:8580/v1/price/1555497726:USDT:BTC:CRYPTOCOMPARE
-```
-| Часть URL  | Тип | Описание |
-| ------------- | ------------- | ------------- |
-| localhost | string |  Сервис хост |
-| 8580 | number | Сервис порт |
-| /v1/price/ | string | Путь |
-| 1555497726 | unixtime | Время за которой нужно получить цену |
-| USDT | string | Маркет валюта |
-| BTC | string | Трейд валюта |
-| CRYPTOCOMPARE | string | С какого источника получить цену (не обязательный) |
-
-Ответ от сервера:
-```json
+$ curl --header 'Accept: application/json' https://service.zxtrader.com/price/v1/20180808190523:USD:BTC
 {
-	"1555497726": {
-		"USDT": {
+	"20180808190523": {
+		"USD": {
 			"BTC": {
 				"avg": {
-					"price": "13400.89"
+					"price": "13400.9"
 				},
 				"sources": {
-					"CRYPTOCOMPARE": {
+					"cryptocompare": {
 						"price": "13400.89"
+					},
+					"zxtrader": {
+						"price": "13400.91"
 					}
 				}
 			}
@@ -57,52 +100,9 @@ GET: localhost:8580/v1/price/1555497726:USDT:BTC:CRYPTOCOMPARE
 }
 ```
 
-Также можно делать мульти запросы:
-```bash
-GET: https://localhost:8580/v1/history/price/1555497726:USDT:BTC:CRYPTOCOMPARE,1555497726:USDT:ETH,1555497726:USDT:ZEC
-```
 
-Ответ от сервиса:
-```json
-{
-	"1555497726": {
-		"USDT": {
-			"BTC": {
-				"avg": {
-					"price": "13400.89"
-				},
-				"sources": {
-					"CRYPTOCOMPARE": {
-						"price": "13400.89"
-					}
-				}
-			},
-			"ETH": {
-				"avg": {
-					"price": "754.8599999999999"
-				}
-			}
-		}
-	},
-	"1555497826": {
-		"USDT": {
-			"ZEC": {
-				"avg": "63.344444"
-				}
-			}
-		}
-	}
-}
-```
+### WebSoket
+TBD
 
-# Как подключить источник для агрегации цен
-Нужно реализовать имплементацию сервис-плагин контракта и подключить как плагин к данному сервису.
-
-Контракт плагина
-```bash
-$ contract/plugin.ts
-```
-Исходники плагина:
-```bash
-$ src/plugin/*.ts
-```
+## How to extend the service with a new currency provider
+All of you need is to write own implementation of a CurrencyProvider interface and place in into `src/providers` directory. Take a look at the CurrencyProvider interface in `src/contract.ts`. Use `src/providers/random.ts` as example.

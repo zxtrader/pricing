@@ -20,10 +20,10 @@
 	"files.eol": "\n",
 	"files.exclude": {
 		".dist": true,
+		".build": true,
 		".git": true,
 		".nyc_output": true,
 		".package": true,
-		"coverage": true,
 		"node_modules": true,
 		"src/**/*.d.ts": true,
 		"src/**/*.js": true,
@@ -31,7 +31,6 @@
 		"test/**/*.d.ts": true,
 		"test/**/*.map": true,
 		"test/**/*.js": true,
-		"package-lock.json": true
 	},
 	"git.enabled": true
 }

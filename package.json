@@ -1,7 +1,7 @@
 {
 	"name": "com.zxtrader.price.service",
 	"version": "0.0.1",
-	"description": "ZXTrader's Price aggregator functional as Http Service",
+	"description": "ZXTrader's Price Service",
 	"main": "./src/index.js",
 	"types": "./src/index.d.ts",
 	"author": {
@@ -17,22 +17,15 @@
 	],
 	"license": "MIT",
 	"devDependencies": {
-		"@types/lodash": "^4.14.121",
 		"@types/morgan": "^1.7.35",
 		"@types/node": "^11.13.4",
 		"@zxnode/build": "^0.0.33"
 	},
 	"dependencies": {
-		"@zxnode/base": "^5.0.1",
-		"@zxnode/config": "^5.0.0",
-		"@zxteam/ensure.js": "^1.2.0",
-		"@zxteam/financial.js": "^3.2.9",
 		"@zxteam/launcher": "^3.2.1",
 		"@zxteam/logger": "^3.2.1",
 		"express": "^4.16.4",
-		"lodash": "^4.17.11",
-		"morgan": "^1.9.1",
-		"ptask.js": "^3.2.1"
+		"morgan": "^1.9.1"
 	},
 	"engines": {
 		"node": ">=11"
@@ -48,7 +41,8 @@
 	"homepage": "https://dev.zxteam.net/zxtrader/price.service",
 	"scripts": {
 		"build": "zxbuild clean && zxbuild dist",
-		"test": "nyc --exclude submodules --exclude test --reporter=lcov --reporter=text --reporter=text-summary mocha \"test/**/*.test.js\" --recursive || true"
+		"test": "nyc --exclude submodules --exclude test --reporter=lcov --reporter=text --reporter=text-summary mocha \"test/**/*.test.js\" --recursive || true",
+		"start": "node src/app.js --config=log4js.json"
 	},
 	"private": true
 }
