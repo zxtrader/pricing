@@ -1,0 +1,54 @@
+{
+	"name": "com.zxtrader.price.service",
+	"version": "0.0.1",
+	"description": "ZXTrader's Price aggregator functional as Http Service",
+	"main": "./src/index.js",
+	"types": "./src/index.d.ts",
+	"author": {
+		"name": "Maxim Anurin",
+		"email": "maxim.anurin@zxteam.net",
+		"url": "http://www.anurin.name"
+	},
+	"contributors": [
+		{
+			"name": "Serhii Zghama",
+			"email": "serhii.zghama@zxteam.net"
+		}
+	],
+	"license": "MIT",
+	"devDependencies": {
+		"@types/lodash": "^4.14.121",
+		"@types/morgan": "^1.7.35",
+		"@types/node": "^11.13.4",
+		"@zxnode/build": "^0.0.33"
+	},
+	"dependencies": {
+		"@zxnode/base": "^5.0.1",
+		"@zxnode/config": "^5.0.0",
+		"@zxteam/ensure.js": "^1.2.0",
+		"@zxteam/financial.js": "^3.2.9",
+		"@zxteam/launcher": "^3.2.1",
+		"@zxteam/logger": "^3.2.1",
+		"express": "^4.16.4",
+		"lodash": "^4.17.11",
+		"morgan": "^1.9.1",
+		"ptask.js": "^3.2.1"
+	},
+	"engines": {
+		"node": ">=11"
+	},
+	"keywords": [],
+	"repository": {
+		"type": "git",
+		"url": "ssh://git@dev.zxteam.net:22282/zxtrader/price.service.git"
+	},
+	"bugs": {
+		"url": "https://dev.zxteam.net/zxtrader/price.service/issues"
+	},
+	"homepage": "https://dev.zxteam.net/zxtrader/price.service",
+	"scripts": {
+		"build": "zxbuild clean && zxbuild dist",
+		"test": "nyc --exclude submodules --exclude test --reporter=lcov --reporter=text --reporter=text-summary mocha \"test/**/*.test.js\" --recursive || true"
+	},
+	"private": true
+}
