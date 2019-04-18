@@ -69,7 +69,7 @@ $ npm start
 
 ### HTTP(S)
 HTTP Query grammar looks like (see complete grammar):
-[![Query grammar](docs/http-query-grammar.png)](docs/http-query-grammar.md)
+[![Query grammar](docs/http-query-grammar/QUERY.png)](docs/http-query-grammar.md)
 
 Simple query with result as text
 ```bash
