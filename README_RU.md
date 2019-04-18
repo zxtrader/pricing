@@ -107,12 +107,14 @@ TBD
 All of you need is to write own implementation of a CurrencyProvider interface and place in into `src/providers` directory. Take a look at the CurrencyProvider interface in `src/contract.ts`. Use `src/providers/random.ts` as example.
 
 # Limits
-- Лимиты к сервису можно устанавливать в конфигурационный INI файл.
-- Включить лимиты на сервис можно параметром limit.use=true, после включение лимитов вы можете создать профайл (тип пользователя) и указать ему настройки.
-- Каждый endpoint имеет свой вес, также он может зависит от количество переданных параметров.
-- Ошибка 429 будет возвращено в случае нарушения любого ограничения лимита.
+Лимиты - это ограничение на количество запросов на сервис, для того что бы обезопасить безопасность сервер от DoS-атак.
 
-# Основные настройки:
+- Лимиты к сервису можно устанавливать в конфигурационный INI файл.
+- Дефолтные настройки сервиса эта фукнция отключена.
+- Включить лимиты на сервис можно параметром limit.use=true, после включение лимитов вы можете создать профайл (тип пользователя) и указать ему настройки.
+- Каждый запрос имеет свой вес, также он может зависит от количество переданных параметров.
+
+## Основные настройки:
 | Name | Type | Description |
 | - | - | - |
 | limit.use | boolean | Включение\выключение ограничение по лимитным запросам
@@ -123,7 +125,7 @@ All of you need is to write own implementation of a CurrencyProvider interface a
 | limit.profile.perHour | number | Максимальное количество запросов в час
 | limit.profile.parallel | number | Максимальное количество запросов паралельно
 
-# Example INI file:
+## Example INI file:
 ```bash
 limit.use=true
 
@@ -142,4 +144,44 @@ limit.premium.perSecond=0
 limit.premium.perMinute=0
 limit.premium.perHour=0
 limit.premium.parallel=0
+```
+
+# Формат храниен данных в Redis
+
+## Сохранение данных в redis
+Сохраняем цену для SourceSystem:
+```Bash
+HSET "${HISTORY_PRICE_PREFIX}:${TS}:${MASTER_CURRENCY}:${PRICE_CURRENCY}:${SOURCE_SYSTEM}" "price" ${PRICE}
+```
+Пример:
+```Bash
+HSET "HISTORY:PRICE:20180101100001:USDT:BTC:CRYPTOCOMPARE" "price" 13400.89
+```
+
+Сохраняем усреднённую цену для всех SourceSystems:
+```Bash
+HSET "${HISTORY_PRICE_PREFIX}:${TS}:${MASTER_CURRENCY}:${PRICE_CURRENCY}" "price" ${AVG_PRICE}
+```
+Пример:
+```Bash
+HSET "HISTORY:PRICE:20180101100001:USDT:BTC" "price" 13400.89
+```
+
+## Чтение данных из redis
+Читаем цену по определенной SourceSystem:
+```Bash
+HGET "${HISTORY_PRICE_PREFIX}:${TS}:${MASTER_CURRENCY}:${PRICE_CURRENCY}:${SOURCE_SYSTEM}" "price"
+```
+Пример:
+```Bash
+HGET "HISTORY:PRICE:20180102101233:USDT:BTC:CRYPTOCOMPARE" "price"
+```
+
+Читаем усреднённую цену по всем источникам:
+```Bash
+HGET "${HISTORY_PRICE_PREFIX}:${TS}:${MASTER_CURRENCY}:${PRICE_CURRENCY}" "price"
+```
+Пример:
+```Bash
+HGET "HISTORY:PRICE:20180102101233:USDT:BTC" "price"
 ```
