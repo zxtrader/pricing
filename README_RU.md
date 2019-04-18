@@ -147,43 +147,50 @@ limit.premium.parallel=0
 ```
 
 # Формат храниен данных в Redis
-
-## Сохранение данных в redis
-Сохраняем цену для SourceSystem:
+## Сохраняем цену для SourceSystem:
 ```Bash
+
 HSET "${HISTORY_PRICE_PREFIX}:${TS}:${MASTER_CURRENCY}:${PRICE_CURRENCY}:${SOURCE_SYSTEM}" "price" ${PRICE}
 ```
+- ${HISTORY_PRICE_PREFIX} - константа у нас она "HISTORY:PRICE"
+- ${TS} - время которое передал пользователь, форма времени YYYYMMDDHHMMSS
+- ${MASTER_CURRENCY} - код базовой валюты
+- ${PRICE_CURRENCY} - код котируемой валюты
+- ${SOURCE_SYSTEM} - название источника
+- "price" - это название поля в базе
+- ${PRICE} - цена которую мы получили от источника
 Пример:
 ```Bash
 HSET "HISTORY:PRICE:20180101100001:USDT:BTC:CRYPTOCOMPARE" "price" 13400.89
 ```
 
-Сохраняем усреднённую цену для всех SourceSystems:
+## Сохраняем усреднённую цену для всех SourceSystems:
 ```Bash
 HSET "${HISTORY_PRICE_PREFIX}:${TS}:${MASTER_CURRENCY}:${PRICE_CURRENCY}" "price" ${AVG_PRICE}
 ```
+- ${HISTORY_PRICE_PREFIX} - константа у нас она "HISTORY:PRICE"
+- ${TS} - время которое передал пользователь, форма времени YYYYMMDDHHMMSS
+- ${MASTER_CURRENCY} - код базовой валюты
+- ${PRICE_CURRENCY} - код котируемой валюты
+- "price" - это название поля в базе
+- ${AVG_PRICE} - усреднённая цена от всех источников
 Пример:
 ```Bash
 HSET "HISTORY:PRICE:20180101100001:USDT:BTC" "price" 13400.89
 ```
 
-## Чтение данных из redis
-Читаем цену по определенной SourceSystem:
+## Сохранение SourceSystem
 ```Bash
-HGET "${HISTORY_PRICE_PREFIX}:${TS}:${MASTER_CURRENCY}:${PRICE_CURRENCY}:${SOURCE_SYSTEM}" "price"
+HSET "${HISTORY_PRICE_PREFIX}:${TS}:${MASTER_CURRENCY}:${PRICE_CURRENCY}" ${SOURCE_SYSTEM}
 ```
+- ${HISTORY_PRICE_PREFIX} - константа у нас она "HISTORY:PRICE"
+- ${TS} - время которое передал пользователь, форма времени YYYYMMDDHHMMSS
+- ${MASTER_CURRENCY} - код базовой валюты
+- ${PRICE_CURRENCY} - код котируемой валюты
+- ${SOURCE_SYSTEM} - название источника
 Пример:
 ```Bash
-HGET "HISTORY:PRICE:20180102101233:USDT:BTC:CRYPTOCOMPARE" "price"
-```
-
-Читаем усреднённую цену по всем источникам:
-```Bash
-HGET "${HISTORY_PRICE_PREFIX}:${TS}:${MASTER_CURRENCY}:${PRICE_CURRENCY}" "price"
-```
-Пример:
-```Bash
-HGET "HISTORY:PRICE:20180102101233:USDT:BTC" "price"
+HSET "HISTORY:PRICE:20180101100001:USDT:BTC" "CRYPTOCOMPARE"
 ```
 
 # HTTP status code
