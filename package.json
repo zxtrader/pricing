@@ -22,10 +22,12 @@
 		"@zxnode/build": "^0.0.33"
 	},
 	"dependencies": {
+		"@zxnode/base": "^5.0.1",
 		"@zxteam/launcher": "^3.2.1",
 		"@zxteam/logger": "^3.2.1",
 		"express": "^4.16.4",
-		"morgan": "^1.9.1"
+		"morgan": "^1.9.1",
+		"ptask.js": "^3.2.1"
 	},
 	"engines": {
 		"node": ">=11"

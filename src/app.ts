@@ -9,7 +9,14 @@ const listenPort: number = Number.parseInt(process.env.HTTP_PORT || "8080");
 
 launcher((configuration: any) => {
 	return runtimeFactory({
-		storageUrl: new URL("redis://blabla"),
+		storageUrl: helpers.dataStorageUrl(),
 		httpOpts: { listenHost, listenPort }
 	});
 });
+
+namespace helpers {
+	export function dataStorageUrl(): URL {
+		const { DATASTORAGE_URL } = process.env;
+		return new URL(DATASTORAGE_URL || "redis://localhost:6379");
+	}
+}
