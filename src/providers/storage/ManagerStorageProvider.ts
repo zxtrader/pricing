@@ -4,7 +4,7 @@ import { price } from "../../PriceService";
 import { Task } from "ptask.js";
 import { Disposable } from "@zxnode/base";
 
-export class StorageProvider extends Disposable implements StorageProviderInerface {
+export class ManagerStorageProvider extends Disposable implements StorageProviderInerface {
 
 	private readonly _logger: Logger;
 	private readonly _url: URL;
