@@ -22,10 +22,16 @@
 		"@zxnode/build": "^0.0.33"
 	},
 	"dependencies": {
+		"@types/lodash": "^4.14.123",
 		"@zxnode/base": "^5.0.1",
+		"@zxteam/ensure.js": "^1.2.0",
 		"@zxteam/launcher": "^3.2.1",
 		"@zxteam/logger": "^3.2.1",
+		"@zxteam/restclient": "^3.2.6",
 		"express": "^4.16.4",
+		"limit.js": "^3.2.1",
+		"lodash": "^4.17.11",
+		"moment": "^2.24.0",
 		"morgan": "^1.9.1",
 		"ptask.js": "^3.2.1"
 	},
@@ -43,7 +49,7 @@
 	"homepage": "https://dev.zxteam.net/zxtrader/price.service",
 	"scripts": {
 		"build": "zxbuild clean && zxbuild dist",
-		"test": "nyc --exclude submodules --exclude test --reporter=lcov --reporter=text --reporter=text-summary mocha \"test/**/*.test.js\" --recursive || true",
+		"test": "nyc --exclude submodules --exclude test --reporter=lcov --reporter=text --reporter=text-summary mocha \"test/**/*.test.js\" --recursive",
 		"start": "node src/app.js --config=log4js.json"
 	},
 	"private": true
