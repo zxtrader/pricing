@@ -1,21 +1,27 @@
 import * as _ from "lodash";
 import * as moment from "moment";
-
 import { Task } from "ptask.js";
-import { LimitError } from "limit.js";
 import { price } from "../../PriceService";
 import { WebClient } from "@zxteam/webclient";
-import { RestClient } from "@zxteam/restclient";
+import { ensureFactory } from "@zxteam/ensure.js";
+
 import { CancellationToken } from "@zxteam/contract";
+import RestClient from "@zxteam/restclient";
 import {
 	SourceProvider as SourceProviderInerface,
-	NoRecordError,
+	NoDataError,
 	BrokenApiError,
-	ConnectionError,
-	BrokenProviderError
+	CommunicationError
 } from "./contract";
 
-export class CryptoCompare extends RestClient implements SourceProviderInerface {
+
+export abstract class CryptoCompareRestClient extends RestClient {
+	public constructor(baseUrl: string | URL, restClientOpts: RestClient.Opts) {
+		super(baseUrl, restClientOpts);
+	}
+}
+
+export class CryptoCompare extends CryptoCompareRestClient implements SourceProviderInerface {
 	public readonly sourcesytemId = "CRYPTOCOMPARE";
 	public constructor() {
 		super("https://min-api.cryptocompare.com/data/", {
@@ -40,69 +46,73 @@ export class CryptoCompare extends RestClient implements SourceProviderInerface 
 	 */
 	public loadPrices(cancellationToken: CancellationToken, loadArgs: price.LoadDataRequest): Task<price.HistoricalPrices> {
 		return Task.run(async (ct) => {
-			let friendlyTsPrices = {};
+
+			let bodyTimeStampPrices = {};
+			const ensureImpl = ensureFactory((message, data) => {
+				throw new CommunicationError("CryptoCompare responded non-expected data type");
+			});
+
 			try {
 				const timeStampObject = loadArgs[this.sourcesytemId];
 				const timestampKeys = Object.keys(timeStampObject);
 				for (let i = 0; i < timestampKeys.length; i++) {
 					const timestamp = Number(timestampKeys[i]);
-
 					const tradeCurrencyObject = timeStampObject[timestamp];
-					const tradeCurrency = Object.keys(tradeCurrencyObject)[0];
-					const marketCurrency = tradeCurrencyObject[tradeCurrency];
+					const tradeCurrencys = Object.keys(tradeCurrencyObject);
+					let bodyTradePrices = {};
 
-					const friendlyTimeStamp = moment.utc(timestamp, "YYYYMMDDHHmmss").unix().toString();
-					const args = {
-						fsym: tradeCurrency,
-						tsyms: marketCurrency.join(","),
-						ts: friendlyTimeStamp
-					};
+					for (let x = 0; x < tradeCurrencys.length; x++) {
+						const tradeCurrency = tradeCurrencys[x];
+						const marketCurrency = Object.keys(tradeCurrencyObject[tradeCurrency]);
+						const friendlyTimeStamp = moment.utc(timestamp, "YYYYMMDDHHmmss").unix().toString();
 
-					const data = await this.invokeWebMethodGet(cancellationToken, "pricehistorical", { queryArgs: args });
+						const args = {
+							fsym: tradeCurrency,
+							tsyms: marketCurrency.join(","),
+							ts: friendlyTimeStamp
+						};
 
-					const body = data.bodyAsJson;
-					if (
-						"Data" in body &&
-						"RateLimit" in body &&
-						_.isObject(body.Data) &&
-						_.isObject(body.RateLimit) &&
-						_.isString(body.Data.Message) &&
-						_.isString(body.Data.Response) &&
-						body.Data.Response === "Error"
-					) {
-						throw new LimitError(body.Data.Message);
-					}
-					if (!(tradeCurrency in body && _.isObject(body[tradeCurrency]))) {
-						throw new BrokenProviderError(`Unexpected fsym key/data ${body}`);
-					}
-					const fsymData = body[tradeCurrency];
-					Object.keys(fsymData).forEach(tsym => {
-						if (!_.isString(tsym)) {
-							throw new BrokenProviderError(`Unexpected tsym key ${fsymData}`);
+						const data = await this.invokeWebMethodGet(cancellationToken, "pricehistorical", { queryArgs: args });
+
+						const body = data.bodyAsJson;
+						if (
+							"Data" in body &&
+							"RateLimit" in body &&
+							_.isObject(body.Data) &&
+							_.isObject(body.RateLimit) &&
+							_.isString(body.Data.Message) &&
+							_.isString(body.Data.Response) &&
+							body.Data.Response === "Error"
+						) {
+							throw new CommunicationError(body.Data.Message);
 						}
-						const tsymData = fsymData[tsym];
-						if (!_.isNumber(tsymData)) {
-							throw new BrokenProviderError(`Unexpected tsym value ${fsymData}`);
-						}
-					});
-					const friendlyTimeStampObject = { [timestamp]: body };
-					friendlyTsPrices = Object.assign(friendlyTsPrices, friendlyTimeStampObject);
+
+						ensureImpl.object(body[tradeCurrency]);
+						const fsymData = body[tradeCurrency];
+						Object.keys(fsymData).forEach(tsym => {
+							ensureImpl.string(tsym);
+							ensureImpl.number(fsymData[tsym]);
+						});
+
+						const friendlyTimeStampObject = body;
+						bodyTradePrices = Object.assign(bodyTradePrices, friendlyTimeStampObject);
+					}
+					bodyTimeStampPrices = Object.assign(bodyTimeStampPrices, { [timestamp]: bodyTradePrices });
 				}
 			} catch (err) {
-				const message = `NameError: ${err.name}, message: ${err.message}`;
-				if (err instanceof WebClient.CommunicationError) {
-					throw new ConnectionError(message);
-				} else if (err instanceof NoRecordError) {
-					throw new NoRecordError(message);
+				if (err instanceof WebClient.CommunicationError || err instanceof CommunicationError) {
+					throw new CommunicationError(err.message);
 				} else {
-					throw new BrokenApiError(message);
+					throw new BrokenApiError(err.message);
 				}
 			}
 
-			const friendlyRequest: price.HistoricalPrices = { [this.sourcesytemId]: friendlyTsPrices };
+			const friendlyRequest: price.HistoricalPrices = { [this.sourcesytemId]: bodyTimeStampPrices };
 			return friendlyRequest;
+
 		}, cancellationToken);
 	}
 }
 
 export default CryptoCompare;
+

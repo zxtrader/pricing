@@ -2,15 +2,13 @@ import { CancellationToken, Task as TaskLike, Logger } from "@zxteam/contract";
 import { SourceProvider as SourceProviderInerface, SourceProvider } from "./contract";
 import { price } from "../../PriceService";
 import { Task } from "ptask.js";
-import { Disposable } from "@zxnode/base";
 
-export class ManagerSourceProvider extends Disposable implements SourceProviderInerface {
+export class ManagerSourceProvider implements SourceProviderInerface {
 	public readonly sourcesytemId = "MANAGER";
 	private readonly _sources: Array<SourceProvider>;
 	private readonly _logger: Logger;
 
 	constructor(sources: Array<SourceProvider>, logger: Logger) {
-		super();
 		this._sources = sources;
 		this._logger = logger;
 	}
@@ -41,10 +39,12 @@ export class ManagerSourceProvider extends Disposable implements SourceProviderI
 
 				if (source) {
 					this._logger.trace("Loading new price from source");
-					const sourcePrice = await source.loadPrices(ct, { sourcesytemId: loadArgs[sourcesytemId] });
+					const sourcePrice = await source.loadPrices(ct, { [sourcesytemId]: loadArgs[sourcesytemId] });
 
 					this._logger.trace("Combine the results");
 					friendlyPrices = Object.assign(friendlyPrices, sourcePrice);
+				} else {
+					friendlyPrices = Object.assign(friendlyPrices, { [sourcesytemId]: loadArgs[sourcesytemId] });
 				}
 			}
 
@@ -54,10 +54,6 @@ export class ManagerSourceProvider extends Disposable implements SourceProviderI
 			return friendlyPrices;
 		}, cancellationToken);
 	}
-	protected disposing(): void | Promise<void> {
-		throw new Error("Method not implemented.");
-	}
-
 }
 
 export namespace helpers {

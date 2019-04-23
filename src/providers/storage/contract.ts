@@ -10,5 +10,5 @@ export interface StorageProvider {
 	savePrices(cancellationToken: CancellationToken, newPrices: price.HistoricalPrices): TaskLike<void>;
 
 	/** Find prices */
-	findPrices(cancellationToken: CancellationToken, args: Array<price.Argument>): TaskLike<Array<price.Prices>>;
+	findPrices(cancellationToken: CancellationToken, args: Array<price.Argument>): TaskLike<Array<price.Timestamp>>;
 }

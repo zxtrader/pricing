@@ -16,7 +16,7 @@ export class PriceService {
 	}
 
 	public getHistoricalPrices(cancellationToken: CancellationToken, args: Array<price.Argument>)
-		: Task<Array<price.Prices>> {
+		: Task<Array<price.Timestamp>> {
 		return Task.run(async (ct) => {
 			if (this._logger.isTraceEnabled) {
 				this._logger.trace("getHistoricalPrices()... args: ", args);
@@ -41,7 +41,7 @@ export class PriceService {
 			}
 
 			this._logger.trace("Read prices from storage provider");
-			const friendlyPrices: Array<price.Prices> = await this._storageProvider.findPrices(ct, args);
+			const friendlyPrices: Array<price.Timestamp> = await this._storageProvider.findPrices(ct, args);
 
 			return friendlyPrices;
 		}, cancellationToken);
@@ -56,20 +56,20 @@ export namespace price {
 		sourceSystemId?: string;
 		requiredAllSourceSystems: boolean;
 	}
-	export interface Prices {
-		[ts: number]: MarketPrices;
+	export interface Timestamp {
+		[ts: number]: Market;
 	}
-	export interface MarketPrices {
-		[marketCurrency: string]: TradePrices;
+	export interface Market {
+		[marketCurrency: string]: Trade;
 	}
-	export interface TradePrices {
-		[tradeCurrency: string]: TradingPrice;
+	export interface Trade {
+		[tradeCurrency: string]: Average;
 	}
-	export interface TradingPrice {
+	export interface Average {
 		avg: Price | null;
-		sources?: SourcePrices;
+		sources?: Source;
 	}
-	export interface SourcePrices {
+	export interface Source {
 		[sourceSystemId: string]: Price;
 	}
 	export interface Price {
@@ -81,22 +81,24 @@ export namespace price {
 			/** Timestamp format YYYYMMDDHHMMSS */
 			[ts: number]: {
 				/** Array of marketCurrency */
-				[tradeCurrency: string]: Array<string>
+				[tradeCurrency: string]: {
+					[makretCurrency: string]: number | null
+				};
 			};
 		};
 	}
 	/** HistoricalPrices:
-	 * {
-	 * 	"CRYPTOCOMPARE": {
-	 * 		20180101101010: {
-	 * 			"ETH": {
-	 * 				"BTC": 0.002616,
-	 * 				"USD": 1.13,
-	 * 				"EUR":1.04
-	 * 				}
-	 * 			}
-	 * 		}
-	 * 	}
+	 *{
+	 *	"CRYPTOCOMPARE": {
+	 *		20180101101010: {
+	 *			"ETH": {
+	 *				"BTC": 0.002616,
+	 *				"USD": 1.13,
+	 *				"EUR":1.04
+	 *				}
+	 *			}
+	 *		}
+	 *	}
 	 */
 	export interface HistoricalPrices {
 		/** Source system id (ex. CRYPTOCOMPARE) */
