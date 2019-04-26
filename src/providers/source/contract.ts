@@ -1,8 +1,8 @@
-import { price } from "../../PriceService";
+import { price } from "../../index";
 import { CancellationToken, Task as TaskLike } from "@zxteam/contract";
 
 export interface SourceProvider {
-	sourcesytemId: string;
+	sourceId: string;
 
 	/**
 	 * Loading empty price from sources
@@ -12,7 +12,7 @@ export interface SourceProvider {
 	 * @error CommunicationError If it failed to connect to source
 	 * @error BrokenApiError Something happened wrong on service
 	 */
-	loadPrices(cancellationToken: CancellationToken, loadArgs: price.LoadDataRequest): TaskLike<price.HistoricalPrices>;
+	loadPrices(cancellationToken: CancellationToken, loadArgs: price.MultyLoadDataRequest): TaskLike<Array<price.HistoricalPrices>>;
 }
 
 export class NoDataError extends Error { }

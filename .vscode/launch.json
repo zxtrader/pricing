@@ -36,6 +36,7 @@
 			],
 			"cwd": "${workspaceRoot}",
 			"env": {
+				"TEST_DB_URL": "redis://devtest@localhost:6379/5",
 				"NODE_ENV": "development"
 			},
 			"console": "internalConsole",

@@ -2,7 +2,7 @@ import { URL } from "url";
 import { launcher } from "@zxteam/launcher";
 import { loggerFactory } from "@zxteam/logger";
 
-import runtimeFactory from "./index";
+import runtimeFactory from "./rest";
 
 const listenHost: string = process.env.HTTP_HOST || "127.0.0.1";
 const listenPort: number = Number.parseInt(process.env.HTTP_PORT || "8080");

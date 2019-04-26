@@ -1,1 +1,21 @@
 include: 'https://dev.zxteam.net/maxim.anurin/gitlab-pipelines/raw/master/node/internal-lib.yml'
+
+image: node:11-alpine
+
+cache:
+  paths:
+    - node_modules/
+
+test:
+  stage: test
+  dependencies:
+    - build
+  variables:
+    GIT_STRATEGY: none
+    TEST_DB_URL: 'redis://devtest@redis:6379/5'
+  services:
+    - name: redis
+      alias: redis
+  script:
+    - ping -c 5 redis
+    - npm run test

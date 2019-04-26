@@ -1,95 +1,194 @@
-import { Runtime } from "@zxteam/launcher";
-import { loggerFactory } from "@zxteam/logger";
-import * as express from "express";
-import * as http from "http";
-import * as morgan from "morgan";  // Logging middleware
+import { Logger, CancellationToken } from "@zxteam/contract";
+import { StorageProvider } from "./providers/storage/contract";
+import { SourceProvider } from "./providers/source/contract";
+import { ArgumentException } from "@zxnode/base";
+import { Task } from "ptask.js";
 
-export default async function (
-	opts: {
-		storageUrl: URL,
-		httpOpts?: {
-			listenHost: string,
-			listenPort: number
-		},
-		httpsOpts?: {
-			listenHost: string,
-			listenPort: number,
-			ca?: Array<string>,
-			cert: string,
-			key: string,
-			keyPassphase?: string
-		}
+export class PriceService {
+	private readonly _storageProvider: StorageProvider;
+	private readonly _sourceProviders: Array<SourceProvider>;
+	private readonly _sourcesId: Array<string>;
+	private readonly _logger: Logger;
+
+	constructor(storageProvider: StorageProvider, sourceProviders: Array<SourceProvider>, logger: Logger) {
+		this._storageProvider = storageProvider;
+		this._sourceProviders = sourceProviders;
+		this._logger = logger;
+		this._sourcesId = sourceProviders.map((source) => source.sourceId);
 	}
-): Promise<Runtime> {
-	const log = loggerFactory.getLogger("ZXTrader's Price Service");
 
-	log.info("Setuping Express...");
-	const app = express();
+	public getHistoricalPrices(cancellationToken: CancellationToken, args: Array<price.Argument>)
+		: Task<price.Timestamp> {
+		return Task.run(async (ct) => {
+			if (this._logger.isTraceEnabled) {
+				this._logger.trace("getHistoricalPrices()... args: ", args);
+			}
+			if (args.length === 0) {
+				throw new ArgumentException("Don't have argument");
+			}
 
-	// Set logger. Available values: "dev", "short", "tiny". or no argument (default)
-	app.use(morgan("dev"));
+			this._logger.trace("Check prices in storage provide");
+			const filterEmptyPrices: Array<price.LoadDataRequest> = await this._storageProvider.filterEmptyPrices(ct, args, this._sourcesId);
 
+			if (this._logger.isTraceEnabled) {
+				this._logger.trace(`Checking exsist price which need load from sources ${filterEmptyPrices.length}`);
+			}
 
-	// 404 Not found (bad URL)
-	app.use(function (req: express.Request, res: express.Response): any {
-		return res.status(404).end("404 Not Found");
-	});
+			if (filterEmptyPrices.length > 0) {
 
-	// 5xx Fatal error
-	app.use(function (err: any, req: express.Request, res: express.Response, next: express.NextFunction): any {
-		if (err) {
-			//TODO: send email, log err, etc...
-			log.error(err);
-		}
-		//return res.status(500).end("500 Internal Error");
-		return next(err); // use express excepton render
-	});
+				this._logger.trace("Loading prices from sources");
+				const newPrices: Array<price.HistoricalPrices> = await this.managerSourceProvider(ct, filterEmptyPrices);
 
+				this._logger.trace("Save new prices to storage provide");
+				await this._storageProvider.savePrices(ct, newPrices);
+			}
 
-	const destroyHandlers: Array<() => Promise<void>> = [];
+			this._logger.trace("Read prices from storage provider");
+			const friendlyPrices: price.Timestamp = await this._storageProvider.findPrices(ct, args);
 
-	const { httpOpts } = opts;
+			return friendlyPrices;
+		}, cancellationToken);
+	}
 
-	if (httpOpts !== undefined) {
-		await new Promise((resolve, reject) => {
-			// Make HTTPs server instance
-			const httpServer = http.createServer(app);
-			log.info("Starting HTTP Web Server...");
+	private managerSourceProvider(cancellationToken: CancellationToken, loadArgs: Array<price.LoadDataRequest>)
+		: Task<Array<price.HistoricalPrices>> {
+		return Task.run(async (ct) => {
+			if (this._logger.isTraceEnabled) {
+				this._logger.trace("loadPrices()... args: ", loadArgs);
+			}
 
-			httpServer
-				.on("listening", function (): any {
-					const address = httpServer.address();
-					if (address !== null) {
-						if (typeof address === "string") {
-							log.info(`Server was started on ${address}`);
-						} else {
-							log.info(address.family + " server was started on http://" + address.address + ":" + address.port);
-						}
-					}
-					resolve();
-				})
-				.on("error", reject)
-				.listen(httpOpts.listenPort, httpOpts.listenHost);
+			this._logger.trace("Declaration friendly request");
+			let friendlyPrices: Array<price.HistoricalPrices> = [];
 
-			destroyHandlers.push(() => {
-				log.info("Stoping HTTP Web Server...");
-				return new Promise((destroyResolve) => {
-					httpServer.close((err) => {
-						if (err) {
-							log.warn("The HTTP Server closed with error", err);
-						} else {
-							log.info("The HTTP Web Server was stopped");
-						}
-						destroyResolve();
-					});
-				});
+			this._logger.trace("Create array sourcesystem id which need syncs price");
+			const multyLoadDataRequest = helpers.parseToMultyType(loadArgs);
+			const sourceIds = Object.keys(multyLoadDataRequest);
+			const countSources = sourceIds.length;
+
+			for (let i = 0; i < countSources; i++) {
+				const sourceId = sourceIds[i];
+				if (this._logger.isTraceEnabled) {
+					this._logger.trace(`Set sourcesystem id: ${sourceId}`);
+				}
+
+				this._logger.trace("Get source provider object for get price");
+				const source = helpers.getSource(this._sourceProviders, sourceId);
+
+				if (source) {
+					this._logger.trace("Loading new price from source");
+					const sourcePrice = await source.loadPrices(ct, { [sourceId]: multyLoadDataRequest[sourceId] });
+
+					this._logger.trace("Concat the results");
+					Array.prototype.push.apply(friendlyPrices, sourcePrice);
+				} else {
+					this._logger.error("Not implement yet");
+				}
+			}
+
+			if (this._logger.isTraceEnabled) {
+				this._logger.trace(`return result: ${friendlyPrices}`);
+			}
+			return friendlyPrices;
+		}, cancellationToken);
+	}
+}
+
+export namespace helpers {
+	export function parseToMultyType(loadArgs: Array<price.LoadDataRequest>): price.MultyLoadDataRequest {
+		const multyLoadDataRequest: price.MultyLoadDataRequest = {};
+
+		for (let i = 0; i < loadArgs.length; i++) {
+			const loadArg = loadArgs[i];
+			const sourceId = loadArg.sourceId;
+			if (!(sourceId in multyLoadDataRequest)) {
+				multyLoadDataRequest[sourceId] = [];
+			}
+			multyLoadDataRequest[sourceId].push({
+				ts: loadArg.ts,
+				marketCurrency: loadArg.marketCurrency,
+				tradeCurrency: loadArg.tradeCurrency,
+				price: loadArg.price
 			});
-		});
+		}
+
+		return multyLoadDataRequest;
+	}
+	export function getSource(sources: Array<SourceProvider>, sourcesytemId: string): SourceProvider | null {
+		for (let n = 0; n < sources.length; n++) {
+			const source = sources[n];
+			if (source.sourceId === sourcesytemId) {
+				return source;
+			}
+		}
+		// if don't exist source return null
+		return null;
+	}
+}
+
+export namespace price {
+	export interface Argument {
+		ts: number;
+		marketCurrency: string;
+		tradeCurrency: string;
+		sourceId?: string;
+		requiredAllSourceIds: boolean;
+	}
+	export interface Timestamp {
+		[ts: number]: Market;
+	}
+	export interface Market {
+		[marketCurrency: string]: Trade;
+	}
+	export interface Trade {
+		[tradeCurrency: string]: Average;
+	}
+	export interface Average {
+		avg: Price | null;
+		sources?: SourceId;
+	}
+	export interface SourceId {
+		[sourceId: string]: Price;
+	}
+	export interface Price {
+		price: string;
+	}
+	export interface LoadDataRequest {
+		/** Source id (ex. CRYPTOCOMPARE) */
+		sourceId: string;
+		/** Timestamp format YYYYMMDDHHMMSS */
+		ts: number;
+		/** Code market currency */
+		marketCurrency: string;
+		/** Code trade currency */
+		tradeCurrency: string;
+		/** Price can number or null */
+		price: number | null;
+	}
+	export interface MultyLoadDataRequest {
+		/** Source id (ex. CRYPTOCOMPARE) */
+		[sourceId: string]: Array<LoadData>;
+	}
+	export interface LoadData {
+		/** Timestamp format YYYYMMDDHHMMSS */
+		ts: number;
+		/** Code market currency */
+		marketCurrency: string;
+		/** Code trade currency */
+		tradeCurrency: string;
+		/** Price can number or null */
+		price: number | null;
 	}
 
-	return {
-		async destroy() {
-			await Promise.all(destroyHandlers.map(destroyHandler => destroyHandler()));
-		}
-	};
+	export interface HistoricalPrices {
+		/** Source id (ex. CRYPTOCOMPARE) */
+		sourceId: string;
+		/** Timestamp format YYYYMMDDHHMMSS */
+		ts: number;
+		/** Code market currency */
+		marketCurrency: string;
+		/** Code trade currency */
+		tradeCurrency: string;
+		/** Price must be number */
+		price: number;
+	}
 }

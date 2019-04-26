@@ -1,14 +1,17 @@
 import { CancellationToken, Task as TaskLike } from "@zxteam/contract";
-import { price } from "../../PriceService";
+import { price } from "../../index";
 
 export interface StorageProvider {
 
 	/** Create data for loading price on sources */
-	loadEmptyPrices(cancellationToken: CancellationToken, args: Array<price.Argument>): TaskLike<price.LoadDataRequest>;
+	filterEmptyPrices(cancellationToken: CancellationToken, args: Array<price.Argument>, sources: Array<string>)
+		: TaskLike<Array<price.LoadDataRequest>>;
 
 	/** Save new price to storage provide */
-	savePrices(cancellationToken: CancellationToken, newPrices: price.HistoricalPrices): TaskLike<void>;
+	savePrices(cancellationToken: CancellationToken, newPrices: Array<price.HistoricalPrices>)
+		: TaskLike<void>;
 
 	/** Find prices */
-	findPrices(cancellationToken: CancellationToken, args: Array<price.Argument>): TaskLike<Array<price.Timestamp>>;
+	findPrices(cancellationToken: CancellationToken, args: Array<price.Argument>)
+		: TaskLike<price.Timestamp>;
 }
