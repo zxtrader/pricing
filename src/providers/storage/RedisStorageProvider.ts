@@ -40,6 +40,10 @@ export class RedisStorageProvider extends Disposable implements StorageProviderI
 						this._logger.trace("Execute: HGET", priceSourceIdRedisKey, "price");
 					}
 					const sourceIdPrice = await this.ioredis.hget(priceSourceIdRedisKey, "price");
+
+					this._logger.trace("Check cancellationToken for interrupt");
+					ct.throwIfCancellationRequested();
+
 					if (!sourceIdPrice) {
 						this._logger.trace("Formatting data and push to friendly array");
 						friendlyRequest.push({
@@ -68,6 +72,10 @@ export class RedisStorageProvider extends Disposable implements StorageProviderI
 							this._logger.trace("Execute: HGET", priceSourceSystemsRedisKey, "price");
 						}
 						const sourceSystemPrice = await this.ioredis.hget(priceSourceSystemsRedisKey, "price");
+
+						this._logger.trace("Check cancellationToken for interrupt");
+						ct.throwIfCancellationRequested();
+
 						if (!sourceSystemPrice) {
 							this._logger.trace("Formatting data and push to friendly array");
 							friendlyRequest.push({
@@ -104,11 +112,15 @@ export class RedisStorageProvider extends Disposable implements StorageProviderI
 				}
 				await this.ioredis.hset(sourceIdPriceRedisKey, "price", newPrice);
 
+				// We can't use cancellationToken, need calculating avg price and save in database.
+
 				if (this._logger.isTraceEnabled) {
 					this._logger.trace("Check count sourceId");
 					this._logger.trace("Execute: LLEN", priceSourceIdsRedisKey);
 				}
 				const redisPriceSourceIdCount = await this.ioredis.llen(priceSourceIdsRedisKey);
+
+				// We can't use cancellationToken, need calculating avg price and save in database.
 
 				let totalSum: number = 0;
 
@@ -119,6 +131,8 @@ export class RedisStorageProvider extends Disposable implements StorageProviderI
 					}
 					const sourceIds = await this.ioredis.lrange(priceSourceIdsRedisKey, 0, redisPriceSourceIdCount);
 
+					// We can't use cancellationToken, need calculating avg price and save in database.
+
 					for (let x = 0; x < sourceIds.length; x++) {
 						const source = sourceIds[x];
 						const sourceIdAvgRedisKey = `${priceSourceIdsRedisKey}${source}`;
@@ -126,6 +140,9 @@ export class RedisStorageProvider extends Disposable implements StorageProviderI
 							this._logger.trace("Execute: HGET", sourceIdAvgRedisKey, "price");
 						}
 						const sourceIdPrice = await this.ioredis.hget(sourceIdAvgRedisKey, "price");
+
+						// We can't use cancellationToken, need calculating avg price and save in database.
+
 						if (sourceIdPrice) {
 							totalSum += parseFloat(sourceIdPrice);
 						}
@@ -139,6 +156,8 @@ export class RedisStorageProvider extends Disposable implements StorageProviderI
 					this._logger.trace("Execute: HSET", corePriceRedisKey, "price", avgPrice);
 				}
 				await this.ioredis.hset(corePriceRedisKey, "price", avgPrice);
+
+				// We can't use cancellationToken, need calculating avg price and save in base.
 
 				if (this._logger.isTraceEnabled) {
 					this._logger.trace("Save sourceId as key");
@@ -175,6 +194,9 @@ export class RedisStorageProvider extends Disposable implements StorageProviderI
 				}
 				const avgPrice = await this.ioredis.hget(corePriceRedisKey, "price");
 
+				this._logger.trace("Check cancellationToken for interrupt");
+				ct.throwIfCancellationRequested();
+
 				helpers.addPriceTimeStamp(friendlyPricesChunk, ts, marketCurrency, tradeCurrency, avgPrice);
 
 				if (sourceId) {
@@ -186,6 +208,9 @@ export class RedisStorageProvider extends Disposable implements StorageProviderI
 					}
 					const sourceIdPrice = await this.ioredis.hget(priceSourceIdRedisKey, "price");
 
+					this._logger.trace("Check cancellationToken for interrupt");
+					ct.throwIfCancellationRequested();
+
 					helpers.addPriceTimeStamp(friendlyPricesChunk, ts, marketCurrency, tradeCurrency, null, sourceId, sourceIdPrice);
 
 				} else if (requiredAllSourceId) {
@@ -195,12 +220,18 @@ export class RedisStorageProvider extends Disposable implements StorageProviderI
 					}
 					const redisPriceSourceIdCount = await this.ioredis.llen(priceSourceIdsRedisKey);
 
+					this._logger.trace("Check cancellationToken for interrupt");
+					ct.throwIfCancellationRequested();
+
 					if (redisPriceSourceIdCount) {
 						if (this._logger.isTraceEnabled) {
 							this._logger.trace("Get list sourceId");
 							this._logger.trace("Execute: LRANGE", priceSourceIdsRedisKey, 0, redisPriceSourceIdCount);
 						}
 						const sourceIds = await this.ioredis.lrange(priceSourceIdsRedisKey, 0, redisPriceSourceIdCount);
+
+						this._logger.trace("Check cancellationToken for interrupt");
+						ct.throwIfCancellationRequested();
 
 						for (let x = 0; x < sourceIds.length; x++) {
 							const source = sourceIds[x];
@@ -209,6 +240,9 @@ export class RedisStorageProvider extends Disposable implements StorageProviderI
 								this._logger.trace("Execute: HGET", sourceIdAvgRedisKey, "price");
 							}
 							const sourceIdPrice = await this.ioredis.hget(sourceIdAvgRedisKey, "price");
+
+							this._logger.trace("Check cancellationToken for interrupt");
+							ct.throwIfCancellationRequested();
 
 							helpers.addPriceTimeStamp(friendlyPricesChunk, ts, marketCurrency, tradeCurrency, null, source, sourceIdPrice);
 						}
@@ -224,8 +258,6 @@ export class RedisStorageProvider extends Disposable implements StorageProviderI
 		this._logger.trace("Disposed");
 	}
 }
-
-
 
 export interface RedisOpts {
 	port: number;

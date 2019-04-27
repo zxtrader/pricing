@@ -65,6 +65,9 @@ export class CryptoCompare extends CryptoCompareRestClient implements SourceProv
 					}
 					const data = await this.invokeWebMethodGet(cancellationToken, "pricehistorical", { queryArgs: args });
 
+					this._logger.trace("Check cancellationToken for interrupt");
+					ct.throwIfCancellationRequested();
+
 					const body = data.bodyAsJson;
 
 					this._logger.trace("Check on error limit request");

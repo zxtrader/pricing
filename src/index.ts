@@ -30,6 +30,9 @@ export class PriceService {
 			this._logger.trace("Check prices in storage provide");
 			const filterEmptyPrices: Array<price.LoadDataRequest> = await this._storageProvider.filterEmptyPrices(ct, args, this._sourcesId);
 
+			this._logger.trace("Check cancellationToken for interrupt");
+			ct.throwIfCancellationRequested();
+
 			if (this._logger.isTraceEnabled) {
 				this._logger.trace(`Checking exsist price which need load from sources ${filterEmptyPrices.length}`);
 			}
@@ -39,8 +42,14 @@ export class PriceService {
 				this._logger.trace("Loading prices from sources through function manager");
 				const newPrices: Array<price.HistoricalPrices> = await this.managerSourceProvider(ct, filterEmptyPrices);
 
+				this._logger.trace("Check cancellationToken for interrupt");
+				ct.throwIfCancellationRequested();
+
 				this._logger.trace("Save new prices to storage provide");
 				await this._storageProvider.savePrices(ct, newPrices);
+
+				this._logger.trace("Check cancellationToken for interrupt");
+				ct.throwIfCancellationRequested();
 			}
 
 			this._logger.trace("Read prices from storage provider");
@@ -82,6 +91,9 @@ export class PriceService {
 				if (source) {
 					this._logger.trace("Loading new price from source");
 					const sourcePrice = await source.loadPrices(ct, { [sourceId]: multyLoadDataRequest[sourceId] });
+
+					this._logger.trace("Check cancellationToken for interrupt");
+					ct.throwIfCancellationRequested();
 
 					this._logger.trace("Merge two results");
 					Array.prototype.push.apply(friendlyPrices, sourcePrice);
