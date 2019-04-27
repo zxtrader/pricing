@@ -1,33 +1,47 @@
 import { Redis, RedisOptions } from "ioredis";
 import * as RedisClient from "ioredis";
 import { StorageProvider as StorageProviderInerface } from "./contract";
-import { CancellationToken, Task as TaskLike, Logger } from "@zxteam/contract";
-import { Task } from "ptask.js";
+import * as zxteam from "@zxteam/contract";
+import { Task } from "@zxteam/task";
 import { price } from "../../index";
 import { Disposable } from "@zxteam/disposable";
 
 export class RedisStorageProvider extends Disposable implements StorageProviderInerface {
 	private readonly PRICE_PREFIX = "PRICE:PREFIX";
 	private readonly ioredis: Redis;
-	private readonly _logger: Logger;
-	constructor(opts: RedisOptions, logger: Logger) {
+	private readonly _logger: zxteam.Logger;
+	constructor(opts: RedisOptions, logger: zxteam.Logger) {
 		super();
 		this.ioredis = new RedisClient(opts);
 		this._logger = logger;
 	}
 
-	public filterEmptyPrices(cancellationToken: CancellationToken, args: Array<price.Argument>, sources: Array<string>)
-		: TaskLike<Array<price.LoadDataRequest>> {
+	public filterEmptyPrices(cancellationToken: zxteam.CancellationToken, args: Array<price.Argument>, sources: Array<string>)
+		: zxteam.Task<Array<price.LoadDataRequest>> {
 		return Task.run(async (ct) => {
+			this._logger.trace("filterEmptyPrices()... ");
 			const friendlyRequest: Array<price.LoadDataRequest> = [];
 			for (let i = 0; i < args.length; i++) {
 				const arg = args[i];
 				const { ts, marketCurrency, tradeCurrency, sourceId, requiredAllSourceIds: requiredAllSourceSystems } = arg;
+
+				this._logger.trace("Create keys for search price");
 				const corePriceRedisKey = `${this.PRICE_PREFIX}:${ts}:${marketCurrency}:${tradeCurrency}`;
+
 				if (sourceId) {
+					if (this._logger.isTraceEnabled) {
+						this._logger.trace(`Serach price for source: ${sourceId}`);
+					}
+
+					this._logger.trace("Create keys for search price");
 					const priceSourceIdRedisKey = `${corePriceRedisKey}:${sourceId}`;
+
+					if (this._logger.isTraceEnabled) {
+						this._logger.trace("Execute: HGET", priceSourceIdRedisKey, "price");
+					}
 					const sourceIdPrice = await this.ioredis.hget(priceSourceIdRedisKey, "price");
 					if (!sourceIdPrice) {
+						this._logger.trace("Formatting data and push to friendly array");
 						friendlyRequest.push({
 							sourceId,
 							ts,
@@ -37,11 +51,25 @@ export class RedisStorageProvider extends Disposable implements StorageProviderI
 						});
 					}
 				} else {
+					if (this._logger.isTraceEnabled) {
+						this._logger.trace(`Serach price for all source: ${sources}`);
+					}
+
 					for (let n = 0; n < sources.length; n++) {
 						const sourceNameId = sources[n];
+						if (this._logger.isTraceEnabled) {
+							this._logger.trace(`Serach price for source: ${sourceNameId}`);
+						}
+
+						this._logger.trace("Create keys for search price");
 						const priceSourceSystemsRedisKey = `${corePriceRedisKey}:${sourceNameId}`;
+
+						if (this._logger.isTraceEnabled) {
+							this._logger.trace("Execute: HGET", priceSourceSystemsRedisKey, "price");
+						}
 						const sourceSystemPrice = await this.ioredis.hget(priceSourceSystemsRedisKey, "price");
 						if (!sourceSystemPrice) {
+							this._logger.trace("Formatting data and push to friendly array");
 							friendlyRequest.push({
 								sourceId: sourceNameId,
 								ts,
@@ -57,13 +85,15 @@ export class RedisStorageProvider extends Disposable implements StorageProviderI
 		}, cancellationToken);
 	}
 
-	public savePrices(cancellationToken: CancellationToken, newPrices: Array<price.HistoricalPrices>): TaskLike<void> {
+	public savePrices(cancellationToken: zxteam.CancellationToken, newPrices: Array<price.HistoricalPrices>): zxteam.Task<void> {
 		return Task.run(async (ct) => {
+			this._logger.trace("savePrices()...");
 			for (let n = 0; n < newPrices.length; n++) {
 				const argNewPrice = newPrices[n];
 
 				const { sourceId, ts, marketCurrency, tradeCurrency, price: newPrice } = argNewPrice;
 
+				this._logger.trace("Create keys for save price");
 				const corePriceRedisKey = `${this.PRICE_PREFIX}:${ts}:${marketCurrency}:${tradeCurrency}`;
 				const priceSourceIdsRedisKey = `${corePriceRedisKey}:`;
 				const sourceIdPriceRedisKey = `${priceSourceIdsRedisKey}${sourceId}`;
@@ -120,7 +150,7 @@ export class RedisStorageProvider extends Disposable implements StorageProviderI
 		}, cancellationToken);
 	}
 
-	public findPrices(cancellationToken: CancellationToken, args: Array<price.Argument>): TaskLike<price.Timestamp> {
+	public findPrices(cancellationToken: zxteam.CancellationToken, args: Array<price.Argument>): zxteam.Task<price.Timestamp> {
 		return Task.run(async (ct) => {
 			this._logger.trace("Begin find price in redis database");
 
@@ -190,7 +220,6 @@ export class RedisStorageProvider extends Disposable implements StorageProviderI
 	}
 	protected async onDispose(): Promise<void> {
 		this._logger.trace("Disposing");
-		// await this.dispose();
 		await this.ioredis.disconnect();
 		this._logger.trace("Disposed");
 	}
@@ -240,11 +269,6 @@ export namespace helpers {
 							price: sourcePrice
 						}
 					});
-			// friendlyPrices[ts][marketCurrency][tradeCurrency].sources = {
-			// 	[sourceId]: {
-			// 		price: sourcePrice
-			// 	}
-			// };
 		}
 		return friendlyPrices;
 	}

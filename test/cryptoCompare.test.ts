@@ -1,7 +1,10 @@
 import { assert } from "chai";
 import { CryptoCompare } from "../src/providers/source/CryptoCompare";
 import { price } from "../src/index";
-import { DUMMY_CANCELLATION_TOKEN } from "ptask.js";
+import { DUMMY_CANCELLATION_TOKEN } from "@zxteam/task";
+import loggerFactory from "@zxteam/logger";
+
+const log = loggerFactory.getLogger("ZXTrader's Price Service");
 
 describe("Positive tests Source provider CryptoCompare", function () {
 	let cryptoCompare: CryptoCompare;
@@ -20,7 +23,7 @@ describe("Positive tests Source provider CryptoCompare", function () {
 				timeout: 750
 			}
 		};
-		cryptoCompare = new CryptoCompare(optsForLimit);
+		cryptoCompare = new CryptoCompare(optsForLimit, log);
 	});
 	afterEach(async function () {
 		await cryptoCompare.dispose();
@@ -173,7 +176,7 @@ describe("Negative tests Source provider CryptoCompare", function () {
 				timeout: 750
 			}
 		};
-		cryptoCompare = new CryptoCompare(optsForLimit);
+		cryptoCompare = new CryptoCompare(optsForLimit, log);
 	});
 	afterEach(async function () {
 		await cryptoCompare.dispose();

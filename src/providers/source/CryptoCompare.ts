@@ -1,15 +1,13 @@
 import * as _ from "lodash";
 import * as moment from "moment";
-import { Task } from "ptask.js";
+import { Task } from "@zxteam/task";
 import { price } from "../../index";
 import { WebClient } from "@zxteam/webclient";
 import { ensureFactory } from "@zxteam/ensure.js";
-
-import { CancellationToken } from "@zxteam/contract";
+import * as zxteam from "@zxteam/contract";
 import RestClient from "@zxteam/restclient";
 import {
 	SourceProvider as SourceProviderInerface,
-	NoDataError,
 	BrokenApiError,
 	CommunicationError
 } from "./contract";
@@ -23,16 +21,23 @@ export abstract class CryptoCompareRestClient extends RestClient {
 
 export class CryptoCompare extends CryptoCompareRestClient implements SourceProviderInerface {
 	public readonly sourceId = "CRYPTOCOMPARE";
-	public constructor(opts: RestClient.Opts) {
+	public readonly _logger: zxteam.Logger;
+
+	public constructor(opts: RestClient.Opts, logger: zxteam.Logger) {
 		super("https://min-api.cryptocompare.com/data/", opts);
+		this._logger = logger;
 	}
 
 	/**
 	 * fsym - это tradeCurrency
 	 * https://min-api.cryptocompare.com/data/pricehistorical?fsym=ETH&tsyms=BTC,USD,EUR&ts=1452680400&extraParams=your_app_name
 	 */
-	public loadPrices(cancellationToken: CancellationToken, loadArgs: price.MultyLoadDataRequest): Task<Array<price.HistoricalPrices>> {
+	public loadPrices(cancellationToken: zxteam.CancellationToken, loadArgs: price.MultyLoadDataRequest): Task<Array<price.HistoricalPrices>> {
 		return Task.run(async (ct) => {
+			if (this._logger.isTraceEnabled) {
+				this._logger.trace("loadPrices()... loadArgs: ", loadArgs);
+			}
+
 			const friendlyRequest: Array<price.HistoricalPrices> = [];
 			const ensureImpl = ensureFactory((message, data) => {
 				throw new CommunicationError("CryptoCompare responded non-expected data type");
@@ -40,6 +45,8 @@ export class CryptoCompare extends CryptoCompareRestClient implements SourceProv
 
 			try {
 				const arrayArgs = loadArgs[this.sourceId];
+
+				this._logger.trace("Through all arguments");
 				for (let i = 0; i < arrayArgs.length; i++) {
 					const argument = arrayArgs[i];
 					const ts = argument.ts;
@@ -53,9 +60,14 @@ export class CryptoCompare extends CryptoCompareRestClient implements SourceProv
 						ts: friendlyTimeStamp
 					};
 
+					if (this._logger.isTraceEnabled) {
+						this._logger.trace("Make request to cryptocompare with args: ", args);
+					}
 					const data = await this.invokeWebMethodGet(cancellationToken, "pricehistorical", { queryArgs: args });
 
 					const body = data.bodyAsJson;
+
+					this._logger.trace("Check on error limit request");
 					if (
 						"Data" in body &&
 						"RateLimit" in body &&
@@ -68,6 +80,7 @@ export class CryptoCompare extends CryptoCompareRestClient implements SourceProv
 						throw new CommunicationError(body.Data.Message);
 					}
 
+					this._logger.trace("Data validation from source");
 					ensureImpl.object(body[tradeCurrency]);
 					const fsymData = body[tradeCurrency];
 					Object.keys(fsymData).forEach(tsym => {
@@ -75,6 +88,7 @@ export class CryptoCompare extends CryptoCompareRestClient implements SourceProv
 						ensureImpl.number(fsymData[tsym]);
 					});
 
+					this._logger.trace("Formatting data for return");
 					const frTradeCurrency = Object.keys(body)[0];
 					const frMarketCurrency = Object.keys(body[tradeCurrency])[0];
 					const frPrice = body[tradeCurrency][marketCurrency];

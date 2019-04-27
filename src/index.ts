@@ -2,7 +2,7 @@ import { Logger, CancellationToken } from "@zxteam/contract";
 import { StorageProvider } from "./providers/storage/contract";
 import { SourceProvider } from "./providers/source/contract";
 import { ArgumentException } from "@zxnode/base";
-import { Task } from "ptask.js";
+import { Task } from "@zxteam/task";
 
 export class PriceService {
 	private readonly _storageProvider: StorageProvider;
@@ -36,7 +36,7 @@ export class PriceService {
 
 			if (filterEmptyPrices.length > 0) {
 
-				this._logger.trace("Loading prices from sources");
+				this._logger.trace("Loading prices from sources through function manager");
 				const newPrices: Array<price.HistoricalPrices> = await this.managerSourceProvider(ct, filterEmptyPrices);
 
 				this._logger.trace("Save new prices to storage provide");
@@ -46,6 +46,9 @@ export class PriceService {
 			this._logger.trace("Read prices from storage provider");
 			const friendlyPrices: price.Timestamp = await this._storageProvider.findPrices(ct, args);
 
+			if (this._logger.isTraceEnabled) {
+				this._logger.trace(`Return result: ${friendlyPrices}`);
+			}
 			return friendlyPrices;
 		}, cancellationToken);
 	}
@@ -54,17 +57,19 @@ export class PriceService {
 		: Task<Array<price.HistoricalPrices>> {
 		return Task.run(async (ct) => {
 			if (this._logger.isTraceEnabled) {
-				this._logger.trace("loadPrices()... args: ", loadArgs);
+				this._logger.trace("managerSourceProvider()... args: ", loadArgs);
 			}
 
-			this._logger.trace("Declaration friendly request");
+			this._logger.trace("Declaration friendly response");
 			let friendlyPrices: Array<price.HistoricalPrices> = [];
 
-			this._logger.trace("Create array sourcesystem id which need syncs price");
+			this._logger.trace("Parse LoadDataRequest to MultyLoadDataRequest");
 			const multyLoadDataRequest = helpers.parseToMultyType(loadArgs);
-			const sourceIds = Object.keys(multyLoadDataRequest);
-			const countSources = sourceIds.length;
 
+			this._logger.trace("Create array sourcesystem id which need syncs price");
+			const sourceIds = Object.keys(multyLoadDataRequest);
+
+			const countSources = sourceIds.length;
 			for (let i = 0; i < countSources; i++) {
 				const sourceId = sourceIds[i];
 				if (this._logger.isTraceEnabled) {
@@ -78,7 +83,7 @@ export class PriceService {
 					this._logger.trace("Loading new price from source");
 					const sourcePrice = await source.loadPrices(ct, { [sourceId]: multyLoadDataRequest[sourceId] });
 
-					this._logger.trace("Concat the results");
+					this._logger.trace("Merge two results");
 					Array.prototype.push.apply(friendlyPrices, sourcePrice);
 				} else {
 					this._logger.error("Not implement yet");

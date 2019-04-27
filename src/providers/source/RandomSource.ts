@@ -1,5 +1,5 @@
 import * as _ from "lodash";
-import { Task } from "ptask.js";
+import { Task } from "@zxteam/task";
 import { price } from "../../index";
 
 import { CancellationToken } from "@zxteam/contract";

@@ -1,7 +1,7 @@
 import { assert } from "chai";
 import { price } from "../src/index";
 import { loggerFactory } from "@zxteam/logger";
-import { DUMMY_CANCELLATION_TOKEN } from "ptask.js";
+import { DUMMY_CANCELLATION_TOKEN } from "@zxteam/task";
 import { CryptoCompare } from "../src/providers/source/CryptoCompare";
 import { RandomSource } from "../src/providers/source/RandomSource";
 import { RedisStorageProvider } from "../src/providers/storage/RedisStorageProvider";
@@ -72,7 +72,7 @@ const optsForLimit = {
 describe("Positive tests Price service", function () {
 	beforeEach(function () {
 		redisStorageProvider = new RedisStorageProvider(getOptsForRedis(), log);
-		cryptoCompare = new CryptoCompare(optsForLimit);
+		cryptoCompare = new CryptoCompare(optsForLimit, log);
 		randomSource = new RandomSource();
 		priceService = new PriceService(redisStorageProvider, [cryptoCompare, randomSource], log);
 	});
@@ -115,6 +115,47 @@ describe("Positive tests Price service", function () {
 		if ("sources" in tradeCurrencyObj) {
 			assert.fail();
 		}
+	});
+	it("Call method getHistoricalPrices with fake source", async function () {
+		const args: Array<price.Argument> = [
+			{
+				ts: 20180101101130,
+				marketCurrency: "USDT",
+				tradeCurrency: "BTC",
+				requiredAllSourceIds: false,
+				sourceId: "FAKE_SOURCE"
+			}
+		];
+
+		const data = await priceService.getHistoricalPrices(DUMMY_CANCELLATION_TOKEN, args);
+
+		assert.isObject(data);
+
+		const ts = Number(Object.keys(data)[0]);
+		assert.equal(ts, args[0].ts);
+
+		const tsObj = data[ts];
+
+		const marketCurrency = Object.keys(tsObj)[0];
+		assert.equal(marketCurrency, args[0].marketCurrency);
+
+		const tradeCurrency = Object.keys(tsObj[marketCurrency])[0];
+		assert.equal(tradeCurrency, args[0].tradeCurrency);
+
+		const tradeCurrencyObj = tsObj[marketCurrency][tradeCurrency];
+		if (tradeCurrencyObj.avg) {
+			assert.isNumber(+tradeCurrencyObj.avg.price);
+		} else {
+			assert.isNull(tradeCurrencyObj.avg);
+		}
+
+		// if ("sources" in tradeCurrencyObj && tradeCurrencyObj.sources !== undefined) {
+		// 	const sourceObj = tradeCurrencyObj.sources;
+		// 	const countKeys = Object.keys(sourceObj).length;
+		// 	assert(!countKeys);
+		// } else {
+		// 	assert.fail();
+		// }
 	});
 	it("Call method getHistoricalPrices on PriceService", async function () {
 		const args: Array<price.Argument> = [
