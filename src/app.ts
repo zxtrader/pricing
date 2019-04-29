@@ -3,7 +3,7 @@ import { RedisOptions } from "ioredis";
 import { PriceService } from "./index";
 import { loggerFactory } from "@zxteam/logger";
 import { RestClient } from "@zxteam/restclient";
-import { HttpOpts, HttpEndpoint } from "./rest";
+import { HttpOpts, HttpEndpoint } from "./HttpEndpoint";
 import { default as configManager } from "./configManager";
 import { SourceProvider } from "./providers/source/contract";
 import { StorageProvider } from "./providers/storage/contract";
@@ -86,7 +86,7 @@ async function start() {
 	const sourceProviders: Array<SourceProvider> = createSourceProviders();
 	const priceService: PriceService = createPriceService(storageProvider, sourceProviders);
 	try {
-		const httpEndpoint = new HttpEndpoint(priceService, logger);
+		const httpEndpoint = new HttpEndpoint(priceService);
 		httpEndpoint.start(helpers.getHttpOpts());
 	} catch (err) {
 		storageProvider.dispose();
