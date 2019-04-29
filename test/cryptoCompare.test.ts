@@ -1,5 +1,5 @@
 import { assert } from "chai";
-import { Cryptocompare } from "../src/providers/source/CryptoCompare";
+import { Cryptocompare } from "../src/providers/source/Cryptocompare";
 import { price } from "../src/index";
 import { DUMMY_CANCELLATION_TOKEN } from "@zxteam/task";
 import loggerFactory from "@zxteam/logger";

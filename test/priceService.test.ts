@@ -5,8 +5,8 @@ import { PriceService } from "../src/index";
 import { loggerFactory } from "@zxteam/logger";
 import { ensureFactory } from "@zxteam/ensure.js";
 import { DUMMY_CANCELLATION_TOKEN } from "@zxteam/task";
-import { Randomsource } from "../src/providers/source/RandomSource";
-import { Cryptocompare } from "../src/providers/source/CryptoCompare";
+import { Randomsource } from "../src/providers/source/Randomsource";
+import { Cryptocompare } from "../src/providers/source/Cryptocompare";
 import { RedisStorageProvider } from "../src/providers/storage/RedisStorageProvider";
 
 let redisStorageProvider: RedisStorageProvider;
@@ -15,7 +15,7 @@ let randomSource: Randomsource;
 let priceService: PriceService;
 const log = loggerFactory.getLogger("ZXTrader's Price Service");
 
-const ensureTestDbUrl = ensureFactory((message, data) => { throw new Error(`Unexpected value of TEST_DB_URL. ${message}`); });
+const ensureTestDbUrl = ensureFactory((message, data) => { throw new Error(`Unexpected value of DATASTORAGE_URL. ${message}`); });
 
 function getOptsForRedis(): RedisOptions {
 	function praseToOptsRedis(url: URL): RedisOptions {
@@ -36,12 +36,12 @@ function getOptsForRedis(): RedisOptions {
 		try {
 			return new URL(url);
 		} catch (e) {
-			throw new Error(`Wrong TEST_DB_URL = ${url}. ${e.message}.`);
+			throw new Error(`Wrong DATASTORAGE_URL = ${url}. ${e.message}.`);
 		}
 	}
 
-	if ("TEST_DB_URL" in process.env) {
-		const urlStr = ensureTestDbUrl.string(process.env.TEST_DB_URL as string);
+	if ("DATASTORAGE_URL" in process.env) {
+		const urlStr = ensureTestDbUrl.string(process.env.DATASTORAGE_URL as string);
 
 		const url = parseDbServerUrl(urlStr);
 
@@ -50,7 +50,7 @@ function getOptsForRedis(): RedisOptions {
 		return optsForRedis;
 
 	} else {
-		throw new Error("TEST_DB_URL environment is not defined. Please set the variable to use these tests.");
+		throw new Error(`DATASTORAGE_URL environment is not defined. Please set the variable to use these tests ${process.env.DATASTORAGE_URL}`);
 	}
 }
 

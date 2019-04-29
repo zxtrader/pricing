@@ -12,7 +12,7 @@ test:
     - build
   variables:
     GIT_STRATEGY: none
-    TEST_DB_URL: 'redis://devtest@redis:6379/5'
+    DATASTORAGE_URL: 'redis://devtest@redis:6379/5'
   services:
     - name: redis
       alias: redis

@@ -51,6 +51,7 @@
 	},
 	"homepage": "https://dev.zxteam.net/zxtrader/price.service",
 	"scripts": {
+		"clean": "zxbuild clean",
 		"build": "zxbuild clean && zxbuild dist",
 		"test": "nyc --exclude submodules --exclude test --reporter=lcov --reporter=text --reporter=text-summary mocha \"test/**/*.test.js\" --recursive mocha --timeout 10000",
 		"start": "node src/app.js --config=log4js.json"
