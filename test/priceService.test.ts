@@ -1,17 +1,17 @@
 import { assert } from "chai";
 import { price } from "../src/index";
-import { loggerFactory } from "@zxteam/logger";
-import { DUMMY_CANCELLATION_TOKEN } from "@zxteam/task";
-import { CryptoCompare } from "../src/providers/source/CryptoCompare";
-import { RandomSource } from "../src/providers/source/RandomSource";
-import { RedisStorageProvider } from "../src/providers/storage/RedisStorageProvider";
-import { PriceService } from "../src/index";
-import ensureFactory from "@zxteam/ensure.js";
 import { RedisOptions } from "ioredis";
+import { PriceService } from "../src/index";
+import { loggerFactory } from "@zxteam/logger";
+import { ensureFactory } from "@zxteam/ensure.js";
+import { DUMMY_CANCELLATION_TOKEN } from "@zxteam/task";
+import { Randomsource } from "../src/providers/source/RandomSource";
+import { Cryptocompare } from "../src/providers/source/CryptoCompare";
+import { RedisStorageProvider } from "../src/providers/storage/RedisStorageProvider";
 
 let redisStorageProvider: RedisStorageProvider;
-let cryptoCompare: CryptoCompare;
-let randomSource: RandomSource;
+let cryptoCompare: Cryptocompare;
+let randomSource: Randomsource;
 let priceService: PriceService;
 const log = loggerFactory.getLogger("ZXTrader's Price Service");
 
@@ -69,12 +69,14 @@ const optsForLimit = {
 	}
 };
 
+const urlToCrypto = "https://min-api.cryptocompare.com/data/";
+
 describe("Positive tests Price service", function () {
 	beforeEach(function () {
-		redisStorageProvider = new RedisStorageProvider(getOptsForRedis(), log);
-		cryptoCompare = new CryptoCompare(optsForLimit, log);
-		randomSource = new RandomSource();
-		priceService = new PriceService(redisStorageProvider, [cryptoCompare, randomSource], log);
+		redisStorageProvider = new RedisStorageProvider(getOptsForRedis());
+		cryptoCompare = new Cryptocompare(urlToCrypto, optsForLimit);
+		randomSource = new Randomsource();
+		priceService = new PriceService(redisStorageProvider, [cryptoCompare, randomSource]);
 	});
 	afterEach(async function () {
 		await cryptoCompare.dispose();

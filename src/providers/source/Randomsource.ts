@@ -8,7 +8,7 @@ import {
 } from "./contract";
 
 
-export class RandomSource implements SourceProviderInerface {
+export class Randomsource implements SourceProviderInerface {
 	public readonly sourceId = "RANDOMSOURCE";
 
 	public loadPrices(cancellationToken: CancellationToken, loadArgs: price.MultyLoadDataRequest): Task<Array<price.HistoricalPrices>> {
@@ -37,5 +37,5 @@ export class RandomSource implements SourceProviderInerface {
 	}
 }
 
-export default RandomSource;
+export default Randomsource;
 

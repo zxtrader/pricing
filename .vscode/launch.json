@@ -2,7 +2,7 @@
 	"version": "0.2.0",
 	"configurations": [
 		{
-			"name": "Price Service Without Client Auth",
+			"name": "Start app Price Service",
 			"type": "node",
 			"request": "launch",
 			"preLaunchTask": "compile:src:ts",
@@ -36,7 +36,7 @@
 			],
 			"cwd": "${workspaceRoot}",
 			"env": {
-				"TEST_DB_URL": "redis://devtest@localhost:6379/5",
+				"TEST_DB_URL": "redis://username:password@localhost:6379/5",
 				"NODE_ENV": "development"
 			},
 			"console": "internalConsole",

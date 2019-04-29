@@ -1,19 +1,19 @@
-import { Redis, RedisOptions } from "ioredis";
-import * as RedisClient from "ioredis";
-import { StorageProvider as StorageProviderInerface } from "./contract";
-import * as zxteam from "@zxteam/contract";
 import { Task } from "@zxteam/task";
 import { price } from "../../index";
+import * as RedisClient from "ioredis";
+import loggerFactory from "@zxteam/logger";
+import * as zxteam from "@zxteam/contract";
+import { Redis, RedisOptions } from "ioredis";
 import { Disposable } from "@zxteam/disposable";
+import { StorageProvider as StorageProviderInerface } from "./contract";
 
 export class RedisStorageProvider extends Disposable implements StorageProviderInerface {
 	private readonly PRICE_PREFIX = "PRICE:PREFIX";
 	private readonly ioredis: Redis;
-	private readonly _logger: zxteam.Logger;
-	constructor(opts: RedisOptions, logger: zxteam.Logger) {
+	private readonly _logger = loggerFactory.getLogger("RedisStorage");
+	constructor(opts: RedisOptions) {
 		super();
 		this.ioredis = new RedisClient(opts);
-		this._logger = logger;
 	}
 
 	public filterEmptyPrices(cancellationToken: zxteam.CancellationToken, args: Array<price.Argument>, sources: Array<string>)

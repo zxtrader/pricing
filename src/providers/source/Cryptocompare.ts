@@ -11,21 +11,21 @@ import {
 	BrokenApiError,
 	CommunicationError
 } from "./contract";
+import loggerFactory from "@zxteam/logger";
 
 
-export abstract class CryptoCompareRestClient extends RestClient {
+abstract class CryptocompareRestClient extends RestClient {
 	public constructor(baseUrl: string | URL, restClientOpts: RestClient.Opts) {
 		super(baseUrl, restClientOpts);
 	}
 }
 
-export class CryptoCompare extends CryptoCompareRestClient implements SourceProviderInerface {
+export class Cryptocompare extends CryptocompareRestClient implements SourceProviderInerface {
 	public readonly sourceId = "CRYPTOCOMPARE";
-	public readonly _logger: zxteam.Logger;
+	public readonly _logger: zxteam.Logger = loggerFactory.getLogger("Cryptocompare");
 
-	public constructor(opts: RestClient.Opts, logger: zxteam.Logger) {
-		super("https://min-api.cryptocompare.com/data/", opts);
-		this._logger = logger;
+	public constructor(url: string | URL, opts: RestClient.Opts) {
+		super(url, opts);
 	}
 
 	/**
@@ -117,5 +117,5 @@ export class CryptoCompare extends CryptoCompareRestClient implements SourceProv
 	}
 }
 
-export default CryptoCompare;
+export default Cryptocompare;
 

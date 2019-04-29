@@ -1,19 +1,19 @@
-import { Logger, CancellationToken } from "@zxteam/contract";
-import { StorageProvider } from "./providers/storage/contract";
-import { SourceProvider } from "./providers/source/contract";
-import { ArgumentException } from "@zxnode/base";
 import { Task } from "@zxteam/task";
+import loggerFactory from "@zxteam/logger";
+import { ArgumentException } from "@zxnode/base";
+import { Logger, CancellationToken } from "@zxteam/contract";
+import { SourceProvider } from "./providers/source/contract";
+import { StorageProvider } from "./providers/storage/contract";
 
 export class PriceService {
 	private readonly _storageProvider: StorageProvider;
 	private readonly _sourceProviders: Array<SourceProvider>;
 	private readonly _sourcesId: Array<string>;
-	private readonly _logger: Logger;
+	private readonly _logger: Logger = loggerFactory.getLogger("PriceService");
 
-	constructor(storageProvider: StorageProvider, sourceProviders: Array<SourceProvider>, logger: Logger) {
+	constructor(storageProvider: StorageProvider, sourceProviders: Array<SourceProvider>) {
 		this._storageProvider = storageProvider;
 		this._sourceProviders = sourceProviders;
-		this._logger = logger;
 		this._sourcesId = sourceProviders.map((source) => source.sourceId);
 	}
 

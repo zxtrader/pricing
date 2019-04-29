@@ -1,29 +1,32 @@
 import { assert } from "chai";
-import { CryptoCompare } from "../src/providers/source/CryptoCompare";
+import { Cryptocompare } from "../src/providers/source/CryptoCompare";
 import { price } from "../src/index";
 import { DUMMY_CANCELLATION_TOKEN } from "@zxteam/task";
 import loggerFactory from "@zxteam/logger";
 
 const log = loggerFactory.getLogger("ZXTrader's Price Service");
 
+const urlToCrypto = "https://min-api.cryptocompare.com/data/";
+const optsForLimit = {
+	limit: {
+		instance: {
+			parallel: 5,
+			perSecond: 15,
+			perMinute: 300,
+			perHour: 8000
+		},
+		timeout: 1000
+	},
+	webClient: {
+		timeout: 750
+	}
+};
+
 describe("Positive tests Source provider CryptoCompare", function () {
-	let cryptoCompare: CryptoCompare;
+	let cryptoCompare: Cryptocompare;
 	beforeEach(function () {
-		const optsForLimit = {
-			limit: {
-				instance: {
-					parallel: 5,
-					perSecond: 15,
-					perMinute: 300,
-					perHour: 8000
-				},
-				timeout: 1000
-			},
-			webClient: {
-				timeout: 750
-			}
-		};
-		cryptoCompare = new CryptoCompare(optsForLimit, log);
+
+		cryptoCompare = new Cryptocompare(urlToCrypto, optsForLimit);
 	});
 	afterEach(async function () {
 		await cryptoCompare.dispose();
@@ -160,23 +163,9 @@ describe("Positive tests Source provider CryptoCompare", function () {
 });
 
 describe("Negative tests Source provider CryptoCompare", function () {
-	let cryptoCompare: CryptoCompare;
+	let cryptoCompare: Cryptocompare;
 	beforeEach(function () {
-		const optsForLimit = {
-			limit: {
-				instance: {
-					parallel: 5,
-					perSecond: 15,
-					perMinute: 300,
-					perHour: 8000
-				},
-				timeout: 1000
-			},
-			webClient: {
-				timeout: 750
-			}
-		};
-		cryptoCompare = new CryptoCompare(optsForLimit, log);
+		cryptoCompare = new Cryptocompare(urlToCrypto, optsForLimit);
 	});
 	afterEach(async function () {
 		await cryptoCompare.dispose();
