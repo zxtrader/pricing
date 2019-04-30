@@ -4,6 +4,7 @@ import { PriceService } from "./index";
 import { loggerFactory } from "@zxteam/logger";
 import { RestClient } from "@zxteam/restclient";
 import { HttpOpts, HttpEndpoint } from "./HttpEndpoint";
+import { launcher } from "@zxteam/launcher";
 import { default as configManager } from "./configManager";
 import { SourceProvider } from "./providers/source/contract";
 import { StorageProvider } from "./providers/storage/contract";
@@ -87,7 +88,11 @@ async function start() {
 	const priceService: PriceService = createPriceService(storageProvider, sourceProviders);
 	try {
 		const httpEndpoint = new HttpEndpoint(priceService);
-		httpEndpoint.start(helpers.getHttpOpts());
+		httpEndpoint.start(helpers.getOptsForHttp());
+		launcher((configuration: any) => {
+			return httpEndpoint.start(helpers.getOptsForHttp());
+		});
+
 	} catch (err) {
 		storageProvider.dispose();
 		// I don't know what need do.
@@ -125,7 +130,7 @@ namespace helpers {
 
 		return optsForRedis;
 	}
-	export function getHttpOpts(): HttpOpts {
+	export function getOptsForHttp(): HttpOpts {
 		if (httpEnable === "yes") {
 			const opts = {
 				httpOpts: {
