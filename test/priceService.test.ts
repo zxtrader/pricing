@@ -1,7 +1,6 @@
 import { assert } from "chai";
-import { price } from "../src/index";
 import { RedisOptions } from "ioredis";
-import { PriceService } from "../src/index";
+import { PriceService, price } from "../src/PriceService";
 import { loggerFactory } from "@zxteam/logger";
 import { ensureFactory } from "@zxteam/ensure.js";
 import { DUMMY_CANCELLATION_TOKEN } from "@zxteam/task";
