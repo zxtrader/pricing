@@ -1,5 +1,5 @@
 import { launcher, LaunchError } from "@zxteam/launcher";
-import { default as configManager } from "./configManager";
+import { default as configManager } from "./conf";
 import runtimeFactory, { ArgumentConfig } from "./index";
 
 
