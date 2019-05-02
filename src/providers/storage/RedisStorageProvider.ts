@@ -1,5 +1,5 @@
 import { Task } from "@zxteam/task";
-import { price } from "../../index";
+import { price } from "../../PriceService";
 import * as RedisClient from "ioredis";
 import loggerFactory from "@zxteam/logger";
 import * as zxteam from "@zxteam/contract";

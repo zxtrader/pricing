@@ -1,9 +1,7 @@
 import * as express from "express";
-import { Financial } from "@zxteam/contract";
-import { ensureFactory } from "@zxteam/ensure.js";
 import { DUMMY_CANCELLATION_TOKEN, Task } from "ptask.js";
 import loggerFactory from "@zxteam/logger";
-import { PriceService, price } from "..";
+import { PriceService, price } from "../../PriceService";
 import { ArgumentException } from "@zxnode/base";
 
 export default function (priceService: PriceService) {

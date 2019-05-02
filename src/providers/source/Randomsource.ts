@@ -1,6 +1,6 @@
 import * as _ from "lodash";
 import { Task } from "@zxteam/task";
-import { price } from "../../index";
+import { price } from "../../PriceService";
 
 import { CancellationToken } from "@zxteam/contract";
 import {

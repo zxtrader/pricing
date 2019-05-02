@@ -27,7 +27,7 @@
 		"@zxnode/base": "^5.0.1",
 		"@zxnode/config": "^5.0.0",
 		"@zxteam/ensure.js": "^1.2.0",
-		"@zxteam/launcher": "^3.2.1",
+		"@zxteam/launcher": "^3.2.4",
 		"@zxteam/logger": "^3.2.1",
 		"@zxteam/restclient": "^3.2.6",
 		"@zxteam/task": "^3.2.4",

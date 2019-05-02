@@ -1,7 +1,7 @@
 import * as _ from "lodash";
 import * as moment from "moment";
 import { Task } from "@zxteam/task";
-import { price } from "../../index";
+import { price } from "../../PriceService";
 import { WebClient } from "@zxteam/webclient";
 import { ensureFactory } from "@zxteam/ensure.js";
 import * as zxteam from "@zxteam/contract";

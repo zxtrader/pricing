@@ -1,4 +1,4 @@
-import { price } from "../../index";
+import { price } from "../../PriceService";
 import { CancellationToken, Task as TaskLike } from "@zxteam/contract";
 
 export interface SourceProvider {

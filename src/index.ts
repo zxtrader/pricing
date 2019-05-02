@@ -1,211 +1,195 @@
-import { Task } from "@zxteam/task";
-import loggerFactory from "@zxteam/logger";
-import { ArgumentException } from "@zxnode/base";
-import { Logger, CancellationToken } from "@zxteam/contract";
+import { URL } from "url";
+import * as express from "express";
+import { RedisOptions } from "ioredis";
+import { Configuration } from "./conf";
+import { PriceService } from "./PriceService";
+import { loggerFactory } from "@zxteam/logger";
+import { RestClient } from "@zxteam/restclient";
+import { launcher, Runtime } from "@zxteam/launcher";
 import { SourceProvider } from "./providers/source/contract";
 import { StorageProvider } from "./providers/storage/contract";
+import { Cryptocompare } from "./providers/source/Cryptocompare";
+import { HttpEndpoint, expressAppInit } from "./endpoints/HttpEndpoint";
+import { RedisStorageProvider } from "./providers/storage/RedisStorageProvider";
+import { Initable } from "@zxteam/disposable";
 
-export class PriceService {
-	private readonly _storageProvider: StorageProvider;
-	private readonly _sourceProviders: Array<SourceProvider>;
-	private readonly _sourcesId: Array<string>;
-	private readonly _logger: Logger = loggerFactory.getLogger("PriceService");
 
-	constructor(storageProvider: StorageProvider, sourceProviders: Array<SourceProvider>) {
-		this._storageProvider = storageProvider;
-		this._sourceProviders = sourceProviders;
-		this._sourcesId = sourceProviders.map((source) => source.sourceId);
+export default async function (options: ArgumentConfig): Promise<Runtime> {
+
+	// Validate options
+
+	const logger = loggerFactory.getLogger("App");
+
+	const destroyHandlers: Array<() => Promise<void>> = [];
+	function destroy(): Promise<void> { return destroyHandlers.reverse().reduce((p, c) => p.then(c), Promise.resolve()); }
+
+	logger.trace("Constructing Storage provider...");
+	const dataStorageUrl = String(options.env.dataStorageUrl);
+	const storageProvider = helpers.createStorageProvider(dataStorageUrl);
+
+	logger.trace("Constructing Source providers...");
+	const sourceOpts = options.sources;
+	const sourceProviders = helpers.createSourceProviders(sourceOpts);
+
+	logger.trace("Constructing PriceService...");
+	const service: PriceService = new PriceService(storageProvider, sourceProviders);
+
+	logger.trace("Constructing endpoints...");
+	let expressApp: express.Application | null = null; // This is required for http and https only (may be null)
+
+	const endpoints: Array<Initable> = [];
+
+	const endpoint = helpers.getOptsForHttp(options.env);
+	switch (endpoint.type) {
+		case "http":
+		case "https": {
+			if (expressApp === null) { expressApp = expressAppInit(service, logger); }
+			const endpointInstance: HttpEndpoint = new HttpEndpoint(expressApp, endpoint, logger);
+			endpoints.push(endpointInstance);
+			break;
+		}
+		default:
+			throw new UnreachableEndpointError(endpoint);
 	}
 
-	public getHistoricalPrices(cancellationToken: CancellationToken, args: Array<price.Argument>)
-		: Task<price.Timestamp> {
-		return Task.run(async (ct) => {
-			if (this._logger.isTraceEnabled) {
-				this._logger.trace("getHistoricalPrices()... args: ", args);
-			}
-			if (args.length === 0) {
-				throw new ArgumentException("Don't have argument");
-			}
+	try {
+		logger.info("Initializing InfoService...");
+		await service.init();
+		destroyHandlers.push(() => service.dispose());
 
-			this._logger.trace("Check prices in storage provide");
-			const filterEmptyPrices: Array<price.LoadDataRequest> = await this._storageProvider.filterEmptyPrices(ct, args, this._sourcesId);
-
-			this._logger.trace("Check cancellationToken for interrupt");
-			ct.throwIfCancellationRequested();
-
-			if (this._logger.isTraceEnabled) {
-				this._logger.trace(`Checking exsist price which need load from sources ${filterEmptyPrices.length}`);
-			}
-
-			if (filterEmptyPrices.length > 0) {
-
-				this._logger.trace("Loading prices from sources through function manager");
-				const newPrices: Array<price.HistoricalPrices> = await this.managerSourceProvider(ct, filterEmptyPrices);
-
-				this._logger.trace("Check cancellationToken for interrupt");
-				ct.throwIfCancellationRequested();
-
-				this._logger.trace("Save new prices to storage provide");
-				await this._storageProvider.savePrices(ct, newPrices);
-
-				this._logger.trace("Check cancellationToken for interrupt");
-				ct.throwIfCancellationRequested();
-			}
-
-			this._logger.trace("Read prices from storage provider");
-			const friendlyPrices: price.Timestamp = await this._storageProvider.findPrices(ct, args);
-
-			if (this._logger.isTraceEnabled) {
-				this._logger.trace(`Return result: ${friendlyPrices}`);
-			}
-			return friendlyPrices;
-		}, cancellationToken);
+		logger.info("Initializing endpoints...");
+		for (let endpointIndex = 0; endpointIndex < endpoints.length; endpointIndex++) {
+			const endpointInstance = endpoints[endpointIndex];
+			await endpointInstance.init();
+			destroyHandlers.push(() => endpointInstance.dispose());
+		}
+	} catch (e) {
+		await destroy();
+		throw e;
 	}
 
-	private managerSourceProvider(cancellationToken: CancellationToken, loadArgs: Array<price.LoadDataRequest>)
-		: Task<Array<price.HistoricalPrices>> {
-		return Task.run(async (ct) => {
-			if (this._logger.isTraceEnabled) {
-				this._logger.trace("managerSourceProvider()... args: ", loadArgs);
-			}
+	logger.info("Initialization completed succefully.");
 
-			this._logger.trace("Declaration friendly response");
-			let friendlyPrices: Array<price.HistoricalPrices> = [];
+	const runtime: Runtime = { destroy };
 
-			this._logger.trace("Parse LoadDataRequest to MultyLoadDataRequest");
-			const multyLoadDataRequest = helpers.parseToMultyType(loadArgs);
+	return runtime;
+}
 
-			this._logger.trace("Create array sourcesystem id which need syncs price");
-			const sourceIds = Object.keys(multyLoadDataRequest);
+namespace helpers {
+	export function createStorageProvider(dataStorageUrl: string): StorageProvider {
+		const opts: RedisOptions = helpers.getOptsForRedis(dataStorageUrl);
+		const redisStorageProvider = new RedisStorageProvider(opts);
+		return redisStorageProvider;
+	}
+	export function createSourceProviders(options: Sources): Array<SourceProvider> {
+		const sourceIds: Array<string> = Object.keys(options);
+		const friendlySources: Array<SourceProvider> = [];
 
-			const countSources = sourceIds.length;
-			for (let i = 0; i < countSources; i++) {
-				const sourceId = sourceIds[i];
-				if (this._logger.isTraceEnabled) {
-					this._logger.trace(`Set sourcesystem id: ${sourceId}`);
+		// foreach sourceIds and create object don't implement yet.
+		sourceIds.forEach((sourceId) => {
+			const sourceOpts = options[sourceId];
+			const url = String(sourceOpts.url);
+			const parallel = Number(sourceOpts.parallel);
+			const perSecond = Number(sourceOpts.perSecond);
+			const perMinute = Number(sourceOpts.perMinute);
+			const perHour = Number(sourceOpts.perHour);
+			const timeout = Number(sourceOpts.timeout);
+
+			const opts: RestClient.Opts = {
+				limit: {
+					instance: {
+						parallel,
+						perSecond,
+						perMinute,
+						perHour
+					},
+					timeout
 				}
+			};
 
-				this._logger.trace("Get source provider object for get price");
-				const source = helpers.getSource(this._sourceProviders, sourceId);
+			const provider = new Cryptocompare(url, opts);
+			friendlySources.push(provider);
+		});
 
-				if (source) {
-					this._logger.trace("Loading new price from source");
-					const sourcePrice = await source.loadPrices(ct, { [sourceId]: multyLoadDataRequest[sourceId] });
+		return friendlySources;
+	}
 
-					this._logger.trace("Check cancellationToken for interrupt");
-					ct.throwIfCancellationRequested();
+	export function getOptsForRedis(dataStorageUrl: string): RedisOptions {
 
-					this._logger.trace("Merge two results");
-					Array.prototype.push.apply(friendlyPrices, sourcePrice);
-				} else {
-					this._logger.error("Not implement yet");
-				}
+		function praseToOptsRedis(url: URL): RedisOptions {
+			const host = url.hostname;
+			const port = Number(url.port);
+			const db = Number(url.pathname.slice(1));
+
+			const opts: RedisOptions = {
+				host,
+				port,
+				db
+			};
+			return opts;
+		}
+		function parseDbServerUrl(url: string): URL {
+			try {
+				return new URL(url);
+			} catch (e) {
+				throw new Error(`Wrong DATASTORAGE_URL = ${url}. ${e.message}.`);
 			}
+		}
 
-			if (this._logger.isTraceEnabled) {
-				this._logger.trace(`return result: ${friendlyPrices}`);
+		const friendlyUrl = parseDbServerUrl(dataStorageUrl);
+
+		const optsForRedis: RedisOptions = praseToOptsRedis(friendlyUrl);
+
+		return optsForRedis;
+	}
+	export function getOptsForHttp(envOpts: OptionsEnv): Configuration.HttpEndpoint | Configuration.HttpsEndpoint {
+		if (envOpts.httpEnable === "yes") {
+			const opts: Configuration.HttpEndpoint = {
+				type: "http",
+				listenHost: String(envOpts.httpHost),
+				listenPort: Number(envOpts.httpPort)
+			};
+			return opts;
+		}
+		if (envOpts.httpsEnable === "yes") {
+			if (envOpts.httpsCert === undefined) {
+				throw new Error("Do not have settings for httpsCert endpoint");
 			}
-			return friendlyPrices;
-		}, cancellationToken);
+			if (envOpts.httpsKey === undefined) {
+				throw new Error("Do not have settings for httsKey endpoint");
+			}
+			const opts: Configuration.HttpsEndpoint = {
+				type: "https",
+				listenHost: String(envOpts.httpsHost),
+				listenPort: Number(envOpts.httpsPort),
+				caCertificate: String(envOpts.httpsCaCert),
+				serviceCertificate: String(envOpts.httpsCert),
+				serviceKey: String(envOpts.httpsKey),
+				serviceKeyPassword: String(envOpts.httpsKeyPhassPhrase),
+				requireClientCertificate: true
+			};
+			return opts;
+		}
+		throw new Error("Http(s) endpoint do not enable");
 	}
 }
 
-export namespace helpers {
-	export function parseToMultyType(loadArgs: Array<price.LoadDataRequest>): price.MultyLoadDataRequest {
-		const multyLoadDataRequest: price.MultyLoadDataRequest = {};
-
-		for (let i = 0; i < loadArgs.length; i++) {
-			const loadArg = loadArgs[i];
-			const sourceId = loadArg.sourceId;
-			if (!(sourceId in multyLoadDataRequest)) {
-				multyLoadDataRequest[sourceId] = [];
-			}
-			multyLoadDataRequest[sourceId].push({
-				ts: loadArg.ts,
-				marketCurrency: loadArg.marketCurrency,
-				tradeCurrency: loadArg.tradeCurrency,
-				price: loadArg.price
-			});
-		}
-
-		return multyLoadDataRequest;
-	}
-	export function getSource(sources: Array<SourceProvider>, sourcesytemId: string): SourceProvider | null {
-		for (let n = 0; n < sources.length; n++) {
-			const source = sources[n];
-			if (source.sourceId === sourcesytemId) {
-				return source;
-			}
-		}
-		// if don't exist source return null
-		return null;
-	}
+export interface ArgumentConfig {
+	env: OptionsEnv;
+	sources: Sources;
+}
+interface Sources {
+	[source: string]: SourceOpts;
+}
+interface SourceOpts {
+	[key: string]: string | number;
+}
+interface OptionsEnv {
+	[key: string]: Array<string> | string | number | undefined | null;
 }
 
-export namespace price {
-	export interface Argument {
-		ts: number;
-		marketCurrency: string;
-		tradeCurrency: string;
-		sourceId?: string;
-		requiredAllSourceIds: boolean;
-	}
-	export interface Timestamp {
-		[ts: number]: Market;
-	}
-	export interface Market {
-		[marketCurrency: string]: Trade;
-	}
-	export interface Trade {
-		[tradeCurrency: string]: Average;
-	}
-	export interface Average {
-		avg: Price | null;
-		sources?: SourceId;
-	}
-	export interface SourceId {
-		[sourceId: string]: Price;
-	}
-	export interface Price {
-		price: string;
-	}
-	export interface LoadDataRequest {
-		/** Source id (ex. CRYPTOCOMPARE) */
-		sourceId: string;
-		/** Timestamp format YYYYMMDDHHMMSS */
-		ts: number;
-		/** Code market currency */
-		marketCurrency: string;
-		/** Code trade currency */
-		tradeCurrency: string;
-		/** Price can number or null */
-		price: number | null;
-	}
-	export interface MultyLoadDataRequest {
-		/** Source id (ex. CRYPTOCOMPARE) */
-		[sourceId: string]: Array<LoadData>;
-	}
-	export interface LoadData {
-		/** Timestamp format YYYYMMDDHHMMSS */
-		ts: number;
-		/** Code market currency */
-		marketCurrency: string;
-		/** Code trade currency */
-		tradeCurrency: string;
-		/** Price can number or null */
-		price: number | null;
-	}
-
-	export interface HistoricalPrices {
-		/** Source id (ex. CRYPTOCOMPARE) */
-		sourceId: string;
-		/** Timestamp format YYYYMMDDHHMMSS */
-		ts: number;
-		/** Code market currency */
-		marketCurrency: string;
-		/** Code trade currency */
-		tradeCurrency: string;
-		/** Price must be number */
-		price: number;
+class UnreachableEndpointError extends Error {
+	public constructor(endpoint: never) {
+		super(`Not supported endpoint: ${JSON.stringify(endpoint)}`);
 	}
 }

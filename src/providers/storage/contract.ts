@@ -1,4 +1,4 @@
-import { price } from "../../index";
+import { price } from "../../PriceService";
 import { Disposable } from "@zxteam/disposable";
 import { CancellationToken, Task as TaskLike } from "@zxteam/contract";
 
