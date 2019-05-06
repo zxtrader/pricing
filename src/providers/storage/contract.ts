@@ -1,8 +1,8 @@
 import { price } from "../../PriceService";
-import { Disposable } from "@zxteam/disposable";
 import { CancellationToken, Task as TaskLike } from "@zxteam/contract";
+import { Initable } from "@zxteam/disposable";
 
-export interface StorageProvider extends Disposable {
+export interface StorageProvider extends Initable {
 
 	/** Create data for loading price on sources */
 	filterEmptyPrices(cancellationToken: CancellationToken, args: Array<price.Argument>, sources: Array<string>)
@@ -16,6 +16,4 @@ export interface StorageProvider extends Disposable {
 	findPrices(cancellationToken: CancellationToken, args: Array<price.Argument>)
 		: TaskLike<price.Timestamp>;
 
-	// /** Connecting to database */
-	// init(): Promise<void>;
 }

@@ -4,15 +4,16 @@ import * as RedisClient from "ioredis";
 import loggerFactory from "@zxteam/logger";
 import * as zxteam from "@zxteam/contract";
 import { Redis, RedisOptions } from "ioredis";
-import { Disposable } from "@zxteam/disposable";
+import { Initable } from "@zxteam/disposable";
 import { StorageProvider as StorageProviderInerface } from "./contract";
 
-export class RedisStorageProvider extends Disposable implements StorageProviderInerface {
+export class RedisStorageProvider extends Initable implements StorageProviderInerface {
 	private readonly PRICE_PREFIX = "PRICE:PREFIX";
 	private readonly ioredis: Redis;
 	private readonly _logger = loggerFactory.getLogger("RedisStorage");
 	constructor(opts: RedisOptions) {
 		super();
+		opts.lazyConnect = true;
 		this.ioredis = new RedisClient(opts);
 	}
 
@@ -251,6 +252,12 @@ export class RedisStorageProvider extends Disposable implements StorageProviderI
 			}
 			return friendlyPricesChunk;
 		}, cancellationToken);
+	}
+
+	protected async onInit(): Promise<void> {
+		this._logger.trace("Initing");
+		await this.ioredis.connect();
+		this._logger.trace("Inited");
 	}
 	protected async onDispose(): Promise<void> {
 		this._logger.trace("Disposing");

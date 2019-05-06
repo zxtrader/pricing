@@ -8,13 +8,13 @@ import { Randomsource } from "../src/providers/source/Randomsource";
 import { Cryptocompare } from "../src/providers/source/Cryptocompare";
 import { RedisStorageProvider } from "../src/providers/storage/RedisStorageProvider";
 
-let redisStorageProvider: RedisStorageProvider;
+let redisStorageProvider: RedisStorageProvider = new RedisStorageProvider(getOptsForRedis());
 let cryptoCompare: Cryptocompare;
 let randomSource: Randomsource;
 let priceService: PriceService;
 const log = loggerFactory.getLogger("ZXTrader's Price Service");
 
-const ensureTestDbUrl = ensureFactory((message, data) => { throw new Error(`Unexpected value of DATASTORAGE_URL. ${message}`); });
+// const ensureTestDbUrl = ensureFactory((message, data) => { throw new Error(`Unexpected value of DATASTORAGE_URL. ${message}`); });
 
 function getOptsForRedis(): RedisOptions {
 	function praseToOptsRedis(url: URL): RedisOptions {
@@ -40,7 +40,7 @@ function getOptsForRedis(): RedisOptions {
 	}
 
 	if ("DATASTORAGE_URL" in process.env) {
-		const urlStr = ensureTestDbUrl.string(process.env.DATASTORAGE_URL as string);
+		const urlStr = String(process.env.DATASTORAGE_URL);
 
 		const url = parseDbServerUrl(urlStr);
 
@@ -71,13 +71,13 @@ const optsForLimit = {
 const urlToCrypto = "https://min-api.cryptocompare.com/data/";
 
 describe("Positive tests Price service", function () {
-	beforeEach(function () {
-		redisStorageProvider = new RedisStorageProvider(getOptsForRedis());
+	before(async function () {
+		await redisStorageProvider.init();
 		cryptoCompare = new Cryptocompare(urlToCrypto, optsForLimit);
 		randomSource = new Randomsource();
 		priceService = new PriceService(redisStorageProvider, [cryptoCompare, randomSource]);
 	});
-	afterEach(async function () {
+	after(async function () {
 		await cryptoCompare.dispose();
 		await redisStorageProvider.dispose();
 	});

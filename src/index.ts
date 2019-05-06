@@ -31,30 +31,35 @@ export default async function (options: ArgumentConfig): Promise<Runtime> {
 	const sourceOpts = options.sources;
 	const sourceProviders = helpers.createSourceProviders(sourceOpts);
 
-	logger.trace("Constructing PriceService...");
-	const service: PriceService = new PriceService(storageProvider, sourceProviders);
-
 	logger.trace("Constructing endpoints...");
 	let expressApp: express.Application | null = null; // This is required for http and https only (may be null)
 
 	const endpoints: Array<Initable> = [];
-
 	const endpoint = helpers.getOptsForHttp(options.env);
-	switch (endpoint.type) {
-		case "http":
-		case "https": {
-			if (expressApp === null) { expressApp = expressAppInit(service, logger); }
-			const endpointInstance: HttpEndpoint = new HttpEndpoint(expressApp, endpoint, logger);
-			endpoints.push(endpointInstance);
-			break;
-		}
-		default:
-			throw new UnreachableEndpointError(endpoint);
-	}
 
 	try {
+		logger.info("Initializing Storage provider...");
+		await storageProvider.init();
+		destroyHandlers.push(() => storageProvider.dispose());
+
+		logger.trace("Constructing PriceService...");
+		const service: PriceService = new PriceService(storageProvider, sourceProviders);
+
 		logger.info("Initializing InfoService...");
 		await service.init();
+
+		switch (endpoint.type) {
+			case "http":
+			case "https": {
+				if (expressApp === null) { expressApp = expressAppInit(service, logger); }
+				const endpointInstance: HttpEndpoint = new HttpEndpoint(expressApp, endpoint, logger);
+				endpoints.push(endpointInstance);
+				break;
+			}
+			default:
+				throw new UnreachableEndpointError(endpoint);
+		}
+
 		destroyHandlers.push(() => service.dispose());
 
 		logger.info("Initializing endpoints...");
