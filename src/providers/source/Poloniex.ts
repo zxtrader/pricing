@@ -9,28 +9,28 @@ import RestClient from "@zxteam/restclient";
 import {
 	SourceProvider as SourceProviderInerface,
 	BrokenApiError,
-	CommunicationError
+	CommunicationError,
+	NoDataError
 } from "./contract";
 import loggerFactory from "@zxteam/logger";
 
 
-abstract class CryptocompareRestClient extends RestClient {
+abstract class PoloniexRestClient extends RestClient {
 	public constructor(baseUrl: string | URL, restClientOpts: RestClient.Opts) {
 		super(baseUrl, restClientOpts);
 	}
 }
 
-export class Cryptocompare extends CryptocompareRestClient implements SourceProviderInerface {
-	public readonly sourceId = "CRYPTOCOMPARE";
-	public readonly _logger: zxteam.Logger = loggerFactory.getLogger("Cryptocompare");
+export class Poloniex extends PoloniexRestClient implements SourceProviderInerface {
+	public readonly sourceId = "POLONIEX";
+	public readonly _logger: zxteam.Logger = loggerFactory.getLogger("Poloniex");
 
 	public constructor(url: string | URL, opts: RestClient.Opts) {
 		super(url, opts);
 	}
 
 	/**
-	 * fsym - это tradeCurrency
-	 * https://min-api.cryptocompare.com/data/pricehistorical?fsym=ETH&tsyms=BTC,USD,EUR&ts=1452680400&extraParams=your_app_name
+	 * https://docs.poloniex.com/#returntradehistory-public
 	 */
 	public loadPrices(cancellationToken: zxteam.CancellationToken, loadArgs: price.MultyLoadDataRequest): Task<Array<price.HistoricalPrices>> {
 		return Task.run(async (ct) => {
@@ -40,7 +40,7 @@ export class Cryptocompare extends CryptocompareRestClient implements SourceProv
 
 			const friendlyRequest: Array<price.HistoricalPrices> = [];
 			const ensureImpl = ensureFactory((message, data) => {
-				throw new CommunicationError("CryptoCompare responded non-expected data type");
+				throw new CommunicationError("Poloniex responded non-expected data type");
 			});
 
 			try {
@@ -52,63 +52,48 @@ export class Cryptocompare extends CryptocompareRestClient implements SourceProv
 					const ts = argument.ts;
 					const marketCurrency = argument.marketCurrency;
 					const tradeCurrency = argument.tradeCurrency;
-					const friendlyTimeStamp = moment.utc(ts, "YYYYMMDDHHmmss").unix().toString();
-
+					const friendlyTimeStamp = moment.utc(ts, "YYYYMMDDHHmmss").unix();
 					const args = {
-						fsym: tradeCurrency,
-						tsyms: marketCurrency,
-						ts: friendlyTimeStamp
+						command: "returnTradeHistory",
+						currencyPair: marketCurrency + "_" + tradeCurrency,
+						start: friendlyTimeStamp.toString(),
+						end: (friendlyTimeStamp + 60).toString(),
+						limit: "20"
 					};
 
 					if (this._logger.isTraceEnabled) {
-						this._logger.trace("Make request to cryptocompare with args: ", args);
+						this._logger.trace("Make request to poloniex with args: ", args);
 					}
-					const data = await this.invokeWebMethodGet(cancellationToken, "pricehistorical", { queryArgs: args });
+					const data = await this.invokeWebMethodGet(cancellationToken, "public", { queryArgs: args });
 
 					this._logger.trace("Check cancellationToken for interrupt");
 					ct.throwIfCancellationRequested();
 
 					const body = data.bodyAsJson;
 
-					this._logger.trace("Check on error limit request");
-					if (
-						"Data" in body &&
-						"RateLimit" in body &&
-						_.isObject(body.Data) &&
-						_.isObject(body.RateLimit) &&
-						_.isString(body.Data.Message) &&
-						_.isString(body.Data.Response) &&
-						body.Data.Response === "Error"
-					) {
-						throw new CommunicationError(body.Data.Message);
-					}
-
-					if ("Response" in body && body.Response === "Error") {
-						if ("Message" in body && body.Message.startsWith("There is no data for any")) {
+					this._logger.trace("Check on error");
+					if ("error" in body) {
+						const error = ensureImpl.string(body.error);
+						if (error === "Invalid currency pair.") {
 							continue;
 						}
+						throw new CommunicationError(error);
 					}
 
 					this._logger.trace("Data validation from source");
-					ensureImpl.object(body[tradeCurrency]);
-					const fsymData = body[tradeCurrency];
-					Object.keys(fsymData).forEach(tsym => {
-						ensureImpl.string(tsym);
-						ensureImpl.number(fsymData[tsym]);
-					});
+					ensureImpl.array(body);
+
+					const lastTrade = body[body.length - 1];
+					const marketPrice = Number(lastTrade.rate);
 
 					this._logger.trace("Formatting data for return");
-					const frTradeCurrency = Object.keys(body)[0];
-					const frMarketCurrency = Object.keys(body[tradeCurrency])[0];
-					const frPrice = body[tradeCurrency][marketCurrency];
 					friendlyRequest.push({
 						sourceId: this.sourceId,
 						ts,
-						marketCurrency: frMarketCurrency,
-						tradeCurrency: frTradeCurrency,
-						price: frPrice
+						marketCurrency,
+						tradeCurrency,
+						price: marketPrice
 					});
-
 				}
 
 				return friendlyRequest;
@@ -123,5 +108,5 @@ export class Cryptocompare extends CryptocompareRestClient implements SourceProv
 	}
 }
 
-export default Cryptocompare;
+export default Poloniex;
 

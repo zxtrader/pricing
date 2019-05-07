@@ -289,12 +289,19 @@ export namespace helpers {
 		if (!(marketCurrency in friendlyPrices[ts])) {
 			friendlyPrices[ts][marketCurrency] = {};
 		}
-		if ((avgPrice) && !(tradeCurrency in friendlyPrices[ts][marketCurrency])) {
-			friendlyPrices[ts][marketCurrency][tradeCurrency] = {
-				avg: {
-					price: avgPrice
-				}
-			};
+		if (!(tradeCurrency in friendlyPrices[ts][marketCurrency])) {
+			if ((avgPrice)) {
+				friendlyPrices[ts][marketCurrency][tradeCurrency] = {
+					avg: {
+						price: avgPrice
+					}
+				};
+			}
+			if (!(avgPrice)) {
+				friendlyPrices[ts][marketCurrency][tradeCurrency] = {
+					avg: null
+				};
+			}
 		}
 		if ((sourceId) && (sourcePrice) && !(sourceId in friendlyPrices[ts][marketCurrency][tradeCurrency])) {
 			if (!("sources" in friendlyPrices[ts][marketCurrency][tradeCurrency])) {

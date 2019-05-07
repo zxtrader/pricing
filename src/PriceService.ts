@@ -47,11 +47,13 @@ export class PriceService extends Initable {
 				this._logger.trace("Check cancellationToken for interrupt");
 				ct.throwIfCancellationRequested();
 
-				this._logger.trace("Save new prices to storage provide");
-				await this._storageProvider.savePrices(ct, newPrices);
+				if (newPrices.length > 0) {
+					this._logger.trace("Save new prices to storage provide");
+					await this._storageProvider.savePrices(ct, newPrices);
 
-				this._logger.trace("Check cancellationToken for interrupt");
-				ct.throwIfCancellationRequested();
+					this._logger.trace("Check cancellationToken for interrupt");
+					ct.throwIfCancellationRequested();
+				}
 			}
 
 			this._logger.trace("Read prices from storage provider");

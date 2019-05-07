@@ -12,6 +12,7 @@ import { Cryptocompare } from "./providers/source/Cryptocompare";
 import { HttpEndpoint, expressAppInit } from "./endpoints/HttpEndpoint";
 import { RedisStorageProvider } from "./providers/storage/RedisStorageProvider";
 import { Initable } from "@zxteam/disposable";
+import { Poloniex } from "./providers/source/Poloniex";
 
 
 export default async function (options: ArgumentConfig): Promise<Runtime> {
@@ -112,7 +113,19 @@ namespace helpers {
 				}
 			};
 
-			const provider = new Cryptocompare(url, opts);
+			let provider;
+			switch (sourceId) {
+				case "cryptocompare":
+					provider = new Cryptocompare(url, opts);
+					break;
+				case "poloniex": {
+					provider = new Poloniex(url, opts);
+					break;
+				}
+				default:
+					throw new UnreachableSourceError(sourceId);
+			}
+
 			friendlySources.push(provider);
 		});
 
@@ -196,5 +209,11 @@ interface OptionsEnv {
 class UnreachableEndpointError extends Error {
 	public constructor(endpoint: never) {
 		super(`Not supported endpoint: ${JSON.stringify(endpoint)}`);
+	}
+}
+
+class UnreachableSourceError extends Error {
+	public constructor(endpoint: string) {
+		super(`Not supported source system: ${endpoint}`);
 	}
 }

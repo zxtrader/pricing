@@ -6,10 +6,12 @@ import { ensureFactory } from "@zxteam/ensure.js";
 import { DUMMY_CANCELLATION_TOKEN } from "@zxteam/task";
 import { Randomsource } from "../src/providers/source/Randomsource";
 import { Cryptocompare } from "../src/providers/source/Cryptocompare";
+import { Poloniex } from "../src/providers/source/Poloniex";
 import { RedisStorageProvider } from "../src/providers/storage/RedisStorageProvider";
 
 let redisStorageProvider: RedisStorageProvider = new RedisStorageProvider(getOptsForRedis());
 let cryptoCompare: Cryptocompare;
+let poloniex: Poloniex;
 let randomSource: Randomsource;
 let priceService: PriceService;
 const log = loggerFactory.getLogger("ZXTrader's Price Service");
@@ -69,24 +71,27 @@ const optsForLimit = {
 };
 
 const urlToCrypto = "https://min-api.cryptocompare.com/data/";
+const urlToPoloniex = "https://poloniex.com/";
 
 describe("Positive tests Price service", function () {
 	before(async function () {
 		await redisStorageProvider.init();
 		cryptoCompare = new Cryptocompare(urlToCrypto, optsForLimit);
+		poloniex = new Poloniex(urlToPoloniex, optsForLimit);
 		randomSource = new Randomsource();
-		priceService = new PriceService(redisStorageProvider, [cryptoCompare, randomSource]);
+		priceService = new PriceService(redisStorageProvider, [cryptoCompare, randomSource, poloniex]);
 	});
 	after(async function () {
 		await cryptoCompare.dispose();
+		await poloniex.dispose();
 		await redisStorageProvider.dispose();
 	});
 	it("Call method getHistoricalPrices without sources", async function () {
 		const args: Array<price.Argument> = [
 			{
 				ts: 20180101101130,
-				marketCurrency: "USDT",
-				tradeCurrency: "BTC",
+				marketCurrency: "UDSDT",
+				tradeCurrency: "DBTC",
 				requiredAllSourceIds: false
 			}
 		];
