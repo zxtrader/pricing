@@ -68,7 +68,7 @@ container:tag:
   before_script:
     - echo $CI_REGISTRY_PASSWORD | docker login --username $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
   script:
-    - docker build --tag $CI_REGISTRY_IMAGE:latest .
+    - docker build --tag $CI_REGISTRY_IMAGE:latest . -f Dockerfile.redis
     - docker tag $CI_REGISTRY_IMAGE:latest $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
     - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
     - docker push $CI_REGISTRY_IMAGE:latest
