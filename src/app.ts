@@ -42,7 +42,7 @@ function configFactory(): Promise<ArgumentConfig> {
 		// Enable http endpoint
 		const httpEnable: string = process.env.HTTP_ENABLE || "yes";
 		// Http host name endpoint
-		const httpHost: string = process.env.HTTP_HOST || "127.0.0.1";
+		const httpHost: string = process.env.HTTP_HOST || "0.0.0.0";
 		// Http port endpoint
 		const httpPort: number = Number.parseInt(process.env.HTTP_PORT || "8080");
 		// Enable https endpoint
