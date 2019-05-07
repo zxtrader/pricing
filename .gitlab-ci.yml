@@ -33,7 +33,7 @@ compile:
       - .npmrc
       - Dockerfile
       - Dockerfile.redis
-      - config.json
+      - config.ini
       - log4js.json
       - package.json
     when: on_success
