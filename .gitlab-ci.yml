@@ -1,5 +1,3 @@
-include: 'https://dev.zxteam.net/maxim.anurin/gitlab-pipelines/raw/master/node/internal-lib.yml'
-
 image: node:11-alpine
 
 stages:
