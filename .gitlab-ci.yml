@@ -32,6 +32,7 @@ compile:
       - scripts/
       - .npmrc
       - Dockerfile
+      - Dockerfile.redis
       - config.json
       - log4js.json
       - package.json
