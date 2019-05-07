@@ -2,10 +2,10 @@ include: 'https://dev.zxteam.net/maxim.anurin/gitlab-pipelines/raw/master/node/i
 
 image: node:11-alpine
 
-cache:
-  paths:
-    - node_modules/
-
+stages:
+  - building
+  - testing
+  - staging
 
 compile:
   stage: building
@@ -15,8 +15,6 @@ compile:
     GIT_STRATEGY: clone
     GIT_SUBMODULE_STRATEGY: none
   before_script:
-    - *utils
-    - setup_npm_token
     - npm install --progress=false
   script:
     - npm run build
