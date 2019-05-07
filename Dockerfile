@@ -6,5 +6,5 @@ COPY log4js.json /etc/com.zxtrader.price/
 
 WORKDIR /usr/local/com.zxtrader.price
 
-CMD ["node", "lib/app.js", "--config=/etc/com.zxtrader.price/log4js.json"]
+CMD ["node", "lib/app.js"]
 
