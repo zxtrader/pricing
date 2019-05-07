@@ -49,9 +49,6 @@ test:
   services:
     - name: redis
       alias: redis
-  variables:
-    GIT_STRATEGY: none
-    GIT_SUBMODULE_STRATEGY: none
   script:
     - npm run test
 
