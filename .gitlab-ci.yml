@@ -1,12 +1,12 @@
 image: node:11-alpine
 
 stages:
-  - building
-  - testing
-  - staging
+  - build
+  - test
+  - stag
 
 compile:
-  stage: building
+  stage: build
   tags:
     - docker
   variables:
@@ -34,7 +34,7 @@ compile:
     when: on_success
 
 test:
-  stage: testing
+  stage: test
   tags:
     - docker
   dependencies:
@@ -52,7 +52,7 @@ test:
     - npm run test
 
 container:tag:
-  stage: staging
+  stage: stag
   tags:
     - docker-builder
   dependencies:
