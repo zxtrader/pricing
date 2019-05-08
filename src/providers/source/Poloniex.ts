@@ -57,7 +57,7 @@ export class Poloniex extends PoloniexRestClient implements SourceProviderInerfa
 						command: "returnTradeHistory",
 						currencyPair: marketCurrency + "_" + tradeCurrency,
 						start: friendlyTimeStamp.toString(),
-						end: (friendlyTimeStamp + 60).toString(),
+						end: (friendlyTimeStamp + 120).toString(),
 						limit: "20"
 					};
 
@@ -82,6 +82,11 @@ export class Poloniex extends PoloniexRestClient implements SourceProviderInerfa
 
 					this._logger.trace("Data validation from source");
 					ensureImpl.array(body);
+
+					this._logger.trace("Data validation is not empty");
+					if (body.length === 0) {
+						continue;
+					}
 
 					const lastTrade = body[body.length - 1];
 					const marketPrice = Number(lastTrade.rate);
