@@ -74,7 +74,7 @@ export class Poloniex extends PoloniexRestClient implements SourceProviderInerfa
 					this._logger.trace("Check on error");
 					if ("error" in body) {
 						const error = ensureImpl.string(body.error);
-						if (error === "Invalid currency pair.") {
+						if (error === "Invalid currency pair." || error === "Invalid start time.") {
 							continue;
 						}
 						throw new CommunicationError(error);

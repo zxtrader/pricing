@@ -84,7 +84,8 @@ export class Cryptocompare extends CryptocompareRestClient implements SourceProv
 					}
 
 					if ("Response" in body && body.Response === "Error") {
-						if ("Message" in body && body.Message.startsWith("There is no data for any")) {
+						if ("Message" in body && body.Message.startsWith("There is no data for") ||
+							"Message" in body && body.Message.startsWith("ts param is not an integer, not a valid timestamp")) {
 							continue;
 						}
 					}
@@ -101,6 +102,9 @@ export class Cryptocompare extends CryptocompareRestClient implements SourceProv
 					const frTradeCurrency = Object.keys(body)[0];
 					const frMarketCurrency = Object.keys(body[tradeCurrency])[0];
 					const frPrice = body[tradeCurrency][marketCurrency];
+					if (frPrice === 0) {
+						continue;
+					}
 					friendlyRequest.push({
 						sourceId: this.sourceId,
 						ts,
