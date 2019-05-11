@@ -5,6 +5,7 @@ import { Logger, CancellationToken } from "@zxteam/contract";
 import { SourceProvider } from "./providers/source/contract";
 import { StorageProvider } from "./providers/storage/contract";
 import { Initable } from "@zxteam/disposable";
+import moment = require("moment");
 
 export class PriceService extends Initable {
 	private readonly _storageProvider: StorageProvider;
@@ -28,6 +29,9 @@ export class PriceService extends Initable {
 			if (args.length === 0) {
 				throw new ArgumentException("Don't have argument");
 			}
+
+			this._logger.trace("Validate date");
+			helpers.validateDate(args);
 
 			this._logger.trace("Check prices in storage provide");
 			const filterEmptyPrices: Array<price.LoadDataRequest> = await this._storageProvider.filterEmptyPrices(ct, args, this._sourcesId);
@@ -122,6 +126,16 @@ export class PriceService extends Initable {
 }
 
 export namespace helpers {
+	export function validateDate(args: Array<price.Argument>) {
+		for (let i = 0; i < args.length; i++) {
+			const arg = args[i];
+			const ts = arg.ts.toString();
+			const isValid = moment(ts, "YYYYMMDDHHmmss", true).isValid();
+			if (!isValid) {
+				throw new InvalidDateError(`Invalid format date ${ts}`);
+			}
+		}
+	}
 	export function parseToMultyType(loadArgs: Array<price.LoadDataRequest>): price.MultyLoadDataRequest {
 		const multyLoadDataRequest: price.MultyLoadDataRequest = {};
 
@@ -220,3 +234,5 @@ export namespace price {
 		price: number;
 	}
 }
+
+export class InvalidDateError extends Error { }

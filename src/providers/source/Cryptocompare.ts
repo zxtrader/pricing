@@ -52,7 +52,16 @@ export class Cryptocompare extends CryptocompareRestClient implements SourceProv
 					const ts = argument.ts;
 					const marketCurrency = argument.marketCurrency;
 					const tradeCurrency = argument.tradeCurrency;
-					const friendlyTimeStamp = moment.utc(ts, "YYYYMMDDHHmmss").unix().toString();
+
+					const momentTimeNow = moment.utc();
+					const momentStart = moment.utc("1970-01-01");
+					const momentTimeStamp = moment.utc(ts, "YYYYMMDDHHmmss");
+
+					if (momentTimeNow.isBefore(momentTimeStamp) || momentStart.isAfter(momentTimeStamp)) {
+						continue;
+					}
+
+					const friendlyTimeStamp = momentTimeStamp.unix().toString();
 
 					const args = {
 						fsym: tradeCurrency,
@@ -84,10 +93,10 @@ export class Cryptocompare extends CryptocompareRestClient implements SourceProv
 					}
 
 					if ("Response" in body && body.Response === "Error") {
-						if ("Message" in body && body.Message.startsWith("There is no data for") ||
-							"Message" in body && body.Message.startsWith("ts param is not an integer, not a valid timestamp")) {
+						if ("Message" in body && body.Message.startsWith("There is no data for")) {
 							continue;
 						}
+						throw new CommunicationError(body.Message);
 					}
 
 					this._logger.trace("Data validation from source");

@@ -1,7 +1,7 @@
 import * as express from "express";
 import { DUMMY_CANCELLATION_TOKEN, Task } from "ptask.js";
 import loggerFactory from "@zxteam/logger";
-import { PriceService, price } from "../../PriceService";
+import { PriceService, price, InvalidDateError } from "../../PriceService";
 import { ArgumentException } from "@zxnode/base";
 
 export default function (priceService: PriceService) {
@@ -20,6 +20,11 @@ export default function (priceService: PriceService) {
 				if (log.isTraceEnabled) { log.trace(`Bad request`, e); }
 				if (log.isInfoEnabled) { log.trace(`Bad request`); }
 				return res.status(400).end("Bad request");
+			}
+			if (e instanceof InvalidDateError) {
+				if (log.isTraceEnabled) { log.trace(`Invalid format date`, e); }
+				if (log.isInfoEnabled) { log.trace(`Invalid format date`); }
+				return res.status(400).end("Invalid format date");
 			}
 			if (log.isTraceEnabled) { log.trace(`Unhandled error`, e); }
 			if (log.isWarnEnabled) { log.warn(`Unhandled error ${e.message}`); }

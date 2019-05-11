@@ -1,8 +1,6 @@
 import { assert } from "chai";
 import { RedisOptions } from "ioredis";
 import { PriceService, price } from "../src/PriceService";
-import { loggerFactory } from "@zxteam/logger";
-import { ensureFactory } from "@zxteam/ensure.js";
 import { DUMMY_CANCELLATION_TOKEN } from "@zxteam/task";
 import { Randomsource } from "../src/providers/source/Randomsource";
 import { Cryptocompare } from "../src/providers/source/Cryptocompare";
@@ -14,9 +12,6 @@ let cryptoCompare: Cryptocompare;
 let poloniex: Poloniex;
 let randomSource: Randomsource;
 let priceService: PriceService;
-const log = loggerFactory.getLogger("ZXTrader's Price Service");
-
-// const ensureTestDbUrl = ensureFactory((message, data) => { throw new Error(`Unexpected value of DATASTORAGE_URL. ${message}`); });
 
 function getOptsForRedis(): RedisOptions {
 	function praseToOptsRedis(url: URL): RedisOptions {
