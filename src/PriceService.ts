@@ -93,6 +93,7 @@ export class PriceService extends Initable {
 			this._logger.trace("Create array sourcesystem id which need syncs price");
 			const sourceIds = Object.keys(multyLoadDataRequest);
 
+			const callsToOutSideSources = [];
 			const countSources = sourceIds.length;
 			for (let i = 0; i < countSources; i++) {
 				const sourceId = sourceIds[i];
@@ -104,18 +105,32 @@ export class PriceService extends Initable {
 				const source = helpers.getSource(this._sourceProviders, sourceId);
 
 				if (source) {
-					this._logger.trace("Loading new price from source");
-					const sourcePrice = await source.loadPrices(ct, { [sourceId]: multyLoadDataRequest[sourceId] });
+					const promiseLoadingPrice = () =>
+						new Promise(async (resolve, reject) => {
+							try {
+								this._logger.trace("Loading new price from source");
+								const sourcePrice = await source.loadPrices(ct, { [sourceId]: multyLoadDataRequest[sourceId] });
 
-					this._logger.trace("Check cancellationToken for interrupt");
-					ct.throwIfCancellationRequested();
+								this._logger.trace("Check cancellationToken for interrupt");
+								ct.throwIfCancellationRequested();
 
-					this._logger.trace("Merge two results");
-					Array.prototype.push.apply(friendlyPrices, sourcePrice);
+								this._logger.trace("Merge two results");
+								Array.prototype.push.apply(friendlyPrices, sourcePrice);
+								return resolve();
+							} catch (err) {
+								return reject(err);
+							}
+						});
+					callsToOutSideSources.push(promiseLoadingPrice());
 				} else {
-					this._logger.error("Not implement yet");
+					this._logger.error(`Not implement yet ${source}`);
 				}
 			}
+
+			await Promise.all(callsToOutSideSources)
+				.catch(err => {
+					this._logger.trace(err);
+				});
 
 			if (this._logger.isTraceEnabled) {
 				this._logger.trace(`return result: ${friendlyPrices}`);

@@ -13,6 +13,7 @@ import { HttpEndpoint, expressAppInit } from "./endpoints/HttpEndpoint";
 import { RedisStorageProvider } from "./providers/storage/RedisStorageProvider";
 import { Initable } from "@zxteam/disposable";
 import { Poloniex } from "./providers/source/Poloniex";
+import { Binance } from "./providers/source/Binance";
 
 
 export default async function (options: ArgumentConfig): Promise<Runtime> {
@@ -120,6 +121,10 @@ namespace helpers {
 					break;
 				case "poloniex": {
 					provider = new Poloniex(url, opts);
+					break;
+				}
+				case "binance": {
+					provider = new Binance(url, opts);
 					break;
 				}
 				default:
