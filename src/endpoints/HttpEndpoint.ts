@@ -3,7 +3,7 @@ import expressRouter from "./routes";
 
 import * as zxteam from "@zxteam/contract";
 import { Initable } from "@zxteam/disposable";
-import { loggerFactory } from "@zxteam/logger";
+import { loggerManager } from "@zxteam/logger";
 
 import * as express from "express";
 import * as fs from "fs";
@@ -27,7 +27,7 @@ export class HttpEndpoint extends Initable {
 		super();
 		this._expressApp = expressApp;
 		this._opts = opts;
-		this._log = log || loggerFactory.getLogger(this.constructor.name);
+		this._log = log || loggerManager.getLogger(this.constructor.name);
 		this._server = null;
 	}
 

@@ -1,7 +1,7 @@
 import { Task } from "@zxteam/task";
 import loggerFactory from "@zxteam/logger";
 import { ArgumentException } from "@zxnode/base";
-import { Logger, CancellationToken } from "@zxteam/contract";
+import * as zxteam from "@zxteam/contract";
 import { SourceProvider } from "./providers/source/contract";
 import { StorageProvider } from "./providers/storage/contract";
 import { Initable } from "@zxteam/disposable";
@@ -11,7 +11,7 @@ export class PriceService extends Initable {
 	private readonly _storageProvider: StorageProvider;
 	private readonly _sourceProviders: Array<SourceProvider>;
 	private readonly _sourcesId: Array<string>;
-	private readonly _logger: Logger = loggerFactory.getLogger("PriceService");
+	private readonly _logger: zxteam.Logger = loggerFactory.getLogger("PriceService");
 
 	constructor(storageProvider: StorageProvider, sourceProviders: Array<SourceProvider>) {
 		super();
@@ -20,8 +20,8 @@ export class PriceService extends Initable {
 		this._sourcesId = sourceProviders.map((source) => source.sourceId);
 	}
 
-	public getHistoricalPrices(cancellationToken: CancellationToken, args: Array<price.Argument>)
-		: Task<price.Timestamp> {
+	public getHistoricalPrices(cancellationToken: zxteam.CancellationToken, args: Array<price.Argument>)
+		: zxteam.Task<price.Timestamp> {
 		return Task.run(async (ct) => {
 			if (this._logger.isTraceEnabled) {
 				this._logger.trace("getHistoricalPrices()... args: ", args);
@@ -34,7 +34,8 @@ export class PriceService extends Initable {
 			helpers.validateDate(args);
 
 			this._logger.trace("Check prices in storage provide");
-			const filterEmptyPrices: Array<price.LoadDataRequest> = await this._storageProvider.filterEmptyPrices(ct, args, this._sourcesId);
+			const filterEmptyPrices: Array<price.LoadDataRequest> =
+				await this._storageProvider.filterEmptyPrices(ct, args, this._sourcesId).promise;
 
 			this._logger.trace("Check cancellationToken for interrupt");
 			ct.throwIfCancellationRequested();
@@ -46,7 +47,8 @@ export class PriceService extends Initable {
 			if (filterEmptyPrices.length > 0) {
 
 				this._logger.trace("Loading prices from sources through function manager");
-				const newPrices: Array<price.HistoricalPrices> = await this.managerSourceProvider(ct, filterEmptyPrices);
+				const newPrices: Array<price.HistoricalPrices> =
+					await this.managerSourceProvider(ct, filterEmptyPrices).promise;
 
 				this._logger.trace("Check cancellationToken for interrupt");
 				ct.throwIfCancellationRequested();
@@ -61,7 +63,7 @@ export class PriceService extends Initable {
 			}
 
 			this._logger.trace("Read prices from storage provider");
-			const friendlyPrices: price.Timestamp = await this._storageProvider.findPrices(ct, args);
+			const friendlyPrices: price.Timestamp = await this._storageProvider.findPrices(ct, args).promise;
 
 			if (this._logger.isTraceEnabled) {
 				this._logger.trace(`Return result: ${friendlyPrices}`);
@@ -77,8 +79,8 @@ export class PriceService extends Initable {
 		//
 	}
 
-	private managerSourceProvider(cancellationToken: CancellationToken, loadArgs: Array<price.LoadDataRequest>)
-		: Task<Array<price.HistoricalPrices>> {
+	private managerSourceProvider(cancellationToken: zxteam.CancellationToken, loadArgs: Array<price.LoadDataRequest>)
+		: zxteam.Task<Array<price.HistoricalPrices>> {
 		return Task.run(async (ct) => {
 			if (this._logger.isTraceEnabled) {
 				this._logger.trace("managerSourceProvider()... args: ", loadArgs);
@@ -109,7 +111,7 @@ export class PriceService extends Initable {
 					const promiseLoadingPrice = async () => {
 						this._logger.trace("Loading new price from source");
 						const sourcePrices: Array<price.HistoricalPrices> =
-							await source.loadPrices(ct, { [sourceId]: multyLoadDataRequest[sourceId] });
+							await source.loadPrices(ct, { [sourceId]: multyLoadDataRequest[sourceId] }).promise;
 
 						this._logger.trace("Check cancellationToken for interrupt");
 						ct.throwIfCancellationRequested();

@@ -19,23 +19,22 @@
 	"devDependencies": {
 		"@types/morgan": "^1.7.35",
 		"@types/node": "^11.13.4",
-		"@zxnode/build": "^0.0.33",
-		"nock": "^10.0.6"
+		"@zxnode/build": "^0.0.33"
 	},
 	"dependencies": {
 		"@types/ioredis": "^4.0.10",
-		"@types/lodash": "^4.14.123",
-		"@types/nock": "^10.0.1",
+		"@types/lodash": "^4.14.126",
 		"@zxnode/base": "^5.0.1",
 		"@zxnode/config": "^5.0.0",
+		"@zxteam/contract": "^4.0.0",
 		"@zxteam/ensure.js": "^1.2.0",
-		"@zxteam/launcher": "^3.2.4",
-		"@zxteam/logger": "^3.2.1",
-		"@zxteam/restclient": "^3.2.6",
-		"@zxteam/task": "^3.2.4",
+		"@zxteam/launcher": "^4.0.0",
+		"@zxteam/limit": "^4.0.0",
+		"@zxteam/logger": "^4.0.0",
+		"@zxteam/restclient": "^4.0.0",
+		"@zxteam/task": "^4.0.0",
 		"express": "^4.16.4",
 		"ioredis": "^4.9.0",
-		"limit.js": "^3.2.1",
 		"lodash": "^4.17.11",
 		"moment": "^2.24.0",
 		"morgan": "^1.9.1"

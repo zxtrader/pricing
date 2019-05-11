@@ -2,7 +2,7 @@ import * as _ from "lodash";
 import { Task } from "@zxteam/task";
 import { price } from "../../PriceService";
 
-import { CancellationToken } from "@zxteam/contract";
+import * as zxteam from "@zxteam/contract";
 import {
 	SourceProvider as SourceProviderInerface
 } from "./contract";
@@ -11,7 +11,8 @@ import {
 export class Randomsource implements SourceProviderInerface {
 	public readonly sourceId = "RANDOMSOURCE";
 
-	public loadPrices(cancellationToken: CancellationToken, loadArgs: price.MultyLoadDataRequest): Task<Array<price.HistoricalPrices>> {
+	public loadPrices(cancellationToken: zxteam.CancellationToken, loadArgs: price.MultyLoadDataRequest)
+	: zxteam.Task<Array<price.HistoricalPrices>> {
 		return Task.run(async (ct) => {
 
 			const friendlyRequest: Array<price.HistoricalPrices> = [];

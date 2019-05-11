@@ -91,7 +91,7 @@ describe("Positive tests Price service", function () {
 			}
 		];
 
-		const data = await priceService.getHistoricalPrices(DUMMY_CANCELLATION_TOKEN, args);
+		const data = await priceService.getHistoricalPrices(DUMMY_CANCELLATION_TOKEN, args).promise;
 
 		assert.isObject(data);
 
@@ -128,7 +128,7 @@ describe("Positive tests Price service", function () {
 			}
 		];
 
-		const data = await priceService.getHistoricalPrices(DUMMY_CANCELLATION_TOKEN, args);
+		const data = await priceService.getHistoricalPrices(DUMMY_CANCELLATION_TOKEN, args).promise;
 
 		assert.isObject(data);
 
@@ -231,7 +231,7 @@ describe("Positive tests Price service", function () {
 			}
 		];
 
-		const data = await priceService.getHistoricalPrices(DUMMY_CANCELLATION_TOKEN, args);
+		const data = await priceService.getHistoricalPrices(DUMMY_CANCELLATION_TOKEN, args).promise;
 
 		assert.isObject(data);
 

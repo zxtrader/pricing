@@ -32,7 +32,8 @@ export class Poloniex extends PoloniexRestClient implements SourceProviderInerfa
 	/**
 	 * https://docs.poloniex.com/#returntradehistory-public
 	 */
-	public loadPrices(cancellationToken: zxteam.CancellationToken, loadArgs: price.MultyLoadDataRequest): Task<Array<price.HistoricalPrices>> {
+	public loadPrices(cancellationToken: zxteam.CancellationToken, loadArgs: price.MultyLoadDataRequest)
+	: zxteam.Task<Array<price.HistoricalPrices>> {
 		return Task.run(async (ct) => {
 			if (this._logger.isTraceEnabled) {
 				this._logger.trace("loadPrices()... loadArgs: ", loadArgs);

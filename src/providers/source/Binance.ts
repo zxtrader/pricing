@@ -32,7 +32,8 @@ export class Binance extends BinanceRestClient implements SourceProviderInerface
 	/**
 	 * https://github.com/binance-exchange/binance-official-api-docs/blob/master/rest-api.md
 	 */
-	public loadPrices(cancellationToken: zxteam.CancellationToken, loadArgs: price.MultyLoadDataRequest): Task<Array<price.HistoricalPrices>> {
+	public loadPrices(cancellationToken: zxteam.CancellationToken, loadArgs: price.MultyLoadDataRequest)
+	: zxteam.Task<Array<price.HistoricalPrices>> {
 		return Task.run(async (ct) => {
 			if (this._logger.isTraceEnabled) {
 				this._logger.trace("loadPrices()... loadArgs: ", loadArgs);

@@ -1,5 +1,5 @@
 import * as express from "express";
-import { DUMMY_CANCELLATION_TOKEN, Task } from "ptask.js";
+import { DUMMY_CANCELLATION_TOKEN, Task } from "@zxteam/task";
 import loggerFactory from "@zxteam/logger";
 import { PriceService, price, InvalidDateError } from "../../PriceService";
 import { ArgumentException } from "@zxnode/base";
@@ -13,7 +13,7 @@ export default function (priceService: PriceService) {
 			if (log.isTraceEnabled) { log.trace(`Price request ${req.url}`); }
 			const args = priceRuntime.parseArgs(req.params.args);
 			if (log.isTraceEnabled) { log.trace(`Args: ${JSON.stringify(args)}`); }
-			const prices = await priceService.getHistoricalPrices(DUMMY_CANCELLATION_TOKEN, args);
+			const prices = await priceService.getHistoricalPrices(DUMMY_CANCELLATION_TOKEN, args).promise;
 			return res.status(200).end(priceRuntime.render(prices));
 		} catch (e) {
 			if (e instanceof ArgumentException) {

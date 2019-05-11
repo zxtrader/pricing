@@ -32,7 +32,8 @@ export class Cryptocompare extends CryptocompareRestClient implements SourceProv
 	 * fsym - это tradeCurrency
 	 * https://min-api.cryptocompare.com/data/pricehistorical?fsym=ETH&tsyms=BTC,USD,EUR&ts=1452680400&extraParams=your_app_name
 	 */
-	public loadPrices(cancellationToken: zxteam.CancellationToken, loadArgs: price.MultyLoadDataRequest): Task<Array<price.HistoricalPrices>> {
+	public loadPrices(cancellationToken: zxteam.CancellationToken, loadArgs: price.MultyLoadDataRequest)
+		: zxteam.Task<Array<price.HistoricalPrices>> {
 		return Task.run(async (ct) => {
 			if (this._logger.isTraceEnabled) {
 				this._logger.trace("loadPrices()... loadArgs: ", loadArgs);

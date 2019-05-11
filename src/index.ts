@@ -3,7 +3,7 @@ import * as express from "express";
 import { RedisOptions } from "ioredis";
 import { Configuration } from "./conf";
 import { PriceService } from "./PriceService";
-import { loggerFactory } from "@zxteam/logger";
+import { loggerManager } from "@zxteam/logger";
 import { RestClient } from "@zxteam/restclient";
 import { launcher, Runtime } from "@zxteam/launcher";
 import { SourceProvider } from "./providers/source/contract";
@@ -20,7 +20,7 @@ export default async function (options: ArgumentConfig): Promise<Runtime> {
 
 	// Validate options
 
-	const logger = loggerFactory.getLogger("App");
+	const logger = loggerManager.getLogger("App");
 
 	const destroyHandlers: Array<() => Promise<void>> = [];
 	function destroy(): Promise<void> { return destroyHandlers.reverse().reduce((p, c) => p.then(c), Promise.resolve()); }
@@ -42,7 +42,7 @@ export default async function (options: ArgumentConfig): Promise<Runtime> {
 	try {
 		logger.info("Initializing Storage provider...");
 		await storageProvider.init();
-		destroyHandlers.push(() => storageProvider.dispose());
+		destroyHandlers.push(() => storageProvider.dispose().promise);
 
 		logger.trace("Constructing PriceService...");
 		const service: PriceService = new PriceService(storageProvider, sourceProviders);
@@ -62,13 +62,13 @@ export default async function (options: ArgumentConfig): Promise<Runtime> {
 				throw new UnreachableEndpointError(endpoint);
 		}
 
-		destroyHandlers.push(() => service.dispose());
+		destroyHandlers.push(() => service.dispose().promise);
 
 		logger.info("Initializing endpoints...");
 		for (let endpointIndex = 0; endpointIndex < endpoints.length; endpointIndex++) {
 			const endpointInstance = endpoints[endpointIndex];
 			await endpointInstance.init();
-			destroyHandlers.push(() => endpointInstance.dispose());
+			destroyHandlers.push(() => endpointInstance.dispose().promise);
 		}
 	} catch (e) {
 		await destroy();
@@ -90,7 +90,7 @@ namespace helpers {
 	}
 	export function createSourceProviders(options: Sources): Array<SourceProvider> {
 		const sourceIds: Array<string> = Object.keys(options);
-		const friendlySources: Array<SourceProvider> = [];
+		const friendlySources: Array<any> = [];
 
 		// foreach sourceIds and create object don't implement yet.
 		sourceIds.forEach((sourceId) => {
