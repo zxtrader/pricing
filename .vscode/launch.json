@@ -10,10 +10,7 @@
 			"env": {
 				"NODE_TLS_REJECT_UNAUTHORIZED": "0"
 			},
-			"program": "${workspaceRoot}/src/app.js",
-			"args": [
-				"--config=log4js.json"
-			]
+			"program": "${workspaceRoot}/src/app.js"
 		},
 		{
 			"name": "Test",
