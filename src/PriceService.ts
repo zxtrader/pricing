@@ -20,6 +20,11 @@ export class PriceService extends Initable {
 		this._sourcesId = sourceProviders.map((source) => source.sourceId);
 	}
 
+	/**
+	 * Get historical prices for few sources provider
+	 * @param cancellationToken Cancellation Token allows your to cancel execution process
+	 * @param args criteria for price search
+	 */
 	public getHistoricalPrices(cancellationToken: zxteam.CancellationToken, args: Array<price.Argument>)
 		: zxteam.Task<price.Timestamp> {
 		return Task.run(async (ct) => {
@@ -96,7 +101,7 @@ export class PriceService extends Initable {
 			this._logger.trace("Create array sourcesystem id which need syncs price");
 			const sourceIds: Array<string> = Object.keys(multyLoadDataRequest);
 
-			const callsToOutSideSources: Array<Promise<any>> = [];
+			const callsToOutSideSources: Array<zxteam.Task<any>> = [];
 			const countSources: number = sourceIds.length;
 			for (let i = 0; i < countSources; i++) {
 				const sourceId = sourceIds[i];
@@ -108,7 +113,7 @@ export class PriceService extends Initable {
 				const source: SourceProvider | null = helpers.getSource(this._sourceProviders, sourceId);
 
 				if (source) {
-					const promiseLoadingPrice = async () => {
+					const promiseLoadingPrice = Task.run(async () => {
 						this._logger.trace("Loading new price from source");
 						const sourcePrices: Array<price.HistoricalPrices> =
 							await source.loadPrices(ct, { [sourceId]: multyLoadDataRequest[sourceId] }).promise;
@@ -118,17 +123,14 @@ export class PriceService extends Initable {
 
 						this._logger.trace("Push prices to friendly response");
 						friendlyPrices.push(...sourcePrices);
-					};
-					callsToOutSideSources.push(promiseLoadingPrice());
+					});
+					callsToOutSideSources.push(promiseLoadingPrice);
 				} else {
 					this._logger.error(`Not implement yet ${source}`);
 				}
 			}
 
-			await Promise.all(callsToOutSideSources)
-				.catch(err => {
-					this._logger.trace(err);
-				});
+			await Task.waitAll(callsToOutSideSources);
 
 			if (this._logger.isTraceEnabled) {
 				this._logger.trace(`return result: ${friendlyPrices}`);
