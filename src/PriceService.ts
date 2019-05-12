@@ -91,9 +91,6 @@ export class PriceService extends Initable {
 				this._logger.trace("managerSourceProvider()... args: ", loadArgs);
 			}
 
-			this._logger.trace("Declaration friendly response");
-			const friendlyPrices: Array<price.HistoricalPrices> = [];
-
 			this._logger.trace("Parse LoadDataRequest to MultyLoadDataRequest");
 			const multyLoadDataRequest: price.MultyLoadDataRequest =
 				helpers.parseToMultyType(loadArgs);
@@ -101,7 +98,7 @@ export class PriceService extends Initable {
 			this._logger.trace("Create array sourcesystem id which need syncs price");
 			const sourceIds: Array<string> = Object.keys(multyLoadDataRequest);
 
-			const callsToOutSideSources: Array<zxteam.Task<any>> = [];
+			const taskSources: Array<zxteam.Task<any>> = [];
 			const countSources: number = sourceIds.length;
 			for (let i = 0; i < countSources; i++) {
 				const sourceId = sourceIds[i];
@@ -113,24 +110,19 @@ export class PriceService extends Initable {
 				const source: SourceProvider | null = helpers.getSource(this._sourceProviders, sourceId);
 
 				if (source) {
-					const promiseLoadingPrice = Task.run(async () => {
-						this._logger.trace("Loading new price from source");
-						const sourcePrices: Array<price.HistoricalPrices> =
-							await source.loadPrices(ct, { [sourceId]: multyLoadDataRequest[sourceId] }).promise;
+					taskSources.push(source.loadPrices(ct, { [sourceId]: multyLoadDataRequest[sourceId] }));
 
-						this._logger.trace("Check cancellationToken for interrupt");
-						ct.throwIfCancellationRequested();
-
-						this._logger.trace("Push prices to friendly response");
-						friendlyPrices.push(...sourcePrices);
-					});
-					callsToOutSideSources.push(promiseLoadingPrice);
+					this._logger.trace("Check cancellationToken for interrupt");
+					ct.throwIfCancellationRequested();
 				} else {
 					this._logger.error(`Not implement yet ${source}`);
 				}
 			}
 
-			await Task.waitAll(callsToOutSideSources);
+			await Task.waitAll(taskSources);
+			const friendlyPrices: Array<price.HistoricalPrices> = taskSources.reduce((previous, current) => {
+				return previous.concat(current.result);
+			}, []);
 
 			if (this._logger.isTraceEnabled) {
 				this._logger.trace(`return result: ${friendlyPrices}`);
