@@ -80,7 +80,7 @@ $ npm run test
 ## How to use the service
 
 ### HTTP(S)
-HTTP Query grammar looks like (see complete grammar):
+HTTP Query grammar looks like [(see complete grammar)](docs/http-query-grammar.md):
 [![Query grammar](docs/http-query-grammar/QUERY.png)](docs/http-query-grammar.md)
 
 Simple query with result as text (Don't implement yet)
@@ -92,6 +92,8 @@ $ curl --header 'Accept: text/plain' https://service.zxtrader.com/price/v1/20180
 Get prices from all sources
 ```bash
 $ curl --header 'Accept: application/json' https://service.zxtrader.com/price/v1/20180808190523:USDT:BTC:
+```
+```bash
 {
 	"20180808190523": {
 		"USD": {
@@ -116,6 +118,8 @@ $ curl --header 'Accept: application/json' https://service.zxtrader.com/price/v1
 Get price from one source system example CRYPTOCOMPARE
 ```bash
 $ curl --header 'Accept: application/json' https://service.zxtrader.com/price/v1/20180808190523:USDT:BTC:CRYPTOCOMPARE
+```
+```bash
 {
 	"20180808190523": {
 		"USD": {
@@ -137,6 +141,8 @@ $ curl --header 'Accept: application/json' https://service.zxtrader.com/price/v1
 Get avarage price without sources system
 ```bash
 $ curl --header 'Accept: application/json' https://service.zxtrader.com/price/v1/20180808190523:USDT:BTC
+```
+```bash
 {
 	"20180808190523": {
 		"USD": {
@@ -153,6 +159,8 @@ $ curl --header 'Accept: application/json' https://service.zxtrader.com/price/v1
 Multi request
 ```bash
 $ curl --header 'Accept: application/json' https://service.zxtrader.com/price/v1/20180808190523:USDT:BTC,20180808190523:USDT:ETH:,20180808190523:USDT:ZEC:CRYPTOCOMPARE
+```
+```bash
 {
 	"20180808190523": {
 		"USDT": {
