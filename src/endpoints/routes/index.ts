@@ -1,8 +1,7 @@
 import * as express from "express";
 import { DUMMY_CANCELLATION_TOKEN, Task } from "@zxteam/task";
 import loggerFactory from "@zxteam/logger";
-import { PriceService, price, InvalidDateError } from "../../PriceService";
-import { ArgumentException } from "@zxnode/base";
+import { PriceService, price, InvalidDateError, ArgumentException } from "../../PriceService";
 
 export default function (priceService: PriceService) {
 	const expressRouter: express.Router = express.Router();

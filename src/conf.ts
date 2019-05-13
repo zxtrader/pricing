@@ -1,10 +1,10 @@
 import * as path from "path";
-import { configuration } from "@zxnode/base";
-import { fileConfiguration } from "@zxnode/config";
+import { Configuration } from "@zxteam/contract";
+import { fileConfiguration } from "@zxteam/configuration";
 
 const configDirectory = path.join(__dirname, /* @if BUILD_TARGET=='devel' */"../" + /* @endif */"config.ini");
 
-const configManagerSingleton: configuration.ConfigurationLike = (function () {
+const configManagerSingleton: Configuration = (function () {
 	return fileConfiguration(configDirectory);
 })();
 

@@ -1,6 +1,5 @@
 import { Task } from "@zxteam/task";
 import loggerFactory from "@zxteam/logger";
-import { ArgumentException } from "@zxnode/base";
 import * as zxteam from "@zxteam/contract";
 import { SourceProvider } from "./providers/source/contract";
 import { StorageProvider } from "./providers/storage/contract";
@@ -243,3 +242,6 @@ export namespace price {
 }
 
 export class InvalidDateError extends Error { }
+export class ArgumentException extends Error implements zxteam.ArgumentError {
+	public readonly name = "ArgumentError";
+}
