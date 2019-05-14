@@ -18,9 +18,24 @@ describe("Crypto Compare Tests", function () {
 	const cryptocompareUrl = new URL("https://min-api.cryptocompare.com/data/");
 
 	it.only("Should raise SourceProvider.CommunicationError if WebClient providers WebClient.CommunicationError", async function () {
+		// Fake arguments to force NoDataError
+		const loadArgs: Array<price.LoadDataArgs> = [
+			{
+				ts: 20190101000000,
+				marketCurrency: "BADCOIN",
+				tradeCurrency: "XYI9CECOIN"
+			}
+		];
+
+		let workToken;
+		let workArgs: any;
+		let workCount = 0;
 		const fakeWebClient: WebClientLike = {
 			dispose(): zxteam.Task<void> { return Task.resolve(); },
 			invoke(cancellationToken: zxteam.CancellationToken, args: WebClientInvokeArgs): zxteam.Task<WebClientInvokeResult> {
+				workArgs = args;
+				workToken = cancellationToken;
+				workCount++;
 				return Task.reject(new WebClient.CommunicationError("Test fake error. Emulate no connection"));
 			}
 		};
@@ -33,15 +48,6 @@ describe("Crypto Compare Tests", function () {
 		// Create an instance of Cryptocompare Provider
 		const sourceProvider = new Cryptocompare(cryptocompareUrl, opts);
 
-		// Fake arguments to force NoDataError
-		const loadArgs: Array<price.LoadDataArgs> = [
-			{
-				ts: 20190101000000,
-				marketCurrency: "BADCOIN",
-				tradeCurrency: "XYI9CECOIN"
-			}
-		];
-
 		let expectedError: SourceProvider.CommunicationError | undefined;
 		try {
 			await sourceProvider.loadPrices(DUMMY_CANCELLATION_TOKEN, loadArgs).promise;
@@ -52,6 +58,23 @@ describe("Crypto Compare Tests", function () {
 		assert.isDefined(expectedError);
 		assert.instanceOf(expectedError, SourceProvider.CommunicationError);
 		assert.equal((expectedError as SourceProvider.CommunicationError).message, "Test fake error. Emulate no connection");
+		// Check count run method
+		assert.equal(workCount, 1);
+		// Check canсel token
+		assert.equal(workToken, DUMMY_CANCELLATION_TOKEN);
+		// Check args
+		assert.isObject(workArgs);
+		if (workArgs && "method" in workArgs && "url" in workArgs) {
+			assert.equal(workArgs.method, "GET");
+
+			const url = workArgs.url;
+			assert.equal(url.protocol, "https:");
+			assert.equal(url.host, "min-api.cryptocompare.com");
+			assert.equal(url.pathname, "/data/pricehistorical");
+			assert.equal(url.href, "https://min-api.cryptocompare.com/data/pricehistorical?fsym=XYI9CECOIN&tsyms=BADCOIN&ts=1546300800");
+		} else {
+			assert.fail();
+		}
 	});
 
 
