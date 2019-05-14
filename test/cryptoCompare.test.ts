@@ -71,7 +71,9 @@ describe("Crypto Compare Tests", function () {
 			assert.equal(url.protocol, "https:");
 			assert.equal(url.host, "min-api.cryptocompare.com");
 			assert.equal(url.pathname, "/data/pricehistorical");
-			assert.equal(url.href, "https://min-api.cryptocompare.com/data/pricehistorical?fsym=XYI9CECOIN&tsyms=BADCOIN&ts=1546300800");
+			const reqUrl = `https://min-api.cryptocompare.com/data/pricehistorical` +
+				`?fsym=${loadArgs[0].tradeCurrency}&tsyms=${loadArgs[0].marketCurrency}&ts=1546300800`;
+			assert.equal(url.href, reqUrl);
 		} else {
 			assert.fail();
 		}
