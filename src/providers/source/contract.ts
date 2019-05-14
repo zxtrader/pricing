@@ -1,5 +1,7 @@
+import * as zxteam from "@zxteam/contract";
+
 import { price } from "../../PriceService";
-import { CancellationToken, Task as TaskLike } from "@zxteam/contract";
+import WebClient from "@zxteam/webclient";
 
 export interface SourceProvider {
 	sourceId: string;
@@ -8,13 +10,23 @@ export interface SourceProvider {
 	 * Loading empty price from sources
 	 * @param cancellationToken Cancellation Token allows your to cancel execution process
 	 * @param loadArgs Arguments for which need to sync prices
-	 * @error NoDataError If don't exist data for arguments
-	 * @error CommunicationError If it failed to connect to source
-	 * @error BrokenApiError Something happened wrong on service
+	 * @error SourceProvider.CommunicationError If it failed to connect to source
+	 * @error SourceProvider.BrokenApiError Something happened wrong on service
 	 */
-	loadPrices(cancellationToken: CancellationToken, loadArgs: price.MultyLoadDataRequest): TaskLike<Array<price.HistoricalPrices>>;
+	loadPrices(
+		cancellationToken: zxteam.CancellationToken,
+		loadArgs: ReadonlyArray<price.LoadDataArgs>
+	): zxteam.Task<Array<price.HistoricalPrices>>;
 }
 
-export class NoDataError extends Error { }
-export class CommunicationError extends Error { }
-export class BrokenApiError extends Error { }
+export namespace SourceProvider {
+	export class CommunicationError extends Error {
+		public readonly innerError: WebClient.CommunicationError;
+
+		public constructor(innerError: WebClient.CommunicationError) {
+			super(innerError.message);
+			this.innerError = innerError;
+		}
+	}
+	export class BrokenApiError extends Error { }
+}

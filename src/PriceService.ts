@@ -5,6 +5,7 @@ import { SourceProvider } from "./providers/source/contract";
 import { StorageProvider } from "./providers/storage/contract";
 import { Initable } from "@zxteam/disposable";
 import moment = require("moment");
+import { type } from "os";
 
 export class PriceService extends Initable {
 	private readonly _storageProvider: StorageProvider;
@@ -91,7 +92,7 @@ export class PriceService extends Initable {
 			}
 
 			this._logger.trace("Parse LoadDataRequest to MultyLoadDataRequest");
-			const multyLoadDataRequest: price.MultyLoadDataRequest =
+			const multyLoadDataRequest: price.MultyLoadData =
 				helpers.parseToMultyType(loadArgs);
 
 			this._logger.trace("Create array sourcesystem id which need syncs price");
@@ -109,11 +110,9 @@ export class PriceService extends Initable {
 				const source: SourceProvider | null = helpers.getSource(this._sourceProviders, sourceId);
 
 				if (source) {
-					taskSources.push(source.loadPrices(ct, { [sourceId]: multyLoadDataRequest[sourceId] }));
-
-					this._logger.trace("Check cancellationToken for interrupt");
-					ct.throwIfCancellationRequested();
+					taskSources.push(source.loadPrices(ct, multyLoadDataRequest[sourceId]));
 				} else {
+					// TODO: Should be exception
 					this._logger.error(`Not implement yet ${source}`);
 				}
 			}
@@ -142,8 +141,8 @@ export namespace helpers {
 			}
 		}
 	}
-	export function parseToMultyType(loadArgs: Array<price.LoadDataRequest>): price.MultyLoadDataRequest {
-		const multyLoadDataRequest: price.MultyLoadDataRequest = {};
+	export function parseToMultyType(loadArgs: Array<price.LoadDataRequest>): price.MultyLoadData {
+		const multyLoadDataRequest: { [sourceId: string]: Array<price.LoadDataArgs>; } = {};
 
 		for (let i = 0; i < loadArgs.length; i++) {
 			const loadArg = loadArgs[i];
@@ -154,8 +153,7 @@ export namespace helpers {
 			multyLoadDataRequest[sourceId].push({
 				ts: loadArg.ts,
 				marketCurrency: loadArg.marketCurrency,
-				tradeCurrency: loadArg.tradeCurrency,
-				price: loadArg.price
+				tradeCurrency: loadArg.tradeCurrency
 			});
 		}
 
@@ -200,32 +198,30 @@ export namespace price {
 	export interface Price {
 		price: string;
 	}
-	export interface LoadDataRequest {
+	export interface MultyLoadData {
+		/** Source id (ex. CRYPTOCOMPARE) */
+		[sourceId: string]: ReadonlyArray<LoadDataArgs>;
+	}
+	export interface LoadDataBase {
+		/** Timestamp format YYYYMMDDHHMMSS */
+		ts: number;
+		/** Code market currency */
+		marketCurrency: string;
+		/** Code trade currency */
+		tradeCurrency: string;
+	}
+	export interface LoadDataResult extends LoadDataBase {
+		/** Price can number or null */
+		price: number | null;
+	}
+	export interface LoadDataRequest extends LoadDataBase {
 		/** Source id (ex. CRYPTOCOMPARE) */
 		sourceId: string;
-		/** Timestamp format YYYYMMDDHHMMSS */
-		ts: number;
-		/** Code market currency */
-		marketCurrency: string;
-		/** Code trade currency */
-		tradeCurrency: string;
-		/** Price can number or null */
-		price: number | null;
+		// /** Price can number or null */
+		// price: number | null;
 	}
-	export interface MultyLoadDataRequest {
-		/** Source id (ex. CRYPTOCOMPARE) */
-		[sourceId: string]: Array<LoadData>;
-	}
-	export interface LoadData {
-		/** Timestamp format YYYYMMDDHHMMSS */
-		ts: number;
-		/** Code market currency */
-		marketCurrency: string;
-		/** Code trade currency */
-		tradeCurrency: string;
-		/** Price can number or null */
-		price: number | null;
-	}
+
+	export type LoadDataArgs = LoadDataBase;
 
 	export interface HistoricalPrices {
 		/** Source id (ex. CRYPTOCOMPARE) */

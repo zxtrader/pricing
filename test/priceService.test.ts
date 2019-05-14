@@ -7,11 +7,7 @@ import { Cryptocompare } from "../src/providers/source/Cryptocompare";
 import { Poloniex } from "../src/providers/source/Poloniex";
 import { RedisStorageProvider } from "../src/providers/storage/RedisStorageProvider";
 
-let redisStorageProvider: RedisStorageProvider = new RedisStorageProvider(getOptsForRedis());
-let cryptoCompare: Cryptocompare;
-let poloniex: Poloniex;
-let randomSource: Randomsource;
-let priceService: PriceService;
+
 
 function getOptsForRedis(): RedisOptions {
 	function praseToOptsRedis(url: URL): RedisOptions {
@@ -69,7 +65,14 @@ const urlToCrypto = "https://min-api.cryptocompare.com/data/";
 const urlToPoloniex = "https://poloniex.com/";
 
 describe("Positive tests Price service", function () {
+	let redisStorageProvider: RedisStorageProvider;
+	let cryptoCompare: Cryptocompare;
+	let poloniex: Poloniex;
+	let randomSource: Randomsource;
+	let priceService: PriceService;
+
 	before(async function () {
+		redisStorageProvider = new RedisStorageProvider(getOptsForRedis());
 		await redisStorageProvider.init();
 		cryptoCompare = new Cryptocompare(urlToCrypto, optsForLimit);
 		poloniex = new Poloniex(urlToPoloniex, optsForLimit);

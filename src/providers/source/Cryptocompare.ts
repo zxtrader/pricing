@@ -1,18 +1,15 @@
+import * as zxteam from "@zxteam/contract";
+import { ensureFactory } from "@zxteam/ensure.js";
+import loggerFactory from "@zxteam/logger";
+import RestClient from "@zxteam/restclient";
+import { Task } from "@zxteam/task";
+import { WebClient } from "@zxteam/webclient";
+
 import * as _ from "lodash";
 import * as moment from "moment";
-import { Task } from "@zxteam/task";
-import { price } from "../../PriceService";
-import { WebClient } from "@zxteam/webclient";
-import { ensureFactory } from "@zxteam/ensure.js";
-import * as zxteam from "@zxteam/contract";
-import RestClient from "@zxteam/restclient";
-import {
-	SourceProvider as SourceProviderInerface,
-	BrokenApiError,
-	CommunicationError
-} from "./contract";
-import loggerFactory from "@zxteam/logger";
 
+import { SourceProvider } from "./contract";
+import { price } from "../../PriceService";
 
 abstract class CryptocompareRestClient extends RestClient {
 	public constructor(baseUrl: string | URL, restClientOpts: RestClient.Opts) {
@@ -20,7 +17,7 @@ abstract class CryptocompareRestClient extends RestClient {
 	}
 }
 
-export class Cryptocompare extends CryptocompareRestClient implements SourceProviderInerface {
+export class Cryptocompare extends CryptocompareRestClient implements SourceProvider {
 	public readonly sourceId = "CRYPTOCOMPARE";
 	public readonly _logger: zxteam.Logger = loggerFactory.getLogger("Cryptocompare");
 
@@ -32,7 +29,7 @@ export class Cryptocompare extends CryptocompareRestClient implements SourceProv
 	 * fsym - это tradeCurrency
 	 * https://min-api.cryptocompare.com/data/pricehistorical?fsym=ETH&tsyms=BTC,USD,EUR&ts=1452680400&extraParams=your_app_name
 	 */
-	public loadPrices(cancellationToken: zxteam.CancellationToken, loadArgs: price.MultyLoadDataRequest)
+	public loadPrices(cancellationToken: zxteam.CancellationToken, loadArgs: ReadonlyArray<price.LoadDataArgs>)
 		: zxteam.Task<Array<price.HistoricalPrices>> {
 		return Task.run(async (ct) => {
 			if (this._logger.isTraceEnabled) {
@@ -41,15 +38,13 @@ export class Cryptocompare extends CryptocompareRestClient implements SourceProv
 
 			const friendlyRequest: Array<price.HistoricalPrices> = [];
 			const ensureImpl = ensureFactory((message, data) => {
-				throw new CommunicationError("CryptoCompare responded non-expected data type");
+				throw new SourceProvider.BrokenApiError("CryptoCompare responded non-expected data type");
 			});
 
 			try {
-				const arrayArgs = loadArgs[this.sourceId];
-
 				this._logger.trace("Through all arguments");
-				for (let i = 0; i < arrayArgs.length; i++) {
-					const argument = arrayArgs[i];
+				for (let i = 0; i < loadArgs.length; i++) {
+					const argument = loadArgs[i];
 					const ts = argument.ts;
 					const marketCurrency = argument.marketCurrency;
 					const tradeCurrency = argument.tradeCurrency;
@@ -90,14 +85,14 @@ export class Cryptocompare extends CryptocompareRestClient implements SourceProv
 						_.isString(body.Data.Response) &&
 						body.Data.Response === "Error"
 					) {
-						throw new CommunicationError(body.Data.Message);
+						throw new SourceProvider.BrokenApiError(body.Data.Message);
 					}
 
 					if ("Response" in body && body.Response === "Error") {
 						if ("Message" in body && body.Message.startsWith("There is no data for")) {
 							continue;
 						}
-						throw new CommunicationError(body.Message);
+						throw new SourceProvider.BrokenApiError(body.Message);
 					}
 
 					this._logger.trace("Data validation from source");
@@ -127,10 +122,12 @@ export class Cryptocompare extends CryptocompareRestClient implements SourceProv
 
 				return friendlyRequest;
 			} catch (err) {
-				if (err instanceof WebClient.CommunicationError || err instanceof CommunicationError) {
-					throw new CommunicationError(err.message);
+				if (err instanceof SourceProvider.BrokenApiError) {
+					throw err;
+				} else if (err instanceof WebClient.CommunicationError) {
+					throw new SourceProvider.CommunicationError(err);
 				} else {
-					throw new BrokenApiError(err.message);
+					throw new SourceProvider.BrokenApiError(err.message);
 				}
 			}
 		}, cancellationToken);

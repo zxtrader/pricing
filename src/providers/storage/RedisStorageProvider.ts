@@ -51,8 +51,7 @@ export class RedisStorageProvider extends Initable implements StorageProviderIne
 							sourceId,
 							ts,
 							marketCurrency,
-							tradeCurrency,
-							price: null
+							tradeCurrency
 						});
 					}
 				} else {
@@ -83,8 +82,7 @@ export class RedisStorageProvider extends Initable implements StorageProviderIne
 								sourceId: sourceNameId,
 								ts,
 								marketCurrency,
-								tradeCurrency,
-								price: null
+								tradeCurrency
 							});
 						}
 					}

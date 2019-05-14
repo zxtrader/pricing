@@ -6,12 +6,7 @@ import { WebClient } from "@zxteam/webclient";
 import { ensureFactory } from "@zxteam/ensure.js";
 import * as zxteam from "@zxteam/contract";
 import RestClient from "@zxteam/restclient";
-import {
-	SourceProvider as SourceProviderInerface,
-	BrokenApiError,
-	CommunicationError,
-	NoDataError
-} from "./contract";
+import { SourceProvider } from "./contract";
 import loggerFactory from "@zxteam/logger";
 
 
@@ -21,7 +16,7 @@ abstract class BinanceRestClient extends RestClient {
 	}
 }
 
-export class Binance extends BinanceRestClient implements SourceProviderInerface {
+export class Binance extends BinanceRestClient implements SourceProvider {
 	public readonly sourceId = "BINANCE";
 	public readonly _logger: zxteam.Logger = loggerFactory.getLogger("Binance");
 
@@ -32,8 +27,8 @@ export class Binance extends BinanceRestClient implements SourceProviderInerface
 	/**
 	 * https://github.com/binance-exchange/binance-official-api-docs/blob/master/rest-api.md
 	 */
-	public loadPrices(cancellationToken: zxteam.CancellationToken, loadArgs: price.MultyLoadDataRequest)
-	: zxteam.Task<Array<price.HistoricalPrices>> {
+	public loadPrices(cancellationToken: zxteam.CancellationToken, loadArgs: ReadonlyArray<price.LoadDataArgs>)
+		: zxteam.Task<Array<price.HistoricalPrices>> {
 		return Task.run(async (ct) => {
 			if (this._logger.isTraceEnabled) {
 				this._logger.trace("loadPrices()... loadArgs: ", loadArgs);
@@ -41,15 +36,13 @@ export class Binance extends BinanceRestClient implements SourceProviderInerface
 
 			const friendlyRequest: Array<price.HistoricalPrices> = [];
 			const ensureImpl = ensureFactory((message, data) => {
-				throw new CommunicationError("Binance responded non-expected data type");
+				throw new SourceProvider.BrokenApiError("Binance responded non-expected data type");
 			});
 
 			try {
-				const arrayArgs = loadArgs[this.sourceId];
-
 				this._logger.trace("Through all arguments");
-				for (let i = 0; i < arrayArgs.length; i++) {
-					const argument = arrayArgs[i];
+				for (let i = 0; i < loadArgs.length; i++) {
+					const argument = loadArgs[i];
 					const ts = argument.ts;
 					const marketCurrency = argument.marketCurrency;
 					const tradeCurrency = argument.tradeCurrency;
@@ -111,10 +104,12 @@ export class Binance extends BinanceRestClient implements SourceProviderInerface
 
 				return friendlyRequest;
 			} catch (err) {
-				if (err instanceof WebClient.CommunicationError || err instanceof CommunicationError) {
-					throw new CommunicationError(err.message);
+				if (err instanceof SourceProvider.BrokenApiError) {
+					throw err; // re-throw original error
+				} else if (err instanceof WebClient.CommunicationError) {
+					throw new SourceProvider.CommunicationError(err);
 				} else {
-					throw new BrokenApiError(err.message);
+					throw new SourceProvider.BrokenApiError(err.message);
 				}
 			}
 		}, cancellationToken);
