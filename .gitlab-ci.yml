@@ -8,6 +8,7 @@ stages:
   - build
   - test
   - stag
+  - package
 
 compile:
   stage: build
@@ -74,3 +75,24 @@ container:tag:
     - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
     - docker push $CI_REGISTRY_IMAGE:latest
     - echo "Image ${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_NAME} -> ${CI_REGISTRY_IMAGE}:latest was staged successfully"
+
+package:tag:
+  stage: staging
+  tags:
+    - docker
+  dependencies:
+    - compile
+    - test
+  when: manual
+  only:
+    - tags
+  variables:
+    GIT_STRATEGY: none
+    GIT_SUBMODULE_STRATEGY: none
+  before_script:
+    - *utils
+    - verify_package_version
+    - setup_npm_token
+  script:
+    - echo "Publish package to the npmjs.artifacts.zxteam.net registry"
+    - cd .dist && cat .npmrc && npm publish
