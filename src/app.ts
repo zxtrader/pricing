@@ -1,13 +1,15 @@
 import { launcher, LaunchError } from "@zxteam/launcher";
 import { default as configManager } from "./conf";
-import runtimeFactory, { ArgumentConfig } from "./index";
-
-
+import { Configuration } from "./conf";
+import runtimeFactory, { ArgumentConfig, OptionsEnv } from "./index";
 
 function configFactory(): Promise<ArgumentConfig> {
+	// const opts: any = {};
 	const opts: ArgumentConfig = {
-		env: {},
-		sources: {}
+		endpoints: [],
+		opts: {},
+		sources: {},
+		storage: ""
 	};
 	try {
 		// == Read configuration from config.ini file ==
@@ -60,9 +62,8 @@ function configFactory(): Promise<ArgumentConfig> {
 		// Https password from private key
 		const httpsKeyPhassPhrase: string | null = (process.env.HTTPS_KEY_PHASSPHRASE) ? process.env.HTTPS_KEY_PHASSPHRASE : null;
 
-		opts.env = {
-			priceMode,
-			dataStorageUrl,
+		const endpointSetting = {
+			// priceMode,
 			httpEnable,
 			httpHost,
 			httpPort,
@@ -74,6 +75,12 @@ function configFactory(): Promise<ArgumentConfig> {
 			httpsKey,
 			httpsKeyPhassPhrase
 		};
+		const endpoint = getOptsForHttp(endpointSetting);
+		opts.endpoints.push(endpoint);
+
+		opts.opts = { priceMode };
+
+		opts.storage = dataStorageUrl;
 
 		return Promise.resolve(opts);
 	} catch (err) {
@@ -82,3 +89,34 @@ function configFactory(): Promise<ArgumentConfig> {
 }
 
 launcher(configFactory, runtimeFactory);
+
+export function getOptsForHttp(envOpts: OptionsEnv): Configuration.Endpoint {
+	if (envOpts.httpEnable === "yes") {
+		const opts: Configuration.HttpEndpoint = {
+			type: "http",
+			listenHost: String(envOpts.httpHost),
+			listenPort: Number(envOpts.httpPort)
+		};
+		return opts;
+	}
+	if (envOpts.httpsEnable === "yes") {
+		if (envOpts.httpsCert === undefined) {
+			throw new Error("Do not have settings for httpsCert endpoint");
+		}
+		if (envOpts.httpsKey === undefined) {
+			throw new Error("Do not have settings for httsKey endpoint");
+		}
+		const opts: Configuration.HttpsEndpoint = {
+			type: "https",
+			listenHost: String(envOpts.httpsHost),
+			listenPort: Number(envOpts.httpsPort),
+			caCertificate: String(envOpts.httpsCaCert),
+			serviceCertificate: String(envOpts.httpsCert),
+			serviceKey: String(envOpts.httpsKey),
+			serviceKeyPassword: String(envOpts.httpsKeyPhassPhrase),
+			requireClientCertificate: true
+		};
+		return opts;
+	}
+	throw new Error("Http(s) endpoint do not enable");
+}

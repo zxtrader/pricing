@@ -3,8 +3,8 @@ import { DUMMY_CANCELLATION_TOKEN, Task } from "@zxteam/task";
 import loggerFactory from "@zxteam/logger";
 import { PriceService, price, InvalidDateError, ArgumentException } from "../../PriceService";
 
-export default function (priceService: PriceService) {
-	const expressRouter: express.Router = express.Router();
+export default function (priceService: PriceService, route?: express.Router) {
+	const expressRouter: express.Router = (route) ? route : express.Router();
 	const log = loggerFactory.getLogger("HttpEndpoint v1");
 
 	expressRouter.get("/price/:args", async function (req: express.Request, res: express.Response, next: express.NextFunction) {

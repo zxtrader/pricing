@@ -104,7 +104,10 @@ export class Binance extends BinanceRestClient implements SourceProvider {
 
 				return friendlyRequest;
 			} catch (err) {
-				if (err instanceof SourceProvider.BrokenApiError) {
+				if (err instanceof WebClient.WebError) {
+					// if bad request need return empty array but, this source dont have req market
+					return [];
+				} else if (err instanceof SourceProvider.BrokenApiError) {
 					throw err; // re-throw original error
 				} else if (err instanceof WebClient.CommunicationError) {
 					throw new SourceProvider.CommunicationError(err);

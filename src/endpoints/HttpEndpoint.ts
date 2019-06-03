@@ -15,13 +15,13 @@ import { Configuration } from "../conf";
 
 export class HttpEndpoint extends Initable {
 	private readonly _log: zxteam.Logger;
-	private readonly _opts: Configuration.HttpEndpoint | Configuration.HttpsEndpoint;
+	private readonly _opts: Configuration.Endpoint;
 	private readonly _expressApp: express.Application;
 	private _server: http.Server | https.Server | null;
 
 	public constructor(
 		expressApp: express.Application,
-		opts: Configuration.HttpEndpoint | Configuration.HttpsEndpoint,
+		opts: Configuration.Endpoint,
 		log?: zxteam.Logger
 	) {
 		super();
@@ -145,4 +145,7 @@ export function expressAppInit(service: PriceService, log: zxteam.Logger): expre
 	});
 
 	return app;
+}
+export function routeAppInit(service: PriceService, route: express.Router) {
+	expressRouter(service, route);
 }

@@ -5,16 +5,15 @@ import { Configuration } from "./conf";
 import { PriceService } from "./PriceService";
 import { loggerManager } from "@zxteam/logger";
 import { RestClient } from "@zxteam/restclient";
-import { launcher, Runtime } from "@zxteam/launcher";
+import { Runtime } from "@zxteam/launcher";
 import { SourceProvider } from "./providers/source/contract";
 import { StorageProvider } from "./providers/storage/contract";
 import { Cryptocompare } from "./providers/source/Cryptocompare";
-import { HttpEndpoint, expressAppInit } from "./endpoints/HttpEndpoint";
+import { HttpEndpoint, expressAppInit, routeAppInit } from "./endpoints/HttpEndpoint";
 import { RedisStorageProvider } from "./providers/storage/RedisStorageProvider";
 import { Initable } from "@zxteam/disposable";
 import { Poloniex } from "./providers/source/Poloniex";
 import { Binance } from "./providers/source/Binance";
-
 
 export default async function (options: ArgumentConfig): Promise<Runtime> {
 
@@ -26,7 +25,7 @@ export default async function (options: ArgumentConfig): Promise<Runtime> {
 	function destroy(): Promise<void> { return destroyHandlers.reverse().reduce((p, c) => p.then(c), Promise.resolve()); }
 
 	logger.trace("Constructing Storage provider...");
-	const dataStorageUrl = String(options.env.dataStorageUrl);
+	const dataStorageUrl = String(options.storage);
 	const storageProvider = helpers.createStorageProvider(dataStorageUrl);
 
 	logger.trace("Constructing Source providers...");
@@ -37,7 +36,6 @@ export default async function (options: ArgumentConfig): Promise<Runtime> {
 	let expressApp: express.Application | null = null; // This is required for http and https only (may be null)
 
 	const endpoints: Array<Initable> = [];
-	const endpoint = helpers.getOptsForHttp(options.env);
 
 	try {
 		logger.info("Initializing Storage provider...");
@@ -50,17 +48,27 @@ export default async function (options: ArgumentConfig): Promise<Runtime> {
 		logger.info("Initializing InfoService...");
 		await service.init();
 
-		switch (endpoint.type) {
-			case "http":
-			case "https": {
-				if (expressApp === null) { expressApp = expressAppInit(service, logger); }
-				const endpointInstance: HttpEndpoint = new HttpEndpoint(expressApp, endpoint, logger);
-				endpoints.push(endpointInstance);
-				break;
-			}
-			default:
+		options.endpoints.forEach((endpoint: Configuration.Endpoint | express.Router) => {
+			if ("type" in endpoint) {
+				switch (endpoint.type) {
+					case "http":
+					case "https": {
+						if (expressApp === null) {
+							expressApp = expressAppInit(service, logger);
+						}
+						const endpointInstance: HttpEndpoint = new HttpEndpoint(expressApp, endpoint, logger);
+						endpoints.push(endpointInstance);
+						break;
+					}
+					default:
+						throw new UnreachableEndpointError(endpoint);
+				}
+			} else if ("name" in endpoint) {
+				routeAppInit(service, endpoint);
+			} else {
 				throw new UnreachableEndpointError(endpoint);
-		}
+			}
+		});
 
 		destroyHandlers.push(() => service.dispose().promise);
 
@@ -136,7 +144,6 @@ namespace helpers {
 
 		return friendlySources;
 	}
-
 	export function getOptsForRedis(dataStorageUrl: string): RedisOptions {
 
 		function praseToOptsRedis(url: URL): RedisOptions {
@@ -165,41 +172,13 @@ namespace helpers {
 
 		return optsForRedis;
 	}
-	export function getOptsForHttp(envOpts: OptionsEnv): Configuration.HttpEndpoint | Configuration.HttpsEndpoint {
-		if (envOpts.httpEnable === "yes") {
-			const opts: Configuration.HttpEndpoint = {
-				type: "http",
-				listenHost: String(envOpts.httpHost),
-				listenPort: Number(envOpts.httpPort)
-			};
-			return opts;
-		}
-		if (envOpts.httpsEnable === "yes") {
-			if (envOpts.httpsCert === undefined) {
-				throw new Error("Do not have settings for httpsCert endpoint");
-			}
-			if (envOpts.httpsKey === undefined) {
-				throw new Error("Do not have settings for httsKey endpoint");
-			}
-			const opts: Configuration.HttpsEndpoint = {
-				type: "https",
-				listenHost: String(envOpts.httpsHost),
-				listenPort: Number(envOpts.httpsPort),
-				caCertificate: String(envOpts.httpsCaCert),
-				serviceCertificate: String(envOpts.httpsCert),
-				serviceKey: String(envOpts.httpsKey),
-				serviceKeyPassword: String(envOpts.httpsKeyPhassPhrase),
-				requireClientCertificate: true
-			};
-			return opts;
-		}
-		throw new Error("Http(s) endpoint do not enable");
-	}
 }
 
 export interface ArgumentConfig {
-	env: OptionsEnv;
-	sources: Sources;
+	endpoints: Array<Configuration.Endpoint | express.Router>;
+	storage: string; // Connection URL to database
+	sources: Sources; // List source system
+	opts: OptionsEnv; // { Key: value } Other settings limit params, etc...
 }
 interface Sources {
 	[source: string]: SourceOpts;
@@ -207,7 +186,7 @@ interface Sources {
 interface SourceOpts {
 	[key: string]: string | number;
 }
-interface OptionsEnv {
+export interface OptionsEnv {
 	[key: string]: Array<string> | string | number | undefined | null;
 }
 
@@ -216,7 +195,6 @@ class UnreachableEndpointError extends Error {
 		super(`Not supported endpoint: ${JSON.stringify(endpoint)}`);
 	}
 }
-
 class UnreachableSourceError extends Error {
 	public constructor(endpoint: string) {
 		super(`Not supported source system: ${endpoint}`);
