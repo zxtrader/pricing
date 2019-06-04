@@ -212,13 +212,11 @@ export namespace price {
 	}
 	export interface LoadDataResult extends LoadDataBase {
 		/** Price can number or null */
-		price: number | null;
+		price: string | null;
 	}
 	export interface LoadDataRequest extends LoadDataBase {
 		/** Source id (ex. CRYPTOCOMPARE) */
 		sourceId: string;
-		// /** Price can number or null */
-		// price: number | null;
 	}
 
 	export type LoadDataArgs = LoadDataBase;
@@ -233,7 +231,7 @@ export namespace price {
 		/** Code trade currency */
 		tradeCurrency: string;
 		/** Price must be number */
-		price: number;
+		price: string;
 	}
 }
 

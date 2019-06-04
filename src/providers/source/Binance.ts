@@ -9,7 +9,6 @@ import RestClient from "@zxteam/restclient";
 import { SourceProvider } from "./contract";
 import loggerFactory from "@zxteam/logger";
 
-
 abstract class BinanceRestClient extends RestClient {
 	public constructor(baseUrl: string | URL, restClientOpts: RestClient.Opts) {
 		super(baseUrl, restClientOpts);
@@ -90,7 +89,7 @@ export class Binance extends BinanceRestClient implements SourceProvider {
 					}
 
 					const lastTrade = body[0];
-					const marketPrice = Number(lastTrade.p);
+					const marketPrice = Number(lastTrade.p).toFixed(8);
 
 					this._logger.trace("Formatting data for return");
 					friendlyRequest.push({

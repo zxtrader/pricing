@@ -74,8 +74,8 @@ describe("Positive tests Price service", function () {
 	before(async function () {
 		redisStorageProvider = new RedisStorageProvider(getOptsForRedis());
 		await redisStorageProvider.init();
-		cryptoCompare = new Cryptocompare(urlToCrypto, optsForLimit);
-		poloniex = new Poloniex(urlToPoloniex, optsForLimit);
+		cryptoCompare = new Cryptocompare(optsForLimit);
+		poloniex = new Poloniex(optsForLimit);
 		randomSource = new Randomsource();
 		priceService = new PriceService(redisStorageProvider, [cryptoCompare, randomSource, poloniex]);
 	});

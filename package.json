@@ -27,6 +27,7 @@
 		"@zxteam/configuration": "^4.0.2",
 		"@zxteam/contract": "^5.0.0",
 		"@zxteam/ensure.js": "^1.2.0",
+		"@zxteam/financial.js": "^5.0.5",
 		"@zxteam/launcher": "^4.0.0",
 		"@zxteam/limit": "^4.0.0",
 		"@zxteam/logger": "^4.0.0",

@@ -6,6 +6,7 @@ import * as zxteam from "@zxteam/contract";
 import { Redis, RedisOptions } from "ioredis";
 import { Initable } from "@zxteam/disposable";
 import { StorageProvider as StorageProviderInerface } from "./contract";
+import { financial } from "../../financial.js";
 
 export class RedisStorageProvider extends Initable implements StorageProviderInerface {
 	private readonly PRICE_PREFIX = "PRICE:PREFIX";
@@ -148,13 +149,21 @@ export class RedisStorageProvider extends Initable implements StorageProviderIne
 					}
 				}
 
-				const avgPrice = (totalSum + newPrice) / (redisPriceSourceIdCount + 1);
+				// const avgPrice = (totalSum + +newPrice) / (redisPriceSourceIdCount + 1);
+				const financialNewPrice = financial.wrap(newPrice);
+				const financialTotalSum = financial.wrap(totalSum.toFixed(8));
+				const financialredisPriceSourceIdCount = financial.wrap(redisPriceSourceIdCount.toFixed(0));
+
+				const financialSum = financial.add(financialTotalSum, financialNewPrice);
+				const financialCount = financial.add(financialredisPriceSourceIdCount, financial.fromInt(1));
+
+				const financialAvgPrice = financial.divide(financialSum, financialCount);
 
 				if (this._logger.isTraceEnabled) {
 					this._logger.trace("Save new avg price");
-					this._logger.trace("Execute: HSET", corePriceRedisKey, "price", avgPrice);
+					this._logger.trace("Execute: HSET", corePriceRedisKey, "price", financial.toString(financialAvgPrice));
 				}
-				await this.ioredis.hset(corePriceRedisKey, "price", avgPrice);
+				await this.ioredis.hset(corePriceRedisKey, "price", financial.toString(financialAvgPrice));
 
 				// We can't use cancellationToken, need calculating avg price and save in base.
 

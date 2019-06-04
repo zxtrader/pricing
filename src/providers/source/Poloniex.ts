@@ -84,7 +84,7 @@ export class Poloniex extends PoloniexRestClient implements SourceProvider {
 					}
 
 					const lastTrade = body[body.length - 1];
-					const marketPrice = Number(lastTrade.rate);
+					const marketPrice = Number(lastTrade.rate).toFixed(8);
 
 					this._logger.trace("Formatting data for return");
 					friendlyRequest.push({

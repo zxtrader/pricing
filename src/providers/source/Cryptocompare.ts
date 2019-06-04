@@ -106,16 +106,17 @@ export class Cryptocompare extends CryptocompareRestClient implements SourceProv
 					this._logger.trace("Formatting data for return");
 					const frTradeCurrency = Object.keys(body)[0];
 					const frMarketCurrency = Object.keys(body[tradeCurrency])[0];
-					const frPrice = body[tradeCurrency][marketCurrency];
+					const frPrice: number = body[tradeCurrency][marketCurrency];
 					if (frPrice === 0) {
 						continue;
 					}
+					const friendlyPrice: string = frPrice.toFixed(8);
 					friendlyRequest.push({
 						sourceId: this.sourceId,
 						ts,
 						marketCurrency: frMarketCurrency,
 						tradeCurrency: frTradeCurrency,
-						price: frPrice
+						price: friendlyPrice
 					});
 
 				}

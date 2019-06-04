@@ -46,7 +46,7 @@ describe("Crypto Compare Tests", function () {
 		};
 
 		// Create an instance of Cryptocompare Provider
-		const sourceProvider = new Cryptocompare(cryptocompareUrl, opts);
+		const sourceProvider = new Cryptocompare(opts);
 
 		let expectedError: SourceProvider.CommunicationError | undefined;
 		try {
