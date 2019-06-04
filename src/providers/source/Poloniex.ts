@@ -21,8 +21,8 @@ export class Poloniex extends PoloniexRestClient implements SourceProvider {
 	public readonly sourceId = "POLONIEX";
 	public readonly _logger: zxteam.Logger = loggerFactory.getLogger("Poloniex");
 
-	public constructor(url: string | URL, opts: RestClient.Opts) {
-		super(url, opts);
+	public constructor(opts: RestClient.Opts) {
+		super(new URL("https://poloniex.com/"), opts);
 	}
 
 	/**

@@ -11,7 +11,7 @@ The service is focused on launching in the Docker container and most of the para
 ### Environment variables
 | Name | Default Value | Description |
 | - | - | - |
-| PRICE_MODE | demand | The mode work of the service. In the case of Sync mode, the corresponding section in the INI file is required |
+| PRICE_MODE | DEMAND | The mode work of the service. In the case of Sync mode, the corresponding section in the INI file is required |
 | DATASTORAGE_URL | redis://localhost:6379 | URL connect to the data store |
 | HTTP_ENABLE | yes | Enable HTTP endpoint |
 | HTTP_HOST | 127.0.0.1 | Specifies IP/hostname of the listening host for the HTTP endpoint |

@@ -1,6 +1,6 @@
 {
 	"name": "com.zxtrader.price.service",
-	"version": "0.0.8",
+	"version": "0.0.9",
 	"description": "ZXTrader's Price Service",
 	"main": "./src/index.js",
 	"types": "./src/index.d.ts",
@@ -25,7 +25,7 @@
 	},
 	"dependencies": {
 		"@zxteam/configuration": "^4.0.2",
-		"@zxteam/contract": "^4.0.0",
+		"@zxteam/contract": "^5.0.0",
 		"@zxteam/ensure.js": "^1.2.0",
 		"@zxteam/launcher": "^4.0.0",
 		"@zxteam/limit": "^4.0.0",

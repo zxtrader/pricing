@@ -25,7 +25,7 @@ export default async function (options: ArgumentConfig): Promise<Runtime> {
 	function destroy(): Promise<void> { return destroyHandlers.reverse().reduce((p, c) => p.then(c), Promise.resolve()); }
 
 	logger.trace("Constructing Storage provider...");
-	const dataStorageUrl = String(options.storage);
+	const dataStorageUrl = options.storageURL;
 	const storageProvider = helpers.createStorageProvider(dataStorageUrl);
 
 	logger.trace("Constructing Source providers...");
@@ -91,7 +91,7 @@ export default async function (options: ArgumentConfig): Promise<Runtime> {
 }
 
 namespace helpers {
-	export function createStorageProvider(dataStorageUrl: string): StorageProvider {
+	export function createStorageProvider(dataStorageUrl: URL): StorageProvider {
 		const opts: RedisOptions = helpers.getOptsForRedis(dataStorageUrl);
 		const redisStorageProvider = new RedisStorageProvider(opts);
 		return redisStorageProvider;
@@ -103,36 +103,20 @@ namespace helpers {
 		// foreach sourceIds and create object don't implement yet.
 		sourceIds.forEach((sourceId) => {
 			const sourceOpts = options[sourceId];
-			const url = String(sourceOpts.url);
-			const parallel = Number(sourceOpts.parallel);
-			const perSecond = Number(sourceOpts.perSecond);
-			const perMinute = Number(sourceOpts.perMinute);
-			const perHour = Number(sourceOpts.perHour);
-			const timeout = Number(sourceOpts.timeout);
 
-			const opts: RestClient.Opts = {
-				limit: {
-					instance: {
-						parallel,
-						perSecond,
-						perMinute,
-						perHour
-					},
-					timeout
-				}
-			};
+			const opts: RestClient.Opts = sourceOpts;
 
 			let provider;
 			switch (sourceId) {
-				case "cryptocompare":
-					provider = new Cryptocompare(url, opts);
+				case "CRYPTOCOMPARE":
+					provider = new Cryptocompare(opts);
 					break;
-				case "poloniex": {
-					provider = new Poloniex(url, opts);
+				case "POLONIEX": {
+					provider = new Poloniex(opts);
 					break;
 				}
-				case "binance": {
-					provider = new Binance(url, opts);
+				case "BINANCE": {
+					provider = new Binance(opts);
 					break;
 				}
 				default:
@@ -144,7 +128,7 @@ namespace helpers {
 
 		return friendlySources;
 	}
-	export function getOptsForRedis(dataStorageUrl: string): RedisOptions {
+	export function getOptsForRedis(dataStorageUrl: URL): RedisOptions {
 
 		function praseToOptsRedis(url: URL): RedisOptions {
 			const host = url.hostname;
@@ -158,37 +142,43 @@ namespace helpers {
 			};
 			return opts;
 		}
-		function parseDbServerUrl(url: string): URL {
-			try {
-				return new URL(url);
-			} catch (e) {
-				throw new Error(`Wrong DATASTORAGE_URL = ${url}. ${e.message}.`);
-			}
-		}
 
-		const friendlyUrl = parseDbServerUrl(dataStorageUrl);
-
-		const optsForRedis: RedisOptions = praseToOptsRedis(friendlyUrl);
+		const optsForRedis: RedisOptions = praseToOptsRedis(dataStorageUrl);
 
 		return optsForRedis;
 	}
 }
 
 export interface ArgumentConfig {
+	/** Set settings endponts or send new routers */
 	endpoints: Array<Configuration.Endpoint | express.Router>;
-	storage: string; // Connection URL to database
-	sources: Sources; // List source system
-	opts: OptionsEnv; // { Key: value } Other settings limit params, etc...
+	/** Connection URL to database */
+	storageURL: URL;
+	/** List source system and settings */
+	sources: Sources;
+	/** { Key: value } Other settings limit params, etc... */
+	opts: OptionsEnv;
 }
-interface Sources {
-	[source: string]: SourceOpts;
+
+export type Sources = SourcesDefault & SourcesAny;
+interface SourcesDefault {
+	CRYPTOCOMPARE?: RestClient.Opts;
+	POLONIEX?: RestClient.Opts;
+	BINANCE?: RestClient.Opts;
 }
-interface SourceOpts {
-	[key: string]: string | number;
+interface SourcesAny {
+	[source: string]: any;
 }
+
 export interface OptionsEnv {
-	[key: string]: Array<string> | string | number | undefined | null;
+	/**
+	 * Demand - prices are cached only at the user's request
+	 * Sync - service automatically copies all required prices
+	 */
+	priceMode: PriceMode;
 }
+
+export declare const enum PriceMode { DEMAND = "DEMAND", SYNC = "SYNC" }
 
 class UnreachableEndpointError extends Error {
 	public constructor(endpoint: never) {

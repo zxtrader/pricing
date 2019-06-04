@@ -20,8 +20,8 @@ export class Binance extends BinanceRestClient implements SourceProvider {
 	public readonly sourceId = "BINANCE";
 	public readonly _logger: zxteam.Logger = loggerFactory.getLogger("Binance");
 
-	public constructor(url: string | URL, opts: RestClient.Opts) {
-		super(url, opts);
+	public constructor(opts: RestClient.Opts) {
+		super(new URL("https://api.binance.com/"), opts);
 	}
 
 	/**

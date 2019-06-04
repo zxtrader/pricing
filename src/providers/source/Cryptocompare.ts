@@ -21,8 +21,8 @@ export class Cryptocompare extends CryptocompareRestClient implements SourceProv
 	public readonly sourceId = "CRYPTOCOMPARE";
 	public readonly _logger: zxteam.Logger = loggerFactory.getLogger("Cryptocompare");
 
-	public constructor(url: string | URL, opts: RestClient.Opts) {
-		super(url, opts);
+	public constructor(opts: RestClient.Opts) {
+		super(new URL("https://min-api.cryptocompare.com/data/"), opts);
 	}
 
 	/**
