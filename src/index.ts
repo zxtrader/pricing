@@ -60,13 +60,13 @@ export default async function (options: ArgumentConfig): Promise<Runtime> {
 						endpoints.push(endpointInstance);
 						break;
 					}
+					case "express-router": {
+						routeAppInit(service, endpoint.router);
+						break;
+					}
 					default:
 						throw new UnreachableEndpointError(endpoint);
 				}
-			} else if ("name" in endpoint) {
-				routeAppInit(service, endpoint);
-			} else {
-				throw new UnreachableEndpointError(endpoint);
 			}
 		});
 

@@ -1,6 +1,6 @@
 {
 	"name": "com.zxtrader.price.service",
-	"version": "0.0.9",
+	"version": "0.0.10",
 	"description": "ZXTrader's Price Service",
 	"main": "./src/index.js",
 	"types": "./src/index.d.ts",
@@ -18,9 +18,9 @@
 	"license": "MIT",
 	"devDependencies": {
 		"@types/ioredis": "^4.0.11",
-		"@types/lodash": "^4.14.133",
+		"@types/lodash": "^4.14.134",
 		"@types/morgan": "^1.7.35",
-		"@types/node": "^12.0.4",
+		"@types/node": "^12.0.7",
 		"@zxnode/build": "^0.0.34"
 	},
 	"dependencies": {
@@ -34,7 +34,7 @@
 		"@zxteam/restclient": "^4.0.0",
 		"@zxteam/task": "^4.0.0",
 		"express": "^4.17.1",
-		"ioredis": "^4.9.5",
+		"ioredis": "^4.10.0",
 		"lodash": "^4.17.11",
 		"moment": "^2.24.0",
 		"morgan": "^1.9.1"

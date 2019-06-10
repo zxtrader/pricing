@@ -15,13 +15,13 @@ import { Configuration } from "../conf";
 
 export class HttpEndpoint extends Initable {
 	private readonly _log: zxteam.Logger;
-	private readonly _opts: Configuration.Endpoint;
+	private readonly _opts: Configuration.HttpEndpoint | Configuration.HttpsEndpoint;
 	private readonly _expressApp: express.Application;
 	private _server: http.Server | https.Server | null;
 
 	public constructor(
 		expressApp: express.Application,
-		opts: Configuration.Endpoint,
+		opts: Configuration.HttpEndpoint | Configuration.HttpsEndpoint,
 		log?: zxteam.Logger
 	) {
 		super();
