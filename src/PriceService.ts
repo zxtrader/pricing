@@ -5,7 +5,6 @@ import { SourceProvider } from "./providers/source/contract";
 import { StorageProvider } from "./providers/storage/contract";
 import { Initable } from "@zxteam/disposable";
 import moment = require("moment");
-import { type } from "os";
 
 export class PriceService extends Initable {
 	private readonly _storageProvider: StorageProvider;
