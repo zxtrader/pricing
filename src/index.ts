@@ -1,89 +1,139 @@
-import { URL } from "url";
-import * as express from "express";
-import { RedisOptions } from "ioredis";
-import { Configuration } from "./conf";
-import { PriceService } from "./PriceService";
-import { loggerManager } from "@zxteam/logger";
-import { RestClient } from "@zxteam/restclient";
+import * as zxteam from "@zxteam/contract";
 import { Runtime } from "@zxteam/launcher";
+import { RestClient } from "@zxteam/restclient";
+import * as webserver from "@zxteam/webserver";
+import loggerFactory from "@zxteam/logger";
+import * as _ from "lodash";
+
+import { URL } from "url";
+import { RedisOptions } from "ioredis";
+import { Setting } from "./conf";
+import { PriceService } from "./PriceService";
 import { SourceProvider } from "./providers/source/contract";
 import { StorageProvider } from "./providers/storage/contract";
 import { Cryptocompare } from "./providers/source/Cryptocompare";
-import { HttpEndpoint, expressAppInit, routeAppInit } from "./endpoints/HttpEndpoint";
 import { RedisStorageProvider } from "./providers/storage/RedisStorageProvider";
-import { Initable } from "@zxteam/disposable";
+import { factory as protocolAdapterFactory } from "./protocol";
+import {
+	PriceServiceRestEndpoint, PriceServiceWebSocketEndpoint, PriceServiceRouterEndpoint,
+	createExpressApplication, setupExpressErrorHandles
+} from "./endpoints";
+
 import { Poloniex } from "./providers/source/Poloniex";
 import { Binance } from "./providers/source/Binance";
 
-export default async function (options: ArgumentConfig): Promise<Runtime> {
+export default async function (opts: Setting.ArgumentConfig): Promise<Runtime> {
+	const log = loggerFactory.getLogger("ZXTrader's Historical Price Service");
 
-	// Validate options
-
-	const logger = loggerManager.getLogger("App");
+	// TODO Valdate options
 
 	const destroyHandlers: Array<() => Promise<void>> = [];
 	function destroy(): Promise<void> { return destroyHandlers.reverse().reduce((p, c) => p.then(c), Promise.resolve()); }
 
-	logger.trace("Constructing Storage provider...");
-	const dataStorageUrl = options.storageURL;
+	const endpoints: Array<zxteam.Initable> = [];
+
+	log.trace("Constructing Storage provider...");
+	const dataStorageUrl = opts.storageURL;
 	const storageProvider = helpers.createStorageProvider(dataStorageUrl);
 
-	logger.trace("Constructing Source providers...");
-	const sourceOpts = options.sources;
+	log.trace("Constructing Source providers...");
+	const sourceOpts = opts.sources;
 	const sourceProviders = helpers.createSourceProviders(sourceOpts);
 
-	logger.trace("Constructing endpoints...");
-	let expressApp: express.Application | null = null; // This is required for http and https only (may be null)
-
-	const endpoints: Array<Initable> = [];
+	const servers = opts.servers.map(function (server) {
+		if (webserver.instanceofWebServer(server)) {
+			return { name: server.name, server, isOwnInstance: false };
+		}
+		const ownServerInstance = webserver.createWebServer(server, log);
+		ownServerInstance.expressApplication = createExpressApplication(log);
+		return { name: ownServerInstance.name, server: ownServerInstance, isOwnInstance: true };
+	});
+	const serversMap: { readonly [serverName: string]: { server: webserver.WebServer, isOwnInstance: boolean } } = _.keyBy(
+		servers,
+		"name"
+	);
 
 	try {
-		logger.info("Initializing Storage provider...");
+		log.info("Initializing Storage provider...");
 		await storageProvider.init();
 		destroyHandlers.push(() => storageProvider.dispose().promise);
 
-		logger.trace("Constructing PriceService...");
+		log.trace("Constructing PriceService...");
 		const service: PriceService = new PriceService(storageProvider, sourceProviders);
 
-		logger.info("Initializing InfoService...");
-		await service.init();
-
-		options.endpoints.forEach((endpoint: Configuration.Endpoint | express.Router) => {
+		log.info("Constructing endpoints...");
+		for (const endpoint of opts.endpoints) {
 			if ("type" in endpoint) {
 				switch (endpoint.type) {
-					case "http":
-					case "https": {
-						if (expressApp === null) {
-							expressApp = expressAppInit(service, logger);
-						}
-						const endpointInstance: HttpEndpoint = new HttpEndpoint(expressApp, endpoint, logger);
+					case "rest": {
+						const endpointInstance: PriceServiceRestEndpoint = new PriceServiceRestEndpoint(
+							servers.filter(s => endpoint.servers.includes(s.name)).map(si => si.server),
+							service,
+							endpoint,
+							log
+						);
+						endpoints.push(endpointInstance);
+						break;
+					}
+					case "websocket": {
+						const protocolAdapter = await protocolAdapterFactory(service, endpoint.protocol, log);
+						const endpointInstance: PriceServiceWebSocketEndpoint = new PriceServiceWebSocketEndpoint(
+							servers.filter(s => endpoint.servers.includes(s.name)).map(si => si.server),
+							endpoint,
+							log
+						);
+						endpointInstance.use(protocolAdapter);
 						endpoints.push(endpointInstance);
 						break;
 					}
 					case "express-router": {
-						routeAppInit(service, endpoint.router);
+						const routerEndpoint: PriceServiceRouterEndpoint = new PriceServiceRouterEndpoint(
+							servers.filter(s => endpoint.servers.includes(s.name)).map(si => si.server), service,
+							endpoint,
+							log
+						);
+						endpoints.push(routerEndpoint);
+						break;
+					}
+					case "websocket-binder": {
+						const protocolAdapter = await protocolAdapterFactory(service, endpoint.protocol, log, endpoint.methodPrefix);
+						endpoint.target.use(protocolAdapter);
 						break;
 					}
 					default:
 						throw new UnreachableEndpointError(endpoint);
 				}
 			}
-		});
+		}
+
+		log.info("Initializing InfoService...");
+		await service.init();
 
 		destroyHandlers.push(() => service.dispose().promise);
 
-		logger.info("Initializing endpoints...");
+		log.info("Initializing endpoints...");
 		for (let endpointIndex = 0; endpointIndex < endpoints.length; endpointIndex++) {
 			const endpointInstance = endpoints[endpointIndex];
 			await endpointInstance.init();
 			destroyHandlers.push(() => endpointInstance.dispose().promise);
+		}
+
+		for (const serverInfo of _.values(serversMap)) {
+			if (serverInfo.isOwnInstance === true) {
+				if (log.isInfoEnabled) {
+					log.info(`Start server: ${serverInfo.server.name}`);
+				}
+				setupExpressErrorHandles(serverInfo.server.expressApplication, log);
+				await serverInfo.server.listen();
+				destroyHandlers.push(() => serverInfo.server.dispose().promise);
+			}
 		}
 	} catch (e) {
 		await destroy();
 		throw e;
 	}
 
-	logger.info("Initialization completed succefully.");
+	log.info("Initialization completed succefully.");
 
 	const runtime: Runtime = { destroy };
 
@@ -96,7 +146,7 @@ namespace helpers {
 		const redisStorageProvider = new RedisStorageProvider(opts);
 		return redisStorageProvider;
 	}
-	export function createSourceProviders(options: Sources): Array<SourceProvider> {
+	export function createSourceProviders(options: Setting.Sources): Array<SourceProvider> {
 		const sourceIds: Array<string> = Object.keys(options);
 		const friendlySources: Array<any> = [];
 
@@ -148,37 +198,6 @@ namespace helpers {
 		return optsForRedis;
 	}
 }
-
-export interface ArgumentConfig {
-	/** Set settings endponts or send new routers */
-	endpoints: Array<Configuration.Endpoint | express.Router>;
-	/** Connection URL to database */
-	storageURL: URL;
-	/** List source system and settings */
-	sources: Sources;
-	/** { Key: value } Other settings limit params, etc... */
-	opts: OptionsEnv;
-}
-
-export type Sources = SourcesDefault & SourcesAny;
-interface SourcesDefault {
-	CRYPTOCOMPARE?: RestClient.Opts;
-	POLONIEX?: RestClient.Opts;
-	BINANCE?: RestClient.Opts;
-}
-interface SourcesAny {
-	[source: string]: any;
-}
-
-export interface OptionsEnv {
-	/**
-	 * Demand - prices are cached only at the user's request
-	 * Sync - service automatically copies all required prices
-	 */
-	priceMode: PriceMode;
-}
-
-export declare const enum PriceMode { DEMAND = "DEMAND", SYNC = "SYNC" }
 
 class UnreachableEndpointError extends Error {
 	public constructor(endpoint: never) {

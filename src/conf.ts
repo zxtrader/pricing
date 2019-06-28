@@ -1,12 +1,39 @@
 import * as zxteam from "@zxteam/contract";
-
+import * as webserver from "@zxteam/webserver";
+import { RestClient } from "@zxteam/restclient";
 import { Configuration } from "@zxteam/contract";
-import { ArgumentConfig, Sources, PriceMode } from ".";
+
 import { Router } from "express-serve-static-core";
 
-export interface Configuration { endpoints: Array<Configuration.Endpoint>; }
+import { ProtocolType, UnreachableProtocolTypeError } from "./protocol";
+
+// export interface Configuration { endpoints: Array<Configuration.Endpoint>; }
 
 export namespace Configuration {
+
+	export type PriceServiceEndpoint = PriceServiceRestEndpoint | PriceServiceWebSocketEndpoint
+		| PriceServiceExpressRouterEndpoint | PriceServiceWebSocketBinderEndpoint;
+
+	export interface PriceServiceRestEndpoint extends webserver.Configuration.BindEndpoint {
+		readonly type: "rest";
+		readonly bindPathWeb: string | null;
+	}
+	export interface PriceServiceWebSocketEndpoint extends webserver.Configuration.BindEndpoint {
+		readonly type: "websocket";
+		readonly protocol: ProtocolType;
+	}
+	export interface PriceServiceExpressRouterEndpoint extends webserver.Configuration.BindEndpoint {
+		readonly type: "express-router";
+		readonly router: Router;
+	}
+	export interface PriceServiceWebSocketBinderEndpoint {
+		readonly type: "websocket-binder";
+		readonly target: webserver.WebSocketBinderEndpoint;
+		readonly protocol: ProtocolType;
+		readonly methodPrefix?: string;
+	}
+
+
 	export type Endpoint = HttpEndpoint | HttpsEndpoint | ExpressRouterEndpoint;
 
 	export interface HttpEndpoint {
@@ -47,10 +74,48 @@ export namespace Configuration {
 	}
 }
 
-export function configurationFactory(configuration: zxteam.Configuration): ArgumentConfig {
+export namespace Setting {
+
+	export interface ArgumentConfig {
+		readonly servers: ReadonlyArray<webserver.Configuration.WebServer | webserver.WebServer>;
+		/** Set settings endponts or send new routers */
+		readonly endpoints: ReadonlyArray<Configuration.PriceServiceEndpoint>;
+		/** Connection URL to database */
+		readonly storageURL: URL;
+		/** List source system and settings */
+		readonly sources: Sources;
+		/** { Key: value } Other settings limit params, etc... */
+		readonly opts: OptionsEnv;
+	}
+
+	export type Sources = SourcesDefault & SourcesAny;
+
+	interface SourcesDefault {
+		CRYPTOCOMPARE?: RestClient.Opts;
+		POLONIEX?: RestClient.Opts;
+		BINANCE?: RestClient.Opts;
+	}
+
+	interface SourcesAny {
+		[source: string]: any;
+	}
+
+	export interface OptionsEnv {
+		/**
+		 * Demand - prices are cached only at the user's request
+		 * Sync - service automatically copies all required prices
+		 */
+		priceMode: PriceMode;
+	}
+
+	export declare const enum PriceMode { DEMAND = "DEMAND", SYNC = "SYNC" }
+}
+
+export function configurationFactory(configuration: zxteam.Configuration): Setting.ArgumentConfig {
+	const servers = webserver.Configuration.parseWebServers(configuration);
 	const sources = helper.parseSources(configuration);
 
-	const endpoints = configuration.getString("endpoints").split(" ").map((endpointIndex: string): Configuration.Endpoint => {
+	const endpoints = configuration.getString("endpoints").split(" ").map((endpointIndex: string): Configuration.PriceServiceEndpoint => {
 		return helper.parseEndpoint(configuration, endpointIndex);
 	});
 
@@ -58,13 +123,13 @@ export function configurationFactory(configuration: zxteam.Configuration): Argum
 
 	const opts = helper.parseOpts(configuration);
 
-	const appConfig: ArgumentConfig = { endpoints, sources, storageURL, opts };
+	const appConfig: Setting.ArgumentConfig = { servers, endpoints, sources, storageURL, opts };
 	return appConfig;
 }
 
 export namespace helper {
-	export function parseSources(configuration: zxteam.Configuration): Sources {
-		const sources: Sources = {};
+	export function parseSources(configuration: zxteam.Configuration): Setting.Sources {
+		const sources: Setting.Sources = {};
 		// == Read configuration from config.ini file ==
 		const sourceIds: Array<string> = configuration.getString("sources").split(" ");
 		for (let i = 0; i < sourceIds.length; i++) {
@@ -89,33 +154,35 @@ export namespace helper {
 		}
 		return sources;
 	}
-	export function parseEndpoint(configuration: zxteam.Configuration, endpointIndex: string): Configuration.Endpoint {
+	export function parseEndpoint(configuration: zxteam.Configuration, endpointIndex: string): Configuration.PriceServiceEndpoint {
 		const endpointConfiguration: zxteam.Configuration = configuration.getConfiguration(`endpoint.${endpointIndex}`);
 		const endpointType = endpointConfiguration.getString("type");
 		switch (endpointType) {
-			case "http": {
-				const httpEndpoint: Configuration.HttpEndpoint = {
-					type: "http",
-					listenHost: endpointConfiguration.getString("listenHost"),
-					listenPort: endpointConfiguration.getInt("listenPort"),
-					trustProxy: helper.parseTrustProxy(endpointConfiguration.getString("trustProxy"))
+			case "rest": {
+				const httpEndpoint: Configuration.PriceServiceRestEndpoint = {
+					type: "rest",
+					servers: endpointConfiguration.getString("servers").split(" "),
+					bindPath: endpointConfiguration.getString("bindPath", "/"),
+					bindPathWeb: endpointConfiguration.hasKey("bindPathWeb") ? endpointConfiguration.getString("bindPathWeb") : null
 				};
 				return httpEndpoint;
 			}
-			case "https": {
-				const httpsEndpoint: Configuration.HttpsEndpoint = {
-					type: "https",
-					listenHost: endpointConfiguration.getString("listenHost"),
-					listenPort: endpointConfiguration.getInt("listenPort"),
-					trustProxy: helper.parseTrustProxy(endpointConfiguration.getString("trustProxy")),
-					requireClientCertificate: endpointConfiguration.getBoolean("requireClientCertificate"),
-					caCertificate: endpointConfiguration.getString("caCertificate"),
-					serviceCertificate: endpointConfiguration.getString("serviceCertificate"),
-					serviceKey: endpointConfiguration.getString("serviceKey"),
-					serviceKeyPassword: endpointConfiguration.hasKey("serviceKeyPassword") ?
-						endpointConfiguration.getString("serviceKeyPassword") : undefined
+			case "websocket": {
+				const protocolType = endpointConfiguration.getString("protocol") as ProtocolType;
+				switch (protocolType) {
+					case ProtocolType.JSONRPC:
+					case ProtocolType.PROTOBUF:
+						break;
+					default:
+						throw new UnreachableProtocolTypeError(protocolType);
+				}
+				const webSocketEndpoint: Configuration.PriceServiceWebSocketEndpoint = {
+					type: "websocket",
+					servers: endpointConfiguration.getString("servers").split(" "),
+					bindPath: endpointConfiguration.getString("bindPath", "/"),
+					protocol: protocolType
 				};
-				return httpsEndpoint;
+				return webSocketEndpoint;
 			}
 			default:
 				throw new Error(`Non supported endpont type: ${endpointType}`);
@@ -141,10 +208,10 @@ export namespace helper {
 		const priceMode: string = configuration.getString("PRICE_MODE");
 		switch (priceMode) {
 			case "DEMAND": {
-				return { priceMode: PriceMode.DEMAND };
+				return { priceMode: Setting.PriceMode.DEMAND };
 			}
 			case "SYNC": {
-				return { priceMode: PriceMode.SYNC };
+				return { priceMode: Setting.PriceMode.SYNC };
 			}
 			default: {
 				throw new Error(`Don't support  this mode: ${priceMode}`);

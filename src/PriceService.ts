@@ -5,8 +5,11 @@ import { SourceProvider } from "./providers/source/contract";
 import { StorageProvider } from "./providers/storage/contract";
 import { Initable } from "@zxteam/disposable";
 import moment = require("moment");
+import * as path from "path";
 
-export class PriceService extends Initable {
+const { version } = require(path.join(__dirname, "../package.json"));
+
+export class PriceService extends Initable implements PriceService {
 	private readonly _storageProvider: StorageProvider;
 	private readonly _sourceProviders: Array<SourceProvider>;
 	private readonly _sourcesId: Array<string>;
@@ -74,6 +77,16 @@ export class PriceService extends Initable {
 			}
 			return friendlyPrices;
 		}, cancellationToken);
+	}
+
+	public ping(
+		cancellationToken: zxteam.CancellationToken, echo: string
+	): zxteam.Task<{ readonly echo: string; readonly time: Date; readonly version: string; }> {
+		return Task.resolve({
+			echo,
+			time: new Date(),
+			version
+		});
 	}
 
 	protected onInit() {
@@ -232,6 +245,16 @@ export namespace price {
 		/** Price must be number */
 		price: string;
 	}
+}
+
+export interface PriceService {
+	getHistoricalPrices(
+		cancellationToken: zxteam.CancellationToken, args: Array<price.Argument>
+	): zxteam.Task<price.Timestamp>;
+
+	ping(
+		cancellationToken: zxteam.CancellationToken, echo: string
+	): zxteam.Task<{ readonly echo: string; readonly time: Date; readonly version: string; }>;
 }
 
 export class InvalidDateError extends Error { }

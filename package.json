@@ -17,27 +17,33 @@
 	],
 	"license": "MIT",
 	"devDependencies": {
+		"@types/compression": "^0.0.36",
 		"@types/ioredis": "^4.0.12",
 		"@types/lodash": "^4.14.134",
 		"@types/morgan": "^1.7.35",
-		"@types/node": "^12.0.8",
+		"@types/node": "^11.13.14",
+		"@types/ws": "^6.0.1",
 		"@zxnode/build": "^0.0.34"
 	},
 	"dependencies": {
-		"@zxteam/configuration": "^4.0.2",
-		"@zxteam/contract": "^5.0.0",
-		"@zxteam/ensure.js": "^1.2.0",
-		"@zxteam/financial.js": "^5.0.5",
-		"@zxteam/launcher": "^4.0.0",
-		"@zxteam/limit": "^4.0.0",
-		"@zxteam/logger": "^4.0.0",
-		"@zxteam/restclient": "^4.0.0",
-		"@zxteam/task": "^4.0.0",
+		"@zxteam/configuration": "^5.0.1",
+		"@zxteam/contract": "^5.0.1",
+		"@zxteam/ensure.js": "^5.0.1",
+		"@zxteam/financial.js": "^5.0.6",
+		"@zxteam/launcher": "^5.0.1",
+		"@zxteam/limit": "^5.0.1",
+		"@zxteam/logger": "^5.0.1",
+		"@zxteam/restclient": "^5.0.2",
+		"@zxteam/task": "^5.0.1",
+		"@zxteam/webserver": "^5.0.5",
+		"compression": "^1.7.4",
+		"ajv": "^6.10.0",
 		"express": "^4.17.1",
 		"ioredis": "^4.10.0",
 		"lodash": "^4.17.11",
 		"moment": "^2.24.0",
-		"morgan": "^1.9.1"
+		"morgan": "^1.9.1",
+		"ws": "^7.0.1"
 	},
 	"engines": {
 		"node": ">=11"
@@ -54,7 +60,7 @@
 	"scripts": {
 		"build": "zxbuild clean && zxbuild dist",
 		"clean": "zxbuild clean",
-		"start": "node src/app.js",
+		"start": "node src/app.js --config=config.ini",
 		"test": "nyc --exclude submodules --exclude test --extension=\".ts\" --reporter=lcov --reporter=text --reporter=text-summary mocha \"test/**/*.test.js\" --recursive mocha --timeout 10000"
 	},
 	"private": true

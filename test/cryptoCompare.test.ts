@@ -1,6 +1,6 @@
 import * as zxteam from "@zxteam/contract";
 import { DUMMY_CANCELLATION_TOKEN, Task } from "@zxteam/task";
-import WebClient, { WebClientLike, WebClientInvokeArgs, WebClientInvokeResult } from "@zxteam/webclient";
+import WebClient, { WebClientInvokeArgs, WebClientInvokeResult } from "@zxteam/webclient";
 import RestClient from "@zxteam/restclient";
 import { URL } from "url";
 
@@ -11,7 +11,6 @@ import { assert } from "chai";
 import { SourceProvider } from "../src/providers/source/contract";
 import { Cryptocompare } from "../src/providers/source/Cryptocompare";
 import { price } from "../src/PriceService";
-
 
 
 describe("Crypto Compare Tests", function () {
@@ -30,7 +29,7 @@ describe("Crypto Compare Tests", function () {
 		let workToken;
 		let workArgs: any;
 		let workCount = 0;
-		const fakeWebClient: WebClientLike = {
+		const fakeWebClient: any = {
 			dispose(): zxteam.Task<void> { return Task.resolve(); },
 			invoke(cancellationToken: zxteam.CancellationToken, args: WebClientInvokeArgs): zxteam.Task<WebClientInvokeResult> {
 				workArgs = args;
