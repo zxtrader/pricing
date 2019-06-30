@@ -26,6 +26,29 @@ The service is focused on launching in the Docker container and most of the para
 
 ### Settings file
 ```
+servers = 0 1
+
+server.0.listenHost = localhost
+server.0.listenPort = 8080
+server.0.type = http
+
+server.1.listenHost = localhost
+server.1.listenPort = 8081
+server.1.type = http
+
+# Count endpoints
+endpoints = 0 1
+
+endpoint.0.type = rest
+endpoint.0.servers = 0
+endpoint.0.bindPath = /v0
+endpoint.0.bindPathWeb = /
+
+endpoint.1.type = rest
+endpoint.1.servers = 1
+endpoint.1.bindPath = /v1
+endpoint.1.bindPathWeb = /
+
 # Set list of sources providers
 sources=cryptocompare zxtrader
 
@@ -79,21 +102,132 @@ $ npm run test
 
 ## How to use the service
 
-### HTTP(S)
-HTTP Query grammar looks like [(see complete grammar)](docs/http-query-grammar.md):
-[![Query grammar](docs/http-query-grammar/QUERY.png)](docs/http-query-grammar.md)
+### REST API HTTP(S)
 
-Simple query with result as text (Don't implement yet)
+## Methods
+* ping - [Ping](#ping) check status service.
+* Single - [Historical rate (single)](#Historical-rate-(single)) Return single price or null.
+* Batch - [Historical rates (batch)](#Historical-rates-(batch)) Return list key - prices.
+* Multi sources - [Multi price from sources](#Multi-price-from-sources) Price from al sources.
+* From source - [Price from source system](#Price-from-source-system) Price by one source system.
+* Avarage - [Avarage price](#Avarage-price) Return avarage price all sources.
+* Multi - [Multi request](#Multi-request) Return prices from all sources and avg price.
+
+#### Ping
+##### REST
+```
+$ curl --verbose https://service.zxtrader.com/exchanges/info/v0/api/ping?echo=hello
+
+> GET /ping?echo=hello HTTP/1.1
+> Host: ${SERVICE_HOST_NAME}:${SERVICE_PORT}
+> Accept: */*
+> 
+< HTTP/1.1 200 OK
+```
+```json
+{"echo":"hello","time":"2019-06-11T16:08:07.713Z","version":"1.0.0"}
+```
+##### JSON-RPC
 ```bash
-$ curl --header 'Accept: text/plain' https://service.zxtrader.com/price/v1/20180808190523:USDT:BTC
-13400.89
+$ wscat --connect wss://service.zxtrader.com/exchanges/info/v0/ws/jsonrpc
+```
+```json
+connected (press CTRL+C to quit)
+> {"jsonrpc":"2.0","id":42,"method":"ping","params":{"echo":"hello"}}
+< {"jsonrpc":"2.0","id":42,"result":{"echo":"hello","time":"2019-06-25T17:24:32.660Z","version":"0.31.3"}}
 ```
 
+#### Historical rate (single)
+Get a historical rate
+##### REST
+* Date timezone: UTC
+* Date format: YYYYMMDDHHmmss
+* Response will be `null` if the service does not have rate value
+```
+curl --verbose --key license.key --cert license.crt https://service.zxtrader.com/v1/rate/single?exchange=BINANCE&date=20190627002015&market=USDT&trade=BTC
+```
+```
+"13369.94000000"
+```
+or
+```
+null
+```
+##### JSON-RPC
+```json
+> {"jsonrpc":"2.0","id":42,"method":"rate/single",
+	"params": {
+		"exchange": "BINANCE",
+		"date": "2018-01-01T10:20:10Z", 
+		"market": "BTC", 
+		"trade": "ZEC"
+		}
+	}
+< {
+	"jsonrpc":"2.0",
+	"id":42,
+	"result": "65.2312356"
+}
+```
+or
+```json
+< {
+	"jsonrpc":"2.0",
+	"id":42,
+	"result": null
+}
+```
+#### Historical rates (batch)
+Get batch of historical rates
+* Date timezone: UTC
+* Date format: YYYYMMDDHHmmss
+* Response will be `null` if the service does not have rate value
+##### REST
+```bash
+curl --verbose --key license.key --cert license.crt https://service.zxtrader.com/v1/rate/batch?items=20180101102010:BTC:ZEC,20180101102020:BTC:ETH,20180101102020:USDT:BTC
+```
+```
+{
+	"20180101102010:BTC:ZEC": "65.2312356",
+	"20180101102020:BTC:ETH": "122.348754",
+	"20180101102020:USDT:BTC": null
+}
+```
+##### JSON-RPC
+```json
+--> {
+	"jsonrpc":"2.0",
+	"id":42,
+	"method":"rate/batch",
+	"params": [
+			"20180101102010:BTC:ZEC",
+			"20180101102020:BTC:ETH",
+			"20180101102020:USDT:BTC"
+		]
+}
+```
+```json
+<-- {
+	"jsonrpc":"2.0",
+	"id":42,
+	"result": [
+		"20180101102010:BTC:ZEC": "65.2312356",
+		"20180101102020:BTC:ETH": "122.348754",
+		"20180101102020:USDT:BTC": null
+	]
+}
+```
+
+
+#### Multi price from sources
+HTTP Query grammar looks like [(see complete grammar)](docs/http-query-grammar.md):
+[![Query grammar](docs/http-query-grammar/QUERY.png)](docs/http-query-grammar.md)
+##### REST
 Get prices from all sources
 ```bash
 $ curl --header 'Accept: application/json' https://service.zxtrader.com/price/v1/20180808190523:USDT:BTC:
 ```
-```bash
+```json
 {
 	"20180808190523": {
 		"USD": {
@@ -114,12 +248,17 @@ $ curl --header 'Accept: application/json' https://service.zxtrader.com/price/v1
 	}
 }
 ```
-
+##### JSON-RPC
+```
+JSON-RPC don't implemented yet.
+```
+#### Price from source system
 Get price from one source system example CRYPTOCOMPARE
-```bash
+##### REST
+```json
 $ curl --header 'Accept: application/json' https://service.zxtrader.com/price/v1/20180808190523:USDT:BTC:CRYPTOCOMPARE
 ```
-```bash
+```json
 {
 	"20180808190523": {
 		"USD": {
@@ -137,12 +276,18 @@ $ curl --header 'Accept: application/json' https://service.zxtrader.com/price/v1
 	}
 }
 ```
+##### JSON-RPC
+```
+JSON-RPC don't implemented yet.
+```
 
+#### Avarage price
 Get avarage price without sources system
-```bash
+##### REST
+```json
 $ curl --header 'Accept: application/json' https://service.zxtrader.com/price/v1/20180808190523:USDT:BTC
 ```
-```bash
+```json
 {
 	"20180808190523": {
 		"USD": {
@@ -155,12 +300,18 @@ $ curl --header 'Accept: application/json' https://service.zxtrader.com/price/v1
 	}
 }
 ```
+##### JSON-RPC
+```
+JSON-RPC don't implemented yet.
+```
 
-Multi request
-```bash
+#### Multi request
+Multi request from all sources
+##### REST
+```json
 $ curl --header 'Accept: application/json' https://service.zxtrader.com/price/v1/20180808190523:USDT:BTC,20180808190523:USDT:ETH:,20180808190523:USDT:ZEC:CRYPTOCOMPARE
 ```
-```bash
+```json
 {
 	"20180808190523": {
 		"USDT": {
@@ -199,9 +350,10 @@ $ curl --header 'Accept: application/json' https://service.zxtrader.com/price/v1
 	}
 }
 ```
-
-### WebSoket
-TBD
+##### JSON-RPC
+```
+JSON-RPC don't implemented yet.
+```
 
 ## How to extend the service with a new source provider
 All of you need is to write own implementation of a source provider interface and place in into `src/providers` directory. Take a look at the source provider interface in `src/providers/source/contract.ts`. Use `src/providers/source/random.ts` as example.
