@@ -30,8 +30,6 @@ export default async function (opts: Setting.ArgumentConfig): Promise<Runtime> {
 	const destroyHandlers: Array<() => Promise<void>> = [];
 	function destroy(): Promise<void> { return destroyHandlers.reverse().reduce((p, c) => p.then(c), Promise.resolve()); }
 
-	const endpoints: Array<zxteam.Initable> = [];
-
 	log.trace("Constructing Storage provider...");
 	const dataStorageUrl = opts.storageURL;
 	const storageProvider = helpers.createStorageProvider(dataStorageUrl);
@@ -45,7 +43,7 @@ export default async function (opts: Setting.ArgumentConfig): Promise<Runtime> {
 			return { name: server.name, server, isOwnInstance: false };
 		}
 		const ownServerInstance = webserver.createWebServer(server, log);
-		ownServerInstance.expressApplication = createExpressApplication(log);
+		ownServerInstance.rootExpressApplication = createExpressApplication(log);
 		return { name: ownServerInstance.name, server: ownServerInstance, isOwnInstance: true };
 	});
 	const serversMap: { readonly [serverName: string]: { server: webserver.WebServer, isOwnInstance: boolean } } = _.keyBy(
@@ -62,6 +60,7 @@ export default async function (opts: Setting.ArgumentConfig): Promise<Runtime> {
 		const service: PriceService = new PriceService(storageProvider, sourceProviders);
 
 		log.info("Constructing endpoints...");
+		const endpointInstances: Array<zxteam.Initable> = [];
 		for (const endpoint of opts.endpoints) {
 			if ("type" in endpoint) {
 				switch (endpoint.type) {
@@ -72,7 +71,7 @@ export default async function (opts: Setting.ArgumentConfig): Promise<Runtime> {
 							endpoint,
 							log
 						);
-						endpoints.push(endpointInstance);
+						endpointInstances.push(endpointInstance);
 						break;
 					}
 					case "websocket": {
@@ -83,7 +82,7 @@ export default async function (opts: Setting.ArgumentConfig): Promise<Runtime> {
 							log
 						);
 						endpointInstance.use(protocolAdapter);
-						endpoints.push(endpointInstance);
+						endpointInstances.push(endpointInstance);
 						break;
 					}
 					case "express-router": {
@@ -92,7 +91,7 @@ export default async function (opts: Setting.ArgumentConfig): Promise<Runtime> {
 							endpoint,
 							log
 						);
-						endpoints.push(routerEndpoint);
+						endpointInstances.push(routerEndpoint);
 						break;
 					}
 					case "websocket-binder": {
@@ -112,8 +111,8 @@ export default async function (opts: Setting.ArgumentConfig): Promise<Runtime> {
 		destroyHandlers.push(() => service.dispose().promise);
 
 		log.info("Initializing endpoints...");
-		for (let endpointIndex = 0; endpointIndex < endpoints.length; endpointIndex++) {
-			const endpointInstance = endpoints[endpointIndex];
+		for (let endpointIndex = 0; endpointIndex < endpointInstances.length; endpointIndex++) {
+			const endpointInstance = endpointInstances[endpointIndex];
 			await endpointInstance.init();
 			destroyHandlers.push(() => endpointInstance.dispose().promise);
 		}
@@ -123,7 +122,7 @@ export default async function (opts: Setting.ArgumentConfig): Promise<Runtime> {
 				if (log.isInfoEnabled) {
 					log.info(`Start server: ${serverInfo.server.name}`);
 				}
-				setupExpressErrorHandles(serverInfo.server.expressApplication, log);
+				setupExpressErrorHandles(serverInfo.server.rootExpressApplication, log);
 				await serverInfo.server.listen();
 				destroyHandlers.push(() => serverInfo.server.dispose().promise);
 			}

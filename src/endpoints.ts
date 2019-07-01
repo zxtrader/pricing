@@ -26,7 +26,7 @@ export class PriceServiceRestEndpoint extends webserver.RestEndpoint<PriceServic
 
 	protected onInit(): void {
 		for (const server of this._servers) {
-			const app: express.Application = server.expressApplication;
+			const app: express.Application = server.rootExpressApplication;
 
 			const apiRouter = apiV1(this._service, this._bindPath, this._log);
 			app.use(this._bindPath, apiRouter);

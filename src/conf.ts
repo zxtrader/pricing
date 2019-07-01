@@ -11,8 +11,12 @@ import { ProtocolType, UnreachableProtocolTypeError } from "./protocol";
 
 export namespace Configuration {
 
-	export type PriceServiceEndpoint = PriceServiceRestEndpoint | PriceServiceWebSocketEndpoint
-		| PriceServiceExpressRouterEndpoint | PriceServiceWebSocketBinderEndpoint;
+	export type PriceServiceEndpoint
+		= PriceServiceRestEndpoint
+		| PriceServiceWebSocketEndpoint
+		| PriceServiceExpressRouterEndpoint
+		| PriceServiceWebSocketBinderEndpoint;
+
 
 	export interface PriceServiceRestEndpoint extends webserver.Configuration.BindEndpoint {
 		readonly type: "rest";
@@ -134,11 +138,11 @@ export namespace helper {
 		const sourceIds: Array<string> = configuration.getString("sources").split(" ");
 		for (let i = 0; i < sourceIds.length; i++) {
 			const sourceId = sourceIds[i];
-			const parallel = configuration.getInt(`source.${sourceId}.limit.parallel`);
-			const perSecond = configuration.getInt(`source.${sourceId}.limit.perSecond`);
-			const perMinute = configuration.getInt(`source.${sourceId}.limit.perMinute`);
-			const perHour = configuration.getInt(`source.${sourceId}.limit.perHour`);
-			const timeout = configuration.getInt(`source.${sourceId}.timeout`);
+			const parallel = configuration.getInteger(`source.${sourceId}.limit.parallel`);
+			const perSecond = configuration.getInteger(`source.${sourceId}.limit.perSecond`);
+			const perMinute = configuration.getInteger(`source.${sourceId}.limit.perMinute`);
+			const perHour = configuration.getInteger(`source.${sourceId}.limit.perHour`);
+			const timeout = configuration.getInteger(`source.${sourceId}.timeout`);
 
 			sources[sourceId] = {
 				limit: {
