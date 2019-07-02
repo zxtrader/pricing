@@ -5,8 +5,8 @@ ARG TARGET=release
 WORKDIR /build
 COPY .dist/ usr/local/com.zxtrader.price/
 COPY .npmrc usr/local/com.zxtrader.price/
-COPY config.ini etc/com.zxtrader.price/config.ini
-COPY log4js.json etc/com.zxtrader.price/log4js.json
+COPY config.${TARGET}.ini etc/com.zxtrader.price/config.ini
+COPY log4js.${TARGET}.json etc/com.zxtrader.price/log4js.json
 RUN cd usr/local/com.zxtrader.price/ && npm install --quiet --production
 RUN rm usr/local/com.zxtrader.price/.npmrc && \
 	chown root:root -R etc/com.zxtrader.price && \
