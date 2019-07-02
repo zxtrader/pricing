@@ -94,7 +94,7 @@ container:tag:
     - echo "Image ${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_NAME} -> ${CI_REGISTRY_IMAGE}:latest was staged successfully"
 
 image:commit:
-  stage: staging
+  stage: stag
   dependencies:
     - compile
   tags:
