@@ -1,4 +1,7 @@
-image: node:11-alpine
+variables:
+  BUILD_IMAGE: node:11-alpine
+
+image: ${BUILD_IMAGE}
 
 .scripting: &utils |
   function setup_npm_token() {
@@ -16,27 +19,23 @@ image: node:11-alpine
     fi
   }
 
-
-cache:
-  paths:
-    - node_modules/
-
 stages:
-  - build
-  - test
-  - stag
-  - package
+  - building
+  - testing
+  - staging
+
+before_script:
+  - date
 
 compile:
-  stage: build
+  stage: building
   tags:
     - docker
   variables:
     GIT_STRATEGY: clone
-    GIT_SUBMODULE_STRATEGY: none
-  before_script:
-    - npm install --progress=false
   script:
+    - *utils
+    - npm install --progress=false
     - npm run build
   artifacts:
     expire_in: 3 days
@@ -50,51 +49,24 @@ compile:
       - scripts/
       - .npmrc
       - Dockerfile
-      - Dockerfile.redis
-      - config.ini
-      - log4js.json
+      - config*.json
+      - log4js*.json
       - package.json
     when: on_success
 
 test:
-  stage: test
+  stage: testing
   tags:
     - docker
   dependencies:
     - compile
   variables:
     GIT_STRATEGY: none
-    DATASTORAGE_URL: 'redis://devtest@redis:6379/5'
-  services:
-    - name: redis
-      alias: redis
   script:
     - npm run test
 
-container:tag:
-  stage: stag
-  tags:
-    - docker-builder
-  dependencies:
-    - compile
-    - test
-  when: on_success
-  only:
-    - tags
-  variables:
-    GIT_STRATEGY: none
-    GIT_SUBMODULE_STRATEGY: none
-  before_script:
-    - echo $CI_REGISTRY_PASSWORD | docker login --username $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
-  script:
-    - docker build --tag $CI_REGISTRY_IMAGE:latest . -f Dockerfile.redis
-    - docker tag $CI_REGISTRY_IMAGE:latest $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
-    - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
-    - docker push $CI_REGISTRY_IMAGE:latest
-    - echo "Image ${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_NAME} -> ${CI_REGISTRY_IMAGE}:latest was staged successfully"
-
 image:commit:
-  stage: stag
+  stage: staging
   dependencies:
     - compile
   tags:
@@ -117,8 +89,32 @@ image:commit:
     - docker push "${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_SLUG}"
     - echo "Image ${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_SLUG}.$(echo ${CI_COMMIT_SHA} | head -c 8) -> ${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_SLUG} was staged successfully"
 
+image:release:
+  stage: staging
+  dependencies:
+    - compile
+  tags:
+    - docker-builder
+  when: manual
+  only:
+    - tags
+  variables:
+    GIT_STRATEGY: clone
+  script:
+    - echo "${CI_REGISTRY_PASSWORD}" | docker login --username "${CI_REGISTRY_USER}" --password-stdin "${CI_REGISTRY}"
+    - docker build --tag "${CI_COMMIT_REF_SLUG}.$(echo ${CI_COMMIT_SHA} | head -c 8)" --build-arg TARGET=release --build-arg IMAGE="${BUILD_IMAGE}" .
+    - echo "Make image tag ${CI_REGISTRY_IMAGE}:${CI_COMMIT_TAG}"
+    - docker tag "${CI_COMMIT_REF_SLUG}.$(echo ${CI_COMMIT_SHA} | head -c 8)" "${CI_REGISTRY_IMAGE}:${CI_COMMIT_TAG}"
+    - echo "Make image tag ${CI_REGISTRY_IMAGE}:latest"
+    - docker tag "${CI_COMMIT_REF_SLUG}.$(echo ${CI_COMMIT_SHA} | head -c 8)" "${CI_REGISTRY_IMAGE}:latest"
+    - echo "Push image ${CI_REGISTRY_IMAGE}:${CI_COMMIT_TAG}"
+    - docker push "${CI_REGISTRY_IMAGE}:${CI_COMMIT_TAG}"
+    - echo "Push image ${CI_REGISTRY_IMAGE}:latest"
+    - docker push "${CI_REGISTRY_IMAGE}:latest"
+    - echo "Image ${CI_REGISTRY_IMAGE}:${CI_COMMIT_TAG} -> ${CI_REGISTRY_IMAGE}:latest was staged successfully"
+
 package:tag:
-  stage: package
+  stage: staging
   tags:
     - docker
   dependencies:
