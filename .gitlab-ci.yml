@@ -93,6 +93,30 @@ container:tag:
     - docker push $CI_REGISTRY_IMAGE:latest
     - echo "Image ${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_NAME} -> ${CI_REGISTRY_IMAGE}:latest was staged successfully"
 
+image:commit:
+  stage: staging
+  dependencies:
+    - compile
+  tags:
+    - docker-builder
+  when: manual
+  only:
+    - branches
+  variables:
+    GIT_STRATEGY: clone
+  script:
+    - echo "${CI_REGISTRY_PASSWORD}" | docker login --username "${CI_REGISTRY_USER}" --password-stdin "${CI_REGISTRY}"
+    - docker build --tag "${CI_COMMIT_REF_SLUG}.$(echo ${CI_COMMIT_SHA} | head -c 8)" --build-arg TARGET="${CI_COMMIT_REF_SLUG}" --build-arg IMAGE="${BUILD_IMAGE}" .
+    - echo "Make image tag ${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_SLUG}.$(echo ${CI_COMMIT_SHA} | head -c 8)"
+    - docker tag "${CI_COMMIT_REF_SLUG}.$(echo ${CI_COMMIT_SHA} | head -c 8)" "${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_SLUG}.$(echo ${CI_COMMIT_SHA} | head -c 8)"
+    - echo "Make image tag ${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_SLUG}"
+    - docker tag "${CI_COMMIT_REF_SLUG}.$(echo ${CI_COMMIT_SHA} | head -c 8)" "${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_SLUG}"
+    - echo "Push image ${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_SLUG}.$(echo ${CI_COMMIT_SHA} | head -c 8)"
+    - docker push "${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_SLUG}.$(echo ${CI_COMMIT_SHA} | head -c 8)"
+    - echo "Push image ${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_SLUG}"
+    - docker push "${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_SLUG}"
+    - echo "Image ${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_SLUG}.$(echo ${CI_COMMIT_SHA} | head -c 8) -> ${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_SLUG} was staged successfully"
+
 package:tag:
   stage: package
   tags:
