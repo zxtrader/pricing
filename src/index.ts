@@ -141,7 +141,7 @@ export default async function (opts: Setting.ArgumentConfig): Promise<Runtime> {
 
 namespace helpers {
 	export function createStorageProvider(dataStorageUrl: URL): StorageProvider {
-		const opts: RedisOptions = helpers.getOptsForRedis(dataStorageUrl);
+		const opts: RedisOptions = helpers.parseRedisURL(dataStorageUrl);
 		const redisStorageProvider = new RedisStorageProvider(opts);
 		return redisStorageProvider;
 	}
@@ -177,25 +177,28 @@ namespace helpers {
 
 		return friendlySources;
 	}
-	export function getOptsForRedis(dataStorageUrl: URL): RedisOptions {
 
-		function praseToOptsRedis(url: URL): RedisOptions {
-			const host = url.hostname;
-			const port = Number(url.port);
-			const db = Number(url.pathname.slice(1));
+	export function parseRedisURL(dataStorageUrl: URL): RedisOptions {
+		const host = dataStorageUrl.hostname;
+		const port = Number(dataStorageUrl.port);
+		const db = Number(dataStorageUrl.pathname.slice(1));
+		const family: 4 | 6 = dataStorageUrl.searchParams.has("ip_family") && dataStorageUrl.searchParams.get("ip_family") === "6" ? 6 : 4;
+		const opts: RedisOptions = {
+			host, port, db, family,
+			lazyConnect: true,
+			keepAlive: 1000
+		};
 
-			const opts: RedisOptions = {
-				host,
-				port,
-				db
-			};
-			return opts;
+		if (dataStorageUrl.searchParams.has("name")) {
+			opts.connectionName = dataStorageUrl.searchParams.get("name") as string;
+		}
+		if (dataStorageUrl.searchParams.has("prefix")) {
+			opts.keyPrefix = dataStorageUrl.searchParams.get("prefix") as string;
 		}
 
-		const optsForRedis: RedisOptions = praseToOptsRedis(dataStorageUrl);
-
-		return optsForRedis;
+		return opts;
 	}
+
 }
 
 class UnreachableEndpointError extends Error {

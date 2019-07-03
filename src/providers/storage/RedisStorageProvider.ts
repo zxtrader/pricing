@@ -9,13 +9,16 @@ import { StorageProvider as StorageProviderInerface } from "./contract";
 import { financial } from "../../financial.js";
 
 export class RedisStorageProvider extends Initable implements StorageProviderInerface {
-	private readonly PRICE_PREFIX = "PRICE:PREFIX";
+	private readonly _prefix: string;
 	private readonly ioredis: Redis;
 	private readonly _logger = loggerFactory.getLogger("RedisStorage");
 	constructor(opts: RedisOptions) {
 		super();
 		opts.lazyConnect = true;
 		this.ioredis = new RedisClient(opts);
+		if (opts.keyPrefix) {
+			this._prefix = opts.keyPrefix;
+		}
 	}
 
 	public filterEmptyPrices(cancellationToken: zxteam.CancellationToken, args: Array<price.Argument>, sources: Array<string>)
@@ -28,7 +31,7 @@ export class RedisStorageProvider extends Initable implements StorageProviderIne
 				const { ts, marketCurrency, tradeCurrency, sourceId, requiredAllSourceIds: requiredAllSourceSystems } = arg;
 
 				this._logger.trace("Create keys for search price");
-				const corePriceRedisKey = `${this.PRICE_PREFIX}:${ts}:${marketCurrency}:${tradeCurrency}`;
+				const corePriceRedisKey = `${this._prefix}${ts}:${marketCurrency}:${tradeCurrency}`;
 
 				if (sourceId) {
 					if (this._logger.isTraceEnabled) {
@@ -102,7 +105,7 @@ export class RedisStorageProvider extends Initable implements StorageProviderIne
 				const { sourceId, ts, marketCurrency, tradeCurrency, price: newPrice } = argNewPrice;
 
 				this._logger.trace("Create keys for save price");
-				const corePriceRedisKey = `${this.PRICE_PREFIX}:${ts}:${marketCurrency}:${tradeCurrency}`;
+				const corePriceRedisKey = `${this._prefix}${ts}:${marketCurrency}:${tradeCurrency}`;
 				const priceSourceIdsRedisKey = `${corePriceRedisKey}:`;
 				const sourceIdPriceRedisKey = `${priceSourceIdsRedisKey}${sourceId}`;
 
@@ -193,7 +196,7 @@ export class RedisStorageProvider extends Initable implements StorageProviderIne
 				}
 
 				const { ts, marketCurrency, tradeCurrency, sourceId: sourceId, requiredAllSourceIds: requiredAllSourceId } = arg;
-				const corePriceRedisKey = `${this.PRICE_PREFIX}:${ts}:${marketCurrency}:${tradeCurrency}`;
+				const corePriceRedisKey = `${this._prefix}${ts}:${marketCurrency}:${tradeCurrency}`;
 				const priceSourceIdsRedisKey = `${corePriceRedisKey}:`;
 
 				if (this._logger.isTraceEnabled) {
