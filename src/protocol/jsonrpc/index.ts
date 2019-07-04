@@ -4,7 +4,7 @@ import * as _ from "lodash";
 
 // import { JsonSchemaManager, factory as jsonSchemaManagerFactory } from "../../misc/JsonSchemaManager";
 import * as ArrayBufferUtils from "../../misc/ArrayBufferUtils";
-import { PriceService } from "../../PriceService";
+import { PriceService, price } from "../../PriceService";
 import { Task, DUMMY_CANCELLATION_TOKEN } from "@zxteam/task";
 
 export async function factory(
@@ -38,7 +38,7 @@ export default factory;
 
 const enum ServiceMethod {
 	PING = "ping",
-	GETHISTORICALPRICES = "getHistoricalPrices"
+	RATESINGLE = "rate/single"
 }
 
 function jsonrpcMessageRouter(service: PriceService, message: any, methodPrefix?: string): zxteam.Task<any> {
@@ -81,13 +81,28 @@ function jsonrpcMessageRouter(service: PriceService, message: any, methodPrefix?
 		}
 
 		switch (realMethod) {
-			case ServiceMethod.GETHISTORICALPRICES: {
-				if (!(_.isObjectLike(params) && _.isString(params.exchangeId))) {
+			case ServiceMethod.RATESINGLE: {
+				if (!(_.isObjectLike(params)
+					&& _.isString(params.exchange)
+					&& _.isString(params.market)
+					&& _.isString(params.trade)
+					&& _.isString(params.date)
+				)) {
 					return Task.resolve({ jsonrpc: "2.0", id, error: { code: -32602, message: "Invalid method parameter(s)." } });
 				}
-				const exchangeId: string = params.exchangeId;
-				return service.getHistoricalPrices(DUMMY_CANCELLATION_TOKEN, exchangeId as any)
-					.continue((task: { result: any; }) => ({ jsonrpc: "2.0", id, result: task.result }));
+				const ts = +params.date;
+				const marketCurrency = params.market;
+				const tradeCurrency = params.trade;
+				const sourceId = params.exchange;
+				const requiredAllSourceIds = false;
+				const param = { ts, marketCurrency, tradeCurrency, sourceId, requiredAllSourceIds };
+				return service
+
+					.getHistoricalPrices(DUMMY_CANCELLATION_TOKEN, [param])
+					.continue((task: { result: any; }) => {
+						const priceResult = helper.renderForSingle(task.result, param);
+						return ({ jsonrpc: "2.0", id, result: priceResult });
+					});
 			}
 			case ServiceMethod.PING: {
 				if (!(_.isObjectLike(params) && _.isString(params.echo))) {
@@ -105,5 +120,22 @@ function jsonrpcMessageRouter(service: PriceService, message: any, methodPrefix?
 	} catch (servireMethodError) {
 		// Return correct JSON-RPC error message, insted raise exception
 		throw servireMethodError;
+	}
+}
+
+
+export namespace helper {
+	export function renderForSingle(prices: price.Timestamp, arg: price.Argument): string | null {
+		const avgAndSource = prices[arg.ts][arg.marketCurrency][arg.tradeCurrency];
+		if ("sources" in avgAndSource) {
+			const sources = "sources";
+			const exchange = avgAndSource[sources];
+			const nameExchange = arg.sourceId;
+			if (nameExchange && exchange) {
+				const priceName = "price";
+				return exchange[nameExchange][priceName];
+			}
+		}
+		return null;
 	}
 }

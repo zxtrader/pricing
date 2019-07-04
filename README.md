@@ -174,7 +174,7 @@ null
 > {"jsonrpc":"2.0","id":42,"method":"rate/single",
     "params": {
         "exchange": "BINANCE",
-        "date": "2018-01-01T10:20:10Z",
+        "date": "20190501102010",
         "market": "BTC",
         "trade": "ZEC"
         }
