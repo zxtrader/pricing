@@ -6,10 +6,11 @@ import * as express from "express";
 import * as compression from "compression";
 import * as morgan from "morgan";  // Logging middleware
 import * as _ from "lodash";
-
+import * as path from "path";
 
 import { Configuration } from "./conf";
 import { PriceService, ArgumentException, InvalidDateError, price } from "./PriceService";
+const { version } = require(path.join(__dirname, "..", "package.json"));
 
 export class PriceServiceRestEndpoint extends webserver.RestEndpoint<PriceService> {
 	private readonly _bindPathWeb: string | null;
@@ -192,6 +193,24 @@ function apiV1(service: PriceService, bindPath: string, log: zxteam.Logger): exp
 
 	router.use(middlewareBindURL(bindPath));
 	router.use(compression());
+
+	router.get("/ping", async function (req: express.Request, res: express.Response, next: express.NextFunction) {
+		try {
+			const { echo } = req.query;
+			const time = new Date();
+			return res.status(200).end(JSON.stringify({
+				echo,
+				time: time.toString(),
+				version
+			}));
+		} catch (e) {
+			if (e instanceof ArgumentException) {
+				log.error(e.message);
+				return render400(res, "Bad argument in request");
+			}
+			next(e);
+		}
+	});
 
 	router.get("/price/:args", async function (req: express.Request, res: express.Response, next: express.NextFunction) {
 		try {

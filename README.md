@@ -14,18 +14,8 @@ The service is focused on launching in the Docker container and most of the para
 
 | Name | Default Value | Description |
 | - | - | - |
-| PRICE_MODE | DEMAND | The mode work of the service. In the case of Sync mode, the corresponding section in the INI file is required |
+| PRICE_MODE ? | DEMAND | The mode work of the service. In the case of Sync mode, the corresponding section in the INI file is required |
 | DATASTORAGE_URL | redis://localhost:6379 | URL connect to the data store |
-| HTTP_ENABLE | yes | Enable HTTP endpoint |
-| HTTP_HOST | 127.0.0.1 | Specifies IP/hostname of the listening host for the HTTP endpoint |
-| HTTP_PORT | 8080 | Specifies listening port number for HTTP endpoint |
-| HTTPS_ENABLE | no | Enable HTTPS endpoint |
-| HTTPS_HOST | 127.0.0.1 | Specifies IP/hostname of the listening host for the HTTPS endpoint |
-| HTTPS_PORT | 8443 | Specifies listening port number for HTTPS endpoint |
-| HTTPS_CACERTS | | List of CA certificates. File path or base64 string separated by commas |
-| HTTPS_CERT | | Certificate of Service. File path or base64 string |
-| HTTPS_KEY | | Private key service. File path or base64 string |
-| HTTPS_KEY_PHASSPHRASE | | Password from the private key of service (specified in HTTPS_KEY) |
 
 ### Settings file
 
