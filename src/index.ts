@@ -52,10 +52,6 @@ export default async function (opts: Setting.ArgumentConfig): Promise<Runtime> {
 	);
 
 	try {
-		log.info("Initializing Storage provider...");
-		await storageProvider.init();
-		destroyHandlers.push(() => storageProvider.dispose().promise);
-
 		log.trace("Constructing PriceService...");
 		const service: PriceService = new PriceService(storageProvider, sourceProviders);
 

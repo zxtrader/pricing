@@ -14,12 +14,14 @@ export class PriceService extends Initable implements PriceService {
 	private readonly _sourceProviders: Array<SourceProvider>;
 	private readonly _sourcesId: Array<string>;
 	private readonly _logger: zxteam.Logger = loggerFactory.getLogger("PriceService");
+	private _storage: StorageProvider | null;
 
 	constructor(storageProvider: StorageProvider, sourceProviders: Array<SourceProvider>) {
 		super();
 		this._storageProvider = storageProvider;
 		this._sourceProviders = sourceProviders;
 		this._sourcesId = sourceProviders.map((source) => source.sourceId);
+		this._storage = null;
 	}
 
 	/**
@@ -89,11 +91,20 @@ export class PriceService extends Initable implements PriceService {
 		});
 	}
 
-	protected onInit() {
-		//
+	protected async onInit() {
+		this._logger.debug("Initializing");
+		const storage = this._storageProvider;
+		await storage.init().promise;
+		this._storage = storage;
 	}
-	protected onDispose() {
-		//
+	protected async onDispose() {
+		this._logger.debug("Disposing");
+		if (this._storage !== null) {
+			const storage: StorageProvider = this._storage;
+			this._storage = null;
+			await storage.dispose().promise;
+		}
+		this._logger.info("Disposed");
 	}
 
 	private managerSourceProvider(cancellationToken: zxteam.CancellationToken, loadArgs: Array<price.LoadDataRequest>)
