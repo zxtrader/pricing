@@ -281,7 +281,7 @@ function apiV1(service: PriceService, bindPath: string, log: zxteam.Logger): exp
 	return router;
 }
 
-namespace priceRuntime {
+export namespace priceRuntime {
 	export function parseArgs(args: string): Array<price.Argument> {
 		const argsRegex = /^[0-9]{14}:[A-Z]+:[0-9A-Z]+(:([A-Z_]+)?)?(,[0-9]{14}:[A-Z]+:[0-9A-Z]+(:([A-Z_]+)?)?)*$/;
 		if (!args) { throw new ArgumentException("args"); }
@@ -376,6 +376,6 @@ namespace priceRuntime {
 				friendly[key] = null;
 			}
 		}
-		return JSON.stringify(friendly, undefined, "  ");
+		return JSON.stringify(friendly);
 	}
 }

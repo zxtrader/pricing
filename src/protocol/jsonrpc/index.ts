@@ -4,8 +4,9 @@ import * as _ from "lodash";
 
 // import { JsonSchemaManager, factory as jsonSchemaManagerFactory } from "../../misc/JsonSchemaManager";
 import * as ArrayBufferUtils from "../../misc/ArrayBufferUtils";
-import { PriceService, price } from "../../PriceService";
+import { PriceService, price, ArgumentException } from "../../PriceService";
 import { Task, DUMMY_CANCELLATION_TOKEN } from "@zxteam/task";
+import { priceRuntime } from "../../endpoints";
 
 export async function factory(
 	service: PriceService, logger: zxteam.Logger, methodPrefix?: string
@@ -38,7 +39,8 @@ export default factory;
 
 const enum ServiceMethod {
 	PING = "ping",
-	RATESINGLE = "rate/single"
+	RATESINGLE = "rate/single",
+	RATEBATCH = "rate/batch"
 }
 
 function jsonrpcMessageRouter(service: PriceService, message: any, methodPrefix?: string): zxteam.Task<any> {
@@ -100,7 +102,35 @@ function jsonrpcMessageRouter(service: PriceService, message: any, methodPrefix?
 
 					.getHistoricalPrices(DUMMY_CANCELLATION_TOKEN, [param])
 					.continue((task: { result: any; }) => {
-						const priceResult = helper.renderForSingle(task.result, param);
+						const priceResult = priceRuntime.renderForSingle(task.result, param);
+						return ({ jsonrpc: "2.0", id, result: priceResult });
+					});
+			}
+			case ServiceMethod.RATEBATCH: {
+				if (!_.isArrayLike(params)) {
+					return Task.resolve({ jsonrpc: "2.0", id, error: { code: -32602, message: "Invalid method parameter(s)." } });
+				}
+				const argsRegex = /^[0-9]{14}:[0-9A-Z]+:[0-9A-Z]+(,[0-9]{14}:[0-9A-Z]+:[0-9A-Z]+)*$/;
+				const args: Array<price.Argument> = [];
+				for (let i = 0; i < params.length; i++) {
+					const arg = params[i];
+					if (!argsRegex.test(arg)) {
+						return Task.resolve({ jsonrpc: "2.0", id, error: { code: -32602, message: "Invalid method parameter(s)." } });
+					}
+
+					const parts = arg.split(":");
+					const ts: number = parseInt(parts[0]);
+					const marketCurrency: string = parts[1];
+					const tradeCurrency: string = parts[2];
+					const sourceId: string | undefined = undefined;
+					const requiredAllSourceIds = false;
+					args.push({ ts, marketCurrency, tradeCurrency, sourceId, requiredAllSourceIds });
+				}
+
+				return service
+					.getHistoricalPrices(DUMMY_CANCELLATION_TOKEN, args)
+					.continue((task: { result: any; }) => {
+						const priceResult = priceRuntime.renderForBatch(task.result, args);
 						return ({ jsonrpc: "2.0", id, result: priceResult });
 					});
 			}
@@ -123,19 +153,3 @@ function jsonrpcMessageRouter(service: PriceService, message: any, methodPrefix?
 	}
 }
 
-
-export namespace helper {
-	export function renderForSingle(prices: price.Timestamp, arg: price.Argument): string | null {
-		const avgAndSource = prices[arg.ts][arg.marketCurrency][arg.tradeCurrency];
-		if ("sources" in avgAndSource) {
-			const sources = "sources";
-			const exchange = avgAndSource[sources];
-			const nameExchange = arg.sourceId;
-			if (nameExchange && exchange) {
-				const priceName = "price";
-				return exchange[nameExchange][priceName];
-			}
-		}
-		return null;
-	}
-}
