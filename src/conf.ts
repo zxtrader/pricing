@@ -88,8 +88,6 @@ export namespace Setting {
 		readonly storageURL: URL;
 		/** List source system and settings */
 		readonly sources: Sources;
-		/** { Key: value } Other settings limit params, etc... */
-		readonly opts: OptionsEnv;
 	}
 
 	export type Sources = SourcesDefault & SourcesAny;
@@ -104,15 +102,6 @@ export namespace Setting {
 		[source: string]: any;
 	}
 
-	export interface OptionsEnv {
-		/**
-		 * Demand - prices are cached only at the user's request
-		 * Sync - service automatically copies all required prices
-		 */
-		priceMode: PriceMode;
-	}
-
-	export declare const enum PriceMode { DEMAND = "DEMAND", SYNC = "SYNC" }
 }
 
 export function configurationFactory(configuration: zxteam.Configuration): Setting.ArgumentConfig {
@@ -124,10 +113,7 @@ export function configurationFactory(configuration: zxteam.Configuration): Setti
 	});
 
 	const storageURL = helper.parseStorageUrl(configuration);
-
-	const opts = helper.parseOpts(configuration);
-
-	const appConfig: Setting.ArgumentConfig = { servers, endpoints, sources, storageURL, opts };
+	const appConfig: Setting.ArgumentConfig = { servers, endpoints, sources, storageURL };
 	return appConfig;
 }
 
@@ -205,21 +191,7 @@ export namespace helper {
 		}
 	}
 	export function parseStorageUrl(configuration: zxteam.Configuration): URL {
-		const dataStorageUrl: string = configuration.getString("DATASTORAGE_URL");
+		const dataStorageUrl: string = configuration.getString("dataStorageURL"); // dataStorageURL
 		return new URL(dataStorageUrl);
-	}
-	export function parseOpts(configuration: zxteam.Configuration) {
-		const priceMode: string = configuration.getString("PRICE_MODE");
-		switch (priceMode) {
-			case "DEMAND": {
-				return { priceMode: Setting.PriceMode.DEMAND };
-			}
-			case "SYNC": {
-				return { priceMode: Setting.PriceMode.SYNC };
-			}
-			default: {
-				throw new Error(`Don't support  this mode: ${priceMode}`);
-			}
-		}
 	}
 }

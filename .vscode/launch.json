@@ -36,7 +36,7 @@
 			],
 			"cwd": "${workspaceRoot}",
 			"env": {
-				"DATASTORAGE_URL": "redis://localhost:6379/5",
+				"dataStorageURL": "redis://localhost:6379/5",
 				"NODE_ENV": "development"
 			},
 			"console": "internalConsole",

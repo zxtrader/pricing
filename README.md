@@ -14,8 +14,7 @@ The service is focused on launching in the Docker container and most of the para
 
 | Name | Default Value | Description |
 | - | - | - |
-| PRICE_MODE ? | DEMAND | The mode work of the service. In the case of Sync mode, the corresponding section in the INI file is required |
-| DATASTORAGE_URL | redis://localhost:6379 | URL connect to the data store |
+| dataStorageURL | redis://localhost:6379 | URL connect to the data store |
 
 ### Settings file
 
@@ -61,17 +60,7 @@ source.zxtrader.limit.perSecond = 15
 source.zxtrader.limit.perMinute = 300
 source.zxtrader.limit.perHour = 8000
 source.zxtrader.timeout = 3000
-
-# If enable mode Sync
-sync.pairs=BTC:ETH,BTC:ZEC,BTC:USD,EUR:USD,EUR:BTC
 ```
-
-## Service mode
-
-> Sync mode don't implement yet.
-
-* Demand - prices are cached only at the user's request (if external sources are not available, prices is don't exist in cache then it not available)
-* Sync - service automatically copies all required prices (requires a lot of space in DataStorage compared to Demand mode)
 
 ## How to launch the service
 
@@ -395,60 +384,15 @@ JSON-RPC don't implemented yet.
 
 All of you need is to write own implementation of a source provider interface and place in into `src/providers` directory. Take a look at the source provider interface in `src/providers/source/contract.ts`. Use `src/providers/source/random.ts` as example.
 
-## Limits
-
-> Limits function don't implement yet.
-
-Limits are a limit on the count of service requests in order to protect the security of server against DoS attacks.
-
-* Limits to the service can be set in the configuration INI file.
-* The default service settings this feature is disabled.
-* You can enable service limits with the parameter limit.use = true, after enabling the limits, you can create a profile (user type) and specify settings for it.
-* Each request has its own weight, it can also depend on the number of parameters passed.
-
-### General settings
-
-| Name | Type | Description |
-| - | - | - |
-| limit.use | boolean | Enable/disable limit requests
-| limit.profile | boolean | Enable/disable limit on user category
-| limit.profile.weight | number | Total amount of weight
-| limit.profile.perSecond | number | Maximum number of requests per second
-| limit.profile.perMinute | number | Maximum number of requests per minute
-| limit.profile.perHour | number | Maximum number of requests per hour
-| limit.profile.parallel | number | Maximum number of requests in parallel
-
-### Example INI file
-
-```bash
-limit.use=true
-
-// Normal user settings
-limit.user=true
-limit.user.weight=800
-limit.user.perSecond=10
-limit.user.perMinute=600
-limit.user.perHour=36000
-limit.user.parallel=2
-
-// Premium user  settings (Unlimited requests)
-limit.premium=true
-limit.premium.weight=0
-limit.premium.perSecond=0
-limit.premium.perMinute=0
-limit.premium.perHour=0
-limit.premium.parallel=0
-```
-
 ## Data storage format in Redis
 
 ### Save price for source system
 
 ```Bash
-HSET "${HISTORY_PRICE_PREFIX}:${TS}:${MASTER_CURRENCY}:${PRICE_CURRENCY}:${SOURCE_SYSTEM}" "price" ${PRICE}
+HSET "${PREFIX}:${TS}:${MASTER_CURRENCY}:${PRICE_CURRENCY}:${SOURCE_SYSTEM}" "price" ${PRICE}
 ```
 
-* ${HISTORY_PRICE_PREFIX} - constant "HISTORY:PRICE"
+* ${PREFIX} - constant "priceserv"
 * ${TS} - time by price. format: YYYYMMDDHHMMSS
 * ${MASTER_CURRENCY} - master currency code
 * ${PRICE_CURRENCY} - price currency code
@@ -459,16 +403,16 @@ HSET "${HISTORY_PRICE_PREFIX}:${TS}:${MASTER_CURRENCY}:${PRICE_CURRENCY}:${SOURC
 Example:
 
 ```Bash
-HSET "HISTORY:PRICE:20180101100001:USDT:BTC:CRYPTOCOMPARE" "price" 13400.89
+HSET "priceserv:20180101100001:USDT:BTC:CRYPTOCOMPARE" "price" 13400.89
 ```
 
 ### Save average price for all sources system
 
 ```Bash
-HSET "${HISTORY_PRICE_PREFIX}:${TS}:${MASTER_CURRENCY}:${PRICE_CURRENCY}" "price" ${AVG_PRICE}
+HSET "${PREFIX}:${TS}:${MASTER_CURRENCY}:${PRICE_CURRENCY}" "price" ${AVG_PRICE}
 ```
 
-* ${HISTORY_PRICE_PREFIX} - constant "HISTORY:PRICE"
+* ${PREFIX} - constant "priceserv"
 * ${TS} - time by price. format: YYYYMMDDHHMMSS
 * ${MASTER_CURRENCY} - master currency code
 * ${PRICE_CURRENCY} - price currency code
@@ -478,16 +422,16 @@ HSET "${HISTORY_PRICE_PREFIX}:${TS}:${MASTER_CURRENCY}:${PRICE_CURRENCY}" "price
 Example:
 
 ```Bash
-HSET "HISTORY:PRICE:20180101100001:USDT:BTC" "price" 13400.89
+HSET "priceserv:20180101100001:USDT:BTC" "price" 13400.89
 ```
 
 ### Save source system name with pair
 
 ```Bash
-HSET "${HISTORY_PRICE_PREFIX}:${TS}:${MASTER_CURRENCY}:${PRICE_CURRENCY}" ${SOURCE_SYSTEM}
+HSET "${PREFIX}:${TS}:${MASTER_CURRENCY}:${PRICE_CURRENCY}" ${SOURCE_SYSTEM}
 ```
 
-* ${HISTORY_PRICE_PREFIX} - constant "HISTORY:PRICE"
+* ${PREFIX} - constant "priceserv"
 * ${TS} - time by price. format: YYYYMMDDHHMMSS
 * ${MASTER_CURRENCY} - master currency code
 * ${PRICE_CURRENCY} - price currency code
@@ -496,7 +440,7 @@ HSET "${HISTORY_PRICE_PREFIX}:${TS}:${MASTER_CURRENCY}:${PRICE_CURRENCY}" ${SOUR
 Example:
 
 ```Bash
-HSET "HISTORY:PRICE:20180101100001:USDT:BTC" "CRYPTOCOMPARE"
+HSET "priceserv:20180101100001:USDT:BTC" "CRYPTOCOMPARE"
 ```
 
 ## HTTP status code

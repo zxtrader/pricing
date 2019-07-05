@@ -28,12 +28,12 @@ function getOptsForRedis(): RedisOptions {
 		try {
 			return new URL(url);
 		} catch (e) {
-			throw new Error(`Wrong DATASTORAGE_URL = ${url}. ${e.message}.`);
+			throw new Error(`Wrong dataStorageURL = ${url}. ${e.message}.`);
 		}
 	}
 
-	if ("DATASTORAGE_URL" in process.env) {
-		const urlStr = String(process.env.DATASTORAGE_URL);
+	if ("dataStorageURL" in process.env) {
+		const urlStr = String(process.env.dataStorageURL);
 
 		const url = parseDbServerUrl(urlStr);
 
@@ -42,7 +42,7 @@ function getOptsForRedis(): RedisOptions {
 		return optsForRedis;
 
 	} else {
-		throw new Error(`DATASTORAGE_URL environment is not defined. Please set the variable to use these tests ${process.env.DATASTORAGE_URL}`);
+		throw new Error(`dataStorageURL environment is not defined. Please set the variable to use these tests ${process.env.dataStorageURL}`);
 	}
 }
 
