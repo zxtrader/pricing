@@ -171,14 +171,7 @@ null
 #### JSON-RPC
 
 ```json
-> {"jsonrpc":"2.0","id":42,"method":"rate/single",
-    "params": {
-        "exchange": "BINANCE",
-        "date": "20190501102010",
-        "market": "BTC",
-        "trade": "ZEC"
-        }
-    }
+> {"jsonrpc":"2.0","id":42,"method":"rate/single","params": {"exchange": "BINANCE", "date": "20190701102010", "market": "BTC", "trade": "ZEC"}}
 < {
     "jsonrpc":"2.0",
     "id":42,
@@ -221,27 +214,18 @@ curl --verbose --key license.key --cert license.crt https://service.zxtrader.com
 #### JSON-RPC
 
 ```json
---> {
-    "jsonrpc":"2.0",
-    "id":42,
-    "method":"rate/batch",
-    "params": [
-            "20180101102010:BTC:ZEC",
-            "20180101102020:BTC:ETH",
-            "20180101102020:USDT:BTC"
-        ]
-}
+--> {"jsonrpc":"2.0","id":42,"method":"rate/batch","params": ["20180101102010:BTC:ZEC","20180101102020:BTC:ETH","20180101102020:USDT:BTC"]}
 ```
 
 ```json
 <-- {
     "jsonrpc":"2.0",
     "id":42,
-    "result": [
+    "result": {
         "20180101102010:BTC:ZEC": "65.2312356",
         "20180101102020:BTC:ETH": "122.348754",
         "20180101102020:USDT:BTC": null
-    ]
+    }
 }
 ```
 

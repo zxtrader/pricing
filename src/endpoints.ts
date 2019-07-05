@@ -343,7 +343,7 @@ export namespace priceRuntime {
 		return JSON.stringify(prices, undefined, "  ");
 	}
 
-	export function renderForSingle(prices: price.Timestamp, arg: price.Argument): string {
+	export function renderForSingle(prices: price.Timestamp, arg: price.Argument): string | null {
 		const avgAndSource = prices[arg.ts][arg.marketCurrency][arg.tradeCurrency];
 		if ("sources" in avgAndSource) {
 			const sources = "sources";
@@ -354,7 +354,7 @@ export namespace priceRuntime {
 				return exchange[nameExchange][priceName];
 			}
 		}
-		return "null";
+		return null;
 	}
 
 	export function renderForBatch(prices: price.Timestamp, args: Array<price.Argument>): string {
@@ -371,6 +371,8 @@ export namespace priceRuntime {
 				if (priceAvg) {
 					const friendlyPrice = priceAvg[priceName];
 					friendly[key] = friendlyPrice;
+				} else {
+					friendly[key] = null;
 				}
 			} else {
 				friendly[key] = null;

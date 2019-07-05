@@ -30,10 +30,6 @@ export default async function (opts: Setting.ArgumentConfig): Promise<Runtime> {
 	const destroyHandlers: Array<() => Promise<void>> = [];
 	function destroy(): Promise<void> { return destroyHandlers.reverse().reduce((p, c) => p.then(c), Promise.resolve()); }
 
-	log.trace("Constructing Storage provider...");
-	const dataStorageUrl = opts.storageURL;
-	const storageProvider = helpers.createStorageProvider(dataStorageUrl);
-
 	log.trace("Constructing Source providers...");
 	const sourceOpts = opts.sources;
 	const sourceProviders = helpers.createSourceProviders(sourceOpts);
@@ -52,6 +48,10 @@ export default async function (opts: Setting.ArgumentConfig): Promise<Runtime> {
 	);
 
 	try {
+		log.trace("Constructing Storage provider...");
+		const dataStorageUrl = opts.storageURL;
+		const storageProvider = helpers.createStorageProvider(dataStorageUrl);
+
 		log.trace("Constructing PriceService...");
 		const service: PriceService = new PriceService(storageProvider, sourceProviders);
 
