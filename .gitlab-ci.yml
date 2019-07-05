@@ -96,7 +96,7 @@ image:release:
     - compile
   tags:
     - docker-builder
-  when: manual
+  when: on_success
   only:
     - tags
   variables:
@@ -116,17 +116,16 @@ image:release:
 
 package:tag:
   stage: staging
-  tags:
-    - docker
   dependencies:
     - compile
     - test
-  when: manual
+  tags:
+    - docker
+  when: on_success
   only:
     - tags
   variables:
     GIT_STRATEGY: none
-    GIT_SUBMODULE_STRATEGY: none
   before_script:
     - *utils
     - verify_package_version
@@ -135,16 +134,50 @@ package:tag:
     - echo "Publish package to the npmjs.artifacts.zxteam.net registry"
     - cd .dist && cat .npmrc && npm publish
 
-deploy:dev:commit:
+deploy:evolution:commit:
   image: docker:latest
   stage: deploying
   dependencies:
     - image:commit
   tags:
-    - docker-deployer-dev
+    - docker-deployer-evolution
   when: manual
   only:
     - branches
+  variables:
+    GIT_STRATEGY: none
   script:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
-    - docker service update --quiet --with-registry-auth --image "${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_SLUG}.$(echo ${CI_COMMIT_SHA} | head -c 8)" dev-zxtrader_priceservice
+    - docker service update --quiet --with-registry-auth --image "${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_SLUG}.$(echo ${CI_COMMIT_SHA} | head -c 8)" $(echo ${CI_PROJECT_PATH} | cut -d '/' -f1)-evolution_$(echo ${CI_PROJECT_PATH} | cut -d '/' -f2- | sed 's/[\./]//g')
+
+deploy:evolution:tag:
+  image: docker:latest
+  stage: deploying
+  dependencies:
+    - image:release
+  tags:
+    - docker-deployer-evolution
+  when: manual
+  only:
+    - tags
+  variables:
+    GIT_STRATEGY: none
+  script:
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+    - docker service update --quiet --with-registry-auth --image "${CI_REGISTRY_IMAGE}:${CI_COMMIT_TAG}" $(echo ${CI_PROJECT_PATH} | cut -d '/' -f1)-evolution_$(echo ${CI_PROJECT_PATH} | cut -d '/' -f2- | sed 's/[\./]//g')
+
+deploy:production:tag:
+  image: docker:latest
+  stage: deploying
+  dependencies:
+    - image:release
+  tags:
+    - docker-deployer-production
+  when: manual
+  only:
+    - tags
+  variables:
+    GIT_STRATEGY: none
+  script:
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+    - docker service update --quiet --with-registry-auth --image "${CI_REGISTRY_IMAGE}:${CI_COMMIT_TAG}" $(echo ${CI_PROJECT_PATH} | cut -d '/' -f1)-production_$(echo ${CI_PROJECT_PATH} | cut -d '/' -f2- | sed 's/[\./]//g')
