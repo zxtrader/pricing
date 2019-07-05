@@ -23,6 +23,7 @@ stages:
   - building
   - testing
   - staging
+  - deploying
 
 before_script:
   - date
@@ -133,3 +134,17 @@ package:tag:
   script:
     - echo "Publish package to the npmjs.artifacts.zxteam.net registry"
     - cd .dist && cat .npmrc && npm publish
+
+deploy:dev:commit:
+  image: docker:latest
+  stage: deploying
+  dependencies:
+    - image:commit
+  tags:
+    - docker-deployer-dev
+  when: manual
+  only:
+    - branches
+  script:
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+    - docker service update --quiet --with-registry-auth --image "${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_SLUG}.$(echo ${CI_COMMIT_SHA} | head -c 8)" dev-zxtrader_priceservice
