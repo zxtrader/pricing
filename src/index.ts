@@ -3,17 +3,18 @@ import { Runtime } from "@zxteam/launcher";
 import { RestClient } from "@zxteam/restclient";
 import * as webserver from "@zxteam/webserver";
 import loggerFactory from "@zxteam/logger";
-import * as _ from "lodash";
 
 import { URL } from "url";
-import { RedisOptions } from "ioredis";
-import { Setting } from "./conf";
+import * as _ from "lodash";
+
+import { Configuration } from "./conf";
 import { PriceService } from "./PriceService";
 import { SourceProvider } from "./providers/source/contract";
 import { StorageProvider } from "./providers/storage/contract";
 import { Cryptocompare } from "./providers/source/Cryptocompare";
 import { RedisStorageProvider } from "./providers/storage/RedisStorageProvider";
-import { factory as protocolAdapterFactory } from "./protocol";
+
+import { factory as protocolAdapterFactory, ProtocolTypes } from "./protocol";
 import {
 	PriceServiceRestEndpoint, PriceServiceWebSocketEndpoint, PriceServiceRouterEndpoint,
 	createExpressApplication, setupExpressErrorHandles
@@ -22,7 +23,7 @@ import {
 import { Poloniex } from "./providers/source/Poloniex";
 import { Binance } from "./providers/source/Binance";
 
-export default async function (opts: Setting.ArgumentConfig): Promise<Runtime> {
+export default async function (opts: Configuration): Promise<Runtime> {
 	const log = loggerFactory.getLogger("ZXTrader's Historical Price Service");
 
 	// TODO Valdate options
@@ -34,7 +35,7 @@ export default async function (opts: Setting.ArgumentConfig): Promise<Runtime> {
 	const sourceOpts = opts.sources;
 	const sourceProviders = helpers.createSourceProviders(sourceOpts);
 
-	const servers = opts.servers.map(function (server) {
+	const serverInstances = opts.servers.map(function (server) {
 		if (webserver.instanceofWebServer(server)) {
 			return { name: server.name, server, isOwnInstance: false };
 		}
@@ -43,7 +44,7 @@ export default async function (opts: Setting.ArgumentConfig): Promise<Runtime> {
 		return { name: ownServerInstance.name, server: ownServerInstance, isOwnInstance: true };
 	});
 	const serversMap: { readonly [serverName: string]: { server: webserver.WebServer, isOwnInstance: boolean } } = _.keyBy(
-		servers,
+		serverInstances,
 		"name"
 	);
 
@@ -62,7 +63,7 @@ export default async function (opts: Setting.ArgumentConfig): Promise<Runtime> {
 				switch (endpoint.type) {
 					case "rest": {
 						const endpointInstance: PriceServiceRestEndpoint = new PriceServiceRestEndpoint(
-							servers.filter(s => endpoint.servers.includes(s.name)).map(si => si.server),
+							serverInstances.filter(s => endpoint.servers.includes(s.name)).map(si => si.server),
 							service,
 							endpoint,
 							log
@@ -71,19 +72,28 @@ export default async function (opts: Setting.ArgumentConfig): Promise<Runtime> {
 						break;
 					}
 					case "websocket": {
-						const protocolAdapter = await protocolAdapterFactory(service, endpoint.protocol, log);
-						const endpointInstance: PriceServiceWebSocketEndpoint = new PriceServiceWebSocketEndpoint(
-							servers.filter(s => endpoint.servers.includes(s.name)).map(si => si.server),
+						const endpointInstance = new PriceServiceWebSocketEndpoint(
+							serverInstances.filter(s => endpoint.servers.includes(s.name)).map(si => si.server),
 							endpoint,
-							log
+							loggerFactory.getLogger("Endpoint:" + endpoint.type + "(" + endpoint.bindPath + ")")
 						);
-						endpointInstance.use(protocolAdapter);
+
+						// Registering protocols
+						for (const protocol of ProtocolTypes) {
+							const protocolAdapter = await protocolAdapterFactory(service, protocol,
+								loggerFactory.getLogger(
+									"Endpoint:" + endpoint.type + "(" + endpoint.bindPath + "):Protocol(" + protocol + ")"
+								)
+							);
+							endpointInstance.use(protocol, protocolAdapter);
+						}
+
 						endpointInstances.push(endpointInstance);
 						break;
 					}
 					case "express-router": {
 						const routerEndpoint: PriceServiceRouterEndpoint = new PriceServiceRouterEndpoint(
-							servers.filter(s => endpoint.servers.includes(s.name)).map(si => si.server), service,
+							service,
 							endpoint,
 							log
 						);
@@ -91,8 +101,15 @@ export default async function (opts: Setting.ArgumentConfig): Promise<Runtime> {
 						break;
 					}
 					case "websocket-binder": {
-						const protocolAdapter = await protocolAdapterFactory(service, endpoint.protocol, log, endpoint.methodPrefix);
-						endpoint.target.use(protocolAdapter);
+						const targetEndpoint: webserver.WebSocketBinderEndpoint = endpoint.target;
+						for (const protocol of ProtocolTypes) {
+							// Registering protocols
+							const protocolAdapter = await protocolAdapterFactory(service, protocol,
+								loggerFactory.getLogger("Endpoint:" + endpoint.type + "(" + protocol + ")"),
+								endpoint.methodPrefix
+							);
+							targetEndpoint.use(protocol, protocolAdapter);
+						}
 						break;
 					}
 					default:
@@ -137,11 +154,13 @@ export default async function (opts: Setting.ArgumentConfig): Promise<Runtime> {
 
 namespace helpers {
 	export function createStorageProvider(dataStorageUrl: URL): StorageProvider {
-		const opts: RedisOptions = helpers.parseRedisURL(dataStorageUrl);
-		const redisStorageProvider = new RedisStorageProvider(opts);
-		return redisStorageProvider;
+		const { protocol } = dataStorageUrl;
+		if (protocol !== "redis:") {
+			return new RedisStorageProvider(dataStorageUrl);
+		}
+		throw new Error(`Unsupported Storage Provider protocol: ${protocol}`);
 	}
-	export function createSourceProviders(options: Setting.Sources): Array<SourceProvider> {
+	export function createSourceProviders(options: Configuration.Sources): Array<SourceProvider> {
 		const sourceIds: Array<string> = Object.keys(options);
 		const friendlySources: Array<any> = [];
 
@@ -173,28 +192,6 @@ namespace helpers {
 
 		return friendlySources;
 	}
-
-	export function parseRedisURL(dataStorageUrl: URL): RedisOptions {
-		const host = dataStorageUrl.hostname;
-		const port = Number(dataStorageUrl.port);
-		const db = Number(dataStorageUrl.pathname.slice(1));
-		const family: 4 | 6 = dataStorageUrl.searchParams.has("ip_family") && dataStorageUrl.searchParams.get("ip_family") === "6" ? 6 : 4;
-		const opts: RedisOptions = {
-			host, port, db, family,
-			lazyConnect: true,
-			keepAlive: 1000
-		};
-
-		if (dataStorageUrl.searchParams.has("name")) {
-			opts.connectionName = dataStorageUrl.searchParams.get("name") as string;
-		}
-		if (dataStorageUrl.searchParams.has("prefix")) {
-			opts.keyPrefix = dataStorageUrl.searchParams.get("prefix") as string;
-		}
-
-		return opts;
-	}
-
 }
 
 class UnreachableEndpointError extends Error {

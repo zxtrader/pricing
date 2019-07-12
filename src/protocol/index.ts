@@ -9,6 +9,8 @@ export const enum ProtocolType {
 	PROTOBUF = "protobuf"
 }
 
+export const ProtocolTypes: ReadonlyArray<ProtocolType> = Object.freeze([ProtocolType.JSONRPC, ProtocolType.PROTOBUF]);
+
 export async function factory(
 	service: PriceService,
 	protocolType: ProtocolType,

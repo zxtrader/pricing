@@ -1,30 +1,36 @@
 import * as zxteam from "@zxteam/contract";
 import * as webserver from "@zxteam/webserver";
 import { RestClient } from "@zxteam/restclient";
-import { Configuration } from "@zxteam/contract";
 
+import { URL } from "url";
 import { Router } from "express-serve-static-core";
 
 import { ProtocolType, UnreachableProtocolTypeError } from "./protocol";
 
-// export interface Configuration { endpoints: Array<Configuration.Endpoint>; }
+export interface Configuration {
+	readonly servers: ReadonlyArray<webserver.Configuration.WebServer | webserver.WebServer>;
+	/** Set settings endponts or send new routers */
+	readonly endpoints: ReadonlyArray<Configuration.PriceServiceEndpoint>;
+	/** Connection URL to database */
+	readonly storageURL: URL;
+	/** List source system and settings */
+	readonly sources: Configuration.Sources;
+}
 
 export namespace Configuration {
 
 	export type PriceServiceEndpoint
-		= PriceServiceRestEndpoint
-		| PriceServiceWebSocketEndpoint
+		= (PriceServiceRestEndpoint & webserver.Configuration.ServerEndpoint)
+		| (PriceServiceWebSocketEndpoint & webserver.Configuration.ServerEndpoint)
 		| PriceServiceExpressRouterEndpoint
 		| PriceServiceWebSocketBinderEndpoint;
-
 
 	export interface PriceServiceRestEndpoint extends webserver.Configuration.BindEndpoint {
 		readonly type: "rest";
 		readonly bindPathWeb: string | null;
 	}
-	export interface PriceServiceWebSocketEndpoint extends webserver.Configuration.BindEndpoint {
+	export interface PriceServiceWebSocketEndpoint extends webserver.Configuration.WebSocketEndpoint {
 		readonly type: "websocket";
-		readonly protocol: ProtocolType;
 	}
 	export interface PriceServiceExpressRouterEndpoint extends webserver.Configuration.BindEndpoint {
 		readonly type: "express-router";
@@ -33,10 +39,8 @@ export namespace Configuration {
 	export interface PriceServiceWebSocketBinderEndpoint {
 		readonly type: "websocket-binder";
 		readonly target: webserver.WebSocketBinderEndpoint;
-		readonly protocol: ProtocolType;
 		readonly methodPrefix?: string;
 	}
-
 
 	export type Endpoint = HttpEndpoint | HttpsEndpoint | ExpressRouterEndpoint;
 
@@ -76,50 +80,33 @@ export namespace Configuration {
 		type: "express-router";
 		router: Router;
 	}
-}
 
-export namespace Setting {
-
-	export interface ArgumentConfig {
-		readonly servers: ReadonlyArray<webserver.Configuration.WebServer | webserver.WebServer>;
-		/** Set settings endponts or send new routers */
-		readonly endpoints: ReadonlyArray<Configuration.PriceServiceEndpoint>;
-		/** Connection URL to database */
-		readonly storageURL: URL;
-		/** List source system and settings */
-		readonly sources: Sources;
-	}
-
-	export type Sources = SourcesDefault & SourcesAny;
-
-	interface SourcesDefault {
+	export interface Sources {
 		CRYPTOCOMPARE?: RestClient.Opts;
 		POLONIEX?: RestClient.Opts;
 		BINANCE?: RestClient.Opts;
-	}
-
-	interface SourcesAny {
 		[source: string]: any;
 	}
-
 }
 
-export function configurationFactory(configuration: zxteam.Configuration): Setting.ArgumentConfig {
-	const servers = webserver.Configuration.parseWebServers(configuration);
-	const sources = helper.parseSources(configuration);
+export function configurationFactory(configuration: zxteam.Configuration): Configuration {
+	const servers: Array<webserver.Configuration.WebServer> = webserver.Configuration.parseWebServers(configuration);
+	const sources: Configuration.Sources = helper.parseSources(configuration);
 
-	const endpoints = configuration.getString("endpoints").split(" ").map((endpointIndex: string): Configuration.PriceServiceEndpoint => {
-		return helper.parseEndpoint(configuration, endpointIndex);
-	});
+	const endpoints: Array<Configuration.PriceServiceEndpoint> = configuration.getString("endpoints").split(" ").map(
+		(endpointIndex: string): Configuration.PriceServiceEndpoint => {
+			return helper.parseEndpoint(configuration, endpointIndex);
+		}
+	);
 
-	const storageURL = helper.parseStorageUrl(configuration);
-	const appConfig: Setting.ArgumentConfig = { servers, endpoints, sources, storageURL };
+	const storageURL: URL = helper.parseStorageUrl(configuration);
+	const appConfig: Configuration = { servers, endpoints, sources, storageURL };
 	return appConfig;
 }
 
 export namespace helper {
-	export function parseSources(configuration: zxteam.Configuration): Setting.Sources {
-		const sources: Setting.Sources = {};
+	export function parseSources(configuration: zxteam.Configuration): Configuration.Sources {
+		const sources: Configuration.Sources = {};
 		// == Read configuration from config.ini file ==
 		const sourceIds: Array<string> = configuration.getString("sources").split(" ");
 		for (let i = 0; i < sourceIds.length; i++) {
@@ -149,7 +136,7 @@ export namespace helper {
 		const endpointType = endpointConfiguration.getString("type");
 		switch (endpointType) {
 			case "rest": {
-				const httpEndpoint: Configuration.PriceServiceRestEndpoint = {
+				const httpEndpoint: Configuration.PriceServiceRestEndpoint & webserver.Configuration.ServerEndpoint = {
 					type: "rest",
 					servers: endpointConfiguration.getString("servers").split(" "),
 					bindPath: endpointConfiguration.getString("bindPath", "/"),
@@ -158,19 +145,11 @@ export namespace helper {
 				return httpEndpoint;
 			}
 			case "websocket": {
-				const protocolType = endpointConfiguration.getString("protocol") as ProtocolType;
-				switch (protocolType) {
-					case ProtocolType.JSONRPC:
-					case ProtocolType.PROTOBUF:
-						break;
-					default:
-						throw new UnreachableProtocolTypeError(protocolType);
-				}
-				const webSocketEndpoint: Configuration.PriceServiceWebSocketEndpoint = {
+				const webSocketEndpoint: Configuration.PriceServiceWebSocketEndpoint & webserver.Configuration.ServerEndpoint = {
 					type: "websocket",
 					servers: endpointConfiguration.getString("servers").split(" "),
 					bindPath: endpointConfiguration.getString("bindPath", "/"),
-					protocol: protocolType
+					defaultProtocol: ProtocolType.JSONRPC
 				};
 				return webSocketEndpoint;
 			}
@@ -191,7 +170,7 @@ export namespace helper {
 		}
 	}
 	export function parseStorageUrl(configuration: zxteam.Configuration): URL {
-		const dataStorageUrl: string = configuration.getString("dataStorageURL"); // dataStorageURL
+		const dataStorageUrl: string = configuration.getString("dataStorageURL");
 		return new URL(dataStorageUrl);
 	}
 }

@@ -1,5 +1,5 @@
 import * as zxteam from "@zxteam/contract";
-import { ProtocolAdapter } from "@zxteam/webserver";
+import { ProtocolAdapter, ProtocolAdapterNext } from "@zxteam/webserver";
 import * as _ from "lodash";
 
 // import { JsonSchemaManager, factory as jsonSchemaManagerFactory } from "../../misc/JsonSchemaManager";
@@ -14,19 +14,37 @@ export async function factory(
 	//const schemasDirectory = path.normalize(path.join(__dirname, "schemas"));
 	//const schemaManager: JsonSchemaManager = await jsonSchemaManagerFactory(schemasDirectory, logger);
 
-	function handleBinaryMessage(data: ArrayBuffer): zxteam.Task<ArrayBuffer> {
+	function handleBinaryMessage(
+		ct: zxteam.CancellationToken, data: ArrayBuffer, next?: ProtocolAdapterNext<ArrayBuffer>
+	): zxteam.Task<ArrayBuffer> {
 		const objAsBuffer: Buffer = ArrayBufferUtils.toBuffer(data);
 		const objAsJsonString: string = objAsBuffer.toString("utf-8");
-		return handleTextMessage(objAsJsonString).continue(handleTask => {
+		const nextWrapper = next !== undefined ?
+		(): zxteam.Task<string> => {
+			return next(ct, data).continue(nextTask => {
+				const nextObjAsBuffer: Buffer = ArrayBufferUtils.toBuffer(nextTask.result);
+				const nextObjAsJsonString: string = nextObjAsBuffer.toString("utf-8");
+				return nextObjAsJsonString;
+			});
+		}
+		: undefined;
+		return handleTextMessage(ct, objAsJsonString, nextWrapper).continue(handleTask => {
 			const resultAsString = handleTask.result;
 			const resultAsBuffer: Buffer = Buffer.from(resultAsString, "utf-8");
 			return ArrayBufferUtils.fromBuffer(resultAsBuffer);
 		});
 	}
-	function handleTextMessage(data: string): zxteam.Task<string> {
+	function handleTextMessage(
+		ct: zxteam.CancellationToken, data: string, next?: ProtocolAdapterNext<string>
+	): zxteam.Task<string> {
 		const message = JSON.parse(data);
-		return jsonrpcMessageRouter(service, message, methodPrefix).continue(routerTask => {
+		return jsonrpcMessageRouter(ct, service, message).continue(routerTask => {
 			const result = routerTask.result;
+			if (result.error && result.error.code === -32601) {
+				if (next !== undefined) {
+					return next(ct, data);
+				}
+			}
 			return JSON.stringify(result);
 		});
 	}
@@ -43,7 +61,9 @@ const enum ServiceMethod {
 	RATEBATCH = "rate/batch"
 }
 
-function jsonrpcMessageRouter(service: PriceService, message: any, methodPrefix?: string): zxteam.Task<any> {
+function jsonrpcMessageRouter(
+	ct: zxteam.CancellationToken, service: PriceService, message: any, methodPrefix?: string
+): zxteam.Task<any> {
 	// https://www.jsonrpc.org/specification
 	try {
 		const { jsonrpc, method, params, id } = message;
@@ -148,7 +168,7 @@ function jsonrpcMessageRouter(service: PriceService, message: any, methodPrefix?
 				});
 		}
 	} catch (servireMethodError) {
-		// Return correct JSON-RPC error message, insted raise exception
+		// Return correct JSON-RPC error message, instead raise exception
 		throw servireMethodError;
 	}
 }

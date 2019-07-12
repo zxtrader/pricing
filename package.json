@@ -1,15 +1,20 @@
 {
 	"name": "com.zxtrader.price.service",
-	"version": "0.0.12",
+	"version": "0.0.13",
 	"description": "ZXTrader's Price Service",
 	"main": "./src/index.js",
 	"types": "./src/index.d.ts",
 	"author": {
-		"name": "Maxim Anurin",
-		"email": "maxim.anurin@zxteam.net",
-		"url": "http://www.anurin.name"
+		"name": "ZXTeam",
+		"email": "zxtrader@project.zxteam.net",
+		"url": "http://www.zxteam.net"
 	},
 	"contributors": [
+		{
+			"name": "Maxim Anurin",
+			"email": "maxim.anurin@zxteam.net",
+			"url": "http://www.anurin.name"
+		},
 		{
 			"name": "Serhii Zghama",
 			"email": "serhii.zghama@zxteam.net"
@@ -18,11 +23,10 @@
 	"license": "MIT",
 	"devDependencies": {
 		"@types/compression": "^0.0.36",
-		"@types/ioredis": "^4.0.12",
-		"@types/lodash": "^4.14.134",
+		"@types/ioredis": "^4.0.13",
+		"@types/lodash": "^4.14.136",
 		"@types/morgan": "^1.7.35",
-		"@types/node": "^11.13.14",
-		"@types/ws": "^6.0.1",
+		"@types/node": "^11.13.17",
 		"@zxnode/build": "^0.0.34"
 	},
 	"dependencies": {
@@ -35,15 +39,14 @@
 		"@zxteam/logger": "^5.0.1",
 		"@zxteam/restclient": "^5.0.2",
 		"@zxteam/task": "^5.0.8",
-		"@zxteam/webserver": "^5.0.11",
+		"@zxteam/webserver": "^5.0.15",
 		"compression": "^1.7.4",
-		"ajv": "^6.10.0",
+		"ajv": "^6.10.1",
 		"express": "^4.17.1",
-		"ioredis": "^4.10.0",
-		"lodash": "^4.17.11",
+		"ioredis": "^4.11.1",
+		"lodash": "^4.17.14",
 		"moment": "^2.24.0",
-		"morgan": "^1.9.1",
-		"ws": "^7.0.1"
+		"morgan": "^1.9.1"
 	},
 	"engines": {
 		"node": ">=11"

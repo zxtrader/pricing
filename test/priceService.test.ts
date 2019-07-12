@@ -9,38 +9,9 @@ import { RedisStorageProvider } from "../src/providers/storage/RedisStorageProvi
 
 
 
-function getOptsForRedis(): RedisOptions {
-	function praseToOptsRedis(url: URL): RedisOptions {
-		const host = url.hostname;
-		const port = Number(url.port);
-		const db = Number(url.pathname.slice(1));
-
-		const opts: RedisOptions = {
-			port,
-			host,
-			family: 4,
-			password: "",
-			db
-		};
-		return opts;
-	}
-	function parseDbServerUrl(url: string): URL {
-		try {
-			return new URL(url);
-		} catch (e) {
-			throw new Error(`Wrong dataStorageURL = ${url}. ${e.message}.`);
-		}
-	}
-
-	if ("dataStorageURL" in process.env) {
-		const urlStr = String(process.env.dataStorageURL);
-
-		const url = parseDbServerUrl(urlStr);
-
-		const optsForRedis: RedisOptions = praseToOptsRedis(url);
-
-		return optsForRedis;
-
+function getRedisURL(): URL {
+	if (process.env.dataStorageURL !== undefined) {
+		return new URL(process.env.dataStorageURL);
 	} else {
 		throw new Error(`dataStorageURL environment is not defined. Please set the variable to use these tests ${process.env.dataStorageURL}`);
 	}
@@ -61,8 +32,8 @@ const optsForLimit = {
 	}
 };
 
-const urlToCrypto = "https://min-api.cryptocompare.com/data/";
-const urlToPoloniex = "https://poloniex.com/";
+// const urlToCrypto = "https://min-api.cryptocompare.com/data/";
+// const urlToPoloniex = "https://poloniex.com/";
 
 describe("Positive tests Price service", function () {
 	let redisStorageProvider: RedisStorageProvider;
@@ -72,7 +43,7 @@ describe("Positive tests Price service", function () {
 	let priceService: PriceService;
 
 	before(async function () {
-		redisStorageProvider = new RedisStorageProvider(getOptsForRedis());
+		redisStorageProvider = new RedisStorageProvider(getRedisURL());
 		await redisStorageProvider.init();
 		cryptoCompare = new Cryptocompare(optsForLimit);
 		poloniex = new Poloniex(optsForLimit);

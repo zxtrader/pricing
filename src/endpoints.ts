@@ -46,12 +46,11 @@ export class PriceServiceRouterEndpoint extends webserver.BindEndpoint {
 	private readonly _router: express.Router;
 
 	public constructor(
-		servers: ReadonlyArray<webserver.WebServer>,
 		service: PriceService,
 		opts: Configuration.PriceServiceExpressRouterEndpoint,
 		log: zxteam.Logger
 	) {
-		super(servers, opts, log);
+		super(opts, log);
 		this._service = service;
 		this._router = opts.router;
 	}
