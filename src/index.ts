@@ -14,7 +14,7 @@ import { StorageProvider } from "./providers/storage/contract";
 import { Cryptocompare } from "./providers/source/Cryptocompare";
 import { RedisStorageProvider } from "./providers/storage/RedisStorageProvider";
 
-import { factory as protocolAdapterFactory, ProtocolTypes } from "./protocol";
+import { factory as protocolAdapterFactory, ProtocolType, ProtocolTypes } from "./protocol";
 import {
 	PriceServiceRestEndpoint, PriceServiceWebSocketEndpoint, PriceServiceRouterEndpoint,
 	createExpressApplication, setupExpressErrorHandles
@@ -22,6 +22,9 @@ import {
 
 import { Poloniex } from "./providers/source/Poloniex";
 import { Binance } from "./providers/source/Binance";
+
+export { protocolAdapterFactory, ProtocolType, ProtocolTypes };
+export * from "./conf";
 
 export default async function (opts: Configuration): Promise<Runtime> {
 	const log = loggerFactory.getLogger("ZXTrader's Historical Price Service");
