@@ -6,60 +6,49 @@ ZXTrader's Price Service - Service of historical prices. Service is a caching ag
 
 ![Application schema](docs/price-service-diagram.png)
 
-## Configuration
+### Configuration file
 
-The service is focused on launching in the Docker container and most of the parameters are set via environment variables. Specific settings made in the configuration INI file
-
-### Environment variables
-
-| Name | Default Value | Description |
-| - | - | - |
-| dataStorageURL | redis://localhost:6379 | URL connect to the data store |
-
-### Settings file
-
-```bash
+```ini
 servers = 0 1
 
 server.0.listenHost = localhost
 server.0.listenPort = 8080
 server.0.type = http
 
-server.1.listenHost = localhost
-server.1.listenPort = 8081
-server.1.type = http
+server.1.listenHost = 0.0.0.0
+server.1.listenPort = 8443
+server.1.type = https
+server.1.caCertificate = /path/to/ca.crt
+server.1.serverKey = /path/to/server.key
+server.1.serverCertificate = /path/to/server.crt
+#server.1.serviceKeyPassword =
+server.1.clientCertificateMode = none
 
-# Count endpoints
+
 endpoints = 0 1
 
 endpoint.0.type = rest
 endpoint.0.servers = 0
-endpoint.0.bindPath = /v0
-endpoint.0.bindPathWeb = /
+endpoint.0.bindPath = /api
+endpoint.0.bindPathWeb = /html
 
-endpoint.1.type = rest
-endpoint.1.servers = 1
-endpoint.1.bindPath = /v1
-endpoint.1.bindPathWeb = /
+endpoint.1.type = websocket
+endpoint.1.servers = 0
+endpoint.1.bindPath = /ws
 
-# Set list of sources providers
-sources=cryptocompare zxtrader
 
-# Configure the CryptoCompare provider. See: https://min-api.cryptocompare.com/
-source.cryptocompare.url = http://blabla
-source.cryptocompare.limit.parallel: 5
-source.cryptocompare.limit.perSecond = 15
-source.cryptocompare.limit.perMinute = 300
-source.cryptocompare.limit.perHour = 8000
-source.cryptocompare.timeout = 3000
+# Settings connection to database
+dataStorageURL = redis://localhost:6379/0?ip_family=4&name=PriceService&prefix=priceserv%3A
 
-# Configure the ZXTrader provider.
-source.zxtrader.url = http://blabla
-source.zxtrader.limit.parallel: 5
-source.zxtrader.limit.perSecond = 15
-source.zxtrader.limit.perMinute = 300
-source.zxtrader.limit.perHour = 8000
-source.zxtrader.timeout = 3000
+# List source providers
+sources = CRYPTOCOMPARE POLONIEX BINANCE
+
+# Setting source provider CRYPTOCOMPARE. See for limits : https://min-api.cryptocompare.com/stats/rate/limit
+source.CRYPTOCOMPARE.limit.parallel = 5
+source.CRYPTOCOMPARE.limit.perSecond = 15
+source.CRYPTOCOMPARE.limit.perMinute = 300
+source.CRYPTOCOMPARE.limit.perHour = 8000
+source.CRYPTOCOMPARE.timeout = 3000
 ```
 
 ## How to launch the service
@@ -72,19 +61,11 @@ docker run --name zxtrader.price.service --rm -p 8080:8080 --detach zxtrader.pri
 ```
 
 ### Build from sources
-
-```bash
-npm install
-npm run build
-npm run start
-```
-
-### Run tests
-
 ```bash
 npm install
 npm run build
 npm run test
+npm run start
 ```
 
 ## How to use the service
@@ -93,7 +74,7 @@ npm run test
 
 ## Methods
 
-* ping - [Ping](#ping) check status service.
+* Ping - [Ping](#ping) check status service.
 * Single - [Historical rate (single)](#Historical-rate-(single)) Return single price or null.
 * Batch - [Historical rates (batch)](#Historical-rates-(batch)) Return list key - prices.
 * Multi sources - [Multi price from sources](#Multi-price-from-sources) Price from al sources.

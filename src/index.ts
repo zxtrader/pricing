@@ -155,10 +155,12 @@ export default async function (opts: Configuration): Promise<Runtime> {
 namespace helpers {
 	export function createStorageProvider(dataStorageUrl: URL): StorageProvider {
 		const { protocol } = dataStorageUrl;
-		if (protocol !== "redis:") {
-			return new RedisStorageProvider(dataStorageUrl);
+		switch (protocol) {
+			case "redis:":
+				return new RedisStorageProvider(dataStorageUrl);
+			default:
+				throw new Error(`Unsupported Storage Provider protocol: ${protocol}`);
 		}
-		throw new Error(`Unsupported Storage Provider protocol: ${protocol}`);
 	}
 	export function createSourceProviders(options: Configuration.Sources): Array<SourceProvider> {
 		const sourceIds: Array<string> = Object.keys(options);

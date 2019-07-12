@@ -19,7 +19,10 @@ export async function factory(
 ): Promise<ProtocolAdapter> {
 	switch (protocolType) {
 		case ProtocolType.JSONRPC: return jsonrpcProtocolAdapterFactory(service, logger, methodPrefix);
-		case ProtocolType.PROTOBUF: throw new Error("Not implemented yet");
+		case ProtocolType.PROTOBUF: return Promise.resolve(Object.freeze({
+			handleBinaryMessage() { throw new Error("Not implemented yet"); },
+			handleTextMessage() { throw new Error("Not implemented yet"); }
+		}));
 		default: throw new UnreachableProtocolTypeError(protocolType);
 	}
 }
