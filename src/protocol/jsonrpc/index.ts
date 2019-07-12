@@ -20,14 +20,14 @@ export async function factory(
 		const objAsBuffer: Buffer = ArrayBufferUtils.toBuffer(data);
 		const objAsJsonString: string = objAsBuffer.toString("utf-8");
 		const nextWrapper = next !== undefined ?
-		(): zxteam.Task<string> => {
-			return next(ct, data).continue(nextTask => {
-				const nextObjAsBuffer: Buffer = ArrayBufferUtils.toBuffer(nextTask.result);
-				const nextObjAsJsonString: string = nextObjAsBuffer.toString("utf-8");
-				return nextObjAsJsonString;
-			});
-		}
-		: undefined;
+			(): zxteam.Task<string> => {
+				return next(ct, data).continue(nextTask => {
+					const nextObjAsBuffer: Buffer = ArrayBufferUtils.toBuffer(nextTask.result);
+					const nextObjAsJsonString: string = nextObjAsBuffer.toString("utf-8");
+					return nextObjAsJsonString;
+				});
+			}
+			: undefined;
 		return handleTextMessage(ct, objAsJsonString, nextWrapper).continue(handleTask => {
 			const resultAsString = handleTask.result;
 			const resultAsBuffer: Buffer = Buffer.from(resultAsString, "utf-8");
@@ -62,7 +62,7 @@ const enum ServiceMethod {
 }
 
 function jsonrpcMessageRouter(
-	ct: zxteam.CancellationToken, service: PriceService, message: any, methodPrefix?: string
+	cancellationToken: zxteam.CancellationToken, service: PriceService, message: any, methodPrefix?: string
 ): zxteam.Task<any> {
 	// https://www.jsonrpc.org/specification
 	try {
@@ -119,9 +119,8 @@ function jsonrpcMessageRouter(
 				const requiredAllSourceIds = false;
 				const param = { ts, marketCurrency, tradeCurrency, sourceId, requiredAllSourceIds };
 				return service
-
-					.getHistoricalPrices(DUMMY_CANCELLATION_TOKEN, [param])
-					.continue((task: { result: any; }) => {
+					.getHistoricalPrices(cancellationToken, [param])
+					.continue(task => {
 						const priceResult = priceRuntime.renderForSingle(task.result, param);
 						return ({ jsonrpc: "2.0", id, result: priceResult });
 					});
@@ -148,8 +147,8 @@ function jsonrpcMessageRouter(
 				}
 
 				return service
-					.getHistoricalPrices(DUMMY_CANCELLATION_TOKEN, args)
-					.continue((task: { result: any; }) => {
+					.getHistoricalPrices(cancellationToken, args)
+					.continue(task => {
 						const priceResult = priceRuntime.renderForBatch(task.result, args);
 						return ({ jsonrpc: "2.0", id, result: priceResult });
 					});
@@ -159,8 +158,13 @@ function jsonrpcMessageRouter(
 					return Task.resolve({ jsonrpc: "2.0", id, error: { code: -32602, message: "Invalid method parameter(s)." } });
 				}
 				const echoMessage: string = params.echo;
-				return service.ping(DUMMY_CANCELLATION_TOKEN, echoMessage)
-					.continue((task: { result: any; }) => ({ jsonrpc: "2.0", id, result: task.result }));
+				return service.ping(cancellationToken, echoMessage).continue(task => ({
+					jsonrpc: "2.0", id, result: {
+						echo: task.result.echo,
+						time: task.result.time.toISOString(),
+						version: task.result.version
+					}
+				}));
 			}
 			default:
 				return Task.resolve({

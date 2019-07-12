@@ -199,7 +199,7 @@ function apiV1(service: PriceService, bindPath: string, log: zxteam.Logger): exp
 			const time = new Date();
 			return res.status(200).end(JSON.stringify({
 				echo,
-				time: time.toString(),
+				time: time.toISOString(),
 				version
 			}));
 		} catch (e) {
