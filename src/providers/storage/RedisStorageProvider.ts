@@ -12,13 +12,11 @@ export class RedisStorageProvider extends Initable implements StorageProviderIne
 	private readonly _prefix: string;
 	private readonly ioredis: Redis;
 	private readonly _logger = loggerFactory.getLogger("RedisStorage");
-	constructor(opts: RedisOptions) {
+	constructor(dataStorageUrl: URL) {
 		super();
-		opts.lazyConnect = true;
+		const opts: RedisOptions = RedisStorageProvider.parseRedisURL(dataStorageUrl);
 		this.ioredis = new RedisClient(opts);
-		if (opts.keyPrefix) {
-			this._prefix = opts.keyPrefix;
-		}
+		this._prefix = opts.keyPrefix !== undefined ? opts.keyPrefix : "";
 	}
 
 	public filterEmptyPrices(cancellationToken: zxteam.CancellationToken, args: Array<price.Argument>, sources: Array<string>)
@@ -273,6 +271,34 @@ export class RedisStorageProvider extends Initable implements StorageProviderIne
 		this._logger.trace("Disposing");
 		await this.ioredis.disconnect();
 		this._logger.trace("Disposed");
+	}
+
+	private static parseRedisURL(dataStorageUrl: URL): RedisOptions {
+		const host = dataStorageUrl.hostname;
+		const port = Number(dataStorageUrl.port);
+		const db = Number(dataStorageUrl.pathname.slice(1));
+		const family: 4 | 6 = dataStorageUrl.searchParams.has("ip_family") && dataStorageUrl.searchParams.get("ip_family") === "6" ? 6 : 4;
+		const opts: RedisOptions = {
+			host, port, db, family,
+			lazyConnect: true
+		};
+
+		if (dataStorageUrl.searchParams.has("name")) {
+			opts.connectionName = dataStorageUrl.searchParams.get("name") as string;
+		}
+		if (dataStorageUrl.searchParams.has("prefix")) {
+			opts.keyPrefix = dataStorageUrl.searchParams.get("prefix") as string;
+		}
+		if (dataStorageUrl.searchParams.has("keepAlive")) {
+			const keepAliveStr = dataStorageUrl.searchParams.get("keepAlive") as string;
+			const keepAlive = Number.parseInt(keepAliveStr);
+			if (!Number.isSafeInteger(keepAlive) || keepAlive <= 0) {
+				throw new Error(`Wrong keepAlive value: ${keepAliveStr}. Expected positive integer.`);
+			}
+			opts.keepAlive = keepAlive;
+		}
+
+		return opts;
 	}
 }
 
