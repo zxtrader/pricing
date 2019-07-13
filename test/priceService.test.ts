@@ -44,7 +44,7 @@ describe("Positive tests Price service", function () {
 
 	before(async function () {
 		redisStorageProvider = new RedisStorageProvider(getRedisURL());
-		await redisStorageProvider.init();
+		await redisStorageProvider.init(DUMMY_CANCELLATION_TOKEN);
 		cryptoCompare = new Cryptocompare(optsForLimit);
 		poloniex = new Poloniex(optsForLimit);
 		randomSource = new Randomsource();
@@ -65,7 +65,7 @@ describe("Positive tests Price service", function () {
 			}
 		];
 
-		const data = await priceService.getHistoricalPrices(DUMMY_CANCELLATION_TOKEN, args).promise;
+		const data = await priceService.getHistoricalPrices(DUMMY_CANCELLATION_TOKEN, args);
 
 		assert.isObject(data);
 
@@ -102,7 +102,7 @@ describe("Positive tests Price service", function () {
 			}
 		];
 
-		const data = await priceService.getHistoricalPrices(DUMMY_CANCELLATION_TOKEN, args).promise;
+		const data = await priceService.getHistoricalPrices(DUMMY_CANCELLATION_TOKEN, args);
 
 		assert.isObject(data);
 
@@ -205,7 +205,7 @@ describe("Positive tests Price service", function () {
 			}
 		];
 
-		const data = await priceService.getHistoricalPrices(DUMMY_CANCELLATION_TOKEN, args).promise;
+		const data = await priceService.getHistoricalPrices(DUMMY_CANCELLATION_TOKEN, args);
 
 		assert.isObject(data);
 

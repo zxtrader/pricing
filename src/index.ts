@@ -14,7 +14,9 @@ import { StorageProvider } from "./providers/storage/contract";
 import { Cryptocompare } from "./providers/source/Cryptocompare";
 import { RedisStorageProvider } from "./providers/storage/RedisStorageProvider";
 
-import { factory as protocolAdapterFactory, ProtocolType, ProtocolTypes } from "./protocol";
+import {
+	factory as protocolAdapterFactoryInitalizer, ProtocolType, BinaryProtocolTypes, TextProtocolTypes, ProtocolAdapterFactory
+} from "./protocol";
 import {
 	PriceServiceRestEndpoint, PriceServiceWebSocketEndpoint, PriceServiceRouterEndpoint,
 	createExpressApplication, setupExpressErrorHandles
@@ -22,8 +24,9 @@ import {
 
 import { Poloniex } from "./providers/source/Poloniex";
 import { Binance } from "./providers/source/Binance";
+import { DUMMY_CANCELLATION_TOKEN } from "@zxteam/task";
 
-export { protocolAdapterFactory, ProtocolType, ProtocolTypes };
+export { ProtocolType, BinaryProtocolTypes, TextProtocolTypes };
 export * from "./conf";
 
 export default async function (opts: Configuration): Promise<Runtime> {
@@ -52,12 +55,14 @@ export default async function (opts: Configuration): Promise<Runtime> {
 	);
 
 	try {
-		log.trace("Constructing Storage provider...");
+		log.info("Constructing Storage provider...");
 		const dataStorageUrl = opts.storageURL;
 		const storageProvider = helpers.createStorageProvider(dataStorageUrl);
 
-		log.trace("Constructing PriceService...");
+		log.info("Constructing PriceService...");
 		const service: PriceService = new PriceService(storageProvider, sourceProviders);
+
+		const protocolAdapterFactory: ProtocolAdapterFactory = await protocolAdapterFactoryInitalizer(service, log);
 
 		log.info("Constructing endpoints...");
 		const endpointInstances: Array<zxteam.Initable> = [];
@@ -81,14 +86,17 @@ export default async function (opts: Configuration): Promise<Runtime> {
 							loggerFactory.getLogger("Endpoint:" + endpoint.type + "(" + endpoint.bindPath + ")")
 						);
 
-						// Registering protocols
-						for (const protocol of ProtocolTypes) {
-							const protocolAdapter = await protocolAdapterFactory(service, protocol,
-								loggerFactory.getLogger(
-									"Endpoint:" + endpoint.type + "(" + endpoint.bindPath + "):Protocol(" + protocol + ")"
-								)
+						for (const protocol of BinaryProtocolTypes) {
+							endpointInstance.useBinaryAdapter(
+								protocol,
+								callbackChannel => protocolAdapterFactory.createBinaryProtocolAdapter(protocol, callbackChannel)
 							);
-							endpointInstance.use(protocol, protocolAdapter);
+						}
+						for (const protocol of TextProtocolTypes) {
+							endpointInstance.useTextAdapter(
+								protocol,
+								callbackChannel => protocolAdapterFactory.createTextProtocolAdapter(protocol, callbackChannel)
+							);
 						}
 
 						endpointInstances.push(endpointInstance);
@@ -105,13 +113,17 @@ export default async function (opts: Configuration): Promise<Runtime> {
 					}
 					case "websocket-binder": {
 						const targetEndpoint: webserver.WebSocketBinderEndpoint = endpoint.target;
-						for (const protocol of ProtocolTypes) {
-							// Registering protocols
-							const protocolAdapter = await protocolAdapterFactory(service, protocol,
-								loggerFactory.getLogger("Endpoint:" + endpoint.type + "(" + protocol + ")"),
-								endpoint.methodPrefix
+						for (const protocol of BinaryProtocolTypes) {
+							targetEndpoint.useBinaryAdapter(
+								protocol,
+								callbackChannel => protocolAdapterFactory.createBinaryProtocolAdapter(protocol, callbackChannel, endpoint.methodPrefix)
 							);
-							targetEndpoint.use(protocol, protocolAdapter);
+						}
+						for (const protocol of TextProtocolTypes) {
+							targetEndpoint.useTextAdapter(
+								protocol,
+								callbackChannel => protocolAdapterFactory.createTextProtocolAdapter(protocol, callbackChannel, endpoint.methodPrefix)
+							);
 						}
 						break;
 					}
@@ -122,15 +134,15 @@ export default async function (opts: Configuration): Promise<Runtime> {
 		}
 
 		log.info("Initializing InfoService...");
-		await service.init();
+		await service.init(DUMMY_CANCELLATION_TOKEN);
 
-		destroyHandlers.push(() => service.dispose().promise);
+		destroyHandlers.push(() => service.dispose());
 
 		log.info("Initializing endpoints...");
 		for (let endpointIndex = 0; endpointIndex < endpointInstances.length; endpointIndex++) {
 			const endpointInstance = endpointInstances[endpointIndex];
-			await endpointInstance.init();
-			destroyHandlers.push(() => endpointInstance.dispose().promise);
+			await endpointInstance.init(DUMMY_CANCELLATION_TOKEN);
+			destroyHandlers.push(() => endpointInstance.dispose());
 		}
 
 		for (const serverInfo of _.values(serversMap)) {
@@ -139,10 +151,11 @@ export default async function (opts: Configuration): Promise<Runtime> {
 					log.info(`Start server: ${serverInfo.server.name}`);
 				}
 				setupExpressErrorHandles(serverInfo.server.rootExpressApplication, log);
-				await serverInfo.server.listen();
-				destroyHandlers.push(() => serverInfo.server.dispose().promise);
+				await serverInfo.server.init(DUMMY_CANCELLATION_TOKEN);
+				destroyHandlers.push(() => serverInfo.server.dispose());
 			}
 		}
+
 	} catch (e) {
 		await destroy();
 		throw e;

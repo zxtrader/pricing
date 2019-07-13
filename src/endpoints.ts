@@ -211,12 +211,12 @@ function apiV1(service: PriceService, bindPath: string, log: zxteam.Logger): exp
 		}
 	});
 
-	router.get("/price/:args", async function (req: express.Request, res: express.Response, next: express.NextFunction) {
+	router.get("/historical/:args", async function (req: express.Request, res: express.Response, next: express.NextFunction) {
 		try {
 			if (log.isTraceEnabled) { log.trace(`Price request ${req.url}`); }
 			const args = priceRuntime.parseArgs(req.params.args);
 			if (log.isTraceEnabled) { log.trace(`Args: ${JSON.stringify(args)}`); }
-			const prices = await service.getHistoricalPrices(DUMMY_CANCELLATION_TOKEN, args).promise;
+			const prices = await service.getHistoricalPrices(DUMMY_CANCELLATION_TOKEN, args);
 			return res.status(200).end(priceRuntime.render(prices));
 		} catch (e) {
 			if (e instanceof ArgumentException) {
@@ -231,11 +231,11 @@ function apiV1(service: PriceService, bindPath: string, log: zxteam.Logger): exp
 		}
 	});
 
-	router.get("/rate/single", async function (req: express.Request, res: express.Response, next: express.NextFunction) {
+	router.get("/single", async function (req: express.Request, res: express.Response, next: express.NextFunction) {
 		try {
 			if (log.isTraceEnabled) { log.trace(`Rate single request ${req.url}`); }
 			const arg = priceRuntime.parseSingleParams(req.query);
-			const prices = await service.getHistoricalPrices(DUMMY_CANCELLATION_TOKEN, [arg]).promise;
+			const prices = await service.getHistoricalPrices(DUMMY_CANCELLATION_TOKEN, [arg]);
 			return res.status(200).end(priceRuntime.renderForSingle(prices, arg));
 		} catch (e) {
 			if (e instanceof ArgumentException) {
@@ -250,11 +250,11 @@ function apiV1(service: PriceService, bindPath: string, log: zxteam.Logger): exp
 		}
 	});
 
-	router.get("/rate/batch", async function (req: express.Request, res: express.Response, next: express.NextFunction) {
+	router.get("/batch", async function (req: express.Request, res: express.Response, next: express.NextFunction) {
 		try {
 			if (log.isTraceEnabled) { log.trace(`Rate batch request ${req.url}`); }
 			const args = priceRuntime.parseBatchArgs(req.query.items);
-			const prices = await service.getHistoricalPrices(DUMMY_CANCELLATION_TOKEN, args).promise;
+			const prices = await service.getHistoricalPrices(DUMMY_CANCELLATION_TOKEN, args);
 			return res.status(200).end(priceRuntime.renderForBatch(prices, args));
 		} catch (e) {
 			if (e instanceof ArgumentException) {

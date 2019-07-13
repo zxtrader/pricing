@@ -1,7 +1,7 @@
 import * as zxteam from "@zxteam/contract";
 import { ProtocolAdapter } from "@zxteam/webserver";
 
-import jsonrpcProtocolAdapterFactory from "./jsonrpc/index";
+import { factory as jsonRpcProtocolAdapterFactoryInitializer } from "./jsonrpc/index";
 import { PriceService } from "../PriceService";
 
 export const enum ProtocolType {
@@ -9,22 +9,50 @@ export const enum ProtocolType {
 	PROTOBUF = "protobuf"
 }
 
-export const ProtocolTypes: ReadonlyArray<ProtocolType> = Object.freeze([ProtocolType.JSONRPC, ProtocolType.PROTOBUF]);
+export const TextProtocolTypes: ReadonlyArray<ProtocolType> = Object.freeze([ProtocolType.JSONRPC]);
+export const BinaryProtocolTypes: ReadonlyArray<ProtocolType> = Object.freeze([ProtocolType.PROTOBUF]);
 
-export async function factory(
-	service: PriceService,
-	protocolType: ProtocolType,
-	logger: zxteam.Logger,
-	methodPrefix?: string
-): Promise<ProtocolAdapter> {
-	switch (protocolType) {
-		case ProtocolType.JSONRPC: return jsonrpcProtocolAdapterFactory(service, logger, methodPrefix);
-		case ProtocolType.PROTOBUF: return Promise.resolve(Object.freeze({
-			handleBinaryMessage() { throw new Error("Not implemented yet"); },
-			handleTextMessage() { throw new Error("Not implemented yet"); }
-		}));
-		default: throw new UnreachableProtocolTypeError(protocolType);
+export interface ProtocolAdapterFactory {
+	createBinaryProtocolAdapter(
+		protocol: ProtocolType,
+		callbackChannel: zxteam.PublisherChannel<ArrayBuffer>,
+		methodPrefix?: string
+	): ProtocolAdapter<ArrayBuffer>;
+	createTextProtocolAdapter(
+		protocol: ProtocolType,
+		callbackChannel: zxteam.PublisherChannel<string>,
+		methodPrefix?: string
+	): ProtocolAdapter<string>;
+}
+
+export async function factory(service: PriceService, log: zxteam.Logger): Promise<ProtocolAdapterFactory> {
+	const jsonRpcProtocolAdapterFactory = await jsonRpcProtocolAdapterFactoryInitializer(service, log);
+
+	function createBinaryProtocolAdapter(
+		protocol: ProtocolType,
+		callbackChannel: zxteam.PublisherChannel<ArrayBuffer>,
+		methodPrefix?: string
+	): ProtocolAdapter<ArrayBuffer> {
+		throw new Error("Not implemnted yet");
 	}
+
+	function createTextProtocolAdapter(
+		protocol: ProtocolType,
+		callbackChannel: zxteam.PublisherChannel<string>,
+		methodPrefix?: string
+	): ProtocolAdapter<string> {
+		switch (protocol) {
+			case ProtocolType.JSONRPC:
+				return jsonRpcProtocolAdapterFactory(callbackChannel, methodPrefix);
+			case ProtocolType.PROTOBUF:
+				throw new Error("Protobuf protocol is not TextProtocolAdapter.");
+			default:
+				throw new UnreachableProtocolTypeError(protocol);
+		}
+	}
+
+	const impl: ProtocolAdapterFactory = { createBinaryProtocolAdapter, createTextProtocolAdapter };
+	return impl;
 }
 
 export class UnreachableProtocolTypeError extends Error {
