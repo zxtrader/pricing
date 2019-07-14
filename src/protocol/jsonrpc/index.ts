@@ -12,6 +12,7 @@ import * as ArrayBufferUtils from "../../misc/ArrayBufferUtils";
 import { Notification, PriceService, price } from "../../PriceService";
 import { priceRuntime } from "../../endpoints";
 import { Disposable } from "@zxteam/disposable";
+import moment = require("moment");
 
 export interface JsonRpcProtocolAdapterFactory {
 	(callbackChannel: zxteam.PublisherChannel<string>, methodPrefix?: string): ProtocolAdapter<string>;
@@ -36,15 +37,15 @@ export default factory;
 
 const enum ServiceMethod {
 	PING = "ping",
-	RATESINGLE = "single",
-	RATEBATCH = "batch",
+	RATE = "rate",
+	//RATEBATCH = "batch",
 	SUBSCRIBE = "subscribe",
 	SUBSCRIPTIONS = "subsсiptions",
 	UNSUBSCRIBE = "unsubscribe"
 }
 
 const enum SubscribtionTopic {
-	PRICE = "price"
+	RATE = "rate"
 }
 
 class JsonRpcProtocolAdapter extends AbstractProtocolAdapter<string> {
@@ -118,50 +119,54 @@ class JsonRpcProtocolAdapter extends AbstractProtocolAdapter<string> {
 			}
 
 			switch (realMethod) {
-				case ServiceMethod.RATESINGLE: {
-					if (!(_.isObjectLike(params)
-						&& _.isString(params.exchange)
-						&& _.isString(params.market)
-						&& _.isString(params.trade)
-						&& _.isString(params.date)
-					)) {
+				case ServiceMethod.RATE: {
+					if (
+						!(
+							_.isObjectLike(params)
+							&& _.isString(params.marketCurrency)
+							&& _.isString(params.tradeCurrency)
+							&& (params.date === undefined || _.isString(params.date))
+						)
+					) {
 						return { jsonrpc: "2.0", id, error: { code: -32602, message: "Invalid method parameter(s)." } };
 					}
-					const ts = +params.date;
-					const marketCurrency = params.market;
-					const tradeCurrency = params.trade;
-					const sourceId = params.exchange;
+
+					const date = params.date !== undefined ? new Date(params.date) : new Date();
+					const ts: number = Number.parseInt(moment(date).format("YYYYMMDDHHMMSS"));
+					const marketCurrency = params.marketCurrency;
+					const tradeCurrency = params.tradeCurrency;
+					//const sourceId = params.exchangeId;
 					const requiredAllSourceIds = false;
-					const param = { ts, marketCurrency, tradeCurrency, sourceId, requiredAllSourceIds };
+					const param = { ts, marketCurrency, tradeCurrency, requiredAllSourceIds };
 					const result = await this._service.getHistoricalPrices(cancellationToken, [param]);
 					const priceResult = priceRuntime.renderForSingle(result, param);
 					return { jsonrpc: "2.0", id, result: priceResult };
 				}
-				case ServiceMethod.RATEBATCH: {
-					if (!_.isArrayLike(params)) {
-						return { jsonrpc: "2.0", id, error: { code: -32602, message: "Invalid method parameter(s)." } };
-					}
-					const argsRegex = /^[0-9]{14}:[0-9A-Z]+:[0-9A-Z]+(,[0-9]{14}:[0-9A-Z]+:[0-9A-Z]+)*$/;
-					const args: Array<price.Argument> = [];
-					for (let i = 0; i < params.length; i++) {
-						const arg = params[i];
-						if (!argsRegex.test(arg)) {
-							return { jsonrpc: "2.0", id, error: { code: -32602, message: "Invalid method parameter(s)." } };
-						}
+				// case ServiceMethod.RATEBATCH: {
+				// 	if (!_.isArrayLike(params)) {
+				// 		return { jsonrpc: "2.0", id, error: { code: -32602, message: "Invalid method parameter(s)." } };
+				// 	}
+				// 	const argsRegex = /^[0-9]{14}:[0-9A-Z]+:[0-9A-Z]+(,[0-9]{14}:[0-9A-Z]+:[0-9A-Z]+)*$/;
+				// 	const args: Array<price.Argument> = [];
+				// 	for (let i = 0; i < params.length; i++) {
+				// 		const arg = params[i];
+				// 		if (!argsRegex.test(arg)) {
+				// 			return { jsonrpc: "2.0", id, error: { code: -32602, message: "Invalid method parameter(s)." } };
+				// 		}
 
-						const parts = arg.split(":");
-						const ts: number = parseInt(parts[0]);
-						const marketCurrency: string = parts[1];
-						const tradeCurrency: string = parts[2];
-						const sourceId: string | undefined = undefined;
-						const requiredAllSourceIds = false;
-						args.push({ ts, marketCurrency, tradeCurrency, sourceId, requiredAllSourceIds });
-					}
+				// 		const parts = arg.split(":");
+				// 		const ts: number = parseInt(parts[0]);
+				// 		const marketCurrency: string = parts[1];
+				// 		const tradeCurrency: string = parts[2];
+				// 		const sourceId: string | undefined = undefined;
+				// 		const requiredAllSourceIds = false;
+				// 		args.push({ ts, marketCurrency, tradeCurrency, sourceId, requiredAllSourceIds });
+				// 	}
 
-					const result = await this._service.getHistoricalPrices(cancellationToken, args);
-					const priceResult = priceRuntime.renderForBatch(result, args);
-					return { jsonrpc: "2.0", id, result: priceResult };
-				}
+				// 	const result = await this._service.getHistoricalPrices(cancellationToken, args);
+				// 	const priceResult = priceRuntime.renderForBatch(result, args);
+				// 	return { jsonrpc: "2.0", id, result: priceResult };
+				// }
 				case ServiceMethod.PING: {
 					if (!(_.isObjectLike(params) && _.isString(params.echo))) {
 						return { jsonrpc: "2.0", id, error: { code: -32602, message: "Invalid method parameter(s)." } };
@@ -182,19 +187,26 @@ class JsonRpcProtocolAdapter extends AbstractProtocolAdapter<string> {
 					}
 					const opts: any = params.opts;
 					switch (params.topic) {
-						case SubscribtionTopic.PRICE: {
-							if (!(_.isString(opts.marketCurrency) && _.isString(opts.tradeCurrency) && _.isString(opts.exchange))) {
+						case SubscribtionTopic.RATE: {
+							if (
+								!(
+									_.isString(opts.marketCurrency)
+									&& _.isString(opts.tradeCurrency)
+									&& (opts.exchangeId === undefined || _.isString(opts.exchangeId))
+								)
+							) {
 								return { jsonrpc: "2.0", id, error: { code: -32602, message: "Invalid method parameter(s)." } };
 							}
 
 							//const threshold: number = ensure.integer(params.threshold);
+							//const exchangeId: string | undefined = opts.exchangeId;
 
 							const subscriptionChannel = await this._service.createChangeRateSubscriber(
-								cancellationToken, opts.exchange, opts.marketCurrency, opts.tradeCurrency
+								cancellationToken, opts.marketCurrency, opts.tradeCurrency
 							);
 
 							const handle = new PriceTopicSubsciberHandle(opts, subscriptionChannel, this._callbackChannel, this._log,
-								`${opts.exchange}:${opts.marketCurrency}:${opts.tradeCurrency}`);
+								`${opts.marketCurrency}:${opts.tradeCurrency}`);
 
 							this._subscribers.set(handle.token, handle);
 

@@ -231,7 +231,7 @@ function apiV1(service: PriceService, bindPath: string, log: zxteam.Logger): exp
 		}
 	});
 
-	router.get("/single", async function (req: express.Request, res: express.Response, next: express.NextFunction) {
+	router.get("/rate", async function (req: express.Request, res: express.Response, next: express.NextFunction) {
 		try {
 			if (log.isTraceEnabled) { log.trace(`Rate single request ${req.url}`); }
 			const arg = priceRuntime.parseSingleParams(req.query);
@@ -303,13 +303,13 @@ export namespace priceRuntime {
 	}
 
 	export function parseSingleParams(params: any): price.Argument {
-		const { exchange, date, market, trade } = params;
-		if (exchange && date && market && trade) {
+		const { date, marketCurrency, tradeCurrency } = params;
+		if (date && marketCurrency && tradeCurrency) {
 			return {
-				sourceId: exchange,
-				ts: +date,
-				marketCurrency: market,
-				tradeCurrency: trade,
+				// sourceId: exchange,
+				ts: Number.parseInt(date),
+				marketCurrency,
+				tradeCurrency,
 				requiredAllSourceIds: false
 			};
 		} else {

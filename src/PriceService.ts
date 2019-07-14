@@ -110,10 +110,10 @@ export class PriceService extends Initable implements PriceService {
 
 
 	public async createChangeRateSubscriber(
-		cancellationToken: zxteam.CancellationToken, exchange: string, marketCurrency: string, tradeCurrency: string
+		cancellationToken: zxteam.CancellationToken, marketCurrency: string, tradeCurrency: string
 	): Promise<Notification.ChangeRate.Channel> {
-		//const eventKey: string = `${exchange}:${marketCurrency}:${tradeCurrency}`;
-		const eventKey: string = `${marketCurrency}:${tradeCurrency}`; // Temporaty implementation withot exchange
+		//const eventKey: string = `${exchangeId}:${marketCurrency}:${tradeCurrency}`;
+		const eventKey: string = `${marketCurrency}:${tradeCurrency}`; // Temporaty implementation without exchangeId
 
 		let watcher = this._changeRateWatchers.get(eventKey);
 		if (watcher === undefined) {

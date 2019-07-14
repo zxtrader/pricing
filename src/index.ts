@@ -137,21 +137,30 @@ export default async function (opts: Configuration): Promise<Runtime> {
 		await service.init(DUMMY_CANCELLATION_TOKEN);
 		destroyHandlers.push(() => service.dispose());
 
-		log.info("Initializing servers...");
-		for (const serverInfo of _.values(serversMap)) {
-			if (serverInfo.isOwnInstance === true) {
-				if (log.isInfoEnabled) {
-					log.info(`Initializing server: ${serverInfo.server.name}`);
-				}
-				setupExpressErrorHandles(serverInfo.server.rootExpressApplication, log);
-				await serverInfo.server.init(DUMMY_CANCELLATION_TOKEN);
-				destroyHandlers.push(() => serverInfo.server.dispose());
-			}
+		log.info("Initializing endpoints...");
+		for (const endpointInstance of endpointInstances) {
+			await endpointInstance.init(DUMMY_CANCELLATION_TOKEN);
 		}
 
-		log.info("Initializing endpoints...");
-		for (const  endpointInstance of endpointInstances) {
-			await endpointInstance.init(DUMMY_CANCELLATION_TOKEN);
+		log.info("Initializing servers...");
+		try {
+			for (const serverInfo of _.values(serversMap)) {
+				if (serverInfo.isOwnInstance === true) {
+					if (log.isInfoEnabled) {
+						log.info(`Initializing server: ${serverInfo.server.name}`);
+					}
+					setupExpressErrorHandles(serverInfo.server.rootExpressApplication, log);
+					await serverInfo.server.init(DUMMY_CANCELLATION_TOKEN);
+					destroyHandlers.push(() => serverInfo.server.dispose());
+				}
+			}
+		} catch (e) {
+			for (const endpointInstance of endpointInstances) { await endpointInstance.dispose(); }
+			throw e;
+		}
+
+		// Endpoints should destroy fisrt, so added it in end of destroyHandlers
+		for (const endpointInstance of endpointInstances) {
 			destroyHandlers.push(() => endpointInstance.dispose());
 		}
 
