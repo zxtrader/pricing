@@ -27,11 +27,12 @@
 		"@types/lodash": "^4.14.136",
 		"@types/morgan": "^1.7.35",
 		"@types/node": "^11.13.17",
+		"@types/uuid": "^3.4.5",
 		"@zxnode/build": "^0.0.34"
 	},
 	"dependencies": {
 		"@zxteam/configuration": "^6.0.1",
-		"@zxteam/contract": "^6.0.1",
+		"@zxteam/contract": "^6.0.2",
 		"@zxteam/ensure.js": "^6.0.1",
 		"@zxteam/financial.js": "^6.0.1",
 		"@zxteam/launcher": "^6.0.1",
@@ -40,13 +41,14 @@
 		"@zxteam/restclient": "^6.0.1",
 		"@zxteam/task": "^6.0.1",
 		"@zxteam/webserver": "^6.0.1-rc1",
-		"compression": "^1.7.4",
 		"ajv": "^6.10.1",
+		"compression": "^1.7.4",
 		"express": "^4.17.1",
 		"ioredis": "^4.11.1",
 		"lodash": "^4.17.14",
 		"moment": "^2.24.0",
-		"morgan": "^1.9.1"
+		"morgan": "^1.9.1",
+		"uuid": "^3.3.2"
 	},
 	"engines": {
 		"node": ">=11"

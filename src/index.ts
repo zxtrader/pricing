@@ -135,25 +135,24 @@ export default async function (opts: Configuration): Promise<Runtime> {
 
 		log.info("Initializing InfoService...");
 		await service.init(DUMMY_CANCELLATION_TOKEN);
-
 		destroyHandlers.push(() => service.dispose());
 
-		log.info("Initializing endpoints...");
-		for (let endpointIndex = 0; endpointIndex < endpointInstances.length; endpointIndex++) {
-			const endpointInstance = endpointInstances[endpointIndex];
-			await endpointInstance.init(DUMMY_CANCELLATION_TOKEN);
-			destroyHandlers.push(() => endpointInstance.dispose());
-		}
-
+		log.info("Initializing servers...");
 		for (const serverInfo of _.values(serversMap)) {
 			if (serverInfo.isOwnInstance === true) {
 				if (log.isInfoEnabled) {
-					log.info(`Start server: ${serverInfo.server.name}`);
+					log.info(`Initializing server: ${serverInfo.server.name}`);
 				}
 				setupExpressErrorHandles(serverInfo.server.rootExpressApplication, log);
 				await serverInfo.server.init(DUMMY_CANCELLATION_TOKEN);
 				destroyHandlers.push(() => serverInfo.server.dispose());
 			}
+		}
+
+		log.info("Initializing endpoints...");
+		for (const  endpointInstance of endpointInstances) {
+			await endpointInstance.init(DUMMY_CANCELLATION_TOKEN);
+			destroyHandlers.push(() => endpointInstance.dispose());
 		}
 
 	} catch (e) {

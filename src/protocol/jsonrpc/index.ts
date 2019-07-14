@@ -1,12 +1,17 @@
 import * as zxteam from "@zxteam/contract";
 import { AbstractProtocolAdapter, ProtocolAdapter } from "@zxteam/webserver";
+import financial from "@zxteam/financial.js";
+import { Task } from "@zxteam/task";
+
 import * as _ from "lodash";
+import { v4 as uuid } from "uuid";
 
 // import { JsonSchemaManager, factory as jsonSchemaManagerFactory } from "../../misc/JsonSchemaManager";
+
 import * as ArrayBufferUtils from "../../misc/ArrayBufferUtils";
-import { PriceService, price } from "../../PriceService";
-import { Task } from "@zxteam/task";
+import { Notification, PriceService, price } from "../../PriceService";
 import { priceRuntime } from "../../endpoints";
+import { Disposable } from "@zxteam/disposable";
 
 export interface JsonRpcProtocolAdapterFactory {
 	(callbackChannel: zxteam.PublisherChannel<string>, methodPrefix?: string): ProtocolAdapter<string>;
@@ -16,40 +21,6 @@ export async function factory(service: PriceService, logger: zxteam.Logger): Pro
 	//const schemasDirectory = path.normalize(path.join(__dirname, "schemas"));
 	//const schemaManager: JsonSchemaManager = await jsonSchemaManagerFactory(schemasDirectory, logger);
 
-	// function handleBinaryMessage(
-	// 	ct: zxteam.CancellationToken, data: ArrayBuffer, next?: ProtocolAdapterNext<ArrayBuffer>
-	// ): zxteam.Task<ArrayBuffer> {
-	// 	const objAsBuffer: Buffer = ArrayBufferUtils.toBuffer(data);
-	// 	const objAsJsonString: string = objAsBuffer.toString("utf-8");
-	// 	const nextWrapper = next !== undefined ?
-	// 		(): zxteam.Task<string> => {
-	// 			return next(ct, data).continue(nextTask => {
-	// 				const nextObjAsBuffer: Buffer = ArrayBufferUtils.toBuffer(nextTask.result);
-	// 				const nextObjAsJsonString: string = nextObjAsBuffer.toString("utf-8");
-	// 				return nextObjAsJsonString;
-	// 			});
-	// 		}
-	// 		: undefined;
-	// 	return handleTextMessage(ct, objAsJsonString, nextWrapper).continue(handleTask => {
-	// 		const resultAsString = handleTask.result;
-	// 		const resultAsBuffer: Buffer = Buffer.from(resultAsString, "utf-8");
-	// 		return ArrayBufferUtils.fromBuffer(resultAsBuffer);
-	// 	});
-	// }
-	// function handleTextMessage(
-	// 	ct: zxteam.CancellationToken, data: string, next?: ProtocolAdapterNext<string>
-	// ): zxteam.Task<string> {
-	// 	const message = JSON.parse(data);
-	// 	return jsonrpcMessageRouter(ct, service, message).continue(routerTask => {
-	// 		const result = routerTask.result;
-	// 		if (result.error && result.error.code === -32601) {
-	// 			if (next !== undefined) {
-	// 				return next(ct, data);
-	// 			}
-	// 		}
-	// 		return JSON.stringify(result);
-	// 	});
-	// }
 
 	function jsonRpcProtocolAdapterFactory(
 		callbackChannel: zxteam.PublisherChannel<string>, methodPrefix?: string
@@ -72,16 +43,14 @@ const enum ServiceMethod {
 	UNSUBSCRIBE = "unsubscribe"
 }
 
-// function jsonrpcMessageRouter(
-// 	cancellationToken: zxteam.CancellationToken, service: PriceService, message: any, methodPrefix?: string
-// ): zxteam.Task<any> {
-// }
-
-
+const enum SubscribtionTopic {
+	PRICE = "price"
+}
 
 class JsonRpcProtocolAdapter extends AbstractProtocolAdapter<string> {
 	private readonly _service: PriceService;
 	private readonly _methodPrefix?: string;
+	private readonly _subscribers: Map<string/* token */, TopicSubsciberHandle>;
 
 	public constructor(
 		service: PriceService, callbackChannel: ProtocolAdapter.CallbackChannel<string>, log: zxteam.Logger, methodPrefix?: string
@@ -89,6 +58,7 @@ class JsonRpcProtocolAdapter extends AbstractProtocolAdapter<string> {
 		super(callbackChannel, log);
 		this._service = service;
 		this._methodPrefix = methodPrefix;
+		this._subscribers = new Map();
 	}
 
 	public async handleMessage(
@@ -99,8 +69,13 @@ class JsonRpcProtocolAdapter extends AbstractProtocolAdapter<string> {
 		return JSON.stringify(result);
 	}
 
-	protected onDispose(): void {
-		//
+	protected onDispose(): Promise<void> {
+		const innerDisposes: Array<Promise<void>> = [];
+		for (const handle of this._subscribers.values()) {
+			handle.stopSubscriptionEvents();
+			innerDisposes.push(handle.dispose());
+		}
+		return Promise.all(innerDisposes).then();
 	}
 
 	private async handleJsonRpcMessage(
@@ -129,9 +104,7 @@ class JsonRpcProtocolAdapter extends AbstractProtocolAdapter<string> {
 			// Methods
 			if (id === null) {
 				// Method call should contain valid id
-				return {
-					jsonrpc: "2.0", id: id || null, error: { code: -32600, message: "The JSON sent is not a valid Request object." }
-				};
+				return { jsonrpc: "2.0", id: null, error: { code: -32600, message: "The JSON sent is not a valid Request object." } };
 			}
 
 			let realMethod = method;
@@ -209,27 +182,49 @@ class JsonRpcProtocolAdapter extends AbstractProtocolAdapter<string> {
 					}
 					const opts: any = params.opts;
 					switch (params.topic) {
-						case "rate": {
-							if (!(_.isString(opts.marketCurrency) && _.isString(opts.tradeCurrency) && _.isString(opts.exchangeId))) {
+						case SubscribtionTopic.PRICE: {
+							if (!(_.isString(opts.marketCurrency) && _.isString(opts.tradeCurrency) && _.isString(opts.exchange))) {
 								return { jsonrpc: "2.0", id, error: { code: -32602, message: "Invalid method parameter(s)." } };
 							}
 
-							// { "topic": "rate", "threshold": 250, "opts": { "marketCurrency": "USD", "tradeCurrency": "BTC", "exchange": "BINANCE" } }
-							const channel = await this._service.createChangeRateSubscriber(
-								cancellationToken, opts.exchangeId, opts.marketCurrency, opts.tradeCurrency
+							//const threshold: number = ensure.integer(params.threshold);
+
+							const subscriptionChannel = await this._service.createChangeRateSubscriber(
+								cancellationToken, opts.exchange, opts.marketCurrency, opts.tradeCurrency
 							);
-							//channel.addHandler()
-							return { jsonrpc: "2.0", id, error: { code: -32602, message: "Invalid params." } };
+
+							const handle = new PriceTopicSubsciberHandle(opts, subscriptionChannel, this._callbackChannel, this._log,
+								`${opts.exchange}:${opts.marketCurrency}:${opts.tradeCurrency}`);
+
+							this._subscribers.set(handle.token, handle);
+
+							return { jsonrpc: "2.0", id, result: handle.token };
 						}
 						default:
 							return { jsonrpc: "2.0", id, error: { code: -32602, message: "Invalid params." } };
 					}
 				}
 				case ServiceMethod.SUBSCRIPTIONS: {
-					return { jsonrpc: "2.0", id, error: { code: -32601, message: "The method does not exist / is not available." } };
+					const result: { [token: string]: any } = {};
+					this._subscribers.forEach((handle, token) => {
+						result[token] = { ...handle.opts };
+					});
+					return { jsonrpc: "2.0", id, result };
 				}
 				case ServiceMethod.UNSUBSCRIBE: {
-					return { jsonrpc: "2.0", id, error: { code: -32601, message: "The method does not exist / is not available." } };
+					if (!_.isString(params)) {
+						return { jsonrpc: "2.0", id, error: { code: -32602, message: "Invalid method parameter(s)." } };
+					}
+					const handle = this._subscribers.get(params/*token*/);
+					if (handle === undefined) {
+						return { jsonrpc: "2.0", id, error: { code: -32602, message: "Invalid method parameter(s)." } };
+					}
+
+					this._subscribers.delete(params/*token*/);
+					handle.stopSubscriptionEvents();
+					await handle.dispose();
+
+					return { jsonrpc: "2.0", id, result: true };
 				}
 				default:
 					return { jsonrpc: "2.0", id, error: { code: -32601, message: "The method does not exist / is not available." } };
@@ -238,5 +233,81 @@ class JsonRpcProtocolAdapter extends AbstractProtocolAdapter<string> {
 			// Return correct JSON-RPC error message, instead raise exception
 			throw servireMethodError;
 		}
+	}
+}
+
+interface TopicSubsciberHandle extends zxteam.Disposable {
+	readonly opts: any;
+	stopSubscriptionEvents(): void;
+}
+
+abstract class AbstractTopicSubsciberHandle<TEventData> extends Disposable implements TopicSubsciberHandle {
+	public readonly opts: any;
+	protected readonly _eventHandler: zxteam.SubscriberChannel.Callback<TEventData>;
+	protected readonly _log: zxteam.Logger;
+	private readonly _publisherChannel: zxteam.PublisherChannel<string>;
+	private readonly _token: string;
+
+	public constructor(opts: any, publisherChannel: zxteam.PublisherChannel<string>, log: zxteam.Logger, tokenPrefix?: string) {
+		super();
+		this.opts = opts;
+		this._publisherChannel = publisherChannel;
+		this._log = log;
+		this._eventHandler = this.onEvent.bind(this);
+		if (tokenPrefix === undefined) { tokenPrefix = "token"; }
+		this._token = `${tokenPrefix}-${uuid()}`;
+	}
+
+	public get token(): string { return this._token; }
+
+	public abstract stopSubscriptionEvents(): void;
+
+	protected abstract formatEventData(data: TEventData): any;
+
+	private async onEvent(
+		cancellationToken: zxteam.CancellationToken,
+		ev: zxteam.SubscriberChannel.Event<TEventData> | Error
+	): Promise<void> {
+		if (ev instanceof Error) {
+			if (this._log.isWarnEnabled) { this._log.warn(`SubscriberChannel for token ${this._token} fired error: ${ev.message}`); }
+			if (this._log.isTraceEnabled) { this._log.warn(`SubscriberChannel for token ${this._token} fired error.`, ev.message); }
+			return;
+		}
+
+		const data = this.formatEventData(ev.data);
+		const jsonRpcMessage = { jsonrpc: "2.0", method: "notification", params: { token: this._token, data } };
+		await this._publisherChannel.send(cancellationToken, JSON.stringify(jsonRpcMessage));
+	}
+}
+
+class PriceTopicSubsciberHandle extends AbstractTopicSubsciberHandle<Notification.ChangeRate.Data> {
+	private readonly _priceTopicSubsciberChannel: Notification.ChangeRate.Channel;
+
+	public constructor(
+		opts: any,
+		priceTopicSubsciberChannel: Notification.ChangeRate.Channel,
+		publisherChannel: zxteam.PublisherChannel<string>,
+		log: zxteam.Logger,
+		tokenPrefix: string
+	) {
+		super(opts, publisherChannel, log, tokenPrefix);
+		this._priceTopicSubsciberChannel = priceTopicSubsciberChannel;
+
+		this._priceTopicSubsciberChannel.addHandler(this._eventHandler);
+	}
+
+	public stopSubscriptionEvents() {
+		this._priceTopicSubsciberChannel.removeHandler(this._eventHandler);
+	}
+
+	protected onDispose() {
+		return this._priceTopicSubsciberChannel.dispose();
+	}
+
+	protected formatEventData({ date, price: rate }: Notification.ChangeRate.Data): any {
+		return {
+			date: date.toISOString(),
+			price: financial.toString(rate)
+		};
 	}
 }

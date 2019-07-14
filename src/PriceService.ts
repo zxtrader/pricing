@@ -110,18 +110,20 @@ export class PriceService extends Initable implements PriceService {
 
 
 	public async createChangeRateSubscriber(
-		cancellationToken: zxteam.CancellationToken, marketCurrency: string, tradeCurrency: string, exchange: string
+		cancellationToken: zxteam.CancellationToken, exchange: string, marketCurrency: string, tradeCurrency: string
 	): Promise<Notification.ChangeRate.Channel> {
 		//const eventKey: string = `${exchange}:${marketCurrency}:${tradeCurrency}`;
 		const eventKey: string = `${marketCurrency}:${tradeCurrency}`; // Temporaty implementation withot exchange
 
 		let watcher = this._changeRateWatchers.get(eventKey);
 		if (watcher === undefined) {
+			const watchCancellationToken = Task.createCancellationTokenSource();
 			const timer = setInterval(async () => {
 				try {
 					const now = new Date();
-					const rate: zxteam.Financial = await this._cryptoCompareApiClient.getPrice(cancellationToken, marketCurrency, tradeCurrency);
-					this._notificationEmitter.emit(eventKey, { date: now, rate });
+					const ccPrice: zxteam.Financial = await this._cryptoCompareApiClient
+						.getPrice(watchCancellationToken.token, marketCurrency, tradeCurrency);
+					this._notificationEmitter.emit(eventKey, { date: now, price: ccPrice });
 				} catch (e) {
 					if (this._log.isWarnEnabled) { this._log.warn(`Failed to get price for ${eventKey}`); }
 					if (this._log.isDebugEnabled) { this._log.debug(`Failed to get price for ${eventKey}. Inner error: ${e.message}`); }
@@ -130,7 +132,10 @@ export class PriceService extends Initable implements PriceService {
 			}, 1000);
 			const channels = new Set<Notification.ChangeRate.Channel>();
 			watcher = Object.freeze({
-				destroy() { clearInterval(timer); },
+				destroy() {
+					clearInterval(timer);
+					watchCancellationToken.cancel();
+				},
 				addChanel: (c: Notification.ChangeRate.Channel) => {
 					channels.add(c);
 				},
@@ -145,12 +150,8 @@ export class PriceService extends Initable implements PriceService {
 			this._changeRateWatchers.set(eventKey, watcher);
 		}
 
-
 		const handlers: Set<
-			zxteam.SubscriberChannel.Callback<
-				Notification.ChangeRate.Data,
-				zxteam.SubscriberChannel.Event<Notification.ChangeRate.Data>
-			>
+			zxteam.SubscriberChannel.Callback<Notification.ChangeRate.Data>
 		> = new Set();
 
 		const onChangeRate = (data: any) => {
@@ -363,7 +364,7 @@ export namespace Notification {
 	export namespace ChangeRate {
 		export interface Data {
 			date: Date;
-			rate: zxteam.Financial;
+			price: zxteam.Financial;
 		}
 		export type Channel = zxteam.SubscriberChannel<Data>;
 	}
