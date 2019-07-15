@@ -135,7 +135,7 @@ class JsonRpcProtocolAdapter extends AbstractProtocolAdapter<string> {
 					}
 
 					const date = params.date !== undefined ? new Date(params.date) : new Date();
-					const ts: number = Number.parseInt(moment(date).format("YYYYMMDDHHMMSS"));
+					const ts: number = Number.parseInt(moment(date).format("YYYYMMDDHHmmss"));
 					const marketCurrency = params.marketCurrency;
 					const tradeCurrency = params.tradeCurrency;
 					//const sourceId = params.exchangeId;
