@@ -5,7 +5,7 @@ import { RestClient } from "@zxteam/restclient";
 import { URL } from "url";
 import { Router } from "express-serve-static-core";
 
-import { ProtocolType, UnreachableProtocolTypeError } from "./protocol";
+import { ProtocolType } from "./protocol";
 
 export interface Configuration {
 	readonly servers: ReadonlyArray<webserver.Configuration.WebServer | webserver.WebServer>;

@@ -55,7 +55,8 @@ export async function factory(service: PriceService, log: zxteam.Logger): Promis
 	return impl;
 }
 
-export class UnreachableProtocolTypeError extends Error {
+
+class UnreachableProtocolTypeError extends Error {
 	public constructor(protocolType: never) {
 		super(`Unsupported ProtocolType: ${protocolType}`);
 	}

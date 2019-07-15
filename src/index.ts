@@ -17,6 +17,7 @@ import { RedisStorageProvider } from "./providers/storage/RedisStorageProvider";
 import {
 	factory as protocolAdapterFactoryInitalizer, ProtocolType, BinaryProtocolTypes, TextProtocolTypes, ProtocolAdapterFactory
 } from "./protocol";
+
 import {
 	PriceServiceRestEndpoint, PriceServiceWebSocketEndpoint, PriceServiceRouterEndpoint,
 	createExpressApplication, setupExpressErrorHandles
@@ -31,6 +32,8 @@ export * from "./conf";
 
 export default async function (opts: Configuration): Promise<Runtime> {
 	const log = loggerFactory.getLogger("ZXTrader's Historical Price Service");
+
+	const cancellationToken = DUMMY_CANCELLATION_TOKEN;
 
 	// TODO Valdate options
 
@@ -62,6 +65,7 @@ export default async function (opts: Configuration): Promise<Runtime> {
 		log.info("Constructing PriceService...");
 		const service: PriceService = new PriceService(storageProvider, sourceProviders);
 
+		log.info("Constructing ProtocolAdapterFactory...");
 		const protocolAdapterFactory: ProtocolAdapterFactory = await protocolAdapterFactoryInitalizer(service, log);
 
 		log.info("Constructing endpoints...");
@@ -134,12 +138,12 @@ export default async function (opts: Configuration): Promise<Runtime> {
 		}
 
 		log.info("Initializing InfoService...");
-		await service.init(DUMMY_CANCELLATION_TOKEN);
+		await service.init(cancellationToken);
 		destroyHandlers.push(() => service.dispose());
 
 		log.info("Initializing endpoints...");
 		for (const endpointInstance of endpointInstances) {
-			await endpointInstance.init(DUMMY_CANCELLATION_TOKEN);
+			await endpointInstance.init(cancellationToken);
 		}
 
 		log.info("Initializing servers...");
@@ -150,7 +154,7 @@ export default async function (opts: Configuration): Promise<Runtime> {
 						log.info(`Initializing server: ${serverInfo.server.name}`);
 					}
 					setupExpressErrorHandles(serverInfo.server.rootExpressApplication, log);
-					await serverInfo.server.init(DUMMY_CANCELLATION_TOKEN);
+					await serverInfo.server.init(cancellationToken);
 					destroyHandlers.push(() => serverInfo.server.dispose());
 				}
 			}
@@ -159,7 +163,7 @@ export default async function (opts: Configuration): Promise<Runtime> {
 			throw e;
 		}
 
-		// Endpoints should destroy fisrt, so added it in end of destroyHandlers
+		// Endpoints should destroy first, so added it in end of destroyHandlers
 		for (const endpointInstance of endpointInstances) {
 			destroyHandlers.push(() => endpointInstance.dispose());
 		}
