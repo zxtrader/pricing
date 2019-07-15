@@ -134,7 +134,7 @@ class JsonRpcProtocolAdapter extends AbstractProtocolAdapter<string> {
 						return { jsonrpc: "2.0", id, error: { code: -32602, message: "Invalid method parameter(s)." } };
 					}
 
-					const date = params.date !== undefined ? new Date(params.date) : new Date();
+					const date = params.date !== undefined ? new Date(params.date) : moment.utc();
 					const ts: number = Number.parseInt(moment(date).format("YYYYMMDDHHmmss"));
 					const marketCurrency = params.marketCurrency;
 					const tradeCurrency = params.tradeCurrency;
@@ -142,7 +142,7 @@ class JsonRpcProtocolAdapter extends AbstractProtocolAdapter<string> {
 					const requiredAllSourceIds = false;
 					const param = { ts, marketCurrency, tradeCurrency, requiredAllSourceIds };
 					const result = await this._service.getHistoricalPrices(cancellationToken, [param]);
-					const priceResult = priceRuntime.renderForSingle(result, param);
+					const priceResult = priceRuntime.renderForRate(result, param);
 					return { jsonrpc: "2.0", id, result: priceResult };
 				}
 				// case ServiceMethod.RATEBATCH: {

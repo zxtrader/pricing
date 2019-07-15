@@ -7,6 +7,7 @@ import * as compression from "compression";
 import * as morgan from "morgan";  // Logging middleware
 import * as _ from "lodash";
 import * as path from "path";
+import * as moment from "moment";
 
 import { Configuration } from "./conf";
 import { PriceService, ArgumentException, InvalidDateError, price } from "./PriceService";
@@ -236,7 +237,8 @@ function apiV1(service: PriceService, bindPath: string, log: zxteam.Logger): exp
 			if (log.isTraceEnabled) { log.trace(`Rate single request ${req.url}`); }
 			const arg = priceRuntime.parseSingleParams(req.query);
 			const prices = await service.getHistoricalPrices(DUMMY_CANCELLATION_TOKEN, [arg]);
-			return res.status(200).end(priceRuntime.renderForSingle(prices, arg));
+			const result = priceRuntime.renderForRate(prices, arg);
+			return res.status(200).end(JSON.stringify(result));
 		} catch (e) {
 			if (e instanceof ArgumentException) {
 				log.error(e.message);
@@ -304,10 +306,11 @@ export namespace priceRuntime {
 
 	export function parseSingleParams(params: any): price.Argument {
 		const { date, marketCurrency, tradeCurrency } = params;
-		if (date && marketCurrency && tradeCurrency) {
+		const ts = (!date) ? parseInt(moment.utc().format("YYYYMMDDHHmmss")) : date;
+		if (ts && marketCurrency && tradeCurrency) {
 			return {
 				// sourceId: exchange,
-				ts: Number.parseInt(date),
+				ts: Number.parseInt(ts),
 				marketCurrency,
 				tradeCurrency,
 				requiredAllSourceIds: false
@@ -352,6 +355,20 @@ export namespace priceRuntime {
 				const priceName = "price";
 				return exchange[nameExchange][priceName];
 			}
+		}
+		return null;
+	}
+
+	export function renderForRate(prices: price.Timestamp, arg: price.Argument): string | null {
+		const avgAndSource = prices[arg.ts][arg.marketCurrency][arg.tradeCurrency];
+		if ("avg" in avgAndSource) {
+			const avg = "avg";
+			const priceAvg = avgAndSource[avg];
+			const priceName = "price";
+			if (priceAvg) {
+				return priceAvg[priceName];
+			}
+			return null;
 		}
 		return null;
 	}
