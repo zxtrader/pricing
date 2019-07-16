@@ -91,7 +91,7 @@ export namespace Configuration {
 
 export function configurationFactory(configuration: zxteam.Configuration): Configuration {
 	const servers: Array<webserver.Configuration.WebServer> = webserver.Configuration.parseWebServers(configuration);
-	const sources: Configuration.Sources = helper.parseSources(configuration);
+	const sources: Configuration.Sources = parseSources(configuration);
 
 	const endpoints: Array<Configuration.PriceServiceEndpoint> = configuration.getString("endpoints").split(" ").map(
 		(endpointIndex: string): Configuration.PriceServiceEndpoint => {
@@ -104,33 +104,32 @@ export function configurationFactory(configuration: zxteam.Configuration): Confi
 	return appConfig;
 }
 
-export namespace helper {
-	export function parseSources(configuration: zxteam.Configuration): Configuration.Sources {
-		const sources: Configuration.Sources = {};
-		// == Read configuration from config.ini file ==
-		const sourceIds: Array<string> = configuration.getString("sources").split(" ");
-		for (let i = 0; i < sourceIds.length; i++) {
-			const sourceId = sourceIds[i];
-			const parallel = configuration.getInteger(`source.${sourceId}.limit.parallel`);
-			const perSecond = configuration.getInteger(`source.${sourceId}.limit.perSecond`);
-			const perMinute = configuration.getInteger(`source.${sourceId}.limit.perMinute`);
-			const perHour = configuration.getInteger(`source.${sourceId}.limit.perHour`);
-			const timeout = configuration.getInteger(`source.${sourceId}.timeout`);
+export function parseSources(configuration: zxteam.Configuration): Configuration.Sources {
+	const sources: Configuration.Sources = {};
+	const sourceIds: ReadonlyArray<string> = configuration.getString("sources").split(" ");
+	for (const sourceId of sourceIds) {
+		const parallel = configuration.getInteger(`source.${sourceId}.limit.parallel`);
+		const perSecond = configuration.getInteger(`source.${sourceId}.limit.perSecond`);
+		const perMinute = configuration.getInteger(`source.${sourceId}.limit.perMinute`);
+		const perHour = configuration.getInteger(`source.${sourceId}.limit.perHour`);
+		const timeout = configuration.getInteger(`source.${sourceId}.timeout`);
 
-			sources[sourceId] = {
-				limit: {
-					instance: {
-						parallel,
-						perSecond,
-						perMinute,
-						perHour
-					},
-					timeout
-				}
-			};
-		}
-		return sources;
+		sources[sourceId] = {
+			limit: {
+				instance: {
+					parallel,
+					perSecond,
+					perMinute,
+					perHour
+				},
+				timeout
+			}
+		};
 	}
+	return sources;
+}
+
+export namespace helper {
 	export function parseEndpoint(configuration: zxteam.Configuration, endpointIndex: string): Configuration.PriceServiceEndpoint {
 		const endpointConfiguration: zxteam.Configuration = configuration.getConfiguration(`endpoint.${endpointIndex}`);
 		const endpointType = endpointConfiguration.getString("type");
