@@ -28,7 +28,7 @@ export class RedisStorageProvider extends Initable implements StorageProviderIne
 			const { ts, marketCurrency, tradeCurrency, sourceId, requiredAllSourceIds: requiredAllSourceSystems } = arg;
 
 			this._logger.trace("Create keys for search price");
-			const corePriceRedisKey = `${this._prefix}${ts}:${marketCurrency}:${tradeCurrency}`;
+			const corePriceRedisKey = `${ts}:${marketCurrency}:${tradeCurrency}`;
 
 			if (sourceId) {
 				if (this._logger.isTraceEnabled) {
@@ -100,7 +100,7 @@ export class RedisStorageProvider extends Initable implements StorageProviderIne
 			const { sourceId, ts, marketCurrency, tradeCurrency, price: newPrice } = argNewPrice;
 
 			this._logger.trace("Create keys for save price");
-			const corePriceRedisKey = `${this._prefix}${ts}:${marketCurrency}:${tradeCurrency}`;
+			const corePriceRedisKey = `${ts}:${marketCurrency}:${tradeCurrency}`;
 			const priceSourceIdsRedisKey = `${corePriceRedisKey}:`;
 			const sourceIdPriceRedisKey = `${priceSourceIdsRedisKey}${sourceId}`;
 
@@ -188,7 +188,7 @@ export class RedisStorageProvider extends Initable implements StorageProviderIne
 			}
 
 			const { ts, marketCurrency, tradeCurrency, sourceId: sourceId, requiredAllSourceIds: requiredAllSourceId } = arg;
-			const corePriceRedisKey = `${this._prefix}${ts}:${marketCurrency}:${tradeCurrency}`;
+			const corePriceRedisKey = `${ts}:${marketCurrency}:${tradeCurrency}`;
 			const priceSourceIdsRedisKey = `${corePriceRedisKey}:`;
 
 			if (this._logger.isTraceEnabled) {
