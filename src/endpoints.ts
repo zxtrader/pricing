@@ -306,11 +306,11 @@ export namespace priceRuntime {
 
 	export function parseSingleParams(params: any): price.Argument {
 		const { date, marketCurrency, tradeCurrency } = params;
-		const ts = (!date) ? parseInt(moment.utc().format("YYYYMMDDHHmmss")) : date;
-		if (ts && marketCurrency && tradeCurrency) {
+		const ts: number = date !== undefined ? Number.parseInt(date) : Number.parseInt(moment.utc().format("YYYYMMDDHHmmss"));
+		if (_.isString(marketCurrency) && _.isString(tradeCurrency)) {
 			return {
 				// sourceId: exchange,
-				ts: Number.parseInt(ts),
+				ts,
 				marketCurrency,
 				tradeCurrency,
 				requiredAllSourceIds: false

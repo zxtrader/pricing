@@ -65,7 +65,7 @@ $ wscat --connect wss://service.zxtrader.com/price/v0/ws
 connected (press CTRL+C to quit)
 ```
 ```json
-> {"jsonrpc":"2.0","id":42,"method":"rate","params":{"marketCurrency":"USDT","tradeCurrency":"BTC","date":"2019-07-01T10:20:33"}}
+> {"jsonrpc":"2.0","id":42,"method":"rate","params":{"marketCurrency":"USDT","tradeCurrency":"BTC","date":"2019-07-01T10:20:33Z"}}
 < {"jsonrpc":"2.0","id":42,"result":"0.00945900"}
 > {"jsonrpc":"2.0","id":42,"method":"rate","params":{"marketCurrency":"USDT","tradeCurrency":"BTC"}}
 < {"jsonrpc":"2.0","id":42,"result":"0.00945900"}

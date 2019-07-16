@@ -134,8 +134,8 @@ class JsonRpcProtocolAdapter extends AbstractProtocolAdapter<string> {
 						return { jsonrpc: "2.0", id, error: { code: -32602, message: "Invalid method parameter(s)." } };
 					}
 
-					const date = params.date !== undefined ? new Date(params.date) : moment.utc();
-					const ts: number = Number.parseInt(moment(date).format("YYYYMMDDHHmmss"));
+					const date: Date = params.date !== undefined ? new Date(params.date) : new Date();
+					const ts: number = Number.parseInt(moment.utc(date).format("YYYYMMDDHHmmss"));
 					const marketCurrency = params.marketCurrency;
 					const tradeCurrency = params.tradeCurrency;
 					//const sourceId = params.exchangeId;

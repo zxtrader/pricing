@@ -1,6 +1,6 @@
 {
 	"name": "com.zxtrader.price.service",
-	"version": "0.0.19",
+	"version": "0.0.20",
 	"description": "ZXTrader's Price Service",
 	"main": "./src/index.js",
 	"types": "./src/index.d.ts",
