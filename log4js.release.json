@@ -2,10 +2,6 @@
 	"appenders": {
 		"console": {
 			"type": "console"
-		},
-		"file": {
-			"type": "file",
-			"filename": "price-service.log"
 		}
 	},
 	"categories": {
@@ -13,7 +9,7 @@
 			"appenders": [
 				"console"
 			],
-			"level": "trace"
+			"level": "info"
 		}
 	}
 }

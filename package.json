@@ -1,15 +1,20 @@
 {
 	"name": "com.zxtrader.price.service",
-	"version": "0.0.10",
+	"version": "0.0.22",
 	"description": "ZXTrader's Price Service",
 	"main": "./src/index.js",
 	"types": "./src/index.d.ts",
 	"author": {
-		"name": "Maxim Anurin",
-		"email": "maxim.anurin@zxteam.net",
-		"url": "http://www.anurin.name"
+		"name": "ZXTeam",
+		"email": "zxtrader@project.zxteam.net",
+		"url": "http://www.zxteam.net"
 	},
 	"contributors": [
+		{
+			"name": "Maxim Anurin",
+			"email": "maxim.anurin@zxteam.net",
+			"url": "http://www.anurin.name"
+		},
 		{
 			"name": "Serhii Zghama",
 			"email": "serhii.zghama@zxteam.net"
@@ -17,27 +22,33 @@
 	],
 	"license": "MIT",
 	"devDependencies": {
-		"@types/ioredis": "^4.0.11",
-		"@types/lodash": "^4.14.134",
+		"@types/compression": "^0.0.36",
+		"@types/ioredis": "^4.0.13",
+		"@types/lodash": "^4.14.136",
 		"@types/morgan": "^1.7.35",
-		"@types/node": "^12.0.7",
+		"@types/node": "^11.13.17",
+		"@types/uuid": "^3.4.5",
 		"@zxnode/build": "^0.0.34"
 	},
 	"dependencies": {
-		"@zxteam/configuration": "^4.0.2",
-		"@zxteam/contract": "^5.0.0",
-		"@zxteam/ensure.js": "^1.2.0",
-		"@zxteam/financial.js": "^5.0.5",
-		"@zxteam/launcher": "^4.0.0",
-		"@zxteam/limit": "^4.0.0",
-		"@zxteam/logger": "^4.0.0",
-		"@zxteam/restclient": "^4.0.0",
-		"@zxteam/task": "^4.0.0",
+		"@zxteam/configuration": "^6.0.1",
+		"@zxteam/contract": "^6.0.2",
+		"@zxteam/ensure.js": "^6.0.1",
+		"@zxteam/financial.js": "^6.0.1",
+		"@zxteam/launcher": "^6.0.1",
+		"@zxteam/limit": "^6.0.1",
+		"@zxteam/logger": "^6.0.1",
+		"@zxteam/restclient": "^6.0.1",
+		"@zxteam/task": "^6.0.1",
+		"@zxteam/webserver": "^6.0.1-rc1",
+		"ajv": "^6.10.1",
+		"compression": "^1.7.4",
 		"express": "^4.17.1",
-		"ioredis": "^4.10.0",
-		"lodash": "^4.17.11",
+		"ioredis": "^4.11.1",
+		"lodash": "^4.17.14",
 		"moment": "^2.24.0",
-		"morgan": "^1.9.1"
+		"morgan": "^1.9.1",
+		"uuid": "^3.3.2"
 	},
 	"engines": {
 		"node": ">=11"
@@ -54,7 +65,7 @@
 	"scripts": {
 		"build": "zxbuild clean && zxbuild dist",
 		"clean": "zxbuild clean",
-		"start": "node src/app.js",
+		"start": "node src/app.js --config=config.ini",
 		"test": "nyc --exclude submodules --exclude test --extension=\".ts\" --reporter=lcov --reporter=text --reporter=text-summary mocha \"test/**/*.test.js\" --recursive mocha --timeout 10000"
 	},
 	"private": true

@@ -1,23 +1,44 @@
-import { Task } from "@zxteam/task";
-import loggerFactory from "@zxteam/logger";
 import * as zxteam from "@zxteam/contract";
+import { Task, DUMMY_CANCELLATION_TOKEN } from "@zxteam/task";
+import loggerFactory from "@zxteam/logger";
+import { Initable } from "@zxteam/disposable";
+
+import moment = require("moment");
+import * as path from "path";
+import { EventEmitter } from "events";
+import { setInterval, clearInterval } from "timers";
+
 import { SourceProvider } from "./providers/source/contract";
 import { StorageProvider } from "./providers/storage/contract";
-import { Initable } from "@zxteam/disposable";
-import moment = require("moment");
-import { type } from "os";
+import { CryptoCompareApiClient } from "./clients/CryptoCompareApiClient";
 
-export class PriceService extends Initable {
+
+const { name: serviceName, version } = require(path.join(__dirname, "../package.json"));
+
+export class PriceService extends Initable implements PriceService {
+	private readonly _log: zxteam.Logger;
+	private readonly _notificationEmitter: EventEmitter;
+	private readonly _changeRateWatchers: Map<string/*market key*/, {
+		destroy(): void;
+		addChanel(c: Notification.ChangeRate.Channel): void;
+		removeChanel(c: Notification.ChangeRate.Channel): void;
+	}>;
+	private readonly _cryptoCompareApiClient: CryptoCompareApiClient;
 	private readonly _storageProvider: StorageProvider;
 	private readonly _sourceProviders: Array<SourceProvider>;
 	private readonly _sourcesId: Array<string>;
-	private readonly _logger: zxteam.Logger = loggerFactory.getLogger("PriceService");
+	private _storage: StorageProvider | null;
 
-	constructor(storageProvider: StorageProvider, sourceProviders: Array<SourceProvider>) {
+	constructor(storageProvider: StorageProvider, sourceProviders: Array<SourceProvider>, log?: zxteam.Logger) {
 		super();
+		this._log = log || loggerFactory.getLogger("PriceService");
+		this._notificationEmitter = new EventEmitter();
+		this._changeRateWatchers = new Map();
 		this._storageProvider = storageProvider;
 		this._sourceProviders = sourceProviders;
 		this._sourcesId = sourceProviders.map((source) => source.sourceId);
+		this._cryptoCompareApiClient = new CryptoCompareApiClient(serviceName, this._log);
+		this._storage = null;
 	}
 
 	/**
@@ -25,108 +46,203 @@ export class PriceService extends Initable {
 	 * @param cancellationToken Cancellation Token allows your to cancel execution process
 	 * @param args criteria for price search
 	 */
-	public getHistoricalPrices(cancellationToken: zxteam.CancellationToken, args: Array<price.Argument>)
-		: zxteam.Task<price.Timestamp> {
-		return Task.run(async (ct) => {
-			if (this._logger.isTraceEnabled) {
-				this._logger.trace("getHistoricalPrices()... args: ", args);
+	public async getHistoricalPrices(cancellationToken: zxteam.CancellationToken, args: Array<price.Argument>)
+		: Promise<price.Timestamp> {
+		this.verifyInitializedAndNotDisposed();
+
+		if (this._log.isTraceEnabled) {
+			this._log.trace("getHistoricalPrices()... args: ", args);
+		}
+		if (args.length === 0) {
+			throw new ArgumentException("Wrong arguments");
+		}
+
+		this._log.trace("Validate date");
+		helpers.validateDate(args);
+
+		this._log.trace("Check prices in storage provide");
+		const filterEmptyPrices: Array<price.LoadDataRequest> =
+			await this._storageProvider.filterEmptyPrices(cancellationToken, args, this._sourcesId);
+
+		this._log.trace("Check cancellationToken for interrupt");
+		cancellationToken.throwIfCancellationRequested();
+
+		if (this._log.isTraceEnabled) {
+			this._log.trace(`Checking exsist price which need load from sources ${filterEmptyPrices.length}`);
+		}
+
+		if (filterEmptyPrices.length > 0) {
+
+			this._log.trace("Loading prices from sources through function manager");
+			const newPrices: Array<price.HistoricalPrices> =
+				await this.managerSourceProvider(cancellationToken, filterEmptyPrices);
+
+			this._log.trace("Check cancellationToken for interrupt");
+			cancellationToken.throwIfCancellationRequested();
+
+			if (newPrices.length > 0) {
+				this._log.trace("Save new prices to storage provide");
+				await this._storageProvider.savePrices(cancellationToken, newPrices);
+
+				this._log.trace("Check cancellationToken for interrupt");
+				cancellationToken.throwIfCancellationRequested();
 			}
-			if (args.length === 0) {
-				throw new ArgumentException("Don't have argument");
-			}
+		}
 
-			this._logger.trace("Validate date");
-			helpers.validateDate(args);
+		this._log.trace("Read prices from storage provider");
+		const friendlyPrices: price.Timestamp = await this._storageProvider.findPrices(cancellationToken, args);
 
-			this._logger.trace("Check prices in storage provide");
-			const filterEmptyPrices: Array<price.LoadDataRequest> =
-				await this._storageProvider.filterEmptyPrices(ct, args, this._sourcesId).promise;
-
-			this._logger.trace("Check cancellationToken for interrupt");
-			ct.throwIfCancellationRequested();
-
-			if (this._logger.isTraceEnabled) {
-				this._logger.trace(`Checking exsist price which need load from sources ${filterEmptyPrices.length}`);
-			}
-
-			if (filterEmptyPrices.length > 0) {
-
-				this._logger.trace("Loading prices from sources through function manager");
-				const newPrices: Array<price.HistoricalPrices> =
-					await this.managerSourceProvider(ct, filterEmptyPrices).promise;
-
-				this._logger.trace("Check cancellationToken for interrupt");
-				ct.throwIfCancellationRequested();
-
-				if (newPrices.length > 0) {
-					this._logger.trace("Save new prices to storage provide");
-					await this._storageProvider.savePrices(ct, newPrices);
-
-					this._logger.trace("Check cancellationToken for interrupt");
-					ct.throwIfCancellationRequested();
-				}
-			}
-
-			this._logger.trace("Read prices from storage provider");
-			const friendlyPrices: price.Timestamp = await this._storageProvider.findPrices(ct, args).promise;
-
-			if (this._logger.isTraceEnabled) {
-				this._logger.trace(`Return result: ${friendlyPrices}`);
-			}
-			return friendlyPrices;
-		}, cancellationToken);
+		if (this._log.isTraceEnabled) {
+			this._log.trace(`Return result: ${friendlyPrices}`);
+		}
+		return friendlyPrices;
 	}
 
-	protected onInit() {
-		//
+	public async ping(
+		cancellationToken: zxteam.CancellationToken, echo: string
+	): Promise<{ readonly echo: string; readonly time: Date; readonly version: string; }> {
+		return {
+			echo,
+			time: new Date(),
+			version
+		};
 	}
-	protected onDispose() {
-		//
+
+
+	public async createChangeRateSubscriber(
+		cancellationToken: zxteam.CancellationToken, marketCurrency: string, tradeCurrency: string
+	): Promise<Notification.ChangeRate.Channel> {
+		//const eventKey: string = `${exchangeId}:${marketCurrency}:${tradeCurrency}`;
+		const eventKey: string = `${marketCurrency}:${tradeCurrency}`; // Temporaty implementation without exchangeId
+
+		let watcher = this._changeRateWatchers.get(eventKey);
+		if (watcher === undefined) {
+			const watchCancellationToken = Task.createCancellationTokenSource();
+			const timer = setInterval(async () => {
+				try {
+					const now = new Date();
+					const ccPrice: zxteam.Financial = await this._cryptoCompareApiClient
+						.getPrice(watchCancellationToken.token, marketCurrency, tradeCurrency);
+					this._notificationEmitter.emit(eventKey, { date: now, price: ccPrice });
+				} catch (e) {
+					if (this._log.isWarnEnabled) { this._log.warn(`Failed to get price for ${eventKey}`); }
+					if (this._log.isDebugEnabled) { this._log.debug(`Failed to get price for ${eventKey}. Inner error: ${e.message}`); }
+					if (this._log.isTraceEnabled) { this._log.trace(`Failed to get price for ${eventKey}.`, e); }
+				}
+			}, 1000);
+			const channels = new Set<Notification.ChangeRate.Channel>();
+			watcher = Object.freeze({
+				destroy() {
+					clearInterval(timer);
+					watchCancellationToken.cancel();
+				},
+				addChanel: (c: Notification.ChangeRate.Channel) => {
+					channels.add(c);
+				},
+				removeChanel: (c: Notification.ChangeRate.Channel) => {
+					channels.delete(c);
+					if (channels.size === 0) {
+						clearInterval(timer);
+						this._changeRateWatchers.delete(eventKey);
+					}
+				}
+			});
+			this._changeRateWatchers.set(eventKey, watcher);
+		}
+
+		const handlers: Set<
+			zxteam.SubscriberChannel.Callback<Notification.ChangeRate.Data>
+		> = new Set();
+
+		const onChangeRate = (data: any) => {
+			handlers.forEach(handler => {
+				try {
+					handler(DUMMY_CANCELLATION_TOKEN, { data });
+				} catch (e) {
+					this._log.warn("Unexpected error in handler");
+					this._log.debug("Unexpected error in handler", e.messageÎ);
+					this._log.trace("Unexpected error in handler", e);
+				}
+			});
+		};
+
+		const channelWatcher = watcher;
+		const channel: Notification.ChangeRate.Channel = Object.freeze({
+			cb: null,
+			addHandler: cb => { handlers.add(cb); },
+			removeHandler: cb => { handlers.delete(cb); },
+			dispose: (): Promise<void> => {
+				this._notificationEmitter.removeListener(eventKey, onChangeRate);
+				channelWatcher.removeChanel(channel);
+				return Promise.resolve();
+			}
+		});
+
+		this._notificationEmitter.on(eventKey, onChangeRate);
+
+		watcher.addChanel(channel);
+
+		return channel;
 	}
 
-	private managerSourceProvider(cancellationToken: zxteam.CancellationToken, loadArgs: Array<price.LoadDataRequest>)
-		: zxteam.Task<Array<price.HistoricalPrices>> {
-		return Task.run(async (ct) => {
-			if (this._logger.isTraceEnabled) {
-				this._logger.trace("managerSourceProvider()... args: ", loadArgs);
+	protected async onInit(cancellationToken: zxteam.CancellationToken) {
+		this._log.debug("Initializing");
+		const storage = this._storageProvider;
+		await storage.init(cancellationToken);
+		this._storage = storage;
+	}
+	protected async onDispose() {
+		this._log.debug("Disposing");
+		await this._cryptoCompareApiClient.dispose();
+		if (this._storage !== null) {
+			const storage: StorageProvider = this._storage;
+			this._storage = null;
+			await storage.dispose();
+		}
+		this._log.info("Disposed");
+	}
+
+	private async managerSourceProvider(cancellationToken: zxteam.CancellationToken, loadArgs: Array<price.LoadDataRequest>)
+		: Promise<Array<price.HistoricalPrices>> {
+		if (this._log.isTraceEnabled) {
+			this._log.trace("managerSourceProvider()... args: ", loadArgs);
+		}
+
+		this._log.trace("Parse LoadDataRequest to MultyLoadDataRequest");
+		const multyLoadDataRequest: price.MultyLoadData =
+			helpers.parseToMultyType(loadArgs);
+
+		this._log.trace("Create array sourcesystem id which need syncs price");
+		const sourceIds: Array<string> = Object.keys(multyLoadDataRequest);
+
+		const taskSources: Array<zxteam.Task<any>> = [];
+		const countSources: number = sourceIds.length;
+		for (let i = 0; i < countSources; i++) {
+			const sourceId = sourceIds[i];
+			if (this._log.isTraceEnabled) {
+				this._log.trace(`Set sourcesystem id: ${sourceId}`);
 			}
 
-			this._logger.trace("Parse LoadDataRequest to MultyLoadDataRequest");
-			const multyLoadDataRequest: price.MultyLoadData =
-				helpers.parseToMultyType(loadArgs);
+			this._log.trace("Get source provider object for get price");
+			const source: SourceProvider | null = helpers.getSource(this._sourceProviders, sourceId);
 
-			this._logger.trace("Create array sourcesystem id which need syncs price");
-			const sourceIds: Array<string> = Object.keys(multyLoadDataRequest);
-
-			const taskSources: Array<zxteam.Task<any>> = [];
-			const countSources: number = sourceIds.length;
-			for (let i = 0; i < countSources; i++) {
-				const sourceId = sourceIds[i];
-				if (this._logger.isTraceEnabled) {
-					this._logger.trace(`Set sourcesystem id: ${sourceId}`);
-				}
-
-				this._logger.trace("Get source provider object for get price");
-				const source: SourceProvider | null = helpers.getSource(this._sourceProviders, sourceId);
-
-				if (source) {
-					taskSources.push(source.loadPrices(ct, multyLoadDataRequest[sourceId]));
-				} else {
-					// TODO: Should be exception
-					this._logger.error(`Not implement yet ${source}`);
-				}
+			if (source) {
+				taskSources.push(source.loadPrices(cancellationToken, multyLoadDataRequest[sourceId]));
+			} else {
+				// TODO: Should be exception
+				this._log.error(`Not implement yet ${source}`);
 			}
+		}
 
-			await Task.waitAll(taskSources);
-			const friendlyPrices: Array<price.HistoricalPrices> = taskSources.reduce((previous, current) => {
-				return previous.concat(current.result);
-			}, []);
+		await Task.waitAll(taskSources);
+		const friendlyPrices: Array<price.HistoricalPrices> = taskSources.reduce((previous, current) => {
+			return previous.concat(current.result);
+		}, []);
 
-			if (this._logger.isTraceEnabled) {
-				this._logger.trace(`return result: ${friendlyPrices}`);
-			}
-			return friendlyPrices;
-		}, cancellationToken);
+		if (this._log.isTraceEnabled) {
+			this._log.trace(`return result: ${friendlyPrices}`);
+		}
+		return friendlyPrices;
 	}
 }
 
@@ -235,7 +351,27 @@ export namespace price {
 	}
 }
 
+export interface PriceService {
+	getHistoricalPrices(
+		cancellationToken: zxteam.CancellationToken, args: Array<price.Argument>
+	): Promise<price.Timestamp>;
+
+	ping(
+		cancellationToken: zxteam.CancellationToken, echo: string
+	): Promise<{ readonly echo: string; readonly time: Date; readonly version: string; }>;
+}
+export namespace Notification {
+	export namespace ChangeRate {
+		export interface Data {
+			date: Date;
+			price: zxteam.Financial;
+		}
+		export type Channel = zxteam.SubscriberChannel<Data>;
+	}
+}
+
+
 export class InvalidDateError extends Error { }
-export class ArgumentException extends Error implements zxteam.ArgumentError {
+export class ArgumentException extends Error {
 	public readonly name = "ArgumentError";
 }

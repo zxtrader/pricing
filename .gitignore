@@ -27,3 +27,4 @@ tmp/
 .env
 config-dev.json
 *.log
+res/

@@ -1,89 +1,184 @@
+import * as zxteam from "@zxteam/contract";
+import { Runtime } from "@zxteam/launcher";
+import { RestClient } from "@zxteam/restclient";
+import * as webserver from "@zxteam/webserver";
+import loggerFactory from "@zxteam/logger";
+
 import { URL } from "url";
-import * as express from "express";
-import { RedisOptions } from "ioredis";
+import * as _ from "lodash";
+import * as path from "path";
+
 import { Configuration } from "./conf";
 import { PriceService } from "./PriceService";
-import { loggerManager } from "@zxteam/logger";
-import { RestClient } from "@zxteam/restclient";
-import { Runtime } from "@zxteam/launcher";
 import { SourceProvider } from "./providers/source/contract";
 import { StorageProvider } from "./providers/storage/contract";
 import { Cryptocompare } from "./providers/source/Cryptocompare";
-import { HttpEndpoint, expressAppInit, routeAppInit } from "./endpoints/HttpEndpoint";
 import { RedisStorageProvider } from "./providers/storage/RedisStorageProvider";
-import { Initable } from "@zxteam/disposable";
+
+import {
+	factory as protocolAdapterFactoryInitalizer, ProtocolType, BinaryProtocolTypes, TextProtocolTypes, ProtocolAdapterFactory
+} from "./protocol";
+
+import {
+	PriceServiceRestEndpoint, PriceServiceWebSocketEndpoint, PriceServiceRouterEndpoint,
+	createExpressApplication, setupExpressErrorHandles
+} from "./endpoints";
+
 import { Poloniex } from "./providers/source/Poloniex";
 import { Binance } from "./providers/source/Binance";
+import { DUMMY_CANCELLATION_TOKEN } from "@zxteam/task";
 
-export default async function (options: ArgumentConfig): Promise<Runtime> {
+export { ProtocolType, BinaryProtocolTypes, TextProtocolTypes };
+export * from "./conf";
 
-	// Validate options
+const { name: serviceName, version: serviceVersion } = require(path.normalize(path.join(__dirname, "..", "package.json")));
 
-	const logger = loggerManager.getLogger("App");
+export default async function (opts: Configuration): Promise<Runtime> {
+	const log = loggerFactory.getLogger("Runtime");
+
+	log.info(`Welcome ---> ${serviceName} v${serviceVersion} <---`);
+
+	const cancellationToken = DUMMY_CANCELLATION_TOKEN;
+
+	// TODO Valdate options
 
 	const destroyHandlers: Array<() => Promise<void>> = [];
 	function destroy(): Promise<void> { return destroyHandlers.reverse().reduce((p, c) => p.then(c), Promise.resolve()); }
 
-	logger.trace("Constructing Storage provider...");
-	const dataStorageUrl = options.storageURL;
-	const storageProvider = helpers.createStorageProvider(dataStorageUrl);
-
-	logger.trace("Constructing Source providers...");
-	const sourceOpts = options.sources;
+	log.trace("Constructing Source providers...");
+	const sourceOpts = opts.sources;
 	const sourceProviders = helpers.createSourceProviders(sourceOpts);
 
-	logger.trace("Constructing endpoints...");
-	let expressApp: express.Application | null = null; // This is required for http and https only (may be null)
-
-	const endpoints: Array<Initable> = [];
+	const serverInstances = opts.servers.map(function (server) {
+		if (webserver.instanceofWebServer(server)) {
+			return { name: server.name, server, isOwnInstance: false };
+		}
+		const ownServerInstance = webserver.createWebServer(server, log);
+		ownServerInstance.rootExpressApplication = createExpressApplication(log);
+		return { name: ownServerInstance.name, server: ownServerInstance, isOwnInstance: true };
+	});
+	const serversMap: { readonly [serverName: string]: { server: webserver.WebServer, isOwnInstance: boolean } } = _.keyBy(
+		serverInstances,
+		"name"
+	);
 
 	try {
-		logger.info("Initializing Storage provider...");
-		await storageProvider.init();
-		destroyHandlers.push(() => storageProvider.dispose().promise);
+		log.info("Constructing Storage provider...");
+		const dataStorageUrl = opts.storageURL;
+		const storageProvider = helpers.createStorageProvider(dataStorageUrl);
 
-		logger.trace("Constructing PriceService...");
+		log.info("Constructing PriceService...");
 		const service: PriceService = new PriceService(storageProvider, sourceProviders);
 
-		logger.info("Initializing InfoService...");
-		await service.init();
+		log.info("Constructing ProtocolAdapterFactory...");
+		const protocolAdapterFactory: ProtocolAdapterFactory = await protocolAdapterFactoryInitalizer(service, log);
 
-		options.endpoints.forEach((endpoint: Configuration.Endpoint | express.Router) => {
+		log.info("Constructing endpoints...");
+		const endpointInstances: Array<zxteam.Initable> = [];
+		for (const endpoint of opts.endpoints) {
 			if ("type" in endpoint) {
 				switch (endpoint.type) {
-					case "http":
-					case "https": {
-						if (expressApp === null) {
-							expressApp = expressAppInit(service, logger);
+					case "rest": {
+						const endpointInstance: PriceServiceRestEndpoint = new PriceServiceRestEndpoint(
+							serverInstances.filter(s => endpoint.servers.includes(s.name)).map(si => si.server),
+							service,
+							endpoint,
+							log
+						);
+						endpointInstances.push(endpointInstance);
+						break;
+					}
+					case "websocket": {
+						const endpointInstance = new PriceServiceWebSocketEndpoint(
+							serverInstances.filter(s => endpoint.servers.includes(s.name)).map(si => si.server),
+							endpoint,
+							loggerFactory.getLogger("Endpoint:" + endpoint.type + "(" + endpoint.bindPath + ")")
+						);
+
+						for (const protocol of BinaryProtocolTypes) {
+							endpointInstance.useBinaryAdapter(
+								protocol,
+								callbackChannel => protocolAdapterFactory.createBinaryProtocolAdapter(protocol, callbackChannel)
+							);
 						}
-						const endpointInstance: HttpEndpoint = new HttpEndpoint(expressApp, endpoint, logger);
-						endpoints.push(endpointInstance);
+						for (const protocol of TextProtocolTypes) {
+							endpointInstance.useTextAdapter(
+								protocol,
+								callbackChannel => protocolAdapterFactory.createTextProtocolAdapter(protocol, callbackChannel)
+							);
+						}
+
+						endpointInstances.push(endpointInstance);
 						break;
 					}
 					case "express-router": {
-						routeAppInit(service, endpoint.router);
+						const routerEndpoint: PriceServiceRouterEndpoint = new PriceServiceRouterEndpoint(
+							service,
+							endpoint,
+							log
+						);
+						endpointInstances.push(routerEndpoint);
+						break;
+					}
+					case "websocket-binder": {
+						const targetEndpoint: webserver.WebSocketBinderEndpoint = endpoint.target;
+						for (const protocol of BinaryProtocolTypes) {
+							targetEndpoint.useBinaryAdapter(
+								protocol,
+								callbackChannel => protocolAdapterFactory.createBinaryProtocolAdapter(protocol, callbackChannel, endpoint.methodPrefix)
+							);
+						}
+						for (const protocol of TextProtocolTypes) {
+							targetEndpoint.useTextAdapter(
+								protocol,
+								callbackChannel => protocolAdapterFactory.createTextProtocolAdapter(protocol, callbackChannel, endpoint.methodPrefix)
+							);
+						}
 						break;
 					}
 					default:
 						throw new UnreachableEndpointError(endpoint);
 				}
 			}
-		});
-
-		destroyHandlers.push(() => service.dispose().promise);
-
-		logger.info("Initializing endpoints...");
-		for (let endpointIndex = 0; endpointIndex < endpoints.length; endpointIndex++) {
-			const endpointInstance = endpoints[endpointIndex];
-			await endpointInstance.init();
-			destroyHandlers.push(() => endpointInstance.dispose().promise);
 		}
+
+		log.info("Initializing InfoService...");
+		await service.init(cancellationToken);
+		destroyHandlers.push(() => service.dispose());
+
+		log.info("Initializing endpoints...");
+		for (const endpointInstance of endpointInstances) {
+			await endpointInstance.init(cancellationToken);
+		}
+
+		log.info("Initializing servers...");
+		try {
+			for (const serverInfo of _.values(serversMap)) {
+				if (serverInfo.isOwnInstance === true) {
+					if (log.isInfoEnabled) {
+						log.info(`Initializing server: ${serverInfo.server.name}`);
+					}
+					setupExpressErrorHandles(serverInfo.server.rootExpressApplication, log);
+					await serverInfo.server.init(cancellationToken);
+					destroyHandlers.push(() => serverInfo.server.dispose());
+				}
+			}
+		} catch (e) {
+			for (const endpointInstance of endpointInstances) { await endpointInstance.dispose(); }
+			throw e;
+		}
+
+		// Endpoints should destroy first, so added it in end of destroyHandlers
+		for (const endpointInstance of endpointInstances) {
+			destroyHandlers.push(() => endpointInstance.dispose());
+		}
+
 	} catch (e) {
 		await destroy();
 		throw e;
 	}
 
-	logger.info("Initialization completed succefully.");
+	log.info("Initialization completed succefully.");
 
 	const runtime: Runtime = { destroy };
 
@@ -92,11 +187,15 @@ export default async function (options: ArgumentConfig): Promise<Runtime> {
 
 namespace helpers {
 	export function createStorageProvider(dataStorageUrl: URL): StorageProvider {
-		const opts: RedisOptions = helpers.getOptsForRedis(dataStorageUrl);
-		const redisStorageProvider = new RedisStorageProvider(opts);
-		return redisStorageProvider;
+		const { protocol } = dataStorageUrl;
+		switch (protocol) {
+			case "redis:":
+				return new RedisStorageProvider(dataStorageUrl);
+			default:
+				throw new Error(`Unsupported Storage Provider protocol: ${protocol}`);
+		}
 	}
-	export function createSourceProviders(options: Sources): Array<SourceProvider> {
+	export function createSourceProviders(options: Configuration.Sources): Array<SourceProvider> {
 		const sourceIds: Array<string> = Object.keys(options);
 		const friendlySources: Array<any> = [];
 
@@ -128,57 +227,7 @@ namespace helpers {
 
 		return friendlySources;
 	}
-	export function getOptsForRedis(dataStorageUrl: URL): RedisOptions {
-
-		function praseToOptsRedis(url: URL): RedisOptions {
-			const host = url.hostname;
-			const port = Number(url.port);
-			const db = Number(url.pathname.slice(1));
-
-			const opts: RedisOptions = {
-				host,
-				port,
-				db
-			};
-			return opts;
-		}
-
-		const optsForRedis: RedisOptions = praseToOptsRedis(dataStorageUrl);
-
-		return optsForRedis;
-	}
 }
-
-export interface ArgumentConfig {
-	/** Set settings endponts or send new routers */
-	endpoints: Array<Configuration.Endpoint | express.Router>;
-	/** Connection URL to database */
-	storageURL: URL;
-	/** List source system and settings */
-	sources: Sources;
-	/** { Key: value } Other settings limit params, etc... */
-	opts: OptionsEnv;
-}
-
-export type Sources = SourcesDefault & SourcesAny;
-interface SourcesDefault {
-	CRYPTOCOMPARE?: RestClient.Opts;
-	POLONIEX?: RestClient.Opts;
-	BINANCE?: RestClient.Opts;
-}
-interface SourcesAny {
-	[source: string]: any;
-}
-
-export interface OptionsEnv {
-	/**
-	 * Demand - prices are cached only at the user's request
-	 * Sync - service automatically copies all required prices
-	 */
-	priceMode: PriceMode;
-}
-
-export declare const enum PriceMode { DEMAND = "DEMAND", SYNC = "SYNC" }
 
 class UnreachableEndpointError extends Error {
 	public constructor(endpoint: never) {

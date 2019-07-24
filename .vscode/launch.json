@@ -2,10 +2,15 @@
 	"version": "0.2.0",
 	"configurations": [
 		{
-			"name": "Start app Price Service",
+			"name": "Service",
 			"type": "node",
 			"request": "launch",
 			"preLaunchTask": "compile:src:ts",
+			"runtimeArgs": [
+				"--nolazy",
+				"--require",
+				"source-map-support/register",
+			],
 			"cwd": "${workspaceRoot}",
 			"env": {
 				"NODE_TLS_REJECT_UNAUTHORIZED": "0"
@@ -36,7 +41,7 @@
 			],
 			"cwd": "${workspaceRoot}",
 			"env": {
-				"DATASTORAGE_URL": "redis://localhost:6379/5",
+				"dataStorageURL": "redis://localhost:6379/5",
 				"NODE_ENV": "development"
 			},
 			"console": "internalConsole",

@@ -1,12 +1,47 @@
 import * as zxteam from "@zxteam/contract";
+import * as webserver from "@zxteam/webserver";
+import { RestClient } from "@zxteam/restclient";
 
-import { Configuration } from "@zxteam/contract";
-import { ArgumentConfig, Sources, PriceMode } from ".";
+import { URL } from "url";
 import { Router } from "express-serve-static-core";
 
-export interface Configuration { endpoints: Array<Configuration.Endpoint>; }
+import { ProtocolType } from "./protocol";
+
+export interface Configuration {
+	readonly servers: ReadonlyArray<webserver.Configuration.WebServer | webserver.WebServer>;
+	/** Set settings endponts or send new routers */
+	readonly endpoints: ReadonlyArray<Configuration.PriceServiceEndpoint>;
+	/** Connection URL to database */
+	readonly storageURL: URL;
+	/** List source system and settings */
+	readonly sources: Configuration.Sources;
+}
 
 export namespace Configuration {
+
+	export type PriceServiceEndpoint
+		= (PriceServiceRestEndpoint & webserver.Configuration.ServerEndpoint)
+		| (PriceServiceWebSocketEndpoint & webserver.Configuration.ServerEndpoint)
+		| PriceServiceExpressRouterEndpoint
+		| PriceServiceWebSocketBinderEndpoint;
+
+	export interface PriceServiceRestEndpoint extends webserver.Configuration.BindEndpoint {
+		readonly type: "rest";
+		readonly bindPathWeb: string | null;
+	}
+	export interface PriceServiceWebSocketEndpoint extends webserver.Configuration.WebSocketEndpoint {
+		readonly type: "websocket";
+	}
+	export interface PriceServiceExpressRouterEndpoint extends webserver.Configuration.BindEndpoint {
+		readonly type: "express-router";
+		readonly router: Router;
+	}
+	export interface PriceServiceWebSocketBinderEndpoint {
+		readonly type: "websocket-binder";
+		readonly target: webserver.WebSocketBinderEndpoint;
+		readonly methodPrefix?: string;
+	}
+
 	export type Endpoint = HttpEndpoint | HttpsEndpoint | ExpressRouterEndpoint;
 
 	export interface HttpEndpoint {
@@ -45,77 +80,77 @@ export namespace Configuration {
 		type: "express-router";
 		router: Router;
 	}
+
+	export interface Sources {
+		CRYPTOCOMPARE?: RestClient.Opts;
+		POLONIEX?: RestClient.Opts;
+		BINANCE?: RestClient.Opts;
+		[source: string]: any;
+	}
 }
 
-export function configurationFactory(configuration: zxteam.Configuration): ArgumentConfig {
-	const sources = helper.parseSources(configuration);
+export function configurationFactory(configuration: zxteam.Configuration): Configuration {
+	const servers: Array<webserver.Configuration.WebServer> = webserver.Configuration.parseWebServers(configuration);
+	const sources: Configuration.Sources = parseSources(configuration);
 
-	const endpoints = configuration.getString("endpoints").split(" ").map((endpointIndex: string): Configuration.Endpoint => {
-		return helper.parseEndpoint(configuration, endpointIndex);
-	});
+	const endpoints: Array<Configuration.PriceServiceEndpoint> = configuration.getString("endpoints").split(" ").map(
+		(endpointIndex: string): Configuration.PriceServiceEndpoint => {
+			return helper.parseEndpoint(configuration, endpointIndex);
+		}
+	);
 
-	const storageURL = helper.parseStorageUrl(configuration);
-
-	const opts = helper.parseOpts(configuration);
-
-	const appConfig: ArgumentConfig = { endpoints, sources, storageURL, opts };
+	const storageURL: URL = helper.parseStorageUrl(configuration);
+	const appConfig: Configuration = { servers, endpoints, sources, storageURL };
 	return appConfig;
 }
 
-export namespace helper {
-	export function parseSources(configuration: zxteam.Configuration): Sources {
-		const sources: Sources = {};
-		// == Read configuration from config.ini file ==
-		const sourceIds: Array<string> = configuration.getString("sources").split(" ");
-		for (let i = 0; i < sourceIds.length; i++) {
-			const sourceId = sourceIds[i];
-			const parallel = configuration.getInt(`source.${sourceId}.limit.parallel`);
-			const perSecond = configuration.getInt(`source.${sourceId}.limit.perSecond`);
-			const perMinute = configuration.getInt(`source.${sourceId}.limit.perMinute`);
-			const perHour = configuration.getInt(`source.${sourceId}.limit.perHour`);
-			const timeout = configuration.getInt(`source.${sourceId}.timeout`);
+export function parseSources(configuration: zxteam.Configuration): Configuration.Sources {
+	const sources: Configuration.Sources = {};
+	const sourceIds: ReadonlyArray<string> = configuration.getString("sources").split(" ");
+	for (const sourceId of sourceIds) {
+		const parallel = configuration.getInteger(`source.${sourceId}.limit.parallel`);
+		const perSecond = configuration.getInteger(`source.${sourceId}.limit.perSecond`);
+		const perMinute = configuration.getInteger(`source.${sourceId}.limit.perMinute`);
+		const perHour = configuration.getInteger(`source.${sourceId}.limit.perHour`);
+		const timeout = configuration.getInteger(`source.${sourceId}.timeout`);
 
-			sources[sourceId] = {
-				limit: {
-					instance: {
-						parallel,
-						perSecond,
-						perMinute,
-						perHour
-					},
-					timeout
-				}
-			};
-		}
-		return sources;
+		sources[sourceId] = {
+			limit: {
+				instance: {
+					parallel,
+					perSecond,
+					perMinute,
+					perHour
+				},
+				timeout
+			}
+		};
 	}
-	export function parseEndpoint(configuration: zxteam.Configuration, endpointIndex: string): Configuration.Endpoint {
+	return sources;
+}
+
+export namespace helper {
+	export function parseEndpoint(configuration: zxteam.Configuration, endpointIndex: string): Configuration.PriceServiceEndpoint {
 		const endpointConfiguration: zxteam.Configuration = configuration.getConfiguration(`endpoint.${endpointIndex}`);
 		const endpointType = endpointConfiguration.getString("type");
 		switch (endpointType) {
-			case "http": {
-				const httpEndpoint: Configuration.HttpEndpoint = {
-					type: "http",
-					listenHost: endpointConfiguration.getString("listenHost"),
-					listenPort: endpointConfiguration.getInt("listenPort"),
-					trustProxy: helper.parseTrustProxy(endpointConfiguration.getString("trustProxy"))
+			case "rest": {
+				const httpEndpoint: Configuration.PriceServiceRestEndpoint & webserver.Configuration.ServerEndpoint = {
+					type: "rest",
+					servers: endpointConfiguration.getString("servers").split(" "),
+					bindPath: endpointConfiguration.getString("bindPath", "/"),
+					bindPathWeb: endpointConfiguration.hasKey("bindPathWeb") ? endpointConfiguration.getString("bindPathWeb") : null
 				};
 				return httpEndpoint;
 			}
-			case "https": {
-				const httpsEndpoint: Configuration.HttpsEndpoint = {
-					type: "https",
-					listenHost: endpointConfiguration.getString("listenHost"),
-					listenPort: endpointConfiguration.getInt("listenPort"),
-					trustProxy: helper.parseTrustProxy(endpointConfiguration.getString("trustProxy")),
-					requireClientCertificate: endpointConfiguration.getBoolean("requireClientCertificate"),
-					caCertificate: endpointConfiguration.getString("caCertificate"),
-					serviceCertificate: endpointConfiguration.getString("serviceCertificate"),
-					serviceKey: endpointConfiguration.getString("serviceKey"),
-					serviceKeyPassword: endpointConfiguration.hasKey("serviceKeyPassword") ?
-						endpointConfiguration.getString("serviceKeyPassword") : undefined
+			case "websocket": {
+				const webSocketEndpoint: Configuration.PriceServiceWebSocketEndpoint & webserver.Configuration.ServerEndpoint = {
+					type: "websocket",
+					servers: endpointConfiguration.getString("servers").split(" "),
+					bindPath: endpointConfiguration.getString("bindPath", "/"),
+					defaultProtocol: ProtocolType.JSONRPC
 				};
-				return httpsEndpoint;
+				return webSocketEndpoint;
 			}
 			default:
 				throw new Error(`Non supported endpont type: ${endpointType}`);
@@ -134,21 +169,7 @@ export namespace helper {
 		}
 	}
 	export function parseStorageUrl(configuration: zxteam.Configuration): URL {
-		const dataStorageUrl: string = configuration.getString("DATASTORAGE_URL");
+		const dataStorageUrl: string = configuration.getString("dataStorageURL");
 		return new URL(dataStorageUrl);
-	}
-	export function parseOpts(configuration: zxteam.Configuration) {
-		const priceMode: string = configuration.getString("PRICE_MODE");
-		switch (priceMode) {
-			case "DEMAND": {
-				return { priceMode: PriceMode.DEMAND };
-			}
-			case "SYNC": {
-				return { priceMode: PriceMode.SYNC };
-			}
-			default: {
-				throw new Error(`Don't support  this mode: ${priceMode}`);
-			}
-		}
 	}
 }

@@ -1,14 +1,14 @@
 import * as zxteam from "@zxteam/contract";
 import { launcher, LaunchError } from "@zxteam/launcher";
-import { configurationFactory } from "./conf";
+import { configurationFactory, Configuration } from "./conf";
 import { envConfiguration, chainConfiguration, fileConfiguration, swarmSecretsConfiguration } from "@zxteam/configuration";
-import runtimeFactory, { ArgumentConfig } from "./index";
+import runtimeFactory from "./index";
 import * as fs from "fs";
 import * as util from "util";
 
 const exists = util.promisify(fs.exists);
 
-function appConfigurationFactory(): Promise<ArgumentConfig> {
+function appConfigurationFactory(): Promise<Configuration> {
 	return Promise.resolve().then(async () => {
 		const configFileArg = process.argv.find(w => w.startsWith("--config="));
 		if (configFileArg === undefined) {
