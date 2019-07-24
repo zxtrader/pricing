@@ -19,7 +19,8 @@ The service supports following endpoints:
 Check status service.
 #### REST
 ```bash
-$ curl --verbose "https://service.zxtrader.com/price/v0/api/ping?echo=hello"
+$ curl --verbose "https://api.zxtrader.com/price/v0/api/ping?echo=hello"
+$ curl --verbose "https://api-evo.zxtrader.com:20443/price/v0/api/ping?echo=hello"
 > GET /ping?echo=hello HTTP/1.1
 > Host: ${SERVICE_HOST_NAME}:${SERVICE_PORT}
 > Accept: */*
@@ -31,7 +32,8 @@ $ curl --verbose "https://service.zxtrader.com/price/v0/api/ping?echo=hello"
 ```
 #### JSON-RPC
 ```bash
-$ wscat --connect wss://service.zxtrader.com/price/v0/ws
+$ wscat --connect wss://api.zxtrader.com/price/v0/ws
+$ wscat --connect wss://api-evo.zxtrader.com:20443/price/v0/ws
 connected (press CTRL+C to quit)
 ```
 ```json
@@ -48,9 +50,11 @@ Get a historical rate
 * Arguments
   * `marketCurrency` - a currency code of base asset
   * `tradeCurrency` - a currency code of price asset
+  * `exchangeId` - (optional) an identifier of the exchange
   * `date` - (optional) date in format YYYYMMDDHHmmss. Using now() if omited.
 ```bash
-$ curl "https://service.zxtrader.com/price/v0/api/rate?marketCurrency=USDT&tradeCurrency=BTC&date=20190627002015"
+$ curl "https://api.zxtrader.com/price/v0/api/rate?marketCurrency=USDT&tradeCurrency=BTC&exchangeId=BINANCE&date=20190627002015"
+$ curl "https://api-evo.zxtrader.com:20443/price/v0/api/rate?marketCurrency=USDT&tradeCurrency=BTC&exchangeId=BINANCE&date=20190627002015"
 ```
 ```json
 "13369.94000000"
@@ -61,17 +65,18 @@ null
 ```
 #### JSON-RPC
 ```bash
-$ wscat --connect wss://service.zxtrader.com/price/v0/ws
+$ wscat --connect wss://api.zxtrader.com/price/v0/ws
+$ wscat --connect wss://api-evo.zxtrader.com:20443/price/v0/ws
 connected (press CTRL+C to quit)
 ```
 ```json
+> {"jsonrpc":"2.0","id":42,"method":"rate","params":{"marketCurrency":"USDT","tradeCurrency":"BTC","exchangeId":"BINANCE","date":"2019-07-01T10:20:33Z"}}
+< {"jsonrpc":"2.0","id":42,"result":"0.00945900"}
 > {"jsonrpc":"2.0","id":42,"method":"rate","params":{"marketCurrency":"USDT","tradeCurrency":"BTC","date":"2019-07-01T10:20:33Z"}}
 < {"jsonrpc":"2.0","id":42,"result":"0.00945900"}
 > {"jsonrpc":"2.0","id":42,"method":"rate","params":{"marketCurrency":"USDT","tradeCurrency":"BTC"}}
 < {"jsonrpc":"2.0","id":42,"result":"0.00945900"}
-```
-or
-```json
+> {"jsonrpc":"2.0","id":42,"method":"rate","params":{"marketCurrency":"WRONG_COIN","tradeCurrency":"BAD_COIN"}}
 < {"jsonrpc":"2.0","id":42,"result": null}
 ```
 
@@ -81,7 +86,8 @@ Subscribe for the topic
 Not supported yet
 #### JSON-RPC
 ```bash
-$ wscat --connect wss://service.zxtrader.com/price/v0/ws
+$ wscat --connect wss://api.zxtrader.com/price/v0/ws
+$ wscat --connect wss://api-evo.zxtrader.com:20443/price/v0/ws
 connected (press CTRL+C to quit)
 ```
 ```json
@@ -95,7 +101,8 @@ Get a list of the subscribed topics
 Not supported yet
 #### JSON-RPC
 ```bash
-$ wscat --connect wss://service.zxtrader.com/price/v0/ws
+$ wscat --connect wss://api.zxtrader.com/price/v0/ws
+$ wscat --connect wss://api-evo.zxtrader.com:20443/price/v0/ws
 connected (press CTRL+C to quit)
 ```
 ```json
@@ -108,7 +115,8 @@ connected (press CTRL+C to quit)
 Not supported yet
 #### JSON-RPC
 ```bash
-$ wscat --connect wss://service.zxtrader.com/price/v0/ws
+$ wscat --connect wss://api.zxtrader.com/price/v0/ws
+$ wscat --connect wss://api-evo.zxtrader.com:20443/price/v0/ws
 connected (press CTRL+C to quit)
 ```
 ```json
@@ -129,7 +137,8 @@ opts:
 Not implemented yet
 #### JSON-RPC
 ```bash
-$ wscat --connect wss://service.zxtrader.com/price/v0/ws
+$ wscat --connect wss://api.zxtrader.com/price/v0/ws
+$ wscat --connect wss://api-evo.zxtrader.com:20443/price/v0/ws
 connected (press CTRL+C to quit)
 ```
 ```json

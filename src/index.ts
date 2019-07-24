@@ -6,6 +6,7 @@ import loggerFactory from "@zxteam/logger";
 
 import { URL } from "url";
 import * as _ from "lodash";
+import * as path from "path";
 
 import { Configuration } from "./conf";
 import { PriceService } from "./PriceService";
@@ -30,8 +31,12 @@ import { DUMMY_CANCELLATION_TOKEN } from "@zxteam/task";
 export { ProtocolType, BinaryProtocolTypes, TextProtocolTypes };
 export * from "./conf";
 
+const { name: serviceName, version: serviceVersion } = require(path.normalize(path.join(__dirname, "..", "package.json")));
+
 export default async function (opts: Configuration): Promise<Runtime> {
-	const log = loggerFactory.getLogger("ZXTrader's Historical Price Service");
+	const log = loggerFactory.getLogger("Runtime");
+
+	log.info(`Welcome ---> ${serviceName} v${serviceVersion} <---`);
 
 	const cancellationToken = DUMMY_CANCELLATION_TOKEN;
 

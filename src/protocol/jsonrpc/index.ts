@@ -67,7 +67,7 @@ class JsonRpcProtocolAdapter extends AbstractProtocolAdapter<string> {
 	): Promise<string> {
 		const message = JSON.parse(data);
 		const result = await this.handleJsonRpcMessage(cancellationToken, message);
-		if (_.isObjectLike(result) && _.isObjectLike(result.error) && result.error.code === -32601 && next !== undefined) {
+		if (next !== undefined && _.isObjectLike(result) && _.isObjectLike(result.error) && result.error.code === -32601) {
 			return next(cancellationToken, data);
 		}
 		return JSON.stringify(result);
