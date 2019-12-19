@@ -1,7 +1,7 @@
 import * as zxteam from "@zxteam/contract";
-import { DUMMY_CANCELLATION_TOKEN, Task } from "@zxteam/task";
-import WebClient, { WebClientInvokeArgs, WebClientInvokeResult } from "@zxteam/webclient";
-import RestClient from "@zxteam/restclient";
+import { DUMMY_CANCELLATION_TOKEN } from "@zxteam/cancellation";
+import { HttpClient } from "@zxteam/http-client";
+import { WebClient } from "@zxteam/web-client";
 import { URL } from "url";
 
 import { assert } from "chai";
@@ -30,18 +30,20 @@ describe("Crypto Compare Tests", function () {
 		let workArgs: any;
 		let workCount = 0;
 		const fakeWebClient: any = {
-			dispose(): zxteam.Task<void> { return Task.resolve(); },
-			invoke(cancellationToken: zxteam.CancellationToken, args: WebClientInvokeArgs): zxteam.Task<WebClientInvokeResult> {
+			async dispose() {
+				//
+			},
+			invoke(cancellationToken: zxteam.CancellationToken, args: HttpClient.Request): Promise<HttpClient.Response> {
 				workArgs = args;
 				workToken = cancellationToken;
 				workCount++;
-				return Task.reject(new WebClient.CommunicationError("Test fake error. Emulate no connection"));
+				return Promise.reject(new HttpClient.CommunicationError("Test fake error. Emulate no connection"));
 			}
 		};
 
 		// Options for Cryptocompare Provider
-		const opts: RestClient.Opts = {
-			webClient: fakeWebClient
+		const opts: WebClient.Opts = {
+			httpClient: fakeWebClient
 		};
 
 		// Create an instance of Cryptocompare Provider
@@ -49,7 +51,7 @@ describe("Crypto Compare Tests", function () {
 
 		let expectedError: SourceProvider.CommunicationError | undefined;
 		try {
-			await sourceProvider.loadPrices(DUMMY_CANCELLATION_TOKEN, loadArgs).promise;
+			await sourceProvider.loadPrices(DUMMY_CANCELLATION_TOKEN, loadArgs);
 		} catch (e) {
 			expectedError = e;
 		}

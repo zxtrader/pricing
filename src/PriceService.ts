@@ -1,5 +1,6 @@
-import * as zxteam from "@zxteam/contract";
-import { Task, DUMMY_CANCELLATION_TOKEN } from "@zxteam/task";
+import { CancellationToken, Financial, SubscriberChannel, Logger } from "@zxteam/contract";
+import { wrapErrorIfNeeded, AggregateError } from "@zxteam/errors";
+import { DUMMY_CANCELLATION_TOKEN, ManualCancellationTokenSource } from "@zxteam/cancellation";
 import loggerFactory from "@zxteam/logger";
 import { Initable } from "@zxteam/disposable";
 
@@ -16,7 +17,7 @@ import { CryptoCompareApiClient } from "./clients/CryptoCompareApiClient";
 const { name: serviceName, version } = require(path.join(__dirname, "../package.json"));
 
 export class PriceService extends Initable implements PriceService {
-	private readonly _log: zxteam.Logger;
+	private readonly _log: Logger;
 	private readonly _notificationEmitter: EventEmitter;
 	private readonly _changeRateWatchers: Map<string/*market key*/, {
 		destroy(): void;
@@ -29,7 +30,7 @@ export class PriceService extends Initable implements PriceService {
 	private readonly _sourcesId: Array<string>;
 	private _storage: StorageProvider | null;
 
-	constructor(storageProvider: StorageProvider, sourceProviders: Array<SourceProvider>, log?: zxteam.Logger) {
+	constructor(storageProvider: StorageProvider, sourceProviders: Array<SourceProvider>, log?: Logger) {
 		super();
 		this._log = log || loggerFactory.getLogger("PriceService");
 		this._notificationEmitter = new EventEmitter();
@@ -46,7 +47,7 @@ export class PriceService extends Initable implements PriceService {
 	 * @param cancellationToken Cancellation Token allows your to cancel execution process
 	 * @param args criteria for price search
 	 */
-	public async getHistoricalPrices(cancellationToken: zxteam.CancellationToken, args: Array<price.Argument>)
+	public async getHistoricalPrices(cancellationToken: CancellationToken, args: Array<price.Argument>)
 		: Promise<price.Timestamp> {
 		this.verifyInitializedAndNotDisposed();
 
@@ -99,7 +100,7 @@ export class PriceService extends Initable implements PriceService {
 	}
 
 	public async ping(
-		cancellationToken: zxteam.CancellationToken, echo: string
+		cancellationToken: CancellationToken, echo: string
 	): Promise<{ readonly echo: string; readonly time: Date; readonly version: string; }> {
 		return {
 			echo,
@@ -110,18 +111,18 @@ export class PriceService extends Initable implements PriceService {
 
 
 	public async createChangeRateSubscriber(
-		cancellationToken: zxteam.CancellationToken, marketCurrency: string, tradeCurrency: string
+		cancellationToken: CancellationToken, marketCurrency: string, tradeCurrency: string
 	): Promise<Notification.ChangeRate.Channel> {
 		//const eventKey: string = `${exchangeId}:${marketCurrency}:${tradeCurrency}`;
 		const eventKey: string = `${marketCurrency}:${tradeCurrency}`; // Temporaty implementation without exchangeId
 
 		let watcher = this._changeRateWatchers.get(eventKey);
 		if (watcher === undefined) {
-			const watchCancellationToken = Task.createCancellationTokenSource();
+			const watchCancellationToken = new ManualCancellationTokenSource();
 			const timer = setInterval(async () => {
 				try {
 					const now = new Date();
-					const ccPrice: zxteam.Financial = await this._cryptoCompareApiClient
+					const ccPrice: Financial = await this._cryptoCompareApiClient
 						.getPrice(watchCancellationToken.token, marketCurrency, tradeCurrency);
 					this._notificationEmitter.emit(eventKey, { date: now, price: ccPrice });
 				} catch (e) {
@@ -151,13 +152,13 @@ export class PriceService extends Initable implements PriceService {
 		}
 
 		const handlers: Set<
-			zxteam.SubscriberChannel.Callback<Notification.ChangeRate.Data>
+			SubscriberChannel.Callback<Notification.ChangeRate.Data>
 		> = new Set();
 
 		const onChangeRate = (data: any) => {
 			handlers.forEach(handler => {
 				try {
-					handler(DUMMY_CANCELLATION_TOKEN, { data });
+					handler({ data });
 				} catch (e) {
 					this._log.warn("Unexpected error in handler");
 					this._log.debug("Unexpected error in handler", e.messageÎ);
@@ -185,7 +186,7 @@ export class PriceService extends Initable implements PriceService {
 		return channel;
 	}
 
-	protected async onInit(cancellationToken: zxteam.CancellationToken) {
+	protected async onInit(cancellationToken: CancellationToken) {
 		this._log.debug("Initializing");
 		const storage = this._storageProvider;
 		await storage.init(cancellationToken);
@@ -202,7 +203,7 @@ export class PriceService extends Initable implements PriceService {
 		this._log.info("Disposed");
 	}
 
-	private async managerSourceProvider(cancellationToken: zxteam.CancellationToken, loadArgs: Array<price.LoadDataRequest>)
+	private async managerSourceProvider(cancellationToken: CancellationToken, loadArgs: Array<price.LoadDataRequest>)
 		: Promise<Array<price.HistoricalPrices>> {
 		if (this._log.isTraceEnabled) {
 			this._log.trace("managerSourceProvider()... args: ", loadArgs);
@@ -215,28 +216,38 @@ export class PriceService extends Initable implements PriceService {
 		this._log.trace("Create array sourcesystem id which need syncs price");
 		const sourceIds: Array<string> = Object.keys(multyLoadDataRequest);
 
-		const taskSources: Array<zxteam.Task<any>> = [];
+		const taskSourceResults: Array<Array<price.HistoricalPrices>> = [];
+		const taskSources: Array<Promise<void>> = [];
 		const countSources: number = sourceIds.length;
 		for (let i = 0; i < countSources; i++) {
 			const sourceId = sourceIds[i];
 			if (this._log.isTraceEnabled) {
-				this._log.trace(`Set sourcesystem id: ${sourceId}`);
+				this._log.trace(`Get sourcesystem id: ${sourceId}`);
 			}
-
-			this._log.trace("Get source provider object for get price");
 			const source: SourceProvider | null = helpers.getSource(this._sourceProviders, sourceId);
 
-			if (source) {
-				taskSources.push(source.loadPrices(cancellationToken, multyLoadDataRequest[sourceId]));
+			if (source !== null) {
+				taskSources.push(
+					source
+						.loadPrices(cancellationToken, multyLoadDataRequest[sourceId])
+						.then(result => { taskSourceResults.push(result); })
+				);
 			} else {
 				// TODO: Should be exception
 				this._log.error(`Not implement yet ${source}`);
 			}
 		}
 
-		await Task.waitAll(taskSources);
-		const friendlyPrices: Array<price.HistoricalPrices> = taskSources.reduce((previous, current) => {
-			return previous.concat(current.result);
+		const errors: Array<Error> = [];
+		await Promise.all(
+			taskSources.map(taskSource => taskSource.catch(err => { errors.push(wrapErrorIfNeeded(err)); }))
+		);
+		if (errors.length > 0) {
+			throw new AggregateError(errors);
+		}
+
+		const friendlyPrices: Array<price.HistoricalPrices> = taskSourceResults.reduce((previous, current) => {
+			return previous.concat(current);
 		}, []);
 
 		if (this._log.isTraceEnabled) {
@@ -353,20 +364,20 @@ export namespace price {
 
 export interface PriceService {
 	getHistoricalPrices(
-		cancellationToken: zxteam.CancellationToken, args: Array<price.Argument>
+		cancellationToken: CancellationToken, args: Array<price.Argument>
 	): Promise<price.Timestamp>;
 
 	ping(
-		cancellationToken: zxteam.CancellationToken, echo: string
+		cancellationToken: CancellationToken, echo: string
 	): Promise<{ readonly echo: string; readonly time: Date; readonly version: string; }>;
 }
 export namespace Notification {
 	export namespace ChangeRate {
 		export interface Data {
 			date: Date;
-			price: zxteam.Financial;
+			price: Financial;
 		}
-		export type Channel = zxteam.SubscriberChannel<Data>;
+		export type Channel = SubscriberChannel<Data>;
 	}
 }
 

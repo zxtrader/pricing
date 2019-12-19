@@ -1,10 +1,9 @@
 import { assert } from "chai";
 import { RedisOptions } from "ioredis";
 import { PriceService, price } from "../src/PriceService";
-import { DUMMY_CANCELLATION_TOKEN } from "@zxteam/task";
-import { Randomsource } from "../src/providers/source/Randomsource";
+import { DUMMY_CANCELLATION_TOKEN } from "@zxteam/cancellation";
+import { Randomizer } from "../src/providers/source/Randomizer";
 import { Cryptocompare } from "../src/providers/source/Cryptocompare";
-import { Poloniex } from "../src/providers/source/Poloniex";
 import { RedisStorageProvider } from "../src/providers/storage/RedisStorageProvider";
 
 
@@ -38,21 +37,18 @@ const optsForLimit = {
 describe("Positive tests Price service", function () {
 	let redisStorageProvider: RedisStorageProvider;
 	let cryptoCompare: Cryptocompare;
-	let poloniex: Poloniex;
-	let randomSource: Randomsource;
+	let randomSource: Randomizer;
 	let priceService: PriceService;
 
 	before(async function () {
 		redisStorageProvider = new RedisStorageProvider(getRedisURL());
 		await redisStorageProvider.init(DUMMY_CANCELLATION_TOKEN);
 		cryptoCompare = new Cryptocompare(optsForLimit);
-		poloniex = new Poloniex(optsForLimit);
-		randomSource = new Randomsource();
-		priceService = new PriceService(redisStorageProvider, [cryptoCompare, randomSource, poloniex]);
+		randomSource = new Randomizer();
+		priceService = new PriceService(redisStorageProvider, [cryptoCompare, randomSource]);
 	});
 	after(async function () {
 		await cryptoCompare.dispose();
-		await poloniex.dispose();
 		await redisStorageProvider.dispose();
 	});
 	it("Call method getHistoricalPrices without sources", async function () {

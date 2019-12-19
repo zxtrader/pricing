@@ -1,6 +1,6 @@
 import * as zxteam from "@zxteam/contract";
-import { DUMMY_CANCELLATION_TOKEN } from "@zxteam/task";
-import * as webserver from "@zxteam/webserver";
+import { DUMMY_CANCELLATION_TOKEN } from "@zxteam/cancellation";
+import * as webserver from "@zxteam/hosting";
 
 import * as express from "express";
 import * as compression from "compression";
@@ -13,8 +13,9 @@ import { Configuration } from "./conf";
 import { PriceService, ArgumentException, InvalidDateError, price } from "./PriceService";
 const { version } = require(path.join(__dirname, "..", "package.json"));
 
-export class PriceServiceRestEndpoint extends webserver.RestEndpoint<PriceService> {
+export class PriceServiceRestEndpoint extends webserver.ServersBindEndpoint {
 	private readonly _bindPathWeb: string | null;
+	private readonly _service: PriceService;
 
 	public constructor(
 		servers: ReadonlyArray<webserver.WebServer>,
@@ -22,8 +23,9 @@ export class PriceServiceRestEndpoint extends webserver.RestEndpoint<PriceServic
 		opts: Configuration.PriceServiceRestEndpoint,
 		log: zxteam.Logger
 	) {
-		super(servers, service, opts, log);
+		super(servers, opts, log);
 		this._bindPathWeb = opts.bindPathWeb;
+		this._service = service;
 	}
 
 	protected onInit(): void {
@@ -40,7 +42,7 @@ export class PriceServiceRestEndpoint extends webserver.RestEndpoint<PriceServic
 	}
 }
 
-export class PriceServiceWebSocketEndpoint extends webserver.WebSocketEndpoint { }
+export class PriceServiceWebSocketEndpoint extends webserver.WebSocketChannelSupplyEndpoint { }
 
 export class PriceServiceRouterEndpoint extends webserver.BindEndpoint {
 	private readonly _service: PriceService;

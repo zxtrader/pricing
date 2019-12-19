@@ -13,10 +13,12 @@
 			],
 			"cwd": "${workspaceRoot}",
 			"env": {
-				"NODE_TLS_REJECT_UNAUTHORIZED": "0"
+				"NODE_ENV": "development",
+				"NODE_TLS_REJECT_UNAUTHORIZED": "0",
+				"LOG4JS_CONFIG": "${workspaceRoot}/log4js.dev.json"
 			},
 			"args": [
-				"--config=${workspaceRoot}/config.ini"
+				"--config=${workspaceRoot}/service.config"
 			],
 			"program": "${workspaceRoot}/src/app.js"
 		},

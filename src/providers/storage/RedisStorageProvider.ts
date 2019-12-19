@@ -1,10 +1,10 @@
-import { Task } from "@zxteam/task";
+import { CancellationToken, Financial } from "@zxteam/contract";
+import { Initable } from "@zxteam/disposable";
+import loggerFactory from "@zxteam/logger";
+
 import { price } from "../../PriceService";
 import * as RedisClient from "ioredis";
-import loggerFactory from "@zxteam/logger";
-import * as zxteam from "@zxteam/contract";
 import { Redis, RedisOptions } from "ioredis";
-import { Initable } from "@zxteam/disposable";
 import { StorageProvider as StorageProviderInerface } from "./contract";
 import { financial } from "../../financial.js";
 
@@ -19,7 +19,7 @@ export class RedisStorageProvider extends Initable implements StorageProviderIne
 		this._prefix = opts.keyPrefix !== undefined ? opts.keyPrefix : "";
 	}
 
-	public async filterEmptyPrices(cancellationToken: zxteam.CancellationToken, args: Array<price.Argument>, sources: Array<string>)
+	public async filterEmptyPrices(cancellationToken: CancellationToken, args: Array<price.Argument>, sources: Array<string>)
 		: Promise<Array<price.LoadDataRequest>> {
 		this._logger.trace("filterEmptyPrices()... ");
 		const friendlyRequest: Array<price.LoadDataRequest> = [];
@@ -92,7 +92,7 @@ export class RedisStorageProvider extends Initable implements StorageProviderIne
 		return friendlyRequest;
 	}
 
-	public async savePrices(cancellationToken: zxteam.CancellationToken, newPrices: Array<price.HistoricalPrices>): Promise<void> {
+	public async savePrices(cancellationToken: CancellationToken, newPrices: Array<price.HistoricalPrices>): Promise<void> {
 		this._logger.trace("savePrices()...");
 		for (let n = 0; n < newPrices.length; n++) {
 			const argNewPrice = newPrices[n];
@@ -109,6 +109,7 @@ export class RedisStorageProvider extends Initable implements StorageProviderIne
 				this._logger.trace("Execute: HSET", sourceIdPriceRedisKey, "price", newPrice);
 			}
 			await this.ioredis.hset(sourceIdPriceRedisKey, "price", newPrice);
+			cancellationToken.throwIfCancellationRequested();
 
 			// We can't use cancellationToken, need calculating avg price and save in database.
 
@@ -117,6 +118,7 @@ export class RedisStorageProvider extends Initable implements StorageProviderIne
 				this._logger.trace("Execute: LLEN", priceSourceIdsRedisKey);
 			}
 			const redisPriceSourceIdCount = await this.ioredis.llen(priceSourceIdsRedisKey);
+			cancellationToken.throwIfCancellationRequested();
 
 			// We can't use cancellationToken, need calculating avg price and save in database.
 
@@ -128,6 +130,7 @@ export class RedisStorageProvider extends Initable implements StorageProviderIne
 					this._logger.trace("Execute: LRANGE", priceSourceIdsRedisKey, 0, redisPriceSourceIdCount);
 				}
 				const sourceIds = await this.ioredis.lrange(priceSourceIdsRedisKey, 0, redisPriceSourceIdCount);
+				cancellationToken.throwIfCancellationRequested();
 
 				// We can't use cancellationToken, need calculating avg price and save in database.
 
@@ -138,6 +141,7 @@ export class RedisStorageProvider extends Initable implements StorageProviderIne
 						this._logger.trace("Execute: HGET", sourceIdAvgRedisKey, "price");
 					}
 					const sourceIdPrice = await this.ioredis.hget(sourceIdAvgRedisKey, "price");
+					cancellationToken.throwIfCancellationRequested();
 
 					// We can't use cancellationToken, need calculating avg price and save in database.
 
@@ -148,20 +152,21 @@ export class RedisStorageProvider extends Initable implements StorageProviderIne
 			}
 
 			// const avgPrice = (totalSum + +newPrice) / (redisPriceSourceIdCount + 1);
-			const financialNewPrice = financial.wrap(newPrice);
-			const financialTotalSum = financial.wrap(totalSum.toFixed(8));
-			const financialredisPriceSourceIdCount = financial.wrap(redisPriceSourceIdCount.toFixed(0));
+			const financialNewPrice: Financial = financial.parse(newPrice);
+			const financialTotalSum: Financial = financial.parse(totalSum.toFixed(8));
+			const financialredisPriceSourceIdCount = financial.parse(redisPriceSourceIdCount.toFixed(0));
 
 			const financialSum = financial.add(financialTotalSum, financialNewPrice);
 			const financialCount = financial.add(financialredisPriceSourceIdCount, financial.fromInt(1));
 
-			const financialAvgPrice = financial.divide(financialSum, financialCount);
+			const financialAvgPrice: Financial = financial.divide(financialSum, financialCount);
 
 			if (this._logger.isTraceEnabled) {
 				this._logger.trace("Save new avg price");
-				this._logger.trace("Execute: HSET", corePriceRedisKey, "price", financial.toString(financialAvgPrice));
+				this._logger.trace("Execute: HSET", corePriceRedisKey, "price", financialAvgPrice.toString());
 			}
-			await this.ioredis.hset(corePriceRedisKey, "price", financial.toString(financialAvgPrice));
+			await this.ioredis.hset(corePriceRedisKey, "price", financialAvgPrice.toString());
+			cancellationToken.throwIfCancellationRequested();
 
 			// We can't use cancellationToken, need calculating avg price and save in base.
 
@@ -170,10 +175,11 @@ export class RedisStorageProvider extends Initable implements StorageProviderIne
 				this._logger.trace("Execute: LPUSH", priceSourceIdsRedisKey, sourceId);
 			}
 			await this.ioredis.lpush(priceSourceIdsRedisKey, sourceId);
+			cancellationToken.throwIfCancellationRequested();
 		}
 	}
 
-	public async findPrices(cancellationToken: zxteam.CancellationToken, args: Array<price.Argument>): Promise<price.Timestamp> {
+	public async findPrices(cancellationToken: CancellationToken, args: Array<price.Argument>): Promise<price.Timestamp> {
 		this._logger.trace("Begin find price in redis database");
 
 		const friendlyPricesChunk: price.Timestamp = {};

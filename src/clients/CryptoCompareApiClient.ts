@@ -1,11 +1,10 @@
 import * as zxteam from "@zxteam/contract";
-import { ensureFactory, Ensure } from "@zxteam/ensure.js";
-import RestClient from "@zxteam/restclient";
-import { Task } from "@zxteam/task";
+import { ensureFactory, Ensure } from "@zxteam/ensure";
+import financial from "@zxteam/financial";
+import RestClient from "@zxteam/web-client";
 
 import * as _ from "lodash";
 import { URL } from "url";
-import financial from "@zxteam/financial.js";
 
 const ensure: Ensure = ensureFactory();
 
@@ -24,7 +23,7 @@ export class CryptoCompareApiClient extends RestClient {
 
 		this.verifyNotDisposed();
 
-		const webResult = await this.invokeWebMethodGet(ct, "price", {
+		const webResult = await this.get(ct, "price", {
 			queryArgs: {
 				fsym: tradeCurrency,
 				tsyms: marketCurrency,
@@ -35,6 +34,6 @@ export class CryptoCompareApiClient extends RestClient {
 		const data = ensure.object(webResult.bodyAsJson) as any;
 		const price = ensure.number(data[marketCurrency] as number);
 
-		return financial.fromFloat(price, 8);
+		return financial.fromFloat(price);
 	}
 }

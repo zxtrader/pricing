@@ -1,7 +1,7 @@
-import * as zxteam from "@zxteam/contract";
+import { CancellationToken, Initable, Logger } from "@zxteam/contract";
 import { Runtime } from "@zxteam/launcher";
-import { RestClient } from "@zxteam/restclient";
-import * as webserver from "@zxteam/webserver";
+import { WebClient } from "@zxteam/web-client";
+import * as webserver from "@zxteam/hosting";
 import loggerFactory from "@zxteam/logger";
 
 import { URL } from "url";
@@ -16,7 +16,9 @@ import { Cryptocompare } from "./providers/source/Cryptocompare";
 import { RedisStorageProvider } from "./providers/storage/RedisStorageProvider";
 
 import {
-	factory as protocolAdapterFactoryInitalizer, ProtocolType, BinaryProtocolTypes, TextProtocolTypes, ProtocolAdapterFactory
+	//factory as protocolAdapterFactoryInitalizer,
+	ProtocolType
+	//BinaryProtocolTypes, TextProtocolTypes, ProtocolAdapterFactory
 } from "./protocol";
 
 import {
@@ -24,21 +26,21 @@ import {
 	createExpressApplication, setupExpressErrorHandles
 } from "./endpoints";
 
-import { Poloniex } from "./providers/source/Poloniex";
-import { Binance } from "./providers/source/Binance";
-import { DUMMY_CANCELLATION_TOKEN } from "@zxteam/task";
+// import { Poloniex } from "./providers/source/Poloniex";
+// import { Binance } from "./providers/source/Binance";
 
-export { ProtocolType, BinaryProtocolTypes, TextProtocolTypes };
+export {
+	ProtocolType
+	//, BinaryProtocolTypes, TextProtocolTypes
+};
 export * from "./conf";
 
 const { name: serviceName, version: serviceVersion } = require(path.normalize(path.join(__dirname, "..", "package.json")));
 
-export default async function (opts: Configuration): Promise<Runtime> {
+export default async function (cancellationToken: CancellationToken, opts: Configuration): Promise<Runtime> {
 	const log = loggerFactory.getLogger("Runtime");
 
 	log.info(`Welcome ---> ${serviceName} v${serviceVersion} <---`);
-
-	const cancellationToken = DUMMY_CANCELLATION_TOKEN;
 
 	// TODO Valdate options
 
@@ -70,11 +72,11 @@ export default async function (opts: Configuration): Promise<Runtime> {
 		log.info("Constructing PriceService...");
 		const service: PriceService = new PriceService(storageProvider, sourceProviders);
 
-		log.info("Constructing ProtocolAdapterFactory...");
-		const protocolAdapterFactory: ProtocolAdapterFactory = await protocolAdapterFactoryInitalizer(service, log);
+		// log.info("Constructing ProtocolAdapterFactory...");
+		// const protocolAdapterFactory: ProtocolAdapterFactory = await protocolAdapterFactoryInitalizer(service, log);
 
 		log.info("Constructing endpoints...");
-		const endpointInstances: Array<zxteam.Initable> = [];
+		const endpointInstances: Array<Initable> = [];
 		for (const endpoint of opts.endpoints) {
 			if ("type" in endpoint) {
 				switch (endpoint.type) {
@@ -95,18 +97,18 @@ export default async function (opts: Configuration): Promise<Runtime> {
 							loggerFactory.getLogger("Endpoint:" + endpoint.type + "(" + endpoint.bindPath + ")")
 						);
 
-						for (const protocol of BinaryProtocolTypes) {
-							endpointInstance.useBinaryAdapter(
-								protocol,
-								callbackChannel => protocolAdapterFactory.createBinaryProtocolAdapter(protocol, callbackChannel)
-							);
-						}
-						for (const protocol of TextProtocolTypes) {
-							endpointInstance.useTextAdapter(
-								protocol,
-								callbackChannel => protocolAdapterFactory.createTextProtocolAdapter(protocol, callbackChannel)
-							);
-						}
+						// for (const protocol of BinaryProtocolTypes) {
+						// 	endpointInstance.useBinaryAdapter(
+						// 		protocol,
+						// 		callbackChannel => protocolAdapterFactory.createBinaryProtocolAdapter(protocol, callbackChannel)
+						// 	);
+						// }
+						// for (const protocol of TextProtocolTypes) {
+						// 	endpointInstance.useTextAdapter(
+						// 		protocol,
+						// 		callbackChannel => protocolAdapterFactory.createTextProtocolAdapter(protocol, callbackChannel)
+						// 	);
+						// }
 
 						endpointInstances.push(endpointInstance);
 						break;
@@ -120,22 +122,22 @@ export default async function (opts: Configuration): Promise<Runtime> {
 						endpointInstances.push(routerEndpoint);
 						break;
 					}
-					case "websocket-binder": {
-						const targetEndpoint: webserver.WebSocketBinderEndpoint = endpoint.target;
-						for (const protocol of BinaryProtocolTypes) {
-							targetEndpoint.useBinaryAdapter(
-								protocol,
-								callbackChannel => protocolAdapterFactory.createBinaryProtocolAdapter(protocol, callbackChannel, endpoint.methodPrefix)
-							);
-						}
-						for (const protocol of TextProtocolTypes) {
-							targetEndpoint.useTextAdapter(
-								protocol,
-								callbackChannel => protocolAdapterFactory.createTextProtocolAdapter(protocol, callbackChannel, endpoint.methodPrefix)
-							);
-						}
-						break;
-					}
+					// case "websocket-binder": {
+					// 	const targetEndpoint: webserver.WebSocketBinderEndpoint = endpoint.target;
+					// 	for (const protocol of BinaryProtocolTypes) {
+					// 		targetEndpoint.useBinaryAdapter(
+					// 			protocol,
+					// 			callbackChannel => protocolAdapterFactory.createBinaryProtocolAdapter(protocol, callbackChannel, endpoint.methodPrefix)
+					// 		);
+					// 	}
+					// 	for (const protocol of TextProtocolTypes) {
+					// 		targetEndpoint.useTextAdapter(
+					// 			protocol,
+					// 			callbackChannel => protocolAdapterFactory.createTextProtocolAdapter(protocol, callbackChannel, endpoint.methodPrefix)
+					// 		);
+					// 	}
+					// 	break;
+					// }
 					default:
 						throw new UnreachableEndpointError(endpoint);
 				}
@@ -203,21 +205,21 @@ namespace helpers {
 		sourceIds.forEach((sourceId) => {
 			const sourceOpts = options[sourceId];
 
-			const opts: RestClient.Opts = sourceOpts;
+			const opts: WebClient.Opts = sourceOpts;
 
 			let provider;
 			switch (sourceId) {
 				case "CRYPTOCOMPARE":
 					provider = new Cryptocompare(opts);
 					break;
-				case "POLONIEX": {
-					provider = new Poloniex(opts);
-					break;
-				}
-				case "BINANCE": {
-					provider = new Binance(opts);
-					break;
-				}
+				// case "POLONIEX": {
+				// 	provider = new Poloniex(opts);
+				// 	break;
+				// }
+				// case "BINANCE": {
+				// 	provider = new Binance(opts);
+				// 	break;
+				// }
 				default:
 					throw new UnreachableSourceError(sourceId);
 			}

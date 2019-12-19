@@ -1,6 +1,6 @@
 import * as zxteam from "@zxteam/contract";
-import * as webserver from "@zxteam/webserver";
-import { RestClient } from "@zxteam/restclient";
+import * as webserver from "@zxteam/hosting";
+import { WebClient } from "@zxteam/web-client";
 
 import { URL } from "url";
 import { Router } from "express-serve-static-core";
@@ -22,8 +22,7 @@ export namespace Configuration {
 	export type PriceServiceEndpoint
 		= (PriceServiceRestEndpoint & webserver.Configuration.ServerEndpoint)
 		| (PriceServiceWebSocketEndpoint & webserver.Configuration.ServerEndpoint)
-		| PriceServiceExpressRouterEndpoint
-		| PriceServiceWebSocketBinderEndpoint;
+		| PriceServiceExpressRouterEndpoint;
 
 	export interface PriceServiceRestEndpoint extends webserver.Configuration.BindEndpoint {
 		readonly type: "rest";
@@ -36,11 +35,11 @@ export namespace Configuration {
 		readonly type: "express-router";
 		readonly router: Router;
 	}
-	export interface PriceServiceWebSocketBinderEndpoint {
-		readonly type: "websocket-binder";
-		readonly target: webserver.WebSocketBinderEndpoint;
-		readonly methodPrefix?: string;
-	}
+	// export interface PriceServiceWebSocketBinderEndpoint {
+	// 	readonly type: "websocket-binder";
+	// 	readonly target: webserver.WebSocketBinderEndpoint;
+	// 	readonly methodPrefix?: string;
+	// }
 
 	export type Endpoint = HttpEndpoint | HttpsEndpoint | ExpressRouterEndpoint;
 
@@ -82,9 +81,9 @@ export namespace Configuration {
 	}
 
 	export interface Sources {
-		CRYPTOCOMPARE?: RestClient.Opts;
-		POLONIEX?: RestClient.Opts;
-		BINANCE?: RestClient.Opts;
+		CRYPTOCOMPARE?: WebClient.Opts;
+		POLONIEX?: WebClient.Opts;
+		BINANCE?: WebClient.Opts;
 		[source: string]: any;
 	}
 }
@@ -139,7 +138,7 @@ export namespace helper {
 					type: "rest",
 					servers: endpointConfiguration.getString("servers").split(" "),
 					bindPath: endpointConfiguration.getString("bindPath", "/"),
-					bindPathWeb: endpointConfiguration.hasKey("bindPathWeb") ? endpointConfiguration.getString("bindPathWeb") : null
+					bindPathWeb: endpointConfiguration.has("bindPathWeb") ? endpointConfiguration.getString("bindPathWeb") : null
 				};
 				return httpEndpoint;
 			}

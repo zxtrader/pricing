@@ -1,7 +1,7 @@
 import * as zxteam from "@zxteam/contract";
 
 import { price } from "../../PriceService";
-import WebClient from "@zxteam/webclient";
+import WebClient from "@zxteam/http-client";
 
 export interface SourceProvider {
 	sourceId: string;
@@ -16,7 +16,7 @@ export interface SourceProvider {
 	loadPrices(
 		cancellationToken: zxteam.CancellationToken,
 		loadArgs: ReadonlyArray<price.LoadDataArgs>
-	): zxteam.Task<Array<price.HistoricalPrices>>;
+	): Promise<Array<price.HistoricalPrices>>;
 }
 
 export namespace SourceProvider {
