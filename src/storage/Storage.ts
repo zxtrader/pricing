@@ -1,8 +1,6 @@
-import { price } from "../../PriceService";
-import { CancellationToken } from "@zxteam/contract";
-import { Initable } from "@zxteam/disposable";
+import { CancellationToken, Initable } from "@zxteam/contract";
 
-export interface StorageProvider extends Initable {
+export interface Storage extends Initable {
 
 	/** Create data for loading price on sources */
 	filterEmptyPrices(cancellationToken: CancellationToken, args: Array<price.Argument>, sources: Array<string>)
@@ -13,7 +11,16 @@ export interface StorageProvider extends Initable {
 		: Promise<void>;
 
 	/** Find prices */
-	findPrices(cancellationToken: CancellationToken, args: Array<price.Argument>)
+	findPrices(cancellationToken: CancellationToken, filter: { ts: number; marketCurrency: string; tradeCurrency: string; })
 		: Promise<price.Timestamp>;
 
+}
+
+export namespace Storage {
+
+}
+export interface Argument {
+
+	sourceId?: string;
+	requiredAllSourceIds: boolean;
 }
