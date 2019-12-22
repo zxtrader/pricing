@@ -7,8 +7,8 @@ import { HttpClient } from "@zxteam/http-client";
 import * as _ from "lodash";
 import * as moment from "moment";
 
-import { SourceProvider } from "./contract";
-import { price } from "../../PriceService";
+import { PriceLoader } from "./PriceLoader";
+import { PriceService } from "../api/PriceService";
 
 abstract class CryptocompareRestClient extends WebClient {
 	public constructor(baseUrl: string | URL, restClientOpts: WebClient.Opts) {
@@ -16,7 +16,7 @@ abstract class CryptocompareRestClient extends WebClient {
 	}
 }
 
-export class Cryptocompare extends CryptocompareRestClient implements SourceProvider {
+export class Cryptocompare extends CryptocompareRestClient implements PriceLoader {
 	public readonly sourceId = "CRYPTOCOMPARE";
 	public readonly _log: zxteam.Logger = loggerFactory.getLogger("Cryptocompare");
 
@@ -28,15 +28,15 @@ export class Cryptocompare extends CryptocompareRestClient implements SourceProv
 	 * fsym - это tradeCurrency
 	 * https://min-api.cryptocompare.com/data/pricehistorical?fsym=ETH&tsyms=BTC,USD,EUR&ts=1452680400&extraParams=your_app_name
 	 */
-	public async loadPrices(cancellationToken: zxteam.CancellationToken, loadArgs: ReadonlyArray<price.LoadDataArgs>)
-		: Promise<Array<price.HistoricalPrices>> {
+	public async loadPrices(cancellationToken: zxteam.CancellationToken, loadArgs: ReadonlyArray<PriceService.LoadDataArgs>)
+		: Promise<Array<PriceService.HistoricalPrices>> {
 		if (this._log.isTraceEnabled) {
 			this._log.trace("loadPrices()... loadArgs: ", loadArgs);
 		}
 
-		const friendlyRequest: Array<price.HistoricalPrices> = [];
+		const friendlyRequest: Array<PriceService.HistoricalPrices> = [];
 		const ensureImpl = ensureFactory((message, data) => {
-			throw new SourceProvider.BrokenApiError("CryptoCompare responded non-expected data type");
+			throw new PriceLoader.BrokenApiError("CryptoCompare responded non-expected data type");
 		});
 
 		try {
@@ -82,14 +82,14 @@ export class Cryptocompare extends CryptocompareRestClient implements SourceProv
 					_.isString(body.Data.Response) &&
 					body.Data.Response === "Error"
 				) {
-					throw new SourceProvider.BrokenApiError(body.Data.Message);
+					throw new PriceLoader.BrokenApiError(body.Data.Message);
 				}
 
 				if ("Response" in body && body.Response === "Error") {
 					if ("Message" in body && body.Message.startsWith("There is no data for")) {
 						continue;
 					}
-					throw new SourceProvider.BrokenApiError(body.Message);
+					throw new PriceLoader.BrokenApiError(body.Message);
 				}
 
 				this._log.trace("Data validation from source");
@@ -120,12 +120,12 @@ export class Cryptocompare extends CryptocompareRestClient implements SourceProv
 
 			return friendlyRequest;
 		} catch (err) {
-			if (err instanceof SourceProvider.BrokenApiError) {
+			if (err instanceof PriceLoader.BrokenApiError) {
 				throw err;
 			} else if (err instanceof HttpClient.CommunicationError) {
-				throw new SourceProvider.CommunicationError(err);
+				throw new PriceLoader.CommunicationError(err);
 			} else {
-				throw new SourceProvider.BrokenApiError(err.message);
+				throw new PriceLoader.BrokenApiError(err.message);
 			}
 		}
 	}

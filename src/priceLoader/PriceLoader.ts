@@ -1,9 +1,10 @@
 import * as zxteam from "@zxteam/contract";
 
-import { price } from "../../PriceService";
-import WebClient from "@zxteam/http-client";
+import { PriceService } from "../api/PriceService";
 
-export interface SourceProvider {
+import { HttpClient } from "@zxteam/http-client";
+
+export interface PriceLoader {
 	sourceId: string;
 
 	/**
@@ -15,15 +16,15 @@ export interface SourceProvider {
 	 */
 	loadPrices(
 		cancellationToken: zxteam.CancellationToken,
-		loadArgs: ReadonlyArray<price.LoadDataArgs>
-	): Promise<Array<price.HistoricalPrices>>;
+		loadArgs: ReadonlyArray<PriceService.LoadDataArgs>
+	): Promise<Array<PriceService.HistoricalPrices>>;
 }
 
-export namespace SourceProvider {
+export namespace PriceLoader {
 	export class CommunicationError extends Error {
-		public readonly innerError: WebClient.CommunicationError;
+		public readonly innerError: HttpClient.CommunicationError;
 
-		public constructor(innerError: WebClient.CommunicationError) {
+		public constructor(innerError: HttpClient.CommunicationError) {
 			super(innerError.message);
 			this.innerError = innerError;
 		}

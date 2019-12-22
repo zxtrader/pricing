@@ -13,6 +13,7 @@ import { HostingProvider } from "./HostingProvider";
 
 import { RestEndpoint } from "../endpoint/RestEndpoint";
 import { WebSocketEndpoint } from "../endpoint/WebSocketEndpoint";
+import { ApiProvider } from "./ApiProvider";
 
 @Singleton
 export abstract class EndpointsProvider extends Initable {
@@ -27,9 +28,9 @@ export abstract class EndpointsProvider extends Initable {
 @Provides(EndpointsProvider)
 export class EndpointsProviderImpl extends EndpointsProvider {
 	// Do not use Inject inside providers to prevents circular dependency
-	protected readonly _hostingProvider: HostingProvider;
-	private readonly _config: ConfigurationProvider;
-
+	private readonly _apiProvider: ApiProvider;
+	private readonly _hostingProvider: HostingProvider;
+	private readonly _configProvider: ConfigurationProvider;
 
 	private readonly _endpointInstances: Array<Initable>;
 	private readonly _destroyHandlers: Array<() => Promise<void>>;
@@ -37,14 +38,18 @@ export class EndpointsProviderImpl extends EndpointsProvider {
 	public constructor() {
 		super();
 
-		this._hostingProvider = Container.get(HostingProvider);
-		this._config = Container.get(ConfigurationProvider);
-
 		this.log.info("Constructing endpoints...");
+
+		this._apiProvider = Container.get(ApiProvider);
+		this._hostingProvider = Container.get(HostingProvider);
+		this._configProvider = Container.get(ConfigurationProvider);
+
 		this._endpointInstances = [];
-		for (const endpoint of this._config.endpoints) {
-			const serversMap: Map<HostingProvider.ServerInstance["name"], HostingProvider.ServerInstance> = new Map();
-			this._hostingProvider.serverInstances.forEach(s => serversMap.set(s.name, s));
+
+		const serversMap: Map<HostingProvider.ServerInstance["name"], HostingProvider.ServerInstance> = new Map();
+		this._hostingProvider.serverInstances.forEach(s => serversMap.set(s.name, s));
+
+		for (const endpoint of this._configProvider.endpoints) {
 
 			const endpointServers: Array<hosting.WebServer> = [];
 			for (const bindServer of endpoint.servers) {
@@ -57,15 +62,15 @@ export class EndpointsProviderImpl extends EndpointsProvider {
 			switch (endpoint.type) {
 				case "rest": {
 					const endpointInstance: RestEndpoint = new RestEndpoint(
-						endpointServers, this._apiProvider.admin, endpoint,
+						this._apiProvider.price, endpointServers, endpoint,
 						this.log.getLogger(endpoint.type + "(" + endpoint.bindPath + ")")
 					);
 					this._endpointInstances.push(endpointInstance);
 					break;
 				}
 				case "websocket": {
-					const endpointInstance: TimeApiRestEndpoint = new TimeApiRestEndpoint(
-						endpointServers, endpoint,
+					const endpointInstance: WebSocketEndpoint = new WebSocketEndpoint(
+						this._apiProvider.price, endpointServers, endpoint,
 						this.log.getLogger(endpoint.type + "(" + endpoint.bindPath + ")")
 					);
 					this._endpointInstances.push(endpointInstance);

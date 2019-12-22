@@ -1,6 +1,6 @@
 import { CancellationToken, Financial, Logger } from "@zxteam/contract";
 import { DUMMY_CANCELLATION_TOKEN, ManualCancellationTokenSource } from "@zxteam/cancellation";
-import { wrapErrorIfNeeded, ArgumentError, InvalidOperationError } from "@zxteam/errors";
+import { wrapErrorIfNeeded, ArgumentError, InvalidOperationError, AggregateError } from "@zxteam/errors";
 import loggerFactory from "@zxteam/logger";
 import { Initable } from "@zxteam/disposable";
 
@@ -9,37 +9,38 @@ import * as path from "path";
 import { EventEmitter } from "events";
 import { setInterval, clearInterval } from "timers";
 
-import { SourceProvider } from "./providers/source/contract";
-import { StorageProvider } from "./providers/storage/contract";
-import { CryptoCompareApiClient } from "./clients/CryptoCompareApiClient";
+import { PriceLoader } from "../priceLoader/PriceLoader";
+import { Storage } from "../storage/Storage";
+import { CryptoCompareApiClient } from "../clients/CryptoCompareApiClient";
+import { PriceService } from "./PriceService";
 
 
-const { name: serviceName, version } = require(path.join(__dirname, "../package.json"));
+const { name: serviceName, version } = require(path.join(__dirname, "..", "..", "package.json"));
 
-export class PriceApi extends Initable {
+export class PriceServiceImpl extends Initable implements PriceService {
 	private readonly _log: Logger;
 	private readonly _notificationEmitter: EventEmitter;
 	private readonly _changeRateWatchers: Map<string/*market key*/, {
 		destroy(): void;
-		addChanel(c: Notification.ChangeRate.Channel): void;
-		removeChanel(c: Notification.ChangeRate.Channel): void;
+		addChanel(channel: PriceService.ChangeRateNotification.Channel): void;
+		removeChanel(channel: PriceService.ChangeRateNotification.Channel): void;
 	}>;
 	private readonly _cryptoCompareApiClient: CryptoCompareApiClient;
-	private readonly _storageProvider: StorageProvider;
-	private readonly _sourceProviders: Array<SourceProvider>;
+	private readonly _storageFactory: () => Storage;
+	private readonly _sourceProviders: Array<PriceLoader>;
 	private readonly _sourcesId: Array<string>;
-	private _storage: StorageProvider | null;
+	private __storage: Storage | null;
 
-	constructor(storageProvider: StorageProvider, sourceProviders: Array<SourceProvider>, log?: Logger) {
+	constructor(storageFactory: () => Storage, sourceProviders: Array<PriceLoader>, log?: Logger) {
 		super();
 		this._log = log || loggerFactory.getLogger("PriceService");
 		this._notificationEmitter = new EventEmitter();
 		this._changeRateWatchers = new Map();
-		this._storageProvider = storageProvider;
+		this._storageFactory = storageFactory;
 		this._sourceProviders = sourceProviders;
 		this._sourcesId = sourceProviders.map((source) => source.sourceId);
 		this._cryptoCompareApiClient = new CryptoCompareApiClient(serviceName, this._log);
-		this._storage = null;
+		this.__storage = null;
 	}
 
 	/**
@@ -47,23 +48,23 @@ export class PriceApi extends Initable {
 	 * @param cancellationToken Cancellation Token allows your to cancel execution process
 	 * @param args criteria for price search
 	 */
-	public async getHistoricalPrices(cancellationToken: CancellationToken, args: Array<price.Argument>)
-		: Promise<price.Timestamp> {
+	public async getHistoricalPrices(cancellationToken: CancellationToken, args: Array<PriceService.Argument>)
+		: Promise<PriceService.Timestamp> {
 		this.verifyInitializedAndNotDisposed();
 
 		if (this._log.isTraceEnabled) {
 			this._log.trace("getHistoricalPrices()... args: ", args);
 		}
 		if (args.length === 0) {
-			throw new ArgumentException("Wrong arguments");
+			throw new ArgumentError("args", "Wrong arguments");
 		}
 
 		this._log.trace("Validate date");
 		helpers.validateDate(args);
 
 		this._log.trace("Check prices in storage provide");
-		const filterEmptyPrices: Array<price.LoadDataRequest> =
-			await this._storageProvider.filterEmptyPrices(cancellationToken, args, this._sourcesId);
+		const filterEmptyPrices: Array<PriceService.LoadDataRequest> =
+			await this._storage.filterEmptyPrices(cancellationToken, args, this._sourcesId);
 
 		this._log.trace("Check cancellationToken for interrupt");
 		cancellationToken.throwIfCancellationRequested();
@@ -75,7 +76,7 @@ export class PriceApi extends Initable {
 		if (filterEmptyPrices.length > 0) {
 
 			this._log.trace("Loading prices from sources through function manager");
-			const newPrices: Array<price.HistoricalPrices> =
+			const newPrices: Array<PriceService.HistoricalPrices> =
 				await this.managerSourceProvider(cancellationToken, filterEmptyPrices);
 
 			this._log.trace("Check cancellationToken for interrupt");
@@ -83,7 +84,7 @@ export class PriceApi extends Initable {
 
 			if (newPrices.length > 0) {
 				this._log.trace("Save new prices to storage provide");
-				await this._storageProvider.savePrices(cancellationToken, newPrices);
+				await this._storage.savePrices(cancellationToken, newPrices);
 
 				this._log.trace("Check cancellationToken for interrupt");
 				cancellationToken.throwIfCancellationRequested();
@@ -91,7 +92,7 @@ export class PriceApi extends Initable {
 		}
 
 		this._log.trace("Read prices from storage provider");
-		const friendlyPrices: price.Timestamp = await this._storageProvider.findPrices(cancellationToken, args);
+		const friendlyPrices: PriceService.Timestamp = await this._storage.findPrices(cancellationToken, args);
 
 		if (this._log.isTraceEnabled) {
 			this._log.trace(`Return result: ${friendlyPrices}`);
@@ -112,7 +113,7 @@ export class PriceApi extends Initable {
 
 	public async createChangeRateSubscriber(
 		cancellationToken: CancellationToken, marketCurrency: string, tradeCurrency: string
-	): Promise<Notification.ChangeRate.Channel> {
+	): Promise<PriceService.ChangeRateNotification.Channel> {
 		//const eventKey: string = `${exchangeId}:${marketCurrency}:${tradeCurrency}`;
 		const eventKey: string = `${marketCurrency}:${tradeCurrency}`; // Temporaty implementation without exchangeId
 
@@ -131,16 +132,16 @@ export class PriceApi extends Initable {
 					if (this._log.isTraceEnabled) { this._log.trace(`Failed to get price for ${eventKey}.`, e); }
 				}
 			}, 1000);
-			const channels = new Set<Notification.ChangeRate.Channel>();
+			const channels = new Set<PriceService.ChangeRateNotification.Channel>();
 			watcher = Object.freeze({
 				destroy() {
 					clearInterval(timer);
 					watchCancellationToken.cancel();
 				},
-				addChanel: (c: Notification.ChangeRate.Channel) => {
+				addChanel: (c: PriceService.ChangeRateNotification.Channel) => {
 					channels.add(c);
 				},
-				removeChanel: (c: Notification.ChangeRate.Channel) => {
+				removeChanel: (c: PriceService.ChangeRateNotification.Channel) => {
 					channels.delete(c);
 					if (channels.size === 0) {
 						clearInterval(timer);
@@ -151,9 +152,7 @@ export class PriceApi extends Initable {
 			this._changeRateWatchers.set(eventKey, watcher);
 		}
 
-		const handlers: Set<
-			SubscriberChannel.Callback<Notification.ChangeRate.Data>
-		> = new Set();
+		const handlers: Set<PriceService.ChangeRateNotification.Callback> = new Set();
 
 		const onChangeRate = (data: any) => {
 			handlers.forEach(handler => {
@@ -168,7 +167,7 @@ export class PriceApi extends Initable {
 		};
 
 		const channelWatcher = watcher;
-		const channel: Notification.ChangeRate.Channel = Object.freeze({
+		const channel: PriceService.ChangeRateNotification.Channel = Object.freeze({
 			cb: null,
 			addHandler: cb => { handlers.add(cb); },
 			removeHandler: cb => { handlers.delete(cb); },
@@ -188,35 +187,42 @@ export class PriceApi extends Initable {
 
 	protected async onInit(cancellationToken: CancellationToken) {
 		this._log.debug("Initializing");
-		const storage = this._storageProvider;
+		//await this._cryptoCompareApiClient.init(cancellationToken);
+		const storage: Storage = this._storageFactory();
 		await storage.init(cancellationToken);
-		this._storage = storage;
-	}
-	protected async onDispose() {
-		this._log.debug("Disposing");
-		await this._cryptoCompareApiClient.dispose();
-		if (this._storage !== null) {
-			const storage: StorageProvider = this._storage;
-			this._storage = null;
-			await storage.dispose();
-		}
-		this._log.info("Disposed");
+		this.__storage = storage;
 	}
 
-	private async managerSourceProvider(cancellationToken: CancellationToken, loadArgs: Array<price.LoadDataRequest>)
-		: Promise<Array<price.HistoricalPrices>> {
+	protected async onDispose() {
+		await this._cryptoCompareApiClient.dispose();
+		if (this.__storage !== null) {
+			const storage: Storage = this.__storage;
+			this.__storage = null;
+			await storage.dispose();
+		}
+	}
+
+	private get _storage(): Storage {
+		if (this.__storage === null) {
+			throw new Error("Wrong oparation at current state. Did you init()?");
+		}
+		return this.__storage;
+	}
+
+	private async managerSourceProvider(cancellationToken: CancellationToken, loadArgs: Array<PriceService.LoadDataRequest>)
+		: Promise<Array<PriceService.HistoricalPrices>> {
 		if (this._log.isTraceEnabled) {
 			this._log.trace("managerSourceProvider()... args: ", loadArgs);
 		}
 
 		this._log.trace("Parse LoadDataRequest to MultyLoadDataRequest");
-		const multyLoadDataRequest: price.MultyLoadData =
+		const multyLoadDataRequest: PriceService.MultyLoadData =
 			helpers.parseToMultyType(loadArgs);
 
 		this._log.trace("Create array sourcesystem id which need syncs price");
 		const sourceIds: Array<string> = Object.keys(multyLoadDataRequest);
 
-		const taskSourceResults: Array<Array<price.HistoricalPrices>> = [];
+		const taskSourceResults: Array<Array<PriceService.HistoricalPrices>> = [];
 		const taskSources: Array<Promise<void>> = [];
 		const countSources: number = sourceIds.length;
 		for (let i = 0; i < countSources; i++) {
@@ -224,7 +230,7 @@ export class PriceApi extends Initable {
 			if (this._log.isTraceEnabled) {
 				this._log.trace(`Get sourcesystem id: ${sourceId}`);
 			}
-			const source: SourceProvider | null = helpers.getSource(this._sourceProviders, sourceId);
+			const source: PriceLoader | null = helpers.getSource(this._sourceProviders, sourceId);
 
 			if (source !== null) {
 				taskSources.push(
@@ -246,7 +252,7 @@ export class PriceApi extends Initable {
 			throw new AggregateError(errors);
 		}
 
-		const friendlyPrices: Array<price.HistoricalPrices> = taskSourceResults.reduce((previous, current) => {
+		const friendlyPrices: Array<PriceService.HistoricalPrices> = taskSourceResults.reduce((previous, current) => {
 			return previous.concat(current);
 		}, []);
 
@@ -258,18 +264,18 @@ export class PriceApi extends Initable {
 }
 
 namespace helpers {
-	export function validateDate(args: Array<price.Argument>) {
+	export function validateDate(args: Array<PriceService.Argument>) {
 		for (let i = 0; i < args.length; i++) {
 			const arg = args[i];
 			const ts = arg.ts.toString();
 			const isValid = moment(ts, "YYYYMMDDHHmmss", true).isValid();
 			if (!isValid) {
-				throw new InvalidDateError(`Invalid format date ${ts}`);
+				throw new PriceService.InvalidDateError(`Invalid format date ${ts}`);
 			}
 		}
 	}
-	export function parseToMultyType(loadArgs: Array<price.LoadDataRequest>): price.MultyLoadData {
-		const multyLoadDataRequest: { [sourceId: string]: Array<price.LoadDataArgs>; } = {};
+	export function parseToMultyType(loadArgs: Array<PriceService.LoadDataRequest>): PriceService.MultyLoadData {
+		const multyLoadDataRequest: { [sourceId: string]: Array<PriceService.LoadDataArgs>; } = {};
 
 		for (let i = 0; i < loadArgs.length; i++) {
 			const loadArg = loadArgs[i];
@@ -286,7 +292,7 @@ namespace helpers {
 
 		return multyLoadDataRequest;
 	}
-	export function getSource(sources: Array<SourceProvider>, sourcesytemId: string): SourceProvider | null {
+	export function getSource(sources: Array<PriceLoader>, sourcesytemId: string): PriceLoader | null {
 		for (let n = 0; n < sources.length; n++) {
 			const source = sources[n];
 			if (source.sourceId === sourcesytemId) {
@@ -297,85 +303,4 @@ namespace helpers {
 		return null;
 	}
 }
-
-namespace price {
-	export interface Argument {
-		ts: number;
-		marketCurrency: string;
-		tradeCurrency: string;
-		sourceId?: string;
-		requiredAllSourceIds: boolean;
-	}
-	export interface Timestamp {
-		[ts: number]: Market;
-	}
-	export interface Market {
-		[marketCurrency: string]: Trade;
-	}
-	export interface Trade {
-		[tradeCurrency: string]: Average;
-	}
-	export interface Average {
-		avg: Price | null;
-		sources?: SourceId;
-	}
-	export interface SourceId {
-		[sourceId: string]: Price;
-	}
-	export interface Price {
-		price: string;
-	}
-	export interface MultyLoadData {
-		/** Source id (ex. CRYPTOCOMPARE) */
-		[sourceId: string]: ReadonlyArray<LoadDataArgs>;
-	}
-	export interface LoadDataBase {
-		/** Timestamp format YYYYMMDDHHMMSS */
-		ts: number;
-		/** Code market currency */
-		marketCurrency: string;
-		/** Code trade currency */
-		tradeCurrency: string;
-	}
-	export interface LoadDataResult extends LoadDataBase {
-		/** Price can number or null */
-		price: string | null;
-	}
-	export interface LoadDataRequest extends LoadDataBase {
-		/** Source id (ex. CRYPTOCOMPARE) */
-		sourceId: string;
-	}
-
-	export type LoadDataArgs = LoadDataBase;
-
-	export interface HistoricalPrices {
-		/** Source id (ex. CRYPTOCOMPARE) */
-		sourceId: string;
-		/** Timestamp format YYYYMMDDHHMMSS */
-		ts: number;
-		/** Code market currency */
-		marketCurrency: string;
-		/** Code trade currency */
-		tradeCurrency: string;
-		/** Price must be number */
-		price: string;
-	}
-}
-
-export namespace Notification {
-	export namespace ChangeRate {
-		export interface Data {
-			date: Date;
-			price: Financial;
-		}
-		export type Channel = SubscriberChannel<Data>;
-	}
-}
-
-
-export class InvalidDateError extends Error { }
-export class ArgumentException extends Error {
-	public readonly name = "ArgumentError";
-}
-
 

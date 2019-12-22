@@ -2,27 +2,25 @@ import { CancellationToken, Financial } from "@zxteam/contract";
 import { Initable } from "@zxteam/disposable";
 import loggerFactory from "@zxteam/logger";
 
-import { price } from "../../PriceService";
+import { PriceService } from "../api/PriceService";
 import * as RedisClient from "ioredis";
 import { Redis, RedisOptions } from "ioredis";
-import { StorageProvider as StorageProviderInerface } from "./contract";
-import { financial } from "../../financial.js";
+import { Storage } from "./Storage";
+import { financial } from "../financial.js";
 
-export class RedisStorageProvider extends Initable implements StorageProviderInerface {
-	private readonly _prefix: string;
+export class RedisStorage extends Initable implements Storage {
 	private readonly ioredis: Redis;
 	private readonly _logger = loggerFactory.getLogger("RedisStorage");
 	constructor(dataStorageUrl: URL) {
 		super();
-		const opts: RedisOptions = RedisStorageProvider.parseRedisURL(dataStorageUrl);
+		const opts: RedisOptions = RedisStorage.parseRedisURL(dataStorageUrl);
 		this.ioredis = new RedisClient(opts);
-		this._prefix = opts.keyPrefix !== undefined ? opts.keyPrefix : "";
 	}
 
-	public async filterEmptyPrices(cancellationToken: CancellationToken, args: Array<price.Argument>, sources: Array<string>)
-		: Promise<Array<price.LoadDataRequest>> {
+	public async filterEmptyPrices(cancellationToken: CancellationToken, args: Array<PriceService.Argument>, sources: Array<string>)
+		: Promise<Array<PriceService.LoadDataRequest>> {
 		this._logger.trace("filterEmptyPrices()... ");
-		const friendlyRequest: Array<price.LoadDataRequest> = [];
+		const friendlyRequest: Array<PriceService.LoadDataRequest> = [];
 		for (let i = 0; i < args.length; i++) {
 			const arg = args[i];
 			const { ts, marketCurrency, tradeCurrency, sourceId, requiredAllSourceIds: requiredAllSourceSystems } = arg;
@@ -92,7 +90,7 @@ export class RedisStorageProvider extends Initable implements StorageProviderIne
 		return friendlyRequest;
 	}
 
-	public async savePrices(cancellationToken: CancellationToken, newPrices: Array<price.HistoricalPrices>): Promise<void> {
+	public async savePrices(cancellationToken: CancellationToken, newPrices: Array<PriceService.HistoricalPrices>): Promise<void> {
 		this._logger.trace("savePrices()...");
 		for (let n = 0; n < newPrices.length; n++) {
 			const argNewPrice = newPrices[n];
@@ -179,10 +177,10 @@ export class RedisStorageProvider extends Initable implements StorageProviderIne
 		}
 	}
 
-	public async findPrices(cancellationToken: CancellationToken, args: Array<price.Argument>): Promise<price.Timestamp> {
+	public async findPrices(cancellationToken: CancellationToken, args: Array<PriceService.Argument>): Promise<PriceService.Timestamp> {
 		this._logger.trace("Begin find price in redis database");
 
-		const friendlyPricesChunk: price.Timestamp = {};
+		const friendlyPricesChunk: PriceService.Timestamp = {};
 
 		if (this._logger.isTraceEnabled) {
 			this._logger.trace("Foreach args: ", args);
@@ -311,14 +309,14 @@ export interface RedisOpts {
 }
 export namespace helpers {
 	export function addPriceTimeStamp(
-		friendlyPrices: price.Timestamp,
+		friendlyPrices: PriceService.Timestamp,
 		ts: number,
 		marketCurrency: string,
 		tradeCurrency: string,
 		avgPrice?: string | null,
 		sourceId?: string,
 		sourcePrice?: string | null
-	): price.Timestamp {
+	): PriceService.Timestamp {
 		if (!(ts in friendlyPrices)) {
 			friendlyPrices[ts] = {};
 		}

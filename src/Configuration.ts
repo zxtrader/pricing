@@ -29,18 +29,13 @@ export interface Configuration {
 }
 
 export namespace Configuration {
-	export type Endpoint = RestEndpoint | WebSocketEndpoint | ExpressRouterEndpoint;
+	export type Endpoint = RestEndpoint | WebSocketEndpoint;
 
 	export interface RestEndpoint extends HostingConfiguration.BindEndpoint, HostingConfiguration.ServerEndpoint {
 		readonly type: "rest";
-		readonly bindPathWeb: string | null;
 	}
 	export interface WebSocketEndpoint extends HostingConfiguration.WebSocketEndpoint, HostingConfiguration.ServerEndpoint {
 		readonly type: "websocket";
-	}
-	export interface ExpressRouterEndpoint extends HostingConfiguration.BindEndpoint {
-		readonly type: "express-router";
-		readonly router: Router;
 	}
 
 	export interface Sources {
@@ -58,8 +53,8 @@ export namespace Configuration {
 				const httpEndpoint: Configuration.RestEndpoint = {
 					type: "rest",
 					servers: endpointConfiguration.getString("servers").split(" "),
-					bindPath: endpointConfiguration.getString("bindPath", "/"),
-					bindPathWeb: endpointConfiguration.has("bindPathWeb") ? endpointConfiguration.getString("bindPathWeb") : null
+					bindPath: endpointConfiguration.getString("bindPath", "/")
+					//bindPathWeb: endpointConfiguration.has("bindPathWeb") ? endpointConfiguration.getString("bindPathWeb") : null
 				};
 				return httpEndpoint;
 			}

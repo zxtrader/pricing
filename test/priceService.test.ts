@@ -1,10 +1,11 @@
 import { assert } from "chai";
 import { RedisOptions } from "ioredis";
-import { PriceService, price } from "../src/PriceService";
+import { PriceService } from "../src/api/PriceService";
+import { PriceServiceImpl } from "../src/api/PriceServiceImpl";
 import { DUMMY_CANCELLATION_TOKEN } from "@zxteam/cancellation";
-import { Randomizer } from "../src/providers/source/Randomizer";
-import { Cryptocompare } from "../src/providers/source/Cryptocompare";
-import { RedisStorageProvider } from "../src/providers/storage/RedisStorageProvider";
+import { Randomizer } from "../src/priceLoader/Randomizer";
+import { Cryptocompare } from "../src/priceLoader/Cryptocompare";
+import { RedisStorage } from "../src/storage/RedisStorage";
 
 
 
@@ -35,24 +36,23 @@ const optsForLimit = {
 // const urlToPoloniex = "https://poloniex.com/";
 
 describe("Positive tests Price service", function () {
-	let redisStorageProvider: RedisStorageProvider;
+	let redisStorageProvider: RedisStorage;
 	let cryptoCompare: Cryptocompare;
 	let randomSource: Randomizer;
 	let priceService: PriceService;
 
 	before(async function () {
-		redisStorageProvider = new RedisStorageProvider(getRedisURL());
-		await redisStorageProvider.init(DUMMY_CANCELLATION_TOKEN);
+
 		cryptoCompare = new Cryptocompare(optsForLimit);
 		randomSource = new Randomizer();
-		priceService = new PriceService(redisStorageProvider, [cryptoCompare, randomSource]);
+		priceService = new PriceServiceImpl(() => new RedisStorage(getRedisURL()), [cryptoCompare, randomSource]);
 	});
 	after(async function () {
 		await cryptoCompare.dispose();
 		await redisStorageProvider.dispose();
 	});
 	it("Call method getHistoricalPrices without sources", async function () {
-		const args: Array<price.Argument> = [
+		const args: Array<PriceService.Argument> = [
 			{
 				ts: 20180101101130,
 				marketCurrency: "UDSDT",
@@ -88,7 +88,7 @@ describe("Positive tests Price service", function () {
 		}
 	});
 	it("Call method getHistoricalPrices with fake source", async function () {
-		const args: Array<price.Argument> = [
+		const args: Array<PriceService.Argument> = [
 			{
 				ts: 20180101101130,
 				marketCurrency: "USDT",
@@ -129,7 +129,7 @@ describe("Positive tests Price service", function () {
 		// }
 	});
 	it("Call method getHistoricalPrices on PriceService", async function () {
-		const args: Array<price.Argument> = [
+		const args: Array<PriceService.Argument> = [
 			{
 				ts: 20180101101130,
 				marketCurrency: "USDT",

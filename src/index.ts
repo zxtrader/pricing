@@ -1,243 +1,57 @@
-import { CancellationToken, Initable, Logger } from "@zxteam/contract";
-import { Runtime } from "@zxteam/launcher";
-import { WebClient } from "@zxteam/web-client";
-import * as webserver from "@zxteam/hosting";
-import loggerFactory from "@zxteam/logger";
+import { CancellationToken } from "@zxteam/contract";
+import { Initable, Disposable } from "@zxteam/disposable";
+import { Container, Runtime as LauncherRuntime } from "@zxteam/launcher";
+import { logger } from "@zxteam/logger";
 
-import { URL } from "url";
 import * as _ from "lodash";
-import * as path from "path";
 
-import { Configuration } from "./conf";
-import { PriceService } from "./PriceService";
-import { SourceProvider } from "./providers/source/contract";
-import { StorageProvider } from "./providers/storage/contract";
-import { Cryptocompare } from "./providers/source/Cryptocompare";
-import { RedisStorageProvider } from "./providers/storage/RedisStorageProvider";
+// Providers
+import { ConfigurationProvider } from "./provider/ConfigurationProvider";
+import { ApiProvider } from "./provider/ApiProvider";
+import { EndpointsProvider } from "./provider/EndpointsProvider";
+import { HostingProvider } from "./provider/HostingProvider";
 
-import {
-	//factory as protocolAdapterFactoryInitalizer,
-	ProtocolType
-	//BinaryProtocolTypes, TextProtocolTypes, ProtocolAdapterFactory
-} from "./protocol";
+const { name: serviceName, version: serviceVersion } = require("../package.json");
 
-import {
-	PriceServiceRestEndpoint, PriceServiceWebSocketEndpoint, PriceServiceRouterEndpoint,
-	createExpressApplication, setupExpressErrorHandles
-} from "./endpoints";
+export default async function (cancellationToken: CancellationToken, config: null): Promise<LauncherRuntime> {
+	const log = logger.getLogger("RuntimeFactory");
 
-// import { Poloniex } from "./providers/source/Poloniex";
-// import { Binance } from "./providers/source/Binance";
+	log.info(`Package: ${serviceName}@${serviceVersion}`);
 
-export {
-	ProtocolType
-	//, BinaryProtocolTypes, TextProtocolTypes
-};
-export * from "./conf";
+	const configurationProvider: ConfigurationProvider = Container.get(ConfigurationProvider);
 
-const { name: serviceName, version: serviceVersion } = require(path.normalize(path.join(__dirname, "..", "package.json")));
-
-export default async function (cancellationToken: CancellationToken, opts: Configuration): Promise<Runtime> {
-	const log = loggerFactory.getLogger("Runtime");
-
-	log.info(`Welcome ---> ${serviceName} v${serviceVersion} <---`);
-
-	// TODO Valdate options
-
-	const destroyHandlers: Array<() => Promise<void>> = [];
-	function destroy(): Promise<void> { return destroyHandlers.reverse().reduce((p, c) => p.then(c), Promise.resolve()); }
-
-	log.trace("Constructing Source providers...");
-	const sourceOpts = opts.sources;
-	const sourceProviders = helpers.createSourceProviders(sourceOpts);
-
-	const serverInstances = opts.servers.map(function (server) {
-		if (webserver.instanceofWebServer(server)) {
-			return { name: server.name, server, isOwnInstance: false };
-		}
-		const ownServerInstance = webserver.createWebServer(server, log);
-		ownServerInstance.rootExpressApplication = createExpressApplication(log);
-		return { name: ownServerInstance.name, server: ownServerInstance, isOwnInstance: true };
-	});
-	const serversMap: { readonly [serverName: string]: { server: webserver.WebServer, isOwnInstance: boolean } } = _.keyBy(
-		serverInstances,
-		"name"
-	);
-
+	log.info("Initializing ConfigurationProvider...");
+	await configurationProvider.init(cancellationToken);
 	try {
-		log.info("Constructing Storage provider...");
-		const dataStorageUrl = opts.storageURL;
-		const storageProvider = helpers.createStorageProvider(dataStorageUrl);
+		log.info("Initializing DI runtime...");
+		await Initable.initAll(cancellationToken,
+			Container.get(ApiProvider),
+			Container.get(EndpointsProvider),
+			Container.get(HostingProvider)
+		);
 
-		log.info("Constructing PriceService...");
-		const service: PriceService = new PriceService(storageProvider, sourceProviders);
+		return {
+			async destroy() {
+				log.info("Destroying DI runtime...");
 
-		// log.info("Constructing ProtocolAdapterFactory...");
-		// const protocolAdapterFactory: ProtocolAdapterFactory = await protocolAdapterFactoryInitalizer(service, log);
-
-		log.info("Constructing endpoints...");
-		const endpointInstances: Array<Initable> = [];
-		for (const endpoint of opts.endpoints) {
-			if ("type" in endpoint) {
-				switch (endpoint.type) {
-					case "rest": {
-						const endpointInstance: PriceServiceRestEndpoint = new PriceServiceRestEndpoint(
-							serverInstances.filter(s => endpoint.servers.includes(s.name)).map(si => si.server),
-							service,
-							endpoint,
-							log
-						);
-						endpointInstances.push(endpointInstance);
-						break;
-					}
-					case "websocket": {
-						const endpointInstance = new PriceServiceWebSocketEndpoint(
-							serverInstances.filter(s => endpoint.servers.includes(s.name)).map(si => si.server),
-							endpoint,
-							loggerFactory.getLogger("Endpoint:" + endpoint.type + "(" + endpoint.bindPath + ")")
-						);
-
-						// for (const protocol of BinaryProtocolTypes) {
-						// 	endpointInstance.useBinaryAdapter(
-						// 		protocol,
-						// 		callbackChannel => protocolAdapterFactory.createBinaryProtocolAdapter(protocol, callbackChannel)
-						// 	);
-						// }
-						// for (const protocol of TextProtocolTypes) {
-						// 	endpointInstance.useTextAdapter(
-						// 		protocol,
-						// 		callbackChannel => protocolAdapterFactory.createTextProtocolAdapter(protocol, callbackChannel)
-						// 	);
-						// }
-
-						endpointInstances.push(endpointInstance);
-						break;
-					}
-					case "express-router": {
-						const routerEndpoint: PriceServiceRouterEndpoint = new PriceServiceRouterEndpoint(
-							service,
-							endpoint,
-							log
-						);
-						endpointInstances.push(routerEndpoint);
-						break;
-					}
-					// case "websocket-binder": {
-					// 	const targetEndpoint: webserver.WebSocketBinderEndpoint = endpoint.target;
-					// 	for (const protocol of BinaryProtocolTypes) {
-					// 		targetEndpoint.useBinaryAdapter(
-					// 			protocol,
-					// 			callbackChannel => protocolAdapterFactory.createBinaryProtocolAdapter(protocol, callbackChannel, endpoint.methodPrefix)
-					// 		);
-					// 	}
-					// 	for (const protocol of TextProtocolTypes) {
-					// 		targetEndpoint.useTextAdapter(
-					// 			protocol,
-					// 			callbackChannel => protocolAdapterFactory.createTextProtocolAdapter(protocol, callbackChannel, endpoint.methodPrefix)
-					// 		);
-					// 	}
-					// 	break;
-					// }
-					default:
-						throw new UnreachableEndpointError(endpoint);
-				}
+				await Disposable.disposeAll(
+					// Endpoints should dispose first (reply 503, while finishing all active requests)
+					Container.get(EndpointsProvider),
+					Container.get(HostingProvider),
+					Container.get(ApiProvider),
+					configurationProvider
+				);
 			}
-		}
-
-		log.info("Initializing InfoService...");
-		await service.init(cancellationToken);
-		destroyHandlers.push(() => service.dispose());
-
-		log.info("Initializing endpoints...");
-		for (const endpointInstance of endpointInstances) {
-			await endpointInstance.init(cancellationToken);
-		}
-
-		log.info("Initializing servers...");
-		try {
-			for (const serverInfo of _.values(serversMap)) {
-				if (serverInfo.isOwnInstance === true) {
-					if (log.isInfoEnabled) {
-						log.info(`Initializing server: ${serverInfo.server.name}`);
-					}
-					setupExpressErrorHandles(serverInfo.server.rootExpressApplication, log);
-					await serverInfo.server.init(cancellationToken);
-					destroyHandlers.push(() => serverInfo.server.dispose());
-				}
-			}
-		} catch (e) {
-			for (const endpointInstance of endpointInstances) { await endpointInstance.dispose(); }
-			throw e;
-		}
-
-		// Endpoints should destroy first, so added it in end of destroyHandlers
-		for (const endpointInstance of endpointInstances) {
-			destroyHandlers.push(() => endpointInstance.dispose());
-		}
-
+		};
 	} catch (e) {
-		await destroy();
+		await configurationProvider.dispose();
 		throw e;
 	}
-
-	log.info("Initialization completed succefully.");
-
-	const runtime: Runtime = { destroy };
-
-	return runtime;
 }
 
-namespace helpers {
-	export function createStorageProvider(dataStorageUrl: URL): StorageProvider {
-		const { protocol } = dataStorageUrl;
-		switch (protocol) {
-			case "redis:":
-				return new RedisStorageProvider(dataStorageUrl);
-			default:
-				throw new Error(`Unsupported Storage Provider protocol: ${protocol}`);
-		}
-	}
-	export function createSourceProviders(options: Configuration.Sources): Array<SourceProvider> {
-		const sourceIds: Array<string> = Object.keys(options);
-		const friendlySources: Array<any> = [];
-
-		// foreach sourceIds and create object don't implement yet.
-		sourceIds.forEach((sourceId) => {
-			const sourceOpts = options[sourceId];
-
-			const opts: WebClient.Opts = sourceOpts;
-
-			let provider;
-			switch (sourceId) {
-				case "CRYPTOCOMPARE":
-					provider = new Cryptocompare(opts);
-					break;
-				// case "POLONIEX": {
-				// 	provider = new Poloniex(opts);
-				// 	break;
-				// }
-				// case "BINANCE": {
-				// 	provider = new Binance(opts);
-				// 	break;
-				// }
-				default:
-					throw new UnreachableSourceError(sourceId);
-			}
-
-			friendlySources.push(provider);
-		});
-
-		return friendlySources;
-	}
-}
 
 class UnreachableEndpointError extends Error {
 	public constructor(endpoint: never) {
 		super(`Not supported endpoint: ${JSON.stringify(endpoint)}`);
-	}
-}
-class UnreachableSourceError extends Error {
-	public constructor(endpoint: string) {
-		super(`Not supported source system: ${endpoint}`);
 	}
 }

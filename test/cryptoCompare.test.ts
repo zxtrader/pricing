@@ -8,9 +8,9 @@ import { assert } from "chai";
 // import { price } from "../src/PriceService";
 // import nock = require("nock");
 
-import { SourceProvider } from "../src/providers/source/contract";
-import { Cryptocompare } from "../src/providers/source/Cryptocompare";
-import { price } from "../src/PriceService";
+import { PriceLoader } from "../src/priceLoader/PriceLoader";
+import { Cryptocompare } from "../src/priceLoader/Cryptocompare";
+import { PriceService } from "../src/api/PriceService";
 
 
 describe("Crypto Compare Tests", function () {
@@ -18,7 +18,7 @@ describe("Crypto Compare Tests", function () {
 
 	it.only("Should raise SourceProvider.CommunicationError if WebClient providers WebClient.CommunicationError", async function () {
 		// Fake arguments to force NoDataError
-		const loadArgs: Array<price.LoadDataArgs> = [
+		const loadArgs: Array<PriceService.LoadDataArgs> = [
 			{
 				ts: 20190101000000,
 				marketCurrency: "BADCOIN",
@@ -49,7 +49,7 @@ describe("Crypto Compare Tests", function () {
 		// Create an instance of Cryptocompare Provider
 		const sourceProvider = new Cryptocompare(opts);
 
-		let expectedError: SourceProvider.CommunicationError | undefined;
+		let expectedError: PriceLoader.CommunicationError | undefined;
 		try {
 			await sourceProvider.loadPrices(DUMMY_CANCELLATION_TOKEN, loadArgs);
 		} catch (e) {
@@ -57,8 +57,8 @@ describe("Crypto Compare Tests", function () {
 		}
 
 		assert.isDefined(expectedError);
-		assert.instanceOf(expectedError, SourceProvider.CommunicationError);
-		assert.equal((expectedError as SourceProvider.CommunicationError).message, "Test fake error. Emulate no connection");
+		assert.instanceOf(expectedError, PriceLoader.CommunicationError);
+		assert.equal((expectedError as PriceLoader.CommunicationError).message, "Test fake error. Emulate no connection");
 		// Check count run method
 		assert.equal(workCount, 1);
 		// Check canсel token

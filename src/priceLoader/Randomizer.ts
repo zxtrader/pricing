@@ -1,16 +1,16 @@
 import * as _ from "lodash";
-import { price } from "../../PriceService";
+import { PriceService } from "../api/PriceService";
 
 import * as zxteam from "@zxteam/contract";
-import { SourceProvider } from "./contract";
+import { PriceLoader } from "./PriceLoader";
 
 
-export class Randomizer implements SourceProvider {
+export class Randomizer implements PriceLoader {
 	public readonly sourceId = "RANDOMSOURCE";
 
-	public async loadPrices(cancellationToken: zxteam.CancellationToken, loadArgs: ReadonlyArray<price.LoadDataArgs>)
-		: Promise<Array<price.HistoricalPrices>> {
-		const friendlyRequest: Array<price.HistoricalPrices> = [];
+	public async loadPrices(cancellationToken: zxteam.CancellationToken, loadArgs: ReadonlyArray<PriceService.LoadDataArgs>)
+		: Promise<Array<PriceService.HistoricalPrices>> {
+		const friendlyRequest: Array<PriceService.HistoricalPrices> = [];
 
 		for (let i = 0; i < loadArgs.length; i++) {
 			const argument = loadArgs[i];

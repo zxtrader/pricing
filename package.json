@@ -68,7 +68,6 @@
 	"scripts": {
 		"build": "zxbuild clean && zxbuild dist",
 		"clean": "zxbuild clean",
-		"start": "node src/app.js --config=config.ini",
 		"test": "nyc --exclude submodules --exclude test --extension=\".ts\" --reporter=lcov --reporter=text --reporter=text-summary mocha \"test/**/*.test.js\" --recursive mocha --timeout 10000"
 	},
 	"private": true

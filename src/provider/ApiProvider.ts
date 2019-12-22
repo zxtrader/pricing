@@ -1,36 +1,58 @@
-import { CancellationToken } from "@zxteam/contract";
+import { CancellationToken, Logger } from "@zxteam/contract";
 import { Disposable, Initable } from "@zxteam/disposable";
 import { InvalidOperationError } from "@zxteam/errors";
-import { Singleton, Provides, Inject } from "@zxteam/launcher";
+import { Container, Provides, Singleton } from "@zxteam/launcher";
+import { logger } from "@zxteam/logger";
 
-import { PriceApi } from "../api/PriceApi";
 import { ConfigurationProvider } from "./ConfigurationProvider";
+
+import { PriceService } from "../api/PriceService";
+import { PriceServiceImpl } from "../api/PriceServiceImpl";
+import { RedisStorage } from "../storage/RedisStorage";
+import { PriceLoader } from "../priceLoader/PriceLoader";
+import Cryptocompare from "../priceLoader/Cryptocompare";
 
 @Singleton
 export abstract class ApiProvider extends Initable {
-	public abstract get price(): PriceApi;
+	protected readonly log: Logger;
+
+	public constructor() {
+		super();
+		this.log = logger.getLogger("Endpoints");
+	}
+
+	public abstract get price(): PriceService;
 }
 
 
 @Provides(ApiProvider)
 class ApiProviderImpl extends ApiProvider {
-	@Inject
-	private readonly _configurationProvider!: ConfigurationProvider;
+	// Do not use Inject inside providers to prevents circular dependency
+	private readonly _configurationProvider: ConfigurationProvider;
 
-	private readonly _priceApi: PriceApi;
+	private readonly _priceService: PriceServiceImpl;
 
 	public constructor() {
 		super();
-		this._priceApi = new PriceApi(this._configurationProvider.storageURL, this._configurationProvider.sources);
+
+		this._configurationProvider = Container.get(ConfigurationProvider);
+
+		const sourceProviders: Array<PriceLoader> = [new Cryptocompare({})];
+
+		this._priceService = new PriceServiceImpl(
+			() => new RedisStorage(this._configurationProvider.storageURL),
+			sourceProviders,
+			this.log.getLogger("PriceService")
+		);
 	}
 
-	public get price(): PriceApi { return this._priceApi; }
+	public get price(): PriceService { return this._priceService; }
 
 	protected async onInit(cancellationToken: CancellationToken): Promise<void> {
-		await Initable.initAll(cancellationToken, this._priceApi);
+		await Initable.initAll(cancellationToken, this._priceService);
 	}
 
 	protected async onDispose(): Promise<void> {
-		await Disposable.disposeAll(this._priceApi);
+		await Disposable.disposeAll(this._priceService);
 	}
 }
