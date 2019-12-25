@@ -18,7 +18,7 @@
 				"LOG4JS_CONFIG": "${workspaceRoot}/log4js.dev.json"
 			},
 			"args": [
-				"--config=${workspaceRoot}/service.config"
+				"--config=${workspaceRoot}/price-service.config"
 			],
 			"program": "${workspaceRoot}/src/app.js"
 		},
@@ -36,7 +36,7 @@
 			"stopOnEntry": false,
 			"program": "${workspaceRoot}/node_modules/mocha/bin/_mocha",
 			"args": [
-				"--no-timeouts",
+				"--no-timeout",
 				"--colors",
 				"--debug-brk",
 				"test/**/*.js"

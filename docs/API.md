@@ -19,6 +19,7 @@ The service supports following endpoints:
 Check status service.
 #### REST
 ```bash
+$ curl --verbose "http://127.0.0.1:8080/v0/api/ping?echo=hello"
 $ curl --verbose "https://api.zxtrader.com/price/v0/api/ping?echo=hello"
 $ curl --verbose "https://api-evo.zxtrader.com:20443/price/v0/api/ping?echo=hello"
 > GET /ping?echo=hello HTTP/1.1
@@ -32,6 +33,7 @@ $ curl --verbose "https://api-evo.zxtrader.com:20443/price/v0/api/ping?echo=hell
 ```
 #### JSON-RPC
 ```bash
+$ wscat --connect ws://127.0.0.1:8080/v0/ws
 $ wscat --connect wss://api.zxtrader.com/price/v0/ws
 $ wscat --connect wss://api-evo.zxtrader.com:20443/price/v0/ws
 connected (press CTRL+C to quit)
@@ -65,6 +67,7 @@ null
 ```
 #### JSON-RPC
 ```bash
+$ wscat --connect ws://127.0.0.1:8080/v0/ws
 $ wscat --connect wss://api.zxtrader.com/price/v0/ws
 $ wscat --connect wss://api-evo.zxtrader.com:20443/price/v0/ws
 connected (press CTRL+C to quit)
@@ -86,6 +89,7 @@ Subscribe for the topic
 Not supported yet
 #### JSON-RPC
 ```bash
+$ wscat --connect ws://127.0.0.1:8080/v0/ws
 $ wscat --connect wss://api.zxtrader.com/price/v0/ws
 $ wscat --connect wss://api-evo.zxtrader.com:20443/price/v0/ws
 connected (press CTRL+C to quit)
@@ -101,6 +105,7 @@ Get a list of the subscribed topics
 Not supported yet
 #### JSON-RPC
 ```bash
+$ wscat --connect ws://127.0.0.1:8080/v0/ws
 $ wscat --connect wss://api.zxtrader.com/price/v0/ws
 $ wscat --connect wss://api-evo.zxtrader.com:20443/price/v0/ws
 connected (press CTRL+C to quit)
@@ -115,12 +120,13 @@ connected (press CTRL+C to quit)
 Not supported yet
 #### JSON-RPC
 ```bash
+$ wscat --connect ws://127.0.0.1:8080/v0/ws
 $ wscat --connect wss://api.zxtrader.com/price/v0/ws
 $ wscat --connect wss://api-evo.zxtrader.com:20443/price/v0/ws
 connected (press CTRL+C to quit)
 ```
 ```json
-> {"jsonrpc":"2.0","id":42,"method":"unsubscribe","params":"token-97EFBC0C"}
+> {"jsonrpc":"2.0","id":42,"method":"unsubscribe","params":["token-97EFBC0C"]}
 < {"jsonrpc":"2.0","id":42,"result":true}
 ```
 
@@ -137,6 +143,7 @@ opts:
 Not implemented yet
 #### JSON-RPC
 ```bash
+$ wscat --connect ws://127.0.0.1:8080/v0/ws
 $ wscat --connect wss://api.zxtrader.com/price/v0/ws
 $ wscat --connect wss://api-evo.zxtrader.com:20443/price/v0/ws
 connected (press CTRL+C to quit)
@@ -148,3 +155,8 @@ connected (press CTRL+C to quit)
 < {"jsonrpc":"2.0","method":"notification","params":{"token":"token-97","data":{"date":"2019-06-11T16:41:29.752Z","rate":"7996.11"}}}
 < {"jsonrpc":"2.0","method":"notification","params":{"token":"token-97","data":{"date":"2019-06-11T16:41:30.002Z","rate":"7995.26"}}}
 ```
+
+
+{"jsonrpc":"2.0","id":42,"method":"subscribe","params":{"topic":"rate","threshold":250,"opts":{"marketCurrency":"USD","tradeCurrency":"ETH"}}}
+{"jsonrpc":"2.0","id":42,"method":"subscribe","params":{"topic":"rate","threshold":250,"opts":{"marketCurrency":"USD","tradeCurrency":"ZEC"}}}
+{"jsonrpc":"2.0","id":42,"method":"subscribe","params":{"topic":"rate","threshold":250,"opts":{"marketCurrency":"USD","tradeCurrency":"TRX"}}}

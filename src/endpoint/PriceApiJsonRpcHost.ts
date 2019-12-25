@@ -1,161 +1,195 @@
-import { CancellationToken, Disposable as DisposableLike, Financial, Logger, SubscriberChannel, PublisherChannel } from "@zxteam/contract";
-import { DUMMY_CANCELLATION_TOKEN } from "@zxteam/cancellation";
+import { CancellationToken } from "@zxteam/contract";
 import { Disposable } from "@zxteam/disposable";
-import financial from "@zxteam/financial";
 import { SubscriberChannelMixin } from "@zxteam/channels";
 import { Ensure, EnsureError, ensureFactory } from "@zxteam/ensure";
-import { InvalidOperationError } from "@zxteam/errors";
-import logger from "@zxteam/logger";
 import { JsonRpcHost, Notification, Request, Response } from "@zxteam/jsonrpc";
 
+import * as _ from "lodash";
 import { v4 as uuid } from "uuid";
 
 import { PriceService } from "../api/PriceService";
 
-
 const ensure: Ensure = ensureFactory();
 
-export class PriceApiJsonRpcHost extends Disposable implements JsonRpcHost {
-	private readonly _priceService: PriceService;
-	private readonly _subscribers: Map<string/* token */, {
-		channel: PriceService.ChangeRateNotification.Channel; disposer: () => Promise<void>;
+export class PriceServiceJsonRpcHost extends Disposable implements JsonRpcHost {
+	private _priceService: PriceService;
+	private _rateChannels: Map<string, {
+		readonly channel: PriceService.ChangeRateNotification.Channel;
+		readonly opts: { readonly marketCurrency: string, readonly tradeCurrency: string; };
+		disposer(): Promise<void>;
 	}>;
 
 	public constructor(priceService: PriceService) {
 		super();
 		this._priceService = priceService;
-		this._subscribers = new Map();
+		this._rateChannels = new Map();
 	}
 
 	public async invoke(cancellationToken: CancellationToken, args: Request): Promise<Response> {
 		const { jsonrpc, id, method, params } = args;
-		switch (method) {
+		switch (args.method) {
 			case "ping": {
 				const echo = ensure.string((ensure.defined(params) as any).echo);
-				const pingResult = await this._priceService.ping(cancellationToken, echo);
-				return { jsonrpc, id, "result": pingResult };
+				const result = await this._ping(cancellationToken, echo);
+				return { jsonrpc, id, result };
 			}
+			// case "rate": {
+			// 	//> {"jsonrpc":"2.0","id":42,"method":"rate","params":{"marketCurrency":"USDT",
+			//"tradeCurrency":"BTC","exchangeId":"BINANCE","date":"2019-07-01T10:20:33Z"}}
+			// 	const result = await this._getExchanges(cancellationToken);
+			// 	return { jsonrpc, id, result };
+			// }
 			case "subscribe": {
-				const topic = ensure.string((ensure.defined(params) as any).topic);
-				if (topic === "rate") {
-					const threshold = ensure.integer((ensure.defined(params) as any).threshold);
-					const opts = ensure.defined((ensure.defined(params) as any).opts);
-					const marketCurrency = ensure.string(opts.marketCurrency);
-					const tradeCurrency = ensure.string(opts.tradeCurrency);
-
-					const token = `token-${uuid()}`;
-
-					const channel = await this._priceService.createChangeRateSubscriber(
-						cancellationToken, marketCurrency, tradeCurrency
-					);
-
-					const handler = (event: PriceService.ChangeRateNotification.Event | Error) => {
-						if (event instanceof Error) { return; }
-						const data = event.data;
-						return this.notify({ data: { jsonrpc: "2.0", method: "notification", params: { token, data } } });
-					};
-					async function disposer(): Promise<void> {
-						channel.removeHandler(handler);
-						await channel.dispose();
+				const topicName = ensure.string((ensure.defined(params) as any).topic);
+				switch (topicName) {
+					case "rate": {
+						const opts = ensure.defined((ensure.defined(params) as any).opts);
+						const marketCurrency: string = ensure.string(opts.marketCurrency);
+						const tradeCurrency: string = ensure.string(opts.tradeCurrency);
+						const result = await this._subscribeRate(cancellationToken, marketCurrency, tradeCurrency);
+						return { jsonrpc, id, result };
 					}
-
-					channel.addHandler(handler);
-
-					this._subscribers.set(token, { channel, disposer });
-
-					return { jsonrpc, id, result: token };
-
+					default: {
+						return {
+							jsonrpc, id, error: {
+								code: Response.ErrorCode.InvalidRequest,
+								message: `Wrong topic name: ${method}`
+							}
+						};
+					}
 				}
-				return { jsonrpc, id, error: { code: 400, message: `Wrong topic: ${topic}` } } as any;
 			}
-			default:
-				throw new InvalidOperationError(`Wrong method name '${method}'`);
+			case "subsсiptions": {
+				const result = await this._subsсiptionList(cancellationToken);
+				return { jsonrpc, id, result };
+			}
+			// case "unsubscribe": {
+			// 	const subscribeIds: ReadonlyArray<string> = ensure.string((ensure.defined(params) as any).exchangeId);
+			// 	const result = await this._unsubscribe(cancellationToken, subscribeIds);
+			// 	return { jsonrpc, id, result };
+			// }
+			default: {
+				return {
+					jsonrpc, id, error: {
+						code: Response.ErrorCode.MethodNotFound,
+						message: `Wrong method name: ${method}`
+					}
+				};
+			}
 		}
 	}
 
 	protected async onDispose() {
-		const values = [...this._subscribers.values()];
-		this._subscribers.clear();
-		for (const channelHandle of values) {
-			await channelHandle.disposer();
+		const rateChannelBundles = [...this._rateChannels.values()];
+		this._rateChannels.clear();
+		for (const rateChannelBundle of rateChannelBundles) {
+			await rateChannelBundle.disposer();
 		}
 	}
-}
-export interface PriceApiJsonRpcHost extends SubscriberChannelMixin<Notification> { }
-SubscriberChannelMixin.applyMixin(PriceApiJsonRpcHost);
 
-
-
-
-interface TopicSubsciberHandle extends DisposableLike {
-	readonly opts: any;
-	stopSubscriptionEvents(): void;
-}
-
-abstract class AbstractTopicSubsciberHandle<TEventData> extends Disposable implements TopicSubsciberHandle {
-	public readonly opts: any;
-	protected readonly _eventHandler: SubscriberChannel.Callback<TEventData>;
-	protected readonly _log: Logger;
-	private readonly _publisherChannel: PublisherChannel<string>;
-	private readonly _token: string;
-
-	public constructor(opts: any, publisherChannel: PublisherChannel<string>, log: Logger, tokenPrefix?: string) {
-		super();
-		this.opts = opts;
-		this._publisherChannel = publisherChannel;
-		this._log = log;
-		this._eventHandler = this.onEvent.bind(this);
-		if (tokenPrefix === undefined) { tokenPrefix = "token"; }
-		this._token = `${tokenPrefix}-${uuid()}`;
-	}
-
-	public get token(): string { return this._token; }
-
-	public abstract stopSubscriptionEvents(): void;
-
-	protected abstract formatEventData(data: TEventData): any;
-
-	private async onEvent(ev: SubscriberChannel.Event<TEventData> | Error): Promise<void> {
-		if (ev instanceof Error) {
-			if (this._log.isWarnEnabled) { this._log.warn(`SubscriberChannel for token ${this._token} fired error: ${ev.message}`); }
-			if (this._log.isTraceEnabled) { this._log.warn(`SubscriberChannel for token ${this._token} fired error.`, ev.message); }
-			return;
-		}
-
-		const data = this.formatEventData(ev.data);
-		const jsonRpcMessage = { jsonrpc: "2.0", method: "notification", params: { token: this._token, data } };
-		await this._publisherChannel.send(DUMMY_CANCELLATION_TOKEN, JSON.stringify(jsonRpcMessage));
-	}
-}
-
-class PriceTopicSubsciberHandle extends AbstractTopicSubsciberHandle<PriceService.ChangeRateNotification.Data> {
-	private readonly _priceTopicSubsciberChannel: PriceService.ChangeRateNotification.Channel;
-
-	public constructor(
-		opts: any,
-		priceTopicSubsciberChannel: PriceService.ChangeRateNotification.Channel,
-		publisherChannel: PublisherChannel<string>,
-		log: Logger,
-		tokenPrefix: string
-	) {
-		super(opts, publisherChannel, log, tokenPrefix);
-		this._priceTopicSubsciberChannel = priceTopicSubsciberChannel;
-
-		this._priceTopicSubsciberChannel.addHandler(this._eventHandler);
-	}
-
-	public stopSubscriptionEvents() {
-		this._priceTopicSubsciberChannel.removeHandler(this._eventHandler);
-	}
-
-	protected onDispose() {
-		//return this._priceTopicSubsciberChannel.dispose();
-	}
-
-	protected formatEventData({ date, price: rate }: PriceService.ChangeRateNotification.Data): any {
+	private async _ping(cancellationToken: CancellationToken, echo: string): Promise<Response.Success["result"]> {
+		const pingResult = await this._priceService.ping(cancellationToken, echo);
 		return {
-			date: date.toISOString(),
-			price: rate
+			echo,
+			time: pingResult.time,
+			version: pingResult.version
 		};
+
 	}
+
+	private async _subscribeRate(
+		cancellationToken: CancellationToken,
+		marketCurrency: string,
+		tradeCurrency: string
+	): Promise<Response.Success["result"]> {
+		const subscribeId: string = "token-" + uuid();
+		const rateChannel = await this._priceService.createChangeRateSubscriber(cancellationToken, marketCurrency, tradeCurrency);
+
+		const handler = (event: PriceService.ChangeRateNotification.Event | Error): void | Promise<void> => {
+			if (event instanceof Error) {
+				return;
+			}
+
+			const { data } = event;
+			return this.notify({
+				data: {
+					jsonrpc: "2.0",
+					method: subscribeId,
+					params: {
+						date: data.date.toISOString(),
+						price: data.price
+					}
+				}
+			});
+		};
+
+		rateChannel.addHandler(handler);
+		async function disposer() {
+			rateChannel.removeHandler(handler);
+			await rateChannel.dispose();
+		}
+		this._rateChannels.set(subscribeId, Object.freeze({
+			channel: rateChannel,
+			opts: { marketCurrency, tradeCurrency },
+			disposer
+		}));
+
+		return { subscribeId };
+	}
+
+	private async _subsсiptionList(cancellationToken: CancellationToken): Promise<Response.Success["result"]> {
+		const subsсiptionList: { [token: string]: any; } = {};
+		for (const [token, subsсiptionBundle] of this._rateChannels) {
+			subsсiptionList[token] = subsсiptionBundle.opts;
+		}
+		return subsсiptionList;
+	}
+
+	// private async _getSubsсiptions(cancellationToken: CancellationToken): Promise<Response.Success["result"]> {
+	// 	interface ExchangeManifest {
+	// 		readonly name: string;
+	// 		readonly url: URL;
+	// 		readonly descriptionHtml: string;
+	// 		// readonly icon16Url: URL;
+	// 		// readonly icon32Url: URL;
+	// 		// readonly icon64Url: URL;
+	// 		// readonly icon128Url: URL;
+	// 		// readonly icon256Url: URL;
+	// 		// readonly icon512Url: URL;
+	// 		// readonly iconLogoUrl: URL;
+	// 	}
+
+	// 	const exchangeManifests = await this._priceService.createChangeRateSubscriber(cancellationToken);
+
+	// 	const friendlyExchanges: { [id: string]: ExchangeManifest } =
+	// 		_.mapValues(exchangeManifests, function (exchangeManifest: InfoService.ExchangeManifest) {
+	// 			const result: ExchangeManifest = {
+	// 				name: exchangeManifest.name,
+	// 				url: exchangeManifest.url,
+	// 				descriptionHtml: exchangeManifest.descriptionHtml
+	// 				// icon16Url: new URL("icon/" + exchangeManifest.icon16UUID, bindURL),
+	// 				// icon32Url: new URL("icon/" + exchangeManifest.icon32UUID, bindURL),
+	// 				// icon64Url: new URL("icon/" + exchangeManifest.icon64UUID, bindURL),
+	// 				// icon128Url: new URL("icon/" + exchangeManifest.icon128UUID, bindURL),
+	// 				// icon256Url: new URL("icon/" + exchangeManifest.icon256UUID, bindURL),
+	// 				// icon512Url: new URL("icon/" + exchangeManifest.icon512UUID, bindURL),
+	// 				// iconLogoUrl: new URL("icon/" + exchangeManifest.iconLogoUUID, bindURL)
+	// 			};
+	// 			return result;
+	// 		});
+	// 	return friendlyExchanges;
+	// }
+
+	// private async _getMarkets(cancellationToken: CancellationToken, exchangeId: string): Promise<Response.Success["result"]> {
+	// 	const responseData = await this._priceService.getExchangeMarkets(cancellationToken, exchangeId);
+	// 	//const result = _.mapValues(responseData, (value: ReadonlyArray<string>) => { return value; });
+	// 	return responseData;
+	// }
+
+	// private async _getSettings(cancellationToken: CancellationToken, exchangeId: string): Promise<Response.Success["result"]> {
+	// 	const responseData = await this._priceService.getExchangeSettings(cancellationToken, exchangeId);
+	// 	return responseData;
+	// }
 }
+export interface PriceServiceJsonRpcHost extends SubscriberChannelMixin<Notification> { }
+SubscriberChannelMixin.applyMixin(PriceServiceJsonRpcHost);

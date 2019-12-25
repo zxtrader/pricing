@@ -6,7 +6,7 @@ import { JsonRpcHostChannel } from "@zxteam/jsonrpc";
 import * as WebSocket from "ws";
 
 import { PriceService } from "../api/PriceService";
-import { PriceApiJsonRpcHost } from "./PriceApiJsonRpcHost";
+import { PriceServiceJsonRpcHost } from "./PriceApiJsonRpcHost";
 
 export class WebSocketEndpoint extends WebSocketChannelFactoryEndpoint {
 	private readonly _priceService: PriceService;
@@ -24,7 +24,7 @@ export class WebSocketEndpoint extends WebSocketChannelFactoryEndpoint {
 	protected async createTextChannel(
 		cancellationToken: CancellationToken, webSocket: WebSocket, subProtocol: string
 	): Promise<WebSocketChannelFactoryEndpoint.TextChannel> {
-		const host = new PriceApiJsonRpcHost(this._priceService);
+		const host = new PriceServiceJsonRpcHost(this._priceService);
 		return new JsonRpcHostChannel(host, async () => {
 			await host.dispose();
 		});

@@ -7,13 +7,13 @@
 	"author": {
 		"name": "ZXTeam",
 		"email": "zxtrader@project.zxteam.net",
-		"url": "http://www.zxteam.net"
+		"url": "https://www.zxteam.net"
 	},
 	"contributors": [
 		{
 			"name": "Maxim Anurin",
 			"email": "maxim.anurin@zxteam.net",
-			"url": "http://www.anurin.name"
+			"url": "https://www.anurin.name"
 		},
 		{
 			"name": "Serhii Zghama",
@@ -26,24 +26,24 @@
 		"@types/ioredis": "^4.14.3",
 		"@types/lodash": "^4.14.149",
 		"@types/morgan": "^1.7.37",
-		"@types/node": "^11.13.17",
+		"@types/node": "^11.15.3",
 		"@types/uuid": "^3.4.6",
 		"@zxnode/build": "^0.0.34"
 	},
 	"dependencies": {
-		"@zxteam/cancellation": "^6.0.25",
+		"@zxteam/cancellation": "^6.0.40",
 		"@zxteam/channels": "^6.0.42",
-		"@zxteam/configuration": "^6.0.37",
+		"@zxteam/configuration": "^6.0.40",
 		"@zxteam/contract": "^6.0.40",
-		"@zxteam/ensure": "^6.0.23",
-		"@zxteam/errors": "^6.0.33",
+		"@zxteam/ensure": "^6.0.40",
+		"@zxteam/errors": "^6.0.41",
 		"@zxteam/financial": "^6.0.36",
-		"@zxteam/hosting": "^6.0.41",
-		"@zxteam/jsonrpc": "^6.0.42",
+		"@zxteam/hosting": "^6.0.42",
+		"@zxteam/jsonrpc": "^6.0.43",
 		"@zxteam/launcher": "^6.0.26",
-		"@zxteam/limit": "^6.0.23",
-		"@zxteam/logger": "^6.0.22",
-		"@zxteam/web-client": "^6.0.23",
+		"@zxteam/limit": "^6.0.41",
+		"@zxteam/logger": "^6.0.40",
+		"@zxteam/web-client": "^6.0.41",
 		"ajv": "^6.10.2",
 		"compression": "^1.7.4",
 		"express": "^4.17.1",

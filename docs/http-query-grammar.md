@@ -32,7 +32,7 @@ date '+%Y%m%d%H%M%S'
 // Java Script
 const date = new Date("Mon Apr 16 2018 19:00:00 GMT-0500");
 const custom = moment(date).format("YYYYMMDDHHmmss"); // 20180416190000
-const momentDateUnix = moment.utc(timestamp, "YYYYMMDDHHmmss").unix().toString(); // 1523905200
+const momentDateUnix = moment.utc(date, "YYYYMMDDHHmmss").unix().toString(); // 1523905200
 ```
 
 ```java
