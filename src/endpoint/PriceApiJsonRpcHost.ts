@@ -7,24 +7,24 @@ import { JsonRpcHost, Notification, Request, Response } from "@zxteam/jsonrpc";
 import * as _ from "lodash";
 import { v4 as uuid } from "uuid";
 
-import { PriceService } from "../api/PriceService";
+import { PriceApi } from "../api/PriceApi";
 
 const ensure: Ensure = ensureFactory();
 
-export class PriceServiceJsonRpcHost extends Disposable implements JsonRpcHost {
-	private _priceService: PriceService;
+export class PriceApiJsonRpcHost extends Disposable implements JsonRpcHost {
+	private _priceService: PriceApi;
 	private _priceChannels: Map<string, {
-		readonly channel: PriceService.ChangePriceNotification.Channel;
+		readonly channel: PriceApi.ChangePriceNotification.Channel;
 		readonly opts: { readonly pairs: ReadonlyArray<string>, readonly exchanges: ReadonlyArray<string>; };
 		disposer(): Promise<void>;
 	}>;
 	private _rateChannels: Map<string, {
-		readonly channel: PriceService.ChangeRateNotification.Channel;
+		readonly channel: PriceApi.ChangeRateNotification.Channel;
 		readonly opts: { readonly marketCurrency: string, readonly tradeCurrency: string; };
 		disposer(): Promise<void>;
 	}>;
 
-	public constructor(priceService: PriceService) {
+	public constructor(priceService: PriceApi) {
 		super();
 		this._priceService = priceService;
 		this._priceChannels = new Map();
@@ -135,10 +135,10 @@ export class PriceServiceJsonRpcHost extends Disposable implements JsonRpcHost {
 		exchanges: ReadonlyArray<string>
 	): Promise<Response.Success["result"]> {
 		const subscribeId: string = "token-" + uuid();
-		const priceChannel: PriceService.ChangePriceNotification.Channel
+		const priceChannel: PriceApi.ChangePriceNotification.Channel
 			= await this._priceService.createChangePriceSubscriber(cancellationToken, threshold, pairs, exchanges);
 
-		const handler = (event: PriceService.ChangePriceNotification.Event | Error): void | Promise<void> => {
+		const handler = (event: PriceApi.ChangePriceNotification.Event | Error): void | Promise<void> => {
 			if (event instanceof Error) {
 				return;
 			}
@@ -201,10 +201,10 @@ export class PriceServiceJsonRpcHost extends Disposable implements JsonRpcHost {
 		tradeCurrency: string
 	): Promise<Response.Success["result"]> {
 		const subscribeId: string = `token-${tradeCurrency}-${marketCurrency}`;
-		const rateChannel: PriceService.ChangeRateNotification.Channel
+		const rateChannel: PriceApi.ChangeRateNotification.Channel
 			= await this._priceService.createChangeRateSubscriber(cancellationToken, threshold, marketCurrency, tradeCurrency);
 
-		const handler = (event: PriceService.ChangeRateNotification.Event | Error): void | Promise<void> => {
+		const handler = (event: PriceApi.ChangeRateNotification.Event | Error): void | Promise<void> => {
 			if (event instanceof Error) {
 				return;
 			}
@@ -312,5 +312,5 @@ export class PriceServiceJsonRpcHost extends Disposable implements JsonRpcHost {
 	// 	return responseData;
 	// }
 }
-export interface PriceServiceJsonRpcHost extends SubscriberChannelMixin<Notification> { }
-SubscriberChannelMixin.applyMixin(PriceServiceJsonRpcHost);
+export interface PriceApiJsonRpcHost extends SubscriberChannelMixin<Notification> { }
+SubscriberChannelMixin.applyMixin(PriceApiJsonRpcHost);

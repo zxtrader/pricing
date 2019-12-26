@@ -1,17 +1,17 @@
 import { CancellationToken, Financial, SubscriberChannel, Disposable } from "@zxteam/contract";
 
-export interface PriceService {
+export interface PriceApi {
 	createChangePriceSubscriber(
 		cancellationToken: CancellationToken, threshold: number, pairs: ReadonlyArray<string>, exchanges: ReadonlyArray<string>
-	): Promise<PriceService.ChangePriceNotification.Channel>;
+	): Promise<PriceApi.ChangePriceNotification.Channel>;
 
 	createChangeRateSubscriber(
 		cancellationToken: CancellationToken, threshold: number, marketCurrency: string, tradeCurrency: string
-	): Promise<PriceService.ChangeRateNotification.Channel>;
+	): Promise<PriceApi.ChangeRateNotification.Channel>;
 
 	getHistoricalPrices(
-		cancellationToken: CancellationToken, args: Array<PriceService.Argument>
-	): Promise<PriceService.Timestamp>;
+		cancellationToken: CancellationToken, args: Array<PriceApi.Argument>
+	): Promise<PriceApi.Timestamp>;
 
 	ping(
 		cancellationToken: CancellationToken, echo: string
@@ -19,7 +19,7 @@ export interface PriceService {
 }
 
 
-export namespace PriceService {
+export namespace PriceApi {
 	export interface Argument {
 		ts: number;
 		marketCurrency: string;

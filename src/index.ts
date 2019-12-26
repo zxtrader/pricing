@@ -11,6 +11,13 @@ import { ApiProvider } from "./provider/ApiProvider";
 import { EndpointsProvider } from "./provider/EndpointsProvider";
 import { HostingProvider } from "./provider/HostingProvider";
 
+export { Configuration } from "./Configuration";
+export { PriceApi } from "./api/PriceApi";
+export { PriceApiJsonRpcHost } from "./endpoint/PriceApiJsonRpcHost";
+export { RestEndpoint } from "./endpoint/RestEndpoint";
+export { ApiProvider } from "./provider/ApiProvider";
+export { ConfigurationProvider } from "./provider/ConfigurationProvider";
+
 const { name: serviceName, version: serviceVersion } = require("../package.json");
 
 export default async function (cancellationToken: CancellationToken, config: null): Promise<LauncherRuntime> {

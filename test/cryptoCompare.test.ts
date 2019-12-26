@@ -10,7 +10,7 @@ import { assert } from "chai";
 
 import { PriceLoader } from "../src/priceLoader/PriceLoader";
 import { Cryptocompare } from "../src/priceLoader/Cryptocompare";
-import { PriceService } from "../src/api/PriceService";
+import { PriceApi } from "../src/api/PriceApi";
 
 
 describe("Crypto Compare Tests", function () {
@@ -18,7 +18,7 @@ describe("Crypto Compare Tests", function () {
 
 	it.only("Should raise SourceProvider.CommunicationError if WebClient providers WebClient.CommunicationError", async function () {
 		// Fake arguments to force NoDataError
-		const loadArgs: Array<PriceService.LoadDataArgs> = [
+		const loadArgs: Array<PriceApi.LoadDataArgs> = [
 			{
 				ts: 20190101000000,
 				marketCurrency: "BADCOIN",

@@ -1,5 +1,5 @@
 import * as _ from "lodash";
-import { PriceService } from "../api/PriceService";
+import { PriceApi } from "../api/PriceApi";
 
 import * as zxteam from "@zxteam/contract";
 import { PriceLoader } from "./PriceLoader";
@@ -8,9 +8,9 @@ import { PriceLoader } from "./PriceLoader";
 export class Randomizer implements PriceLoader {
 	public readonly sourceId = "RANDOMSOURCE";
 
-	public async loadPrices(cancellationToken: zxteam.CancellationToken, loadArgs: ReadonlyArray<PriceService.LoadDataArgs>)
-		: Promise<Array<PriceService.HistoricalPrices>> {
-		const friendlyRequest: Array<PriceService.HistoricalPrices> = [];
+	public async loadPrices(cancellationToken: zxteam.CancellationToken, loadArgs: ReadonlyArray<PriceApi.LoadDataArgs>)
+		: Promise<Array<PriceApi.HistoricalPrices>> {
+		const friendlyRequest: Array<PriceApi.HistoricalPrices> = [];
 
 		for (let i = 0; i < loadArgs.length; i++) {
 			const argument = loadArgs[i];

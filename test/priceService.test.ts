@@ -1,7 +1,7 @@
 import { assert } from "chai";
 import { RedisOptions } from "ioredis";
-import { PriceService } from "../src/api/PriceService";
-import { PriceServiceImpl } from "../src/api/PriceServiceImpl";
+import { PriceApi } from "../src/api/PriceApi";
+import { PriceApiImpl } from "../src/api/PriceApiImpl";
 import { DUMMY_CANCELLATION_TOKEN } from "@zxteam/cancellation";
 import { Randomizer } from "../src/priceLoader/Randomizer";
 import { Cryptocompare } from "../src/priceLoader/Cryptocompare";
@@ -39,20 +39,20 @@ describe("Positive tests Price service", function () {
 	let redisStorageProvider: RedisStorage;
 	let cryptoCompare: Cryptocompare;
 	let randomSource: Randomizer;
-	let priceService: PriceService;
+	let priceService: PriceApi;
 
 	before(async function () {
 
 		cryptoCompare = new Cryptocompare(optsForLimit);
 		randomSource = new Randomizer();
-		priceService = new PriceServiceImpl(() => new RedisStorage(getRedisURL()), [cryptoCompare, randomSource]);
+		priceService = new PriceApiImpl(() => new RedisStorage(getRedisURL()), [cryptoCompare, randomSource]);
 	});
 	after(async function () {
 		await cryptoCompare.dispose();
 		await redisStorageProvider.dispose();
 	});
 	it("Call method getHistoricalPrices without sources", async function () {
-		const args: Array<PriceService.Argument> = [
+		const args: Array<PriceApi.Argument> = [
 			{
 				ts: 20180101101130,
 				marketCurrency: "UDSDT",
@@ -88,7 +88,7 @@ describe("Positive tests Price service", function () {
 		}
 	});
 	it("Call method getHistoricalPrices with fake source", async function () {
-		const args: Array<PriceService.Argument> = [
+		const args: Array<PriceApi.Argument> = [
 			{
 				ts: 20180101101130,
 				marketCurrency: "USDT",
@@ -129,7 +129,7 @@ describe("Positive tests Price service", function () {
 		// }
 	});
 	it("Call method getHistoricalPrices on PriceService", async function () {
-		const args: Array<PriceService.Argument> = [
+		const args: Array<PriceApi.Argument> = [
 			{
 				ts: 20180101101130,
 				marketCurrency: "USDT",

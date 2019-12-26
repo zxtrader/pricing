@@ -9,13 +9,13 @@ import * as bodyParser from "body-parser";
 import * as moment from "moment";
 
 
-import { PriceService } from "../api/PriceService";
+import { PriceApi } from "../api/PriceApi";
 import { DUMMY_CANCELLATION_TOKEN } from "@zxteam/cancellation";
 
 export class RestEndpoint extends ServersBindEndpoint {
 	protected readonly _router: express.Router;
 
-	public constructor(priceService: PriceService, servers: ReadonlyArray<WebServer>, opts: HostingConfiguration.BindEndpoint, log: Logger) {
+	public constructor(priceService: PriceApi, servers: ReadonlyArray<WebServer>, opts: HostingConfiguration.BindEndpoint, log: Logger) {
 		super(servers, opts, log);
 		this._router = express.Router();
 		this._router.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
@@ -57,7 +57,7 @@ export class RestEndpoint extends ServersBindEndpoint {
 					log.error(e.message);
 					return render400(res, "Bad argument in request");
 				}
-				if (e instanceof PriceService.InvalidDateError) {
+				if (e instanceof PriceApi.InvalidDateError) {
 					log.error(e.message);
 					return render400(res, "Invalid format date");
 				}
@@ -76,7 +76,7 @@ export class RestEndpoint extends ServersBindEndpoint {
 					log.error(e.message);
 					return render400(res, "Bad argument in request");
 				}
-				if (e instanceof PriceService.InvalidDateError) {
+				if (e instanceof PriceApi.InvalidDateError) {
 					log.error(e.message);
 					return render400(res, "Invalid format date");
 				}
@@ -94,7 +94,7 @@ export class RestEndpoint extends ServersBindEndpoint {
 					log.error(e.message);
 					return render400(res, "Bad argument in request");
 				}
-				if (e instanceof PriceService.InvalidDateError) {
+				if (e instanceof PriceApi.InvalidDateError) {
 					log.error(e.message);
 					return render400(res, "Invalid format date");
 				}
@@ -250,14 +250,14 @@ function render500(res: express.Response, description?: string): void {
 }
 
 namespace priceRuntime {
-	export function parseArgs(args: string): Array<PriceService.Argument> {
+	export function parseArgs(args: string): Array<PriceApi.Argument> {
 		const argsRegex = /^[0-9]{14}:[A-Z]+:[0-9A-Z]+(:([A-Z_]+)?)?(,[0-9]{14}:[A-Z]+:[0-9A-Z]+(:([A-Z_]+)?)?)*$/;
 		if (!args) { throw new ArgumentError("args"); }
 		if (!argsRegex.test(args)) {
 			throw new ArgumentError("args");
 		}
 		const argTokens = args.split(",");
-		const result: Array<PriceService.Argument> = [];
+		const result: Array<PriceApi.Argument> = [];
 		argTokens.forEach(argToken => {
 			const parts = argToken.split(":");
 			const ts: number = parseInt(parts[0]);
@@ -271,7 +271,7 @@ namespace priceRuntime {
 		return result;
 	}
 
-	export function parseSingleParams(params: any): PriceService.Argument {
+	export function parseSingleParams(params: any): PriceApi.Argument {
 		const { date, marketCurrency, tradeCurrency } = params;
 		const ts: number = date !== undefined ? Number.parseInt(date) : Number.parseInt(moment.utc().format("YYYYMMDDHHmmss"));
 		if (_.isString(marketCurrency) && _.isString(tradeCurrency)) {
@@ -287,14 +287,14 @@ namespace priceRuntime {
 		}
 	}
 
-	export function parseBatchArgs(args: string): Array<PriceService.Argument> {
+	export function parseBatchArgs(args: string): Array<PriceApi.Argument> {
 		const argsRegex = /^[0-9]{14}:[0-9A-Z]+:[0-9A-Z]+(,[0-9]{14}:[0-9A-Z]+:[0-9A-Z]+)*$/;
 		if (!args) { throw new ArgumentError("args"); }
 		if (!argsRegex.test(args)) {
 			throw new ArgumentError("args");
 		}
 		const argTokens = args.split(",");
-		const result: Array<PriceService.Argument> = [];
+		const result: Array<PriceApi.Argument> = [];
 		argTokens.forEach(argToken => {
 			const parts = argToken.split(":");
 			const ts: number = parseInt(parts[0]);
@@ -308,11 +308,11 @@ namespace priceRuntime {
 		return result;
 	}
 
-	export function render(prices: PriceService.Timestamp): string {
+	export function render(prices: PriceApi.Timestamp): string {
 		return JSON.stringify(prices, undefined, "  ");
 	}
 
-	export function renderForSingle(prices: PriceService.Timestamp, arg: PriceService.Argument): string | null {
+	export function renderForSingle(prices: PriceApi.Timestamp, arg: PriceApi.Argument): string | null {
 		const avgAndSource = prices[arg.ts][arg.marketCurrency][arg.tradeCurrency];
 		if ("sources" in avgAndSource) {
 			const sources = "sources";
@@ -326,7 +326,7 @@ namespace priceRuntime {
 		return null;
 	}
 
-	export function renderForRate(prices: PriceService.Timestamp, arg: PriceService.Argument): string | null {
+	export function renderForRate(prices: PriceApi.Timestamp, arg: PriceApi.Argument): string | null {
 		const avgAndSource = prices[arg.ts][arg.marketCurrency][arg.tradeCurrency];
 		if ("avg" in avgAndSource) {
 			const avg = "avg";
@@ -340,7 +340,7 @@ namespace priceRuntime {
 		return null;
 	}
 
-	export function renderForBatch(prices: PriceService.Timestamp, args: Array<PriceService.Argument>): string {
+	export function renderForBatch(prices: PriceApi.Timestamp, args: Array<PriceApi.Argument>): string {
 		const friendly: any = {};
 
 		for (let i = 0; i < args.length; i++) {

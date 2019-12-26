@@ -8,7 +8,7 @@ import * as _ from "lodash";
 import * as moment from "moment";
 
 import { PriceLoader } from "./PriceLoader";
-import { PriceService } from "../api/PriceService";
+import { PriceApi } from "../api/PriceApi";
 
 abstract class CryptocompareRestClient extends WebClient {
 	public constructor(baseUrl: string | URL, restClientOpts: WebClient.Opts) {
@@ -28,13 +28,13 @@ export class Cryptocompare extends CryptocompareRestClient implements PriceLoade
 	 * fsym - это tradeCurrency
 	 * https://min-api.cryptocompare.com/data/pricehistorical?fsym=ETH&tsyms=BTC,USD,EUR&ts=1452680400&extraParams=your_app_name
 	 */
-	public async loadPrices(cancellationToken: zxteam.CancellationToken, loadArgs: ReadonlyArray<PriceService.LoadDataArgs>)
-		: Promise<Array<PriceService.HistoricalPrices>> {
+	public async loadPrices(cancellationToken: zxteam.CancellationToken, loadArgs: ReadonlyArray<PriceApi.LoadDataArgs>)
+		: Promise<Array<PriceApi.HistoricalPrices>> {
 		if (this._log.isTraceEnabled) {
 			this._log.trace("loadPrices()... loadArgs: ", loadArgs);
 		}
 
-		const friendlyRequest: Array<PriceService.HistoricalPrices> = [];
+		const friendlyRequest: Array<PriceApi.HistoricalPrices> = [];
 		const ensureImpl = ensureFactory((message, data) => {
 			throw new PriceLoader.BrokenApiError("CryptoCompare responded non-expected data type");
 		});

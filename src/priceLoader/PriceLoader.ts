@@ -1,8 +1,7 @@
 import * as zxteam from "@zxteam/contract";
-
-import { PriceService } from "../api/PriceService";
-
 import { HttpClient } from "@zxteam/http-client";
+
+import { PriceApi } from "../api/PriceApi";
 
 export interface PriceLoader {
 	sourceId: string;
@@ -16,8 +15,8 @@ export interface PriceLoader {
 	 */
 	loadPrices(
 		cancellationToken: zxteam.CancellationToken,
-		loadArgs: ReadonlyArray<PriceService.LoadDataArgs>
-	): Promise<Array<PriceService.HistoricalPrices>>;
+		loadArgs: ReadonlyArray<PriceApi.LoadDataArgs>
+	): Promise<Array<PriceApi.HistoricalPrices>>;
 }
 
 export namespace PriceLoader {

@@ -1,18 +1,18 @@
 import { CancellationToken, Initable } from "@zxteam/contract";
-import { PriceService } from "../api/PriceService";
+import { PriceApi } from "../api/PriceApi";
 
 export interface Storage extends Initable {
 
 	/** Create data for loading price on sources */
-	filterEmptyPrices(cancellationToken: CancellationToken, args: Array<PriceService.Argument>, sources: Array<string>)
-		: Promise<Array<PriceService.LoadDataRequest>>;
+	filterEmptyPrices(cancellationToken: CancellationToken, args: Array<PriceApi.Argument>, sources: Array<string>)
+		: Promise<Array<PriceApi.LoadDataRequest>>;
 
 	/** Save new price to storage provide */
-	savePrices(cancellationToken: CancellationToken, newPrices: Array<PriceService.HistoricalPrices>)
+	savePrices(cancellationToken: CancellationToken, newPrices: Array<PriceApi.HistoricalPrices>)
 		: Promise<void>;
 
 	/** Find prices */
-	findPrices(cancellationToken: CancellationToken, args: Array<PriceService.Argument>): Promise<PriceService.Timestamp>;
+	findPrices(cancellationToken: CancellationToken, args: Array<PriceApi.Argument>): Promise<PriceApi.Timestamp>;
 }
 
 export namespace Storage {

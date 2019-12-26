@@ -14,20 +14,20 @@ import { setInterval, clearInterval } from "timers";
 import { PriceLoader } from "../priceLoader/PriceLoader";
 import { Storage } from "../storage/Storage";
 import { CryptoCompareApiClient } from "../clients/CryptoCompareApiClient";
-import { PriceService } from "./PriceService";
+import { PriceApi } from "./PriceApi";
 import { SubscriberChannelMixin } from "@zxteam/channels";
 
 const { name: serviceName, version } = require(path.join(__dirname, "..", "..", "package.json"));
 
-export class PriceServiceImpl extends Initable implements PriceService {
+export class PriceApiImpl extends Initable implements PriceApi {
 	private readonly _log: Logger;
 	private readonly _disposingCancellationTokenSource: ManualCancellationTokenSource;
 	private readonly _notificationEmitter: EventEmitter;
 	private readonly _currentPriceManager: CurrentPriceManager;
 	private readonly _changeRateWatchers: Map<string/*market key*/, {
 		destroy(): void;
-		addChanel(channel: PriceService.ChangeRateNotification.Channel): void;
-		removeChanel(channel: PriceService.ChangeRateNotification.Channel): void;
+		addChanel(channel: PriceApi.ChangeRateNotification.Channel): void;
+		removeChanel(channel: PriceApi.ChangeRateNotification.Channel): void;
 	}>;
 	private readonly _cryptoCompareApiClient: CryptoCompareApiClient;
 	private readonly _storageFactory: () => Storage;
@@ -40,7 +40,7 @@ export class PriceServiceImpl extends Initable implements PriceService {
 
 	public constructor(storageFactory: () => Storage, sourceProviders: Array<PriceLoader>, log?: Logger) {
 		super();
-		this._log = log || loggerFactory.getLogger("PriceService");
+		this._log = log || loggerFactory.getLogger("PriceApi");
 		this._disposingCancellationTokenSource = new ManualCancellationTokenSource();
 		this._notificationEmitter = new EventEmitter();
 		this._currentPriceManager = new CurrentPriceManager();
@@ -60,8 +60,8 @@ export class PriceServiceImpl extends Initable implements PriceService {
 	 * @param cancellationToken Cancellation Token allows your to cancel execution process
 	 * @param args criteria for price search
 	 */
-	public async getHistoricalPrices(cancellationToken: CancellationToken, args: Array<PriceService.Argument>)
-		: Promise<PriceService.Timestamp> {
+	public async getHistoricalPrices(cancellationToken: CancellationToken, args: Array<PriceApi.Argument>)
+		: Promise<PriceApi.Timestamp> {
 		this.verifyInitializedAndNotDisposed();
 
 		if (this._log.isTraceEnabled) {
@@ -75,7 +75,7 @@ export class PriceServiceImpl extends Initable implements PriceService {
 		validateDate(args);
 
 		this._log.trace("Check prices in storage provide");
-		const filterEmptyPrices: Array<PriceService.LoadDataRequest> =
+		const filterEmptyPrices: Array<PriceApi.LoadDataRequest> =
 			await this._storage.filterEmptyPrices(cancellationToken, args, this._sourcesId);
 
 		this._log.trace("Check cancellationToken for interrupt");
@@ -88,7 +88,7 @@ export class PriceServiceImpl extends Initable implements PriceService {
 		if (filterEmptyPrices.length > 0) {
 
 			this._log.trace("Loading prices from sources through function manager");
-			const newPrices: Array<PriceService.HistoricalPrices> =
+			const newPrices: Array<PriceApi.HistoricalPrices> =
 				await this.managerSourceProvider(cancellationToken, filterEmptyPrices);
 
 			this._log.trace("Check cancellationToken for interrupt");
@@ -104,7 +104,7 @@ export class PriceServiceImpl extends Initable implements PriceService {
 		}
 
 		this._log.trace("Read prices from storage provider");
-		const friendlyPrices: PriceService.Timestamp = await this._storage.findPrices(cancellationToken, args);
+		const friendlyPrices: PriceApi.Timestamp = await this._storage.findPrices(cancellationToken, args);
 
 		if (this._log.isTraceEnabled) {
 			this._log.trace(`Return result: ${friendlyPrices}`);
@@ -124,11 +124,11 @@ export class PriceServiceImpl extends Initable implements PriceService {
 
 	public async createChangePriceSubscriber(
 		cancellationToken: CancellationToken, threshold: number, pairs: ReadonlyArray<string>, exchanges: ReadonlyArray<string>
-	): Promise<PriceService.ChangePriceNotification.Channel> {
+	): Promise<PriceApi.ChangePriceNotification.Channel> {
 		// В этом методе мы используем все каналы из CurrentPriceManager по интересующим парами/источникам
 		// и заворачиваем события о об изменении цен, в ChangePriceNotification
 
-		const handlers: Array<PriceService.ChangePriceNotification.Callback> = [];
+		const handlers: Array<PriceApi.ChangePriceNotification.Callback> = [];
 		const priceChannels: Array<CurrentPriceManager.PriceUpdateChannel> = [];
 
 		const friendlyExchanges = [...new Set(exchanges).add("ZXTRADER")];
@@ -174,7 +174,7 @@ export class PriceServiceImpl extends Initable implements PriceService {
 			priceChannel.addHandler(priceChannelHandler);
 		}
 
-		const channelAdapter: PriceService.ChangePriceNotification.Channel = Object.freeze({
+		const channelAdapter: PriceApi.ChangePriceNotification.Channel = Object.freeze({
 			addHandler(cb) { handlers.push(cb); },
 			removeHandler(cb) {
 				const handlerIndex = handlers.indexOf(cb);
@@ -195,7 +195,7 @@ export class PriceServiceImpl extends Initable implements PriceService {
 
 	public async createChangeRateSubscriber(
 		cancellationToken: CancellationToken, threshold: number, marketCurrency: string, tradeCurrency: string
-	): Promise<PriceService.ChangeRateNotification.Channel> {
+	): Promise<PriceApi.ChangeRateNotification.Channel> {
 		const eventKey: string = `rate:${marketCurrency}:${tradeCurrency}`; // Temporaty implementation without exchangeId
 
 		const pair = `${tradeCurrency}/${marketCurrency}`;
@@ -221,16 +221,16 @@ export class PriceServiceImpl extends Initable implements PriceService {
 					if (this._log.isTraceEnabled) { this._log.trace(`Failed to get price for ${eventKey}.`, e); }
 				}
 			}, 1000);
-			const channels = new Set<PriceService.ChangeRateNotification.Channel>();
+			const channels = new Set<PriceApi.ChangeRateNotification.Channel>();
 			watcher = Object.freeze({
 				destroy() {
 					clearInterval(timer);
 					watchCancellationToken.cancel();
 				},
-				addChanel: (c: PriceService.ChangeRateNotification.Channel) => {
+				addChanel: (c: PriceApi.ChangeRateNotification.Channel) => {
 					channels.add(c);
 				},
-				removeChanel: (c: PriceService.ChangeRateNotification.Channel) => {
+				removeChanel: (c: PriceApi.ChangeRateNotification.Channel) => {
 					channels.delete(c);
 					if (channels.size === 0) {
 						clearInterval(timer);
@@ -241,7 +241,7 @@ export class PriceServiceImpl extends Initable implements PriceService {
 			this._changeRateWatchers.set(eventKey, watcher);
 		}
 
-		const handlers: Set<PriceService.ChangeRateNotification.Callback> = new Set();
+		const handlers: Set<PriceApi.ChangeRateNotification.Callback> = new Set();
 
 		const onChangeRate = async (data: any) => {
 			for (const handler of handlers) {
@@ -256,7 +256,7 @@ export class PriceServiceImpl extends Initable implements PriceService {
 		};
 
 		const channelWatcher = watcher;
-		const channel: PriceService.ChangeRateNotification.Channel = Object.freeze({
+		const channel: PriceApi.ChangeRateNotification.Channel = Object.freeze({
 			cb: null,
 			addHandler: cb => { handlers.add(cb); },
 			removeHandler: cb => { handlers.delete(cb); },
@@ -303,19 +303,19 @@ export class PriceServiceImpl extends Initable implements PriceService {
 		return this.__storage;
 	}
 
-	private async managerSourceProvider(cancellationToken: CancellationToken, loadArgs: Array<PriceService.LoadDataRequest>)
-		: Promise<Array<PriceService.HistoricalPrices>> {
+	private async managerSourceProvider(cancellationToken: CancellationToken, loadArgs: Array<PriceApi.LoadDataRequest>)
+		: Promise<Array<PriceApi.HistoricalPrices>> {
 		if (this._log.isTraceEnabled) {
 			this._log.trace("managerSourceProvider()... args: ", loadArgs);
 		}
 
 		this._log.trace("Parse LoadDataRequest to MultyLoadDataRequest");
-		const multyLoadDataRequest: PriceService.MultyLoadData = parseToMultyType(loadArgs);
+		const multyLoadDataRequest: PriceApi.MultyLoadData = parseToMultyType(loadArgs);
 
 		this._log.trace("Create array sourcesystem id which need syncs price");
 		const sourceIds: Array<string> = Object.keys(multyLoadDataRequest);
 
-		const taskSourceResults: Array<Array<PriceService.HistoricalPrices>> = [];
+		const taskSourceResults: Array<Array<PriceApi.HistoricalPrices>> = [];
 		const taskSources: Array<Promise<void>> = [];
 		const countSources: number = sourceIds.length;
 		for (let i = 0; i < countSources; i++) {
@@ -345,7 +345,7 @@ export class PriceServiceImpl extends Initable implements PriceService {
 			throw new AggregateError(errors);
 		}
 
-		const friendlyPrices: Array<PriceService.HistoricalPrices> = taskSourceResults.reduce((previous, current) => {
+		const friendlyPrices: Array<PriceApi.HistoricalPrices> = taskSourceResults.reduce((previous, current) => {
 			return previous.concat(current);
 		}, []);
 
@@ -395,18 +395,18 @@ export class PriceServiceImpl extends Initable implements PriceService {
 }
 
 
-function validateDate(args: Array<PriceService.Argument>) {
+function validateDate(args: Array<PriceApi.Argument>) {
 	for (let i = 0; i < args.length; i++) {
 		const arg = args[i];
 		const ts = arg.ts.toString();
 		const isValid = moment(ts, "YYYYMMDDHHmmss", true).isValid();
 		if (!isValid) {
-			throw new PriceService.InvalidDateError(`Invalid format date ${ts}`);
+			throw new PriceApi.InvalidDateError(`Invalid format date ${ts}`);
 		}
 	}
 }
-function parseToMultyType(loadArgs: Array<PriceService.LoadDataRequest>): PriceService.MultyLoadData {
-	const multyLoadDataRequest: { [sourceId: string]: Array<PriceService.LoadDataArgs>; } = {};
+function parseToMultyType(loadArgs: Array<PriceApi.LoadDataRequest>): PriceApi.MultyLoadData {
+	const multyLoadDataRequest: { [sourceId: string]: Array<PriceApi.LoadDataArgs>; } = {};
 
 	for (let i = 0; i < loadArgs.length; i++) {
 		const loadArg = loadArgs[i];
@@ -498,7 +498,7 @@ class CurrentPriceManager {
 
 	public filter(
 		pairs: ReadonlyArray<Pair>, sourceSystems: ReadonlyArray<string>
-	): PriceService.ChangePriceNotification.Data["prices"] {
+	): PriceApi.ChangePriceNotification.Data["prices"] {
 		const prices: {
 			[marketCurrency: string]: {
 				[tradeCurrency: string]: {

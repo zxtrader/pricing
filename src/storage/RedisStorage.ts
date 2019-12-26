@@ -2,7 +2,7 @@ import { CancellationToken, Financial } from "@zxteam/contract";
 import { Initable } from "@zxteam/disposable";
 import loggerFactory from "@zxteam/logger";
 
-import { PriceService } from "../api/PriceService";
+import { PriceApi } from "../api/PriceApi";
 import * as RedisClient from "ioredis";
 import { Redis, RedisOptions } from "ioredis";
 import { Storage } from "./Storage";
@@ -17,10 +17,10 @@ export class RedisStorage extends Initable implements Storage {
 		this.ioredis = new RedisClient(opts);
 	}
 
-	public async filterEmptyPrices(cancellationToken: CancellationToken, args: Array<PriceService.Argument>, sources: Array<string>)
-		: Promise<Array<PriceService.LoadDataRequest>> {
+	public async filterEmptyPrices(cancellationToken: CancellationToken, args: Array<PriceApi.Argument>, sources: Array<string>)
+		: Promise<Array<PriceApi.LoadDataRequest>> {
 		this._logger.trace("filterEmptyPrices()... ");
-		const friendlyRequest: Array<PriceService.LoadDataRequest> = [];
+		const friendlyRequest: Array<PriceApi.LoadDataRequest> = [];
 		for (let i = 0; i < args.length; i++) {
 			const arg = args[i];
 			const { ts, marketCurrency, tradeCurrency, sourceId, requiredAllSourceIds: requiredAllSourceSystems } = arg;
@@ -90,7 +90,7 @@ export class RedisStorage extends Initable implements Storage {
 		return friendlyRequest;
 	}
 
-	public async savePrices(cancellationToken: CancellationToken, newPrices: Array<PriceService.HistoricalPrices>): Promise<void> {
+	public async savePrices(cancellationToken: CancellationToken, newPrices: Array<PriceApi.HistoricalPrices>): Promise<void> {
 		this._logger.trace("savePrices()...");
 		for (let n = 0; n < newPrices.length; n++) {
 			const argNewPrice = newPrices[n];
@@ -177,10 +177,10 @@ export class RedisStorage extends Initable implements Storage {
 		}
 	}
 
-	public async findPrices(cancellationToken: CancellationToken, args: Array<PriceService.Argument>): Promise<PriceService.Timestamp> {
+	public async findPrices(cancellationToken: CancellationToken, args: Array<PriceApi.Argument>): Promise<PriceApi.Timestamp> {
 		this._logger.trace("Begin find price in redis database");
 
-		const friendlyPricesChunk: PriceService.Timestamp = {};
+		const friendlyPricesChunk: PriceApi.Timestamp = {};
 
 		if (this._logger.isTraceEnabled) {
 			this._logger.trace("Foreach args: ", args);
@@ -309,14 +309,14 @@ export interface RedisOpts {
 }
 export namespace helpers {
 	export function addPriceTimeStamp(
-		friendlyPrices: PriceService.Timestamp,
+		friendlyPrices: PriceApi.Timestamp,
 		ts: number,
 		marketCurrency: string,
 		tradeCurrency: string,
 		avgPrice?: string | null,
 		sourceId?: string,
 		sourcePrice?: string | null
-	): PriceService.Timestamp {
+	): PriceApi.Timestamp {
 		if (!(ts in friendlyPrices)) {
 			friendlyPrices[ts] = {};
 		}
