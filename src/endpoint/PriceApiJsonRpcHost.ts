@@ -1,4 +1,4 @@
-import { CancellationToken } from "@zxteam/contract";
+import { CancellationToken, Financial } from "@zxteam/contract";
 import { Disposable } from "@zxteam/disposable";
 import { SubscriberChannelMixin } from "@zxteam/channels";
 import { Ensure, EnsureError, ensureFactory } from "@zxteam/ensure";
@@ -13,6 +13,11 @@ const ensure: Ensure = ensureFactory();
 
 export class PriceServiceJsonRpcHost extends Disposable implements JsonRpcHost {
 	private _priceService: PriceService;
+	private _priceChannels: Map<string, {
+		readonly channel: PriceService.ChangePriceNotification.Channel;
+		readonly opts: { readonly pairs: ReadonlyArray<string>, readonly exchanges: ReadonlyArray<string>; };
+		disposer(): Promise<void>;
+	}>;
 	private _rateChannels: Map<string, {
 		readonly channel: PriceService.ChangeRateNotification.Channel;
 		readonly opts: { readonly marketCurrency: string, readonly tradeCurrency: string; };
@@ -22,6 +27,7 @@ export class PriceServiceJsonRpcHost extends Disposable implements JsonRpcHost {
 	public constructor(priceService: PriceService) {
 		super();
 		this._priceService = priceService;
+		this._priceChannels = new Map();
 		this._rateChannels = new Map();
 	}
 
@@ -41,12 +47,28 @@ export class PriceServiceJsonRpcHost extends Disposable implements JsonRpcHost {
 			// }
 			case "subscribe": {
 				const topicName = ensure.string((ensure.defined(params) as any).topic);
+				const threshold = ensure.integer((ensure.defined(params) as any).threshold);
+				if (threshold < 1) { throw new EnsureError("Bad threshold value. Expected above zero.", threshold); }
+				const opts = ensure.defined((ensure.defined(params) as any).opts);
 				switch (topicName) {
+					case "price": {
+						//{"opts":{"pairs":["BTC/USD","BTC/USDC","BTC/EUR","ETH/USD","ETH/USDC","ETH/EUR","ETH/BTC"],"exchanges":["BINANCE","POLONIEX"]}}
+						const pairs: Array<string> = ensure.array(opts.pairs).filter((pair): pair is string => {
+							if (_.isString(pair)) { return true; }
+							throw new EnsureError("Wrong pairs value. Expected array of string.", opts.pairs);
+						});
+						const exchanges: Array<string> = "exchanges" in opts
+							? ensure.array(opts.exchanges).filter((exchange): exchange is string => {
+								if (_.isString(exchange)) { return true; }
+								throw new EnsureError("Wrong exchanges value. Expected array of string.", opts.exchanges);
+							}) : [];
+						const result = await this._subscribePrice(cancellationToken, threshold, pairs, exchanges);
+						return { jsonrpc, id, result };
+					}
 					case "rate": {
-						const opts = ensure.defined((ensure.defined(params) as any).opts);
 						const marketCurrency: string = ensure.string(opts.marketCurrency);
 						const tradeCurrency: string = ensure.string(opts.tradeCurrency);
-						const result = await this._subscribeRate(cancellationToken, marketCurrency, tradeCurrency);
+						const result = await this._subscribeRate(cancellationToken, threshold, marketCurrency, tradeCurrency);
 						return { jsonrpc, id, result };
 					}
 					default: {
@@ -63,11 +85,11 @@ export class PriceServiceJsonRpcHost extends Disposable implements JsonRpcHost {
 				const result = await this._subsсiptionList(cancellationToken);
 				return { jsonrpc, id, result };
 			}
-			// case "unsubscribe": {
-			// 	const subscribeIds: ReadonlyArray<string> = ensure.string((ensure.defined(params) as any).exchangeId);
-			// 	const result = await this._unsubscribe(cancellationToken, subscribeIds);
-			// 	return { jsonrpc, id, result };
-			// }
+			case "unsubscribe": {
+				const subscribeIds: ReadonlyArray<string> = ensure.array((ensure.defined(params) as any));
+				await this._unsubscribe(cancellationToken, subscribeIds);
+				return { jsonrpc, id, result: true };
+			}
 			default: {
 				return {
 					jsonrpc, id, error: {
@@ -80,10 +102,19 @@ export class PriceServiceJsonRpcHost extends Disposable implements JsonRpcHost {
 	}
 
 	protected async onDispose() {
-		const rateChannelBundles = [...this._rateChannels.values()];
-		this._rateChannels.clear();
-		for (const rateChannelBundle of rateChannelBundles) {
-			await rateChannelBundle.disposer();
+		{ // priceChannels
+			const priceChannelBundles = [...this._priceChannels.values()];
+			this._priceChannels.clear();
+			for (const priceChannelBundle of priceChannelBundles) {
+				await priceChannelBundle.disposer();
+			}
+		}
+		{ // rateChannels
+			const rateChannelBundles = [...this._rateChannels.values()];
+			this._rateChannels.clear();
+			for (const rateChannelBundle of rateChannelBundles) {
+				await rateChannelBundle.disposer();
+			}
 		}
 	}
 
@@ -97,13 +128,81 @@ export class PriceServiceJsonRpcHost extends Disposable implements JsonRpcHost {
 
 	}
 
+	private async _subscribePrice(
+		cancellationToken: CancellationToken,
+		threshold: number,
+		pairs: ReadonlyArray<string>,
+		exchanges: ReadonlyArray<string>
+	): Promise<Response.Success["result"]> {
+		const subscribeId: string = "token-" + uuid();
+		const priceChannel: PriceService.ChangePriceNotification.Channel
+			= await this._priceService.createChangePriceSubscriber(cancellationToken, threshold, pairs, exchanges);
+
+		const handler = (event: PriceService.ChangePriceNotification.Event | Error): void | Promise<void> => {
+			if (event instanceof Error) {
+				return;
+			}
+
+			const { data } = event;
+
+			const prices: {
+				[marketCurrency: string]: {
+					[tradeCurrency: string]: {
+						[sourceSystem: string]: Financial | null;
+					};
+				};
+			} = {};
+
+			// Format respose prices
+			for (const [marketCurrency, sourceMarketCurrencyTuple] of _.entries(data.prices)) {
+				if (!(marketCurrency in prices)) { prices[marketCurrency] = {}; }
+				const targetMarketCurrencyTuple = prices[marketCurrency];
+
+				for (const [tradeCurrency, sourceTradeCurrencyTuple] of _.entries(sourceMarketCurrencyTuple)) {
+					if (!(tradeCurrency in targetMarketCurrencyTuple)) { targetMarketCurrencyTuple[tradeCurrency] = {}; }
+					const targetTradeCurrencyTuple = targetMarketCurrencyTuple[tradeCurrency];
+
+					for (const [sourceSystem, price] of _.entries(sourceTradeCurrencyTuple)) {
+						targetTradeCurrencyTuple[sourceSystem] = price;
+					}
+				}
+			}
+
+			return this.notify({
+				data: {
+					jsonrpc: "2.0",
+					method: subscribeId,
+					params: {
+						date: data.date.toISOString(),
+						prices
+					}
+				}
+			});
+		};
+
+		priceChannel.addHandler(handler);
+		async function disposer() {
+			priceChannel.removeHandler(handler);
+			await priceChannel.dispose();
+		}
+		this._priceChannels.set(subscribeId, Object.freeze({
+			channel: priceChannel,
+			opts: { pairs, exchanges },
+			disposer
+		}));
+
+		return { subscribeId };
+	}
+
 	private async _subscribeRate(
 		cancellationToken: CancellationToken,
+		threshold: number,
 		marketCurrency: string,
 		tradeCurrency: string
 	): Promise<Response.Success["result"]> {
-		const subscribeId: string = "token-" + uuid();
-		const rateChannel = await this._priceService.createChangeRateSubscriber(cancellationToken, marketCurrency, tradeCurrency);
+		const subscribeId: string = `token-${tradeCurrency}-${marketCurrency}`;
+		const rateChannel: PriceService.ChangeRateNotification.Channel
+			= await this._priceService.createChangeRateSubscriber(cancellationToken, threshold, marketCurrency, tradeCurrency);
 
 		const handler = (event: PriceService.ChangeRateNotification.Event | Error): void | Promise<void> => {
 			if (event instanceof Error) {
@@ -137,12 +236,34 @@ export class PriceServiceJsonRpcHost extends Disposable implements JsonRpcHost {
 		return { subscribeId };
 	}
 
+
 	private async _subsсiptionList(cancellationToken: CancellationToken): Promise<Response.Success["result"]> {
 		const subsсiptionList: { [token: string]: any; } = {};
 		for (const [token, subsсiptionBundle] of this._rateChannels) {
 			subsсiptionList[token] = subsсiptionBundle.opts;
 		}
+		for (const [token, subsсiptionBundle] of this._priceChannels) {
+			subsсiptionList[token] = subsсiptionBundle.opts;
+		}
 		return subsсiptionList;
+	}
+
+	private async _unsubscribe(cancellationToken: CancellationToken, subscribeIds: ReadonlyArray<string>): Promise<void> {
+		for (const subscribeId of subscribeIds) {
+			cancellationToken.throwIfCancellationRequested();
+			if (this._priceChannels.has(subscribeId)) {
+				const priceChannel = this._priceChannels.get(subscribeId)!;
+				this._priceChannels.delete(subscribeId);
+				await priceChannel.disposer();
+			}
+
+			cancellationToken.throwIfCancellationRequested();
+			if (this._rateChannels.has(subscribeId)) {
+				const rateChannel = this._rateChannels.get(subscribeId)!;
+				this._rateChannels.delete(subscribeId);
+				await rateChannel.disposer();
+			}
+		}
 	}
 
 	// private async _getSubsсiptions(cancellationToken: CancellationToken): Promise<Response.Success["result"]> {

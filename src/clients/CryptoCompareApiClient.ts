@@ -36,4 +36,32 @@ export class CryptoCompareApiClient extends RestClient {
 
 		return financial.fromFloat(price);
 	}
+
+	public async getPrices(
+		ct: zxteam.CancellationToken, marketCurrencies: ReadonlyArray<string>, tradeCurrency: string
+	): Promise<{
+		readonly [marketCurrency: string]: zxteam.Financial;
+	}> {
+		// fsym - это tradeCurrency (в терминах zxtrader)
+
+		this.verifyNotDisposed();
+
+		const webResult = await this.get(ct, "price", {
+			queryArgs: {
+				fsym: tradeCurrency,
+				tsyms: marketCurrencies.join(","),
+				extraParams: this._appName
+			}
+		});
+
+		const result: { [tradeCurrency: string]: zxteam.Financial; } = {};
+
+		const data = ensure.object(webResult.bodyAsJson) as any;
+		for (const marketCurrency of marketCurrencies) {
+			const price = ensure.number(data[marketCurrency]);
+			result[marketCurrency] = financial.fromFloat(price);
+		}
+
+		return result;
+	}
 }

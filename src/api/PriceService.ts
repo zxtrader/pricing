@@ -1,8 +1,12 @@
 import { CancellationToken, Financial, SubscriberChannel, Disposable } from "@zxteam/contract";
 
 export interface PriceService {
+	createChangePriceSubscriber(
+		cancellationToken: CancellationToken, threshold: number, pairs: ReadonlyArray<string>, exchanges: ReadonlyArray<string>
+	): Promise<PriceService.ChangePriceNotification.Channel>;
+
 	createChangeRateSubscriber(
-		cancellationToken: CancellationToken, marketCurrency: string, tradeCurrency: string
+		cancellationToken: CancellationToken, threshold: number, marketCurrency: string, tradeCurrency: string
 	): Promise<PriceService.ChangeRateNotification.Channel>;
 
 	getHistoricalPrices(
@@ -78,6 +82,22 @@ export namespace PriceService {
 		price: string;
 	}
 
+	export namespace ChangePriceNotification {
+		export interface Data {
+			readonly date: Date;
+			readonly prices: {
+				readonly [marketCurrency: string]: {
+					readonly [tradeCurrency: string]: {
+						readonly [sourceSystem: string]: Financial | null;
+					};
+				};
+			};
+		}
+		export type Callback = SubscriberChannel.Callback<Data, Event>;
+		export type Channel = SubscriberChannel<Data> & Disposable;
+		export type Event = SubscriberChannel.Event<Data>;
+	}
+
 	export namespace ChangeRateNotification {
 		export interface Data {
 			readonly date: Date;
@@ -87,7 +107,6 @@ export namespace PriceService {
 		export type Channel = SubscriberChannel<Data> & Disposable;
 		export type Event = SubscriberChannel.Event<Data>;
 	}
-
 
 	export class InvalidDateError extends Error { }
 }
