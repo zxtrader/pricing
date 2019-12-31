@@ -164,10 +164,6 @@ connected (press CTRL+C to quit)
 < {"jsonrpc":"2.0","method":"notification","params":{"token":"token-97","data":{"date":"2019-06-11T16:41:30.002Z","rate":"7995.26"}}}
 ```
 
-{"jsonrpc":"2.0","id":42,"method":"subscribe","params":{"topic":"rate","threshold":250,"opts":{"marketCurrency":"USD","tradeCurrency":"ETH"}}}
-{"jsonrpc":"2.0","id":42,"method":"subscribe","params":{"topic":"rate","threshold":250,"opts":{"marketCurrency":"USD","tradeCurrency":"ZEC"}}}
-{"jsonrpc":"2.0","id":42,"method":"subscribe","params":{"topic":"rate","threshold":250,"opts":{"marketCurrency":"USD","tradeCurrency":"TRX"}}}
-
 ### Topic "price"
 Отправляется при изменении текущего курса по валютной паре
 opts:

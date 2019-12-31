@@ -5,9 +5,11 @@ import { Ensure, EnsureError, ensureFactory } from "@zxteam/ensure";
 import { JsonRpcHost, Notification, Request, Response } from "@zxteam/jsonrpc";
 
 import * as _ from "lodash";
+import * as moment from "moment";
 import { v4 as uuid } from "uuid";
 
 import { PriceApi } from "../api/PriceApi";
+import { InvalidOperationError } from "@zxteam/errors";
 
 const ensure: Ensure = ensureFactory();
 
@@ -39,12 +41,25 @@ export class PriceApiJsonRpcHost extends Disposable implements JsonRpcHost {
 				const result = await this._ping(cancellationToken, echo);
 				return { jsonrpc, id, result };
 			}
-			// case "rate": {
-			// 	//> {"jsonrpc":"2.0","id":42,"method":"rate","params":{"marketCurrency":"USDT",
-			//"tradeCurrency":"BTC","exchangeId":"BINANCE","date":"2019-07-01T10:20:33Z"}}
-			// 	const result = await this._getExchanges(cancellationToken);
-			// 	return { jsonrpc, id, result };
-			// }
+			case "rate": {
+				const rateParams: any = ensure.defined(params);
+				const marketCurrency: string = ensure.string(rateParams.marketCurrency);
+				const tradeCurrency: string = ensure.string(rateParams.tradeCurrency);
+
+				const opts: {
+					exchangeId?: string;
+					date?: Date;
+				} = {};
+
+				if ("exchange" in rateParams) {
+					opts.exchangeId = ensure.string(rateParams.exchange);
+				}
+				if ("date" in rateParams) {
+					opts.date = new Date(ensure.string(rateParams.date));
+				}
+				const result: string = await this._rate(cancellationToken, marketCurrency, tradeCurrency, opts);
+				return { jsonrpc, id, result };
+			}
 			case "subscribe": {
 				const topicName = ensure.string((ensure.defined(params) as any).topic);
 				const threshold = ensure.integer((ensure.defined(params) as any).threshold);
@@ -126,6 +141,30 @@ export class PriceApiJsonRpcHost extends Disposable implements JsonRpcHost {
 			version: pingResult.version
 		};
 
+	}
+
+	private async _rate(
+		cancellationToken: CancellationToken,
+		marketCurrency: string,
+		tradeCurrency: string,
+		opts: {
+			readonly exchangeId?: string;
+			readonly date?: Date;
+		}
+	): Promise<string> {
+		const ts: number = Number(opts.date !== undefined ? moment(opts.date).format("YYYYMMDDHHmmss") : moment(new Date()).format("YYYYMMDDHHmmss"));
+		const histPrice = await this._priceService.getHistoricalPrices(cancellationToken, [{
+			marketCurrency, tradeCurrency,
+			ts,
+			requiredAllSourceIds: false
+		}]);
+
+		const avg = histPrice[ts][marketCurrency][tradeCurrency].avg;
+		if (avg !== null) {
+			return avg.price;
+		}
+
+		throw new Error("Cannot get rate");
 	}
 
 	private async _subscribePrice(
