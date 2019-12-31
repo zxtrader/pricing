@@ -14,13 +14,14 @@
 			"cwd": "${workspaceRoot}",
 			"env": {
 				"NODE_ENV": "development",
-				"NODE_TLS_REJECT_UNAUTHORIZED": "0",
-				"LOG4JS_CONFIG": "${workspaceRoot}/log4js.dev.json"
+				"LOG4JS_CONFIG": "${workspaceFolder}/log4js.json",
+				"LOG_LEVEL": "trace"
 			},
+			"envFile": "${workspaceFolder}/.env",
 			"args": [
 				"--config=${workspaceRoot}/price-service.config"
 			],
-			"program": "${workspaceRoot}/src/app.js"
+			"program": "${workspaceRoot}/bin/price-service.js"
 		},
 		{
 			"name": "Test",
