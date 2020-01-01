@@ -39,11 +39,12 @@ class ApiProviderImpl extends ApiProvider {
 
 		const sourceProviders: Array<PriceLoader> = [new Cryptocompare({})];
 
-		this._priceApi = new PriceApiImpl(
-			() => new RedisStorage(this._configurationProvider.storageURL),
+		this._priceApi = new PriceApiImpl({
+			storageFactory: () => new RedisStorage(this._configurationProvider.storageURL),
 			sourceProviders,
-			this.log.getLogger("PriceApi")
-		);
+			log: this.log.getLogger("PriceApi"),
+			aggregatedPriceSourceName: this._configurationProvider.aggregatedPriceSourceName
+		});
 	}
 
 	public get price(): PriceApi { return this._priceApi; }

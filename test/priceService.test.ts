@@ -45,7 +45,10 @@ describe("Positive tests Price service", function () {
 
 		cryptoCompare = new Cryptocompare(optsForLimit);
 		randomSource = new Randomizer();
-		priceService = new PriceApiImpl(() => new RedisStorage(getRedisURL()), [cryptoCompare, randomSource]);
+		priceService = new PriceApiImpl({
+			storageFactory: () => new RedisStorage(getRedisURL()),
+			sourceProviders: [cryptoCompare, randomSource]
+		});
 	});
 	after(async function () {
 		await cryptoCompare.dispose();

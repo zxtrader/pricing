@@ -1,9 +1,8 @@
 import { CancellationToken, Financial, Logger, SubscriberChannel } from "@zxteam/contract";
-import { DUMMY_CANCELLATION_TOKEN, ManualCancellationTokenSource, CancellationTokenSource } from "@zxteam/cancellation";
-import { Disposable } from "@zxteam/disposable";
-import { wrapErrorIfNeeded, ArgumentError, InvalidOperationError, AggregateError } from "@zxteam/errors";
-import loggerFactory from "@zxteam/logger";
+import { ManualCancellationTokenSource } from "@zxteam/cancellation";
 import { Initable } from "@zxteam/disposable";
+import { wrapErrorIfNeeded, ArgumentError, AggregateError } from "@zxteam/errors";
+import loggerFactory from "@zxteam/logger";
 
 import * as moment from "moment";
 import * as path from "path";
@@ -21,6 +20,7 @@ const { name: serviceName, version } = require(path.join(__dirname, "..", "..", 
 
 export class PriceApiImpl extends Initable implements PriceApi {
 	private readonly _log: Logger;
+	private readonly _aggregatedPriceSourceName: string;
 	private readonly _disposingCancellationTokenSource: ManualCancellationTokenSource;
 	private readonly _notificationEmitter: EventEmitter;
 	private readonly _currentPriceManager: CurrentPriceManager;
@@ -38,16 +38,17 @@ export class PriceApiImpl extends Initable implements PriceApi {
 	private __syncIntervalExecutionFlag: boolean;
 	private __storage: Storage | null;
 
-	public constructor(storageFactory: () => Storage, sourceProviders: Array<PriceLoader>, log?: Logger) {
+	public constructor(opts: PriceApiImpl.Opts) {
 		super();
-		this._log = log || loggerFactory.getLogger("PriceApi");
+		this._log = opts.log || loggerFactory.getLogger("PriceApi");
+		this._aggregatedPriceSourceName = opts.aggregatedPriceSourceName !== undefined ? opts.aggregatedPriceSourceName : "ZXTRADER";
 		this._disposingCancellationTokenSource = new ManualCancellationTokenSource();
 		this._notificationEmitter = new EventEmitter();
 		this._currentPriceManager = new CurrentPriceManager();
 		this._changeRateWatchers = new Map();
-		this._storageFactory = storageFactory;
-		this._sourceProviders = sourceProviders;
-		this._sourcesId = sourceProviders.map((source) => source.sourceId);
+		this._storageFactory = opts.storageFactory;
+		this._sourceProviders = opts.sourceProviders;
+		this._sourcesId = this._sourceProviders.map((source) => source.sourceId);
 		this._cryptoCompareApiClient = new CryptoCompareApiClient(serviceName, this._log);
 		this._intrestedPairs = [];
 		this.__syncInterval = null;
@@ -131,7 +132,7 @@ export class PriceApiImpl extends Initable implements PriceApi {
 		const handlers: Array<PriceApi.ChangePriceNotification.Callback> = [];
 		const priceChannels: Array<CurrentPriceManager.PriceUpdateChannel> = [];
 
-		const friendlyExchanges = [...new Set(exchanges).add("ZXTRADER")];
+		const friendlyExchanges = [...new Set(exchanges).add(this._aggregatedPriceSourceName)];
 
 		const friendlyPairs: Array<Pair> = [];
 
@@ -154,19 +155,40 @@ export class PriceApiImpl extends Initable implements PriceApi {
 			}
 		}
 
+		let lastNotificationDate: Date = new Date();
+		let thresholdTimeout: NodeJS.Timeout | null = null;
 		const priceChannelHandler = async (priceEvent: CurrentPriceManager.PriceUpdateEvent | Error) => {
 			if (priceEvent instanceof Error) { return; }
-			const { data: priceData } = priceEvent;
 
-			const prices = this._currentPriceManager.filter(friendlyPairs, friendlyExchanges);
+			if (thresholdTimeout === null) {
+				const { data: priceData } = priceEvent;
 
-			for (const handler of handlers) {
-				await handler({
-					data: {
-						date: priceData.date,
-						prices
+				const notificationFunction = async () => {
+					try {
+						const prices = this._currentPriceManager.filter(friendlyPairs, friendlyExchanges);
+						for (const handler of handlers) {
+							await handler({
+								data: {
+									date: priceData.date,
+									prices
+								}
+							});
+						}
+					} catch (e) {
+						this._log.warn("VERY UNEXPECTED ERROR", e);
+					} finally {
+						lastNotificationDate = new Date(); // now
+						thresholdTimeout = null;
 					}
-				});
+				};
+
+				const notificationDate: Date = new Date(); // now
+				const deplayFromLastUpdate: number = notificationDate.getTime() - lastNotificationDate.getTime();
+
+				thresholdTimeout = setTimeout(
+					notificationFunction,
+					deplayFromLastUpdate < threshold ? threshold - deplayFromLastUpdate : 0
+				);
 			}
 		};
 
@@ -185,6 +207,10 @@ export class PriceApiImpl extends Initable implements PriceApi {
 			dispose: (): Promise<void> => {
 				for (const priceChannel of priceChannels) {
 					priceChannel.removeHandler(priceChannelHandler);
+				}
+				if (thresholdTimeout !== null) {
+					clearTimeout(thresholdTimeout);
+					thresholdTimeout = null;
 				}
 				return Promise.resolve();
 			}
@@ -208,7 +234,7 @@ export class PriceApiImpl extends Initable implements PriceApi {
 			const watchCancellationToken = new ManualCancellationTokenSource();
 			const timer = setInterval(async () => {
 				try {
-					const price = this._currentPriceManager.getPrice(marketCurrency, tradeCurrency, "ZXTRADER");
+					const price = this._currentPriceManager.getPrice(marketCurrency, tradeCurrency, this._aggregatedPriceSourceName);
 					if (price !== null) {
 						const now = new Date();
 						// const ccPrice: Financial = await this._cryptoCompareApiClient
@@ -358,6 +384,7 @@ export class PriceApiImpl extends Initable implements PriceApi {
 	private async _onSyncTimer() {
 		if (this.__syncIntervalExecutionFlag === true) { return; }
 		this.__syncIntervalExecutionFlag = true;
+
 		try {
 			if (this._intrestedPairs.length > 0) {
 				const intrestedPairs: { [tradeCurrency: string]: Array<string> } = {};
@@ -373,24 +400,52 @@ export class PriceApiImpl extends Initable implements PriceApi {
 				}
 
 				for (const [tradeCurrency, marketCurrencies] of _.entries(intrestedPairs)) {
-					const now = new Date();
-					const ccPrices = await this._cryptoCompareApiClient.getPrices(
-						this._disposingCancellationTokenSource.token, marketCurrencies, tradeCurrency
-					);
+					try {
+						const now = new Date();
+						const cryptoComparePrices = await this._cryptoCompareApiClient.getPrices(
+							this._disposingCancellationTokenSource.token, marketCurrencies, tradeCurrency
+						);
 
-					for (const [marketCurrency, price] of _.entries(ccPrices)) {
-						await this._currentPriceManager.updatePrice(now, marketCurrency, tradeCurrency, "ZXTRADER", price);
-						await this._currentPriceManager.updatePrice(now, marketCurrency, tradeCurrency, "CRYPTOCOMPARE", price);
+						for (const [marketCurrency, cryptoComparePrice] of _.entries(cryptoComparePrices)) {
+							await this._currentPriceManager.updatePrice(now, marketCurrency, tradeCurrency, this._aggregatedPriceSourceName, cryptoComparePrice);
+							await this._currentPriceManager.updatePrice(now, marketCurrency, tradeCurrency, "CRYPTOCOMPARE", cryptoComparePrice);
+						}
+					} catch (e) {
+						if (e instanceof CryptoCompareApiClient.CryptoCompareApiError) {
+							if (this._log.isTraceEnabled || this._log.isInfoEnabled) {
+								const pairs: string = marketCurrencies.map(marketCurrency => `${tradeCurrency}/${marketCurrency}`).join(", ");
+								if (this._log.isInfoEnabled) {
+									this._log.info(`Cannot get price for pairs ${pairs} due inner error '${e.message}'`);
+								}
+								if (this._log.isTraceEnabled) {
+									this._log.trace(`Cannot get price for pairs ${pairs} due inner error '${e.message}'`, e, e.rawData);
+								}
+							}
+						} else {
+							throw e;
+						}
 					}
 				}
 			}
 		} catch (e) {
 			const err = wrapErrorIfNeeded(e);
-			this._log.debug("Cannot get price from Compare", err.message);
-			this._log.trace("Cannot get price from Compare", err);
+			this._log.debug("Cannot get price from Compare.", err.message);
+			this._log.trace("Cannot get price from Compare.", err);
 		} finally {
 			this.__syncIntervalExecutionFlag = false;
 		}
+	}
+}
+
+export namespace PriceApiImpl {
+	export interface Opts {
+		readonly storageFactory: () => Storage;
+		readonly sourceProviders: Array<PriceLoader>;
+		readonly log?: Logger;
+		/**
+		 * @default ZXTRADER
+		 */
+		readonly aggregatedPriceSourceName?: string;
 	}
 }
 
@@ -452,6 +507,7 @@ interface Pair {
 
 class CurrentPriceManager {
 	public readonly currentPriceMap: CurrentPriceManager.CurrentPriceMap;
+	//private _freezeUpdates: Map<CurrentPriceManager.PriceUpdateChannel, Financial> | null;
 
 	public constructor() {
 		this.currentPriceMap = {};

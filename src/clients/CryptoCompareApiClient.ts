@@ -1,5 +1,5 @@
 import * as zxteam from "@zxteam/contract";
-import { ensureFactory, Ensure } from "@zxteam/ensure";
+import { ensureFactory, Ensure, EnsureError } from "@zxteam/ensure";
 import financial from "@zxteam/financial";
 import RestClient from "@zxteam/web-client";
 
@@ -57,11 +57,34 @@ export class CryptoCompareApiClient extends RestClient {
 		const result: { [tradeCurrency: string]: zxteam.Financial; } = {};
 
 		const data = ensure.object(webResult.bodyAsJson) as any;
+
+		if ("Response" in data && data.Response === "Error") {
+			if ("Message" in data && _.isString(data.Message)) {
+				throw new CryptoCompareApiClient.CryptoCompareApiError(data.Message, data);
+			} else {
+				throw new CryptoCompareApiClient.CryptoCompareApiError("Unknown error", data);
+			}
+		}
+
 		for (const marketCurrency of marketCurrencies) {
-			const price = ensure.number(data[marketCurrency]);
-			result[marketCurrency] = financial.fromFloat(price);
+			if (marketCurrency in data) {
+				const price = ensure.number(data[marketCurrency]);
+				result[marketCurrency] = financial.fromFloat(price);
+			} else {
+				throw new EnsureError(`marketCurrency: ${marketCurrency} is not included in server response`, data);
+			}
 		}
 
 		return result;
+	}
+}
+
+export namespace CryptoCompareApiClient {
+	export class CryptoCompareApiError extends Error {
+		public readonly rawData: any;
+		public constructor(message: string, rawData: any) {
+			super(message);
+			this.rawData = rawData;
+		}
 	}
 }

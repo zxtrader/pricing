@@ -26,6 +26,7 @@ export interface Configuration {
 	readonly storageURL: URL;
 	/** List source system and settings */
 	readonly sources: Configuration.Sources;
+	readonly aggregatedPriceSourceName: string;
 }
 
 export namespace Configuration {
@@ -168,8 +169,10 @@ function parseConfiguration(configuration: RawConfiguration): Configuration {
 		}
 	);
 
+	const aggregatedPriceSourceName: string = configuration.getString("aggregatedPriceSourceName", "ZXTRADER");
+
 	const storageURL: URL = configuration.getURL("dataStorageURL");
-	const appConfig: Configuration = Object.freeze({ servers, endpoints, sources, storageURL });
+	const appConfig: Configuration = Object.freeze({ servers, endpoints, sources, storageURL, aggregatedPriceSourceName });
 	return appConfig;
 }
 

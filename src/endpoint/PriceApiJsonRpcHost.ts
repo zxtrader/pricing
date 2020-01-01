@@ -275,7 +275,6 @@ export class PriceApiJsonRpcHost extends Disposable implements JsonRpcHost {
 		return { subscribeId };
 	}
 
-
 	private async _subsсiptionList(cancellationToken: CancellationToken): Promise<Response.Success["result"]> {
 		const subsсiptionList: { [token: string]: any; } = {};
 		for (const [token, subsсiptionBundle] of this._rateChannels) {

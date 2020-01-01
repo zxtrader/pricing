@@ -12,6 +12,7 @@ export abstract class ConfigurationProvider extends Initable implements Configur
 	abstract get endpoints(): ReadonlyArray<Configuration.Endpoint>;
 	abstract get storageURL(): URL;
 	abstract get sources(): Configuration.Sources;
+	abstract get aggregatedPriceSourceName(): string;
 }
 
 @Provides(ConfigurationProvider)
@@ -30,6 +31,7 @@ export class ConfigurationProviderImpl extends ConfigurationProvider {
 	public get endpoints(): ReadonlyArray<Configuration.Endpoint> { return this._configuration.endpoints; }
 	public get storageURL(): URL { return this._configuration.storageURL; }
 	public get sources(): Configuration.Sources { return this._configuration.sources; }
+	public get aggregatedPriceSourceName(): string { return this._configuration.aggregatedPriceSourceName; }
 
 	protected async onInit(cancellationToken: CancellationToken): Promise<void> {
 		this.__configuration = await configurationFactory(cancellationToken);
