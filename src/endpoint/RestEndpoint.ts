@@ -14,9 +14,11 @@ import { DUMMY_CANCELLATION_TOKEN } from "@zxteam/cancellation";
 
 export class RestEndpoint extends ServersBindEndpoint {
 	protected readonly _router: express.Router;
+	private readonly _priceService: PriceApi;
 
 	public constructor(priceService: PriceApi, servers: ReadonlyArray<WebServer>, opts: HostingConfiguration.BindEndpoint, log: Logger) {
 		super(servers, opts, log);
+		this._priceService = priceService;
 		this._router = express.Router();
 		this._router.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
 			if (this.disposing || this.disposed) {
@@ -28,23 +30,7 @@ export class RestEndpoint extends ServersBindEndpoint {
 
 		this._router.use(middlewareBindURL(opts.bindPath));
 		this._router.use(compression());
-		// this._router.get("/ping", async function (req: express.Request, res: express.Response, next: express.NextFunction) {
-		// 	try {
-		// 		const { echo } = req.query;
-		// 		const time = new Date();
-		// 		return res.status(200).end(JSON.stringify({
-		// 			echo,
-		// 			time: time.toISOString(),
-		// 			version
-		// 		}));
-		// 	} catch (e) {
-		// 		if (e instanceof ArgumentException) {
-		// 			log.error(e.message);
-		// 			return render400(res, "Bad argument in request");
-		// 		}
-		// 		next(e);
-		// 	}
-		// });
+		this._router.get("/ping", this.onPing.bind(this));
 		this._router.get("/historical/:args", async (req: express.Request, res: express.Response, next: express.NextFunction) => {
 			try {
 				if (log.isTraceEnabled) { log.trace(`Price request ${req.url}`); }
@@ -166,6 +152,22 @@ export class RestEndpoint extends ServersBindEndpoint {
 		}
 		if (this._log.isDebugEnabled) { this._log.debug(`Unhandled error on ${this.constructor.name}`, e); }
 		res.status(500).end();
+	}
+
+	private async onPing(req: express.Request, res: express.Response): Promise<void> {
+		const echoMessage = req.query.echo;
+		if (typeof echoMessage !== "string") {
+			res.writeHead(400);
+			res.end();
+		} else {
+			try {
+				const { echo, time, version } = await this._priceService.ping(DUMMY_CANCELLATION_TOKEN, echoMessage);
+				return res.json({ echo, time: time.toISOString(), version }).end();
+			} catch (e) {
+				const errMessage = e.message;
+				return res.writeHead(500, errMessage).end();
+			}
+		}
 	}
 }
 
