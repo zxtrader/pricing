@@ -12,7 +12,19 @@ export class CryptoCompareApiClient extends RestClient {
 	private readonly _appName: string;
 
 	public constructor(userAgent: string, log: zxteam.Logger) {
-		super(new URL("https://min-api.cryptocompare.com/data/"), { log, userAgent });
+		super(new URL("https://min-api.cryptocompare.com/data/"), {
+			log,
+			userAgent,
+			limit: {
+				instance: {
+					perSecond: 15,
+					perMinute: 200,
+					perHour: 2000,
+					parallel: 3
+				},
+				timeout: 60000
+			}
+		});
 		this._appName = userAgent;
 	}
 

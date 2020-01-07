@@ -23,7 +23,7 @@ export class PriceApiImpl extends Initable implements PriceApi {
 	private readonly _aggregatedPriceSourceName: string;
 	private readonly _disposingCancellationTokenSource: ManualCancellationTokenSource;
 	private readonly _notificationEmitter: EventEmitter;
-	private readonly _currentPriceManager: CurrentPriceManager;
+	private readonly _currentPriceManager: RealtimePriceManager;
 	private readonly _changeRateWatchers: Map<string/*market key*/, {
 		destroy(): void;
 		addChanel(channel: PriceApi.ChangeRateNotification.Channel): void;
@@ -44,7 +44,7 @@ export class PriceApiImpl extends Initable implements PriceApi {
 		this._aggregatedPriceSourceName = opts.aggregatedPriceSourceName !== undefined ? opts.aggregatedPriceSourceName : "ZXTRADER";
 		this._disposingCancellationTokenSource = new ManualCancellationTokenSource();
 		this._notificationEmitter = new EventEmitter();
-		this._currentPriceManager = new CurrentPriceManager();
+		this._currentPriceManager = new RealtimePriceManager();
 		this._changeRateWatchers = new Map();
 		this._storageFactory = opts.storageFactory;
 		this._sourceProviders = opts.sourceProviders;
@@ -130,7 +130,7 @@ export class PriceApiImpl extends Initable implements PriceApi {
 		// и заворачиваем события о об изменении цен, в ChangePriceNotification
 
 		const handlers: Array<PriceApi.ChangePriceNotification.Callback> = [];
-		const priceChannels: Array<CurrentPriceManager.PriceUpdateChannel> = [];
+		const priceChannels: Array<RealtimePriceManager.PriceUpdateChannel> = [];
 
 		const friendlyExchanges = [...new Set(exchanges).add(this._aggregatedPriceSourceName)];
 
@@ -155,62 +155,72 @@ export class PriceApiImpl extends Initable implements PriceApi {
 			}
 		}
 
-		let lastNotificationDate: Date = new Date();
-		let thresholdTimeout: NodeJS.Timeout | null = null;
-		const priceChannelHandler = async (priceEvent: CurrentPriceManager.PriceUpdateEvent | Error) => {
-			if (priceEvent instanceof Error) { return; }
 
-			if (thresholdTimeout === null) {
-				const { data: priceData } = priceEvent;
-
-				const notificationFunction = async () => {
-					try {
-						const prices = this._currentPriceManager.filter(friendlyPairs, friendlyExchanges);
-						for (const handler of handlers) {
-							await handler({
-								data: {
-									date: priceData.date,
-									prices
-								}
-							});
+		const notificationFunction = async () => {
+			const notifyDate = new Date();
+			try {
+				const prices = this._currentPriceManager.filter(friendlyPairs, friendlyExchanges);
+				for (const handler of handlers) {
+					await handler({
+						data: {
+							date: notifyDate,
+							prices
 						}
-					} catch (e) {
-						this._log.warn("VERY UNEXPECTED ERROR", e);
-					} finally {
-						lastNotificationDate = new Date(); // now
-						thresholdTimeout = null;
-					}
-				};
-
-				const notificationDate: Date = new Date(); // now
-				const deplayFromLastUpdate: number = notificationDate.getTime() - lastNotificationDate.getTime();
-
-				thresholdTimeout = setTimeout(
-					notificationFunction,
-					deplayFromLastUpdate < threshold ? threshold - deplayFromLastUpdate : 0
-				);
+					});
+				}
+			} catch (e) {
+				this._log.warn("VERY UNEXPECTED ERROR", e);
 			}
 		};
 
-		for (const priceChannel of priceChannels) {
-			priceChannel.addHandler(priceChannelHandler);
-		}
+
+		let thresholdInterval: NodeJS.Timeout | null = null;
+		// const priceChannelHandler = async (priceEvent: RealtimePriceManager.PriceUpdateEvent | Error) => {
+		// 	if (priceEvent instanceof Error) { return; }
+
+		// 	if (thresholdTimeout === null) {
+		// 		const { data: priceData } = priceEvent;
+
+		// 		const notificationDate: Date = new Date(); // now
+		// 		const deplayFromLastUpdate: number = notificationDate.getTime() - lastNotificationDate.getTime();
+
+		// 		thresholdTimeout = setTimeout(
+		// 			notificationFunction,
+		// 			deplayFromLastUpdate < threshold ? threshold - deplayFromLastUpdate : 0
+		// 		);
+		// 	}
+		// };
+
+		// for (const priceChannel of priceChannels) {
+		// 	priceChannel.addHandler(priceChannelHandler);
+		// }
 
 		const channelAdapter: PriceApi.ChangePriceNotification.Channel = Object.freeze({
-			addHandler(cb) { handlers.push(cb); },
+			addHandler(cb) {
+				handlers.push(cb);
+				if (handlers.length === 1) {
+					thresholdInterval = setInterval(notificationFunction, threshold);
+				}
+			},
 			removeHandler(cb) {
 				const handlerIndex = handlers.indexOf(cb);
 				if (handlerIndex !== -1) {
 					handlers.splice(handlerIndex, 1);
 				}
+				if (handlers.length === 1) {
+					if (thresholdInterval !== null) {
+						clearInterval(thresholdInterval);
+						thresholdInterval = null;
+					}
+				}
 			},
 			dispose: (): Promise<void> => {
-				for (const priceChannel of priceChannels) {
-					priceChannel.removeHandler(priceChannelHandler);
-				}
-				if (thresholdTimeout !== null) {
-					clearTimeout(thresholdTimeout);
-					thresholdTimeout = null;
+				// for (const priceChannel of priceChannels) {
+				// 	priceChannel.removeHandler(priceChannelHandler);
+				// }
+				if (thresholdInterval !== null) {
+					clearInterval(thresholdInterval);
+					thresholdInterval = null;
 				}
 				return Promise.resolve();
 			}
@@ -306,7 +316,7 @@ export class PriceApiImpl extends Initable implements PriceApi {
 		const storage: Storage = this._storageFactory();
 		await storage.init(cancellationToken);
 		this.__storage = storage;
-		this.__syncInterval = setInterval(this._onSyncTimer.bind(this), 2500);
+		this.__syncInterval = setInterval(this._onSyncTimer.bind(this), 5);
 	}
 
 	protected async onDispose() {
@@ -399,7 +409,8 @@ export class PriceApiImpl extends Initable implements PriceApi {
 					intrestedPairs[tradeCurrency].push(marketCurrency);
 				}
 
-				for (const [tradeCurrency, marketCurrencies] of _.entries(intrestedPairs)) {
+				const errors: Array<Error> = [];
+				const tasks = _.entries(intrestedPairs).map(async ([tradeCurrency, marketCurrencies]) => {
 					try {
 						const now = new Date();
 						const cryptoComparePrices = await this._cryptoCompareApiClient.getPrices(
@@ -425,7 +436,9 @@ export class PriceApiImpl extends Initable implements PriceApi {
 							throw e;
 						}
 					}
-				}
+				}).map(promise => promise.catch(e => errors.push(wrapErrorIfNeeded(e))));
+				await Promise.all(tasks);
+				if (errors.length > 0) { throw new AggregateError(errors); }
 			}
 		} catch (e) {
 			const err = wrapErrorIfNeeded(e);
@@ -505,8 +518,8 @@ interface Pair {
 	readonly tradeCurrency: string;
 }
 
-class CurrentPriceManager {
-	public readonly currentPriceMap: CurrentPriceManager.CurrentPriceMap;
+class RealtimePriceManager {
+	public readonly currentPriceMap: RealtimePriceManager.CurrentPriceMap;
 	//private _freezeUpdates: Map<CurrentPriceManager.PriceUpdateChannel, Financial> | null;
 
 	public constructor() {
@@ -532,7 +545,7 @@ class CurrentPriceManager {
 
 	public getPriceChannel(
 		marketCurrency: string, tradeCurrency: string, sourceSystem: string
-	): CurrentPriceManager.PriceUpdateChannel {
+	): RealtimePriceManager.PriceUpdateChannel {
 		if (!(marketCurrency in this.currentPriceMap)) { this.currentPriceMap[marketCurrency] = {}; }
 		const marketCurrencyTuple = this.currentPriceMap[marketCurrency];
 
@@ -541,7 +554,7 @@ class CurrentPriceManager {
 
 		if (!(sourceSystem in tradeCurrencyTuple)) {
 			const sourceSystemTuple = {
-				channel: new CurrentPriceManager.PriceUpdateChannel(),
+				channel: new RealtimePriceManager.PriceUpdateChannel(),
 				price: null
 			};
 			tradeCurrencyTuple[sourceSystem] = sourceSystemTuple;
@@ -611,7 +624,7 @@ class CurrentPriceManager {
 
 		if (!(sourceSystem in tradeCurrencyTuple)) {
 			tradeCurrencyTuple[sourceSystem] = {
-				channel: new CurrentPriceManager.PriceUpdateChannel(),
+				channel: new RealtimePriceManager.PriceUpdateChannel(),
 				price: price
 			};
 			return;
@@ -622,7 +635,7 @@ class CurrentPriceManager {
 		}
 	}
 }
-namespace CurrentPriceManager {
+namespace RealtimePriceManager {
 	export interface CurrentPriceMap {
 		[marketCurrency: string]: {
 			[tradeCurrency: string]: {
