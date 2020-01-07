@@ -15,6 +15,7 @@ import { Storage } from "../storage/Storage";
 import { CryptoCompareApiClient } from "../clients/CryptoCompareApiClient";
 import { PriceApi } from "./PriceApi";
 import { SubscriberChannelMixin } from "@zxteam/channels";
+import { financial } from "../financial";
 
 const { name: serviceName, version } = require(path.join(__dirname, "..", "..", "package.json"));
 
@@ -155,16 +156,18 @@ export class PriceApiImpl extends Initable implements PriceApi {
 			}
 		}
 
-
 		const notificationFunction = async () => {
 			const notifyDate = new Date();
 			try {
 				const prices = this._currentPriceManager.filter(friendlyPairs, friendlyExchanges);
+
+				const pricesWithNoise = emulatorPriceChangingByNoise(prices, 0.0025);
+
 				for (const handler of handlers) {
 					await handler({
 						data: {
 							date: notifyDate,
-							prices
+							prices: pricesWithNoise
 						}
 					});
 				}
@@ -656,4 +659,28 @@ namespace RealtimePriceManager {
 	}
 	export interface PriceUpdateChannel extends SubscriberChannelMixin<{ readonly price: Financial, readonly date: Date; }> { }
 	SubscriberChannelMixin.applyMixin(PriceUpdateChannel);
+}
+
+
+function emulatorPriceChangingByNoise(
+	prices: PriceApi.ChangePriceNotification.Data["prices"],
+	noise: number
+): PriceApi.ChangePriceNotification.Data["prices"] {
+	const pricesWithNoise: PriceApi.ChangePriceNotification.Data["prices"] =
+		_.mapValues(prices, marketCurrencyTuple => {
+			return _.mapValues(marketCurrencyTuple, tradeCurrencyTuple => {
+				return _.mapValues(tradeCurrencyTuple, sourceSystemPrice => {
+					if (sourceSystemPrice === null) { return null; }
+
+					const noiseValue = financial.parse(((Math.random() - 0.5) * noise).toFixed(8));
+
+					return financial.add(
+						sourceSystemPrice,
+						financial.multiply(noiseValue, sourceSystemPrice)
+					);
+				});
+			});
+		});
+
+	return pricesWithNoise;
 }
