@@ -8,8 +8,8 @@ import { assert } from "chai";
 // import { price } from "../src/PriceService";
 // import nock = require("nock");
 
-import { PriceLoader } from "../src/priceLoader/PriceLoader";
-import { Cryptocompare } from "../src/priceLoader/Cryptocompare";
+import { PriceLoader } from "../src/input/PriceLoader";
+import { Cryptocompare } from "../src/input/Cryptocompare";
 import { PriceApi } from "../src/api/PriceApi";
 
 

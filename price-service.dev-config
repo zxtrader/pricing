@@ -1,1 +1,2 @@
+coingetRecorderStreamRedisURL = redis://127.0.0.1:6379?keepAlive=5
 dataStorageURL = redis://127.0.0.1:6379/0?ip_family=4&name=PriceService&prefix=price%3A

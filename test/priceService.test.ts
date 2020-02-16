@@ -3,8 +3,8 @@ import { RedisOptions } from "ioredis";
 import { PriceApi } from "../src/api/PriceApi";
 import { PriceApiImpl } from "../src/api/PriceApiImpl";
 import { DUMMY_CANCELLATION_TOKEN } from "@zxteam/cancellation";
-import { Randomizer } from "../src/priceLoader/Randomizer";
-import { Cryptocompare } from "../src/priceLoader/Cryptocompare";
+import { Randomizer } from "../src/input/Randomizer";
+import { Cryptocompare } from "../src/input/Cryptocompare";
 import { RedisStorage } from "../src/storage/RedisStorage";
 
 
@@ -47,7 +47,8 @@ describe("Positive tests Price service", function () {
 		randomSource = new Randomizer();
 		priceService = new PriceApiImpl({
 			storageFactory: () => new RedisStorage(getRedisURL()),
-			sourceProviders: [cryptoCompare, randomSource]
+			sourceProviders: [cryptoCompare, randomSource],
+			coingetRecorderStreamRedisURL: getRedisURL()
 		});
 	});
 	after(async function () {

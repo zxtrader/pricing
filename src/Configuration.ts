@@ -24,6 +24,7 @@ export interface Configuration {
 	readonly endpoints: ReadonlyArray<Configuration.Endpoint>;
 	/** Connection URL to database */
 	readonly storageURL: URL;
+	readonly coingetRecorderStreamRedisURL: URL;
 	/** List source system and settings */
 	readonly sources: Configuration.Sources;
 	readonly aggregatedPriceSourceName: string;
@@ -172,7 +173,11 @@ function parseConfiguration(configuration: RawConfiguration): Configuration {
 	const aggregatedPriceSourceName: string = configuration.getString("aggregatedPriceSourceName", "ZXTRADER");
 
 	const storageURL: URL = configuration.getURL("dataStorageURL");
-	const appConfig: Configuration = Object.freeze({ servers, endpoints, sources, storageURL, aggregatedPriceSourceName });
+	const coingetRecorderStreamRedisURL: URL = configuration.getURL("coingetRecorderStreamRedisURL");
+	const appConfig: Configuration = Object.freeze({
+		servers, endpoints, sources, storageURL,
+		coingetRecorderStreamRedisURL, aggregatedPriceSourceName
+	});
 	return appConfig;
 }
 

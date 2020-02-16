@@ -1,6 +1,9 @@
-import { CancellationToken, Financial, Logger, SubscriberChannel } from "@zxteam/contract";
+import {
+	CancellationToken, Initable as InitableLike,
+	Financial, Logger, SubscriberChannel
+} from "@zxteam/contract";
 import { ManualCancellationTokenSource } from "@zxteam/cancellation";
-import { Initable } from "@zxteam/disposable";
+import { Initable, Disposable } from "@zxteam/disposable";
 import { wrapErrorIfNeeded, ArgumentError, AggregateError } from "@zxteam/errors";
 import loggerFactory from "@zxteam/logger";
 
@@ -10,12 +13,14 @@ import * as _ from "lodash";
 import { EventEmitter } from "events";
 import { setInterval, clearInterval } from "timers";
 
-import { PriceLoader } from "../priceLoader/PriceLoader";
+import { PriceLoader } from "../input/PriceLoader";
 import { Storage } from "../storage/Storage";
 import { CryptoCompareApiClient } from "../clients/CryptoCompareApiClient";
 import { PriceApi } from "./PriceApi";
 import { SubscriberChannelMixin } from "@zxteam/channels";
 import { financial } from "../financial";
+import { RealtimePriceStream } from "../input/RealtimePriceStream";
+import { CoinGetRecorderRedisSubscriber } from "../input/RealtimePriceStreamImpl/CoinGetRecorderRedisSubscriber";
 
 const { name: serviceName, version } = require(path.join(__dirname, "..", "..", "package.json"));
 
@@ -31,10 +36,13 @@ export class PriceApiImpl extends Initable implements PriceApi {
 		removeChanel(channel: PriceApi.ChangeRateNotification.Channel): void;
 	}>;
 	private readonly _cryptoCompareApiClient: CryptoCompareApiClient;
+	private readonly _realtimePriceStreams: Set<RealtimePriceStream>;
 	private readonly _storageFactory: () => Storage;
 	private readonly _sourceProviders: Array<PriceLoader>;
 	private readonly _sourcesId: Array<string>;
 	private readonly _intrestedPairs: Array<string>;
+	private __logStatusData: { coingetMessages: number; cryptocompareCalls: number; activeSubscriptions: number; };
+	private __logStatusInterval: NodeJS.Timeout | null;
 	private __syncInterval: NodeJS.Timeout | null;
 	private __syncIntervalExecutionFlag: boolean;
 	private __storage: Storage | null;
@@ -47,14 +55,22 @@ export class PriceApiImpl extends Initable implements PriceApi {
 		this._notificationEmitter = new EventEmitter();
 		this._currentPriceManager = new RealtimePriceManager();
 		this._changeRateWatchers = new Map();
+		this._realtimePriceStreams = new Set();
 		this._storageFactory = opts.storageFactory;
 		this._sourceProviders = opts.sourceProviders;
 		this._sourcesId = this._sourceProviders.map((source) => source.sourceId);
 		this._cryptoCompareApiClient = new CryptoCompareApiClient(serviceName, this._log);
+		this._realtimePriceStreams.add(new CoinGetRecorderRedisSubscriber(opts.coingetRecorderStreamRedisURL));
 		this._intrestedPairs = [];
+		this.__logStatusInterval = null;
 		this.__syncInterval = null;
 		this.__syncIntervalExecutionFlag = false;
 		this.__storage = null;
+		this.__logStatusData = { coingetMessages: 0, cryptocompareCalls: 0, activeSubscriptions: 0 };
+
+		for (const realtimePriceStream of this._realtimePriceStreams) {
+			realtimePriceStream.addHandler(this._onRealtimePriceStream.bind(this));
+		}
 	}
 
 	/**
@@ -161,6 +177,7 @@ export class PriceApiImpl extends Initable implements PriceApi {
 			try {
 				const prices = this._currentPriceManager.filter(friendlyPairs, friendlyExchanges);
 
+				// 0.25% noise
 				const pricesWithNoise = emulatorPriceChangingByNoise(prices, 0.0025);
 
 				for (const handler of handlers) {
@@ -225,10 +242,12 @@ export class PriceApiImpl extends Initable implements PriceApi {
 					clearInterval(thresholdInterval);
 					thresholdInterval = null;
 				}
+				this.__logStatusData.activeSubscriptions--;
 				return Promise.resolve();
 			}
 		});
 
+		this.__logStatusData.activeSubscriptions++;
 		return channelAdapter;
 	}
 
@@ -302,6 +321,7 @@ export class PriceApiImpl extends Initable implements PriceApi {
 			dispose: (): Promise<void> => {
 				this._notificationEmitter.removeListener(eventKey, onChangeRate);
 				channelWatcher.removeChanel(channel);
+				this.__logStatusData.activeSubscriptions--;
 				return Promise.resolve();
 			}
 		});
@@ -310,6 +330,7 @@ export class PriceApiImpl extends Initable implements PriceApi {
 
 		watcher.addChanel(channel);
 
+		this.__logStatusData.activeSubscriptions++;
 		return channel;
 	}
 
@@ -317,22 +338,36 @@ export class PriceApiImpl extends Initable implements PriceApi {
 		this._log.debug("Initializing");
 		//await this._cryptoCompareApiClient.init(cancellationToken);
 		const storage: Storage = this._storageFactory();
-		await storage.init(cancellationToken);
+
+		const inittables: Array<InitableLike> = [storage];
+
+		for (const realtimePriceStream of this._realtimePriceStreams) {
+			if ("init" in (realtimePriceStream as any)) {
+				if (_.isFunction((realtimePriceStream as any).init)) {
+					inittables.push((realtimePriceStream as any));
+				}
+			}
+		}
+
+		await Initable.initAll(cancellationToken, ...inittables);
+
 		this.__storage = storage;
-		this.__syncInterval = setInterval(this._onSyncTimer.bind(this), 5);
+		this.__syncInterval = setInterval(this._onSyncTimer.bind(this), 300000);
+		this.__logStatusInterval = setInterval(this._onStatusTimer.bind(this), 60000);
 	}
 
 	protected async onDispose() {
 		await this._cryptoCompareApiClient.dispose();
-		if (this.__syncInterval !== null) {
-			clearInterval(this.__syncInterval);
-			this.__syncInterval = null;
-		}
-		if (this.__storage !== null) {
-			const storage: Storage = this.__storage;
-			this.__storage = null;
-			await storage.dispose();
-		}
+
+		clearInterval(this.__logStatusInterval!);
+		this.__logStatusInterval = null;
+
+		clearInterval(this.__syncInterval!);
+		this.__syncInterval = null;
+
+		const storage: Storage = this.__storage!;
+		this.__storage = null;
+		await storage.dispose();
 	}
 
 	private get _storage(): Storage {
@@ -394,6 +429,25 @@ export class PriceApiImpl extends Initable implements PriceApi {
 		return friendlyPrices;
 	}
 
+	private async _onRealtimePriceStream(event: RealtimePriceStream.Event | Error): Promise<void> {
+		if (event instanceof Error) {
+			this._log.fatal("Unexpected error for RealtimePriceStream. Normally RealtimePriceStream should never close the channel", event);
+			return;
+		}
+
+		this.__logStatusData.coingetMessages++;
+
+		const data: RealtimePriceStream.Notification = event.data;
+
+		await this._currentPriceManager.updatePrice(
+			data.date, data.marketCurrency, data.tradeCurrency, this._aggregatedPriceSourceName, data.price
+		);
+		await this._currentPriceManager.updatePrice(
+			data.date, data.marketCurrency, data.tradeCurrency, data.sourceSystem, data.price
+		);
+	}
+
+
 	private async _onSyncTimer() {
 		if (this.__syncIntervalExecutionFlag === true) { return; }
 		this.__syncIntervalExecutionFlag = true;
@@ -419,6 +473,7 @@ export class PriceApiImpl extends Initable implements PriceApi {
 						const cryptoComparePrices = await this._cryptoCompareApiClient.getPrices(
 							this._disposingCancellationTokenSource.token, marketCurrencies, tradeCurrency
 						);
+						this.__logStatusData.cryptocompareCalls++;
 
 						for (const [marketCurrency, cryptoComparePrice] of _.entries(cryptoComparePrices)) {
 							await this._currentPriceManager.updatePrice(now, marketCurrency, tradeCurrency, this._aggregatedPriceSourceName, cryptoComparePrice);
@@ -451,12 +506,19 @@ export class PriceApiImpl extends Initable implements PriceApi {
 			this.__syncIntervalExecutionFlag = false;
 		}
 	}
+
+	private async _onStatusTimer() {
+		this._log.info("Status", JSON.stringify(this.__logStatusData));
+		this.__logStatusData.coingetMessages = 0;
+		this.__logStatusData.cryptocompareCalls = 0;
+	}
 }
 
 export namespace PriceApiImpl {
 	export interface Opts {
 		readonly storageFactory: () => Storage;
 		readonly sourceProviders: Array<PriceLoader>;
+		readonly coingetRecorderStreamRedisURL: URL;
 		readonly log?: Logger;
 		/**
 		 * @default ZXTRADER

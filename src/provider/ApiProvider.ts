@@ -9,8 +9,8 @@ import { ConfigurationProvider } from "./ConfigurationProvider";
 import { PriceApi } from "../api/PriceApi";
 import { PriceApiImpl } from "../api/PriceApiImpl";
 import { RedisStorage } from "../storage/RedisStorage";
-import { PriceLoader } from "../priceLoader/PriceLoader";
-import Cryptocompare from "../priceLoader/Cryptocompare";
+import { PriceLoader } from "../input/PriceLoader";
+import Cryptocompare from "../input/Cryptocompare";
 
 @Singleton
 export abstract class ApiProvider extends Initable {
@@ -42,6 +42,7 @@ class ApiProviderImpl extends ApiProvider {
 		this._priceApi = new PriceApiImpl({
 			storageFactory: () => new RedisStorage(this._configurationProvider.storageURL),
 			sourceProviders,
+			coingetRecorderStreamRedisURL: this._configurationProvider.coingetRecorderStreamRedisURL,
 			log: this.log.getLogger("PriceApi"),
 			aggregatedPriceSourceName: this._configurationProvider.aggregatedPriceSourceName
 		});
