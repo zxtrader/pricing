@@ -40,7 +40,7 @@
 		"@zxteam/financial": "^6.0.56",
 		"@zxteam/hosting": "^6.0.42",
 		"@zxteam/jsonrpc": "^6.0.43",
-		"@zxteam/launcher": "^6.0.56",
+		"@zxteam/launcher": "^6.0.57",
 		"@zxteam/limit": "^6.0.41",
 		"@zxteam/logger": "^6.0.40",
 		"@zxteam/sql": "^6.0.50",
@@ -70,7 +70,7 @@
 	"scripts": {
 		"clean": "zxbuild clean",
 		"build": "zxbuild clean && zxbuild dist && cp README.md package-lock.json .dist/ && cp -a bin .dist/",
-		"compile": "zxbuild compile",
+		"compile": "zxbuild compile:src",
 		"test": "nyc --exclude submodules --exclude test --extension=\".ts\" --reporter=lcov --reporter=text --reporter=text-summary mocha \"test/**/*.test.js\" --recursive mocha --timeout 10000"
 	},
 	"private": true

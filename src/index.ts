@@ -23,15 +23,18 @@ export { ConfigurationProvider } from "./provider/ConfigurationProvider";
 const { name: serviceName, version: serviceVersion } = require("../package.json");
 
 
-export default async function (cancellationToken: CancellationToken, rawConfig: RawConfiguration): Promise<LauncherRuntime> {
+export default async function (cancellationToken: CancellationToken, config?: Configuration): Promise<LauncherRuntime> {
 	const log = logger.getLogger("RuntimeFactory");
 
 	log.info(`Package: ${serviceName}@${serviceVersion}`);
 
-	log.info("Initializing ConfigurationProvider...");
-	const config: Configuration = Configuration.parse(rawConfig);
-	const configurationProvider: ConfigurationProvider = new ConfigurationProviderImpl(config);
-	Container.get(ConfigurationProvider);
+	if (config !== undefined) {
+		log.info("Initializing ConfigurationProvider...");
+		const ownProvider: ConfigurationProvider = new ConfigurationProviderImpl(config);
+		Container.bind(ConfigurationProvider).provider({ get() { return ownProvider; } });
+	} else {
+		log.info("Using ConfigurationProvider provded by userF...");
+	}
 
 	log.info("Initializing DI runtime...");
 	await Initable.initAll(cancellationToken,

@@ -6,6 +6,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 
 const { launcher } = require("@zxteam/launcher");
 
-const { default: runtimeFactory } = require("../");
+const { default: runtimeFactory, Configuration } = require("../");
 
-launcher(async () => null, runtimeFactory);
+launcher(Configuration.parse, runtimeFactory);
