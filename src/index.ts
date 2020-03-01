@@ -24,7 +24,7 @@ const { name: serviceName, version: serviceVersion } = require("../package.json"
 
 
 export default async function (cancellationToken: CancellationToken, config?: Configuration): Promise<LauncherRuntime> {
-	const log = logger.getLogger("RuntimeFactory");
+	const log = logger.getLogger("PriceService");
 
 	log.info(`Package: ${serviceName}@${serviceVersion}`);
 
@@ -33,7 +33,7 @@ export default async function (cancellationToken: CancellationToken, config?: Co
 		const ownProvider: ConfigurationProvider = new ConfigurationProviderImpl(config);
 		Container.bind(ConfigurationProvider).provider({ get() { return ownProvider; } });
 	} else {
-		log.info("Using ConfigurationProvider provded by userF...");
+		log.info("Using ConfigurationProvider provided by user...");
 	}
 
 	log.info("Initializing DI runtime...");
