@@ -1,13 +1,10 @@
-import { CancellationToken } from "@zxteam/contract";
-import { Initable } from "@zxteam/disposable";
-import { InvalidOperationError } from "@zxteam/errors";
 import { Configuration as HostingConfiguration, WebServer } from "@zxteam/hosting";
 import { Singleton, Provides } from "@zxteam/launcher";
 
-import { Configuration, configurationFactory } from "../Configuration";
+import { Configuration } from "../Configuration";
 
 @Singleton
-export abstract class ConfigurationProvider extends Initable implements Configuration {
+export abstract class ConfigurationProvider implements Configuration {
 	abstract get servers(): ReadonlyArray<HostingConfiguration.WebServer | WebServer>;
 	abstract get endpoints(): ReadonlyArray<Configuration.Endpoint>;
 	abstract get storageURL(): URL;
@@ -21,11 +18,11 @@ export abstract class ConfigurationProvider extends Initable implements Configur
  * The class implements DI Provider + Configuration Adapter
  */
 export class ConfigurationProviderImpl extends ConfigurationProvider {
-	private __configuration: Configuration | null;
+	private _configuration: Configuration;
 
-	public constructor() {
+	public constructor(configuration: Configuration) {
 		super();
-		this.__configuration = null;
+		this._configuration = configuration;
 	}
 
 	public get servers(): ReadonlyArray<HostingConfiguration.WebServer | WebServer> { return this._configuration.servers; }
@@ -34,19 +31,4 @@ export class ConfigurationProviderImpl extends ConfigurationProvider {
 	public get coingetRecorderStreamRedisURL(): URL { return this._configuration.coingetRecorderStreamRedisURL; }
 	public get sources(): Configuration.Sources { return this._configuration.sources; }
 	public get aggregatedPriceSourceName(): string { return this._configuration.aggregatedPriceSourceName; }
-
-	protected async onInit(cancellationToken: CancellationToken): Promise<void> {
-		this.__configuration = await configurationFactory(cancellationToken);
-	}
-
-	protected onDispose() {
-		// Nothing to dispose
-	}
-
-	protected get _configuration(): Configuration {
-		if (this.__configuration === null) {
-			throw new InvalidOperationError("Wrong operation at current state. Did you init()?");
-		}
-		return this.__configuration;
-	}
 }
