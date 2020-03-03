@@ -15,7 +15,7 @@ spec:
     spec:
       initContainers:
       - name: migration
-        image: {{ .Values.docker.cpservice.image }}-migration:{{ .Values.docker.cpservice.tag }}
+        image: {{ .Values.docker.cpservice.migrationImage }}:{{ .Values.docker.cpservice.tag }}
         volumeMounts:
         - name: secret-files-migration
           mountPath: /etc/cexiolabs/cryptopay/secrets
@@ -23,12 +23,22 @@ spec:
           readOnly: false
       containers:
       - name: cpservice
-        image: {{ .Values.docker.cpservice.image }}:{{ .Values.docker.cpservice.tag }}
+        image: {{ .Values.docker.cpservice.serviceImage }}:{{ .Values.docker.cpservice.tag }}
+{{- if .Values.docker.cpservice.cmd }}
+        args:
+{{ range .Values.docker.cpservice.cmd }}
+          - {{ . }}
+{{ end }}
+{{- end }}
         ports:
         # - containerPort: 80
         #   protocol: TCP
         - containerPort: 8080
           protocol: TCP
+{{- if ne .Values.environment "production" }}
+        - containerPort: 8081
+          protocol: TCP
+{{- end }}
         - containerPort: 8082
           protocol: TCP
         - containerPort: 9090
@@ -47,6 +57,13 @@ spec:
         envFrom:
         - configMapRef:
             name: cpservice-envvars
+        env:
+        - name: RUNTIME
+          value: {{ .Values.environment "production" }}
+{{- if .Values.docker.cpservice.cmdbin }}
+        - name: CMDBIN
+          value: {{ .Values.docker.cpservice.cmdbin }}
+{{- end }}
         # livenessProbe:
         #   httpGet:
         #     path: /livenessProbe

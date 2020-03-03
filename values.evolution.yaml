@@ -2,8 +2,16 @@ environment: evolution
 
 docker:
   cpservice:
-    image: devdocker.infra.kube/cryptopay/cpservice
-    tag: latest
+    migrationImage: devdocker.infra.kube/cryptopay/cpservice-migration
+    serviceImage: devdocker.infra.kube/cryptopay/cpservice-devel
+    tag: latest,
+    cmd:
+      [
+        "--config-file=/etc/cexiolabs/cryptopay.service/service.config",
+        "--config-secrets-dir=/etc/cexiolabs/cryptopay/secrets",
+        "--config-env",
+      ]
+    cmdbin: "aggrless"
 
 ingress:
   API:
@@ -14,6 +22,13 @@ ingress:
     #backendCaSecretName:
     backendServiceName: cpservice
     backendServicePort: 8080
+  SysAdmin:
+    type: internal
+    domain: sysadmin-evolution-cryptopay.dev.kube
+    certSecretName: dev
+    backendServiceName: cpservice
+    backendServicePort: 8081
+    backendServiceInsecure: yes
   Dashboard:
     type: internal
     domain: dashboard-evolution-cryptopay.dev.kube

@@ -2,7 +2,8 @@ environment: presentation
 
 docker:
   cpservice:
-    image: devdocker.infra.kube/cryptopay/cpservice
+    migrationImage: devdocker.infra.kube/cryptopay/cpservice-migration
+    serviceImage: devdocker.infra.kube/cryptopay/cpservice-aggrless
     tag: latest
 
 ingress:
@@ -22,6 +23,13 @@ ingress:
     #backendCaSecretName:
     backendServiceName: cpservice
     backendServicePort: 8080
+  SysAdmin-Internal:
+    type: internal
+    domain: sysadmin-presentation-cryptopay.dev.kube
+    certSecretName: dev
+    backendServiceName: cpservice
+    backendServicePort: 8081
+    backendServiceInsecure: yes
   Dashboard-Internal:
     type: internal
     domain: dashboard-presentation-cryptopay.dev.kube

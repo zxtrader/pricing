@@ -19,6 +19,12 @@ spec:
       name: api
       protocol: TCP
       targetPort: 8080
+{{- if ne .Values.environment "production" }}
+    - port: 8081
+      name: sysadmin
+      protocol: TCP
+      targetPort: 8081
+{{- end }}
     - port: 8082
       name: dashboard
       protocol: TCP

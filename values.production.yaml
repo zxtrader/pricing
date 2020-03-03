@@ -3,7 +3,8 @@ environment: production
 
 docker:
   cpservice:
-    image: harbor.infra.kube/cryptopay/cpservice
+    migrationImage: harbor.infra.kube/cryptopay/cpservice-migration
+    serviceImage: harbor.infra.kube/cryptopay/cpservice
     tag: latest
 
 ingress:
