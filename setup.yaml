@@ -1,0 +1,82 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cpservice-envvars
+data:
+  aggregator.url: wss://api-aggr..../ws
+  notifier.subscriber.url: wss://notifier-evolution-cryptopay.......
+  pss.aggregator.url: https://pss-rpc..../aggregator
+  pss.cryptoWalletHelper.url: https://pss-rpc..../cryptopay
+  pss.cryptopay.url: https://pss-rpc..../cryptopay
+  pss.es.url: https://pss-rpc..../cryptopay
+  wtf1.BCH.host: ...wtf...
+  wtf1.BCH.port: "2832"
+  wtf1.BTC.host: ...wtf...
+  wtf1.BTC.port: "2782"
+  wtf1.LTC.host: ...wtf...
+  wtf1.LTC.port: "2792"
+  wtf1.url: https://cp-wtfcryptoprovider.dev.kube/
+  wtf2pss.url: https://pss-provider-wtf2..../
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cpservice-files
+data:
+  trusted-aggregator-ca.crt: |-
+    -----BEGIN CERTIFICATE-----
+    TODO
+    -----END CERTIFICATE-----
+  trusted-notifier-ca.crt: |-
+    -----BEGIN CERTIFICATE-----
+    TODO
+    -----END CERTIFICATE-----
+  trusted-pssaggregator-ca.crt: |-
+    -----BEGIN CERTIFICATE-----
+    TODO
+    -----END CERTIFICATE-----
+  trusted-psscryptopay-ca.crt: |-
+    -----BEGIN CERTIFICATE-----
+    TODO
+    -----END CERTIFICATE-----
+  trusted-psscryptowallethelper-ca.crt: |-
+    -----BEGIN CERTIFICATE-----
+    TODO
+    -----END CERTIFICATE-----
+  trusted-wtf1-ca.crt: |-
+    -----BEGIN CERTIFICATE-----
+    TODO
+    -----END CERTIFICATE-----
+  trusted-wtf2pss-ca.crt: |-
+    -----BEGIN CERTIFICATE-----
+    TODO
+    -----END CERTIFICATE-----
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: cpservice
+type: Opaque
+data:
+  database.encryptionPassword: VE9ETw==
+  endpoint.dashboard.jwtSecret: VE9ETw==
+  postgres.url: VE9ETw==
+  pss.aggregator.signatureSecretKey: VE9ETw==
+  pss.cryptoWalletHelper.signatureSecretKey: VE9ETw==
+  pss.cryptopay.signatureSecretKey: VE9ETw==
+  rabbitmq.url: VE9ETw==
+  redis.url: VE9ETw==
+  setup.intermediateMerchant.key: VE9ETw==
+  setup.intermediateMerchant.passphrase: VE9ETw==
+  setup.intermediateMerchant.secret: VE9ETw==
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: cpservice-migration
+type: Opaque
+data:
+  postgres.url: VE9ETw==

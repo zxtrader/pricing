@@ -1,0 +1,12 @@
+Please wait for several minutes for deployment to complete.
+
+Version {{ .Values.version }}
+
+Application daemon should be up. Hopefully.
+
+{{ $rootScope := . }}
+{{- range $key, $value := .Values.ingress -}}
+{{- if or (eq $rootScope.Release.Name "tag") (eq $value.type "internal") }}
+{{ $key }}: https://{{ template "prefix" $rootScope }}{{ $value.domain }}
+{{- end }}
+{{- end -}}

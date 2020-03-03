@@ -1,0 +1,34 @@
+{{ $rootScope := . }}
+{{- range $key, $value := .Values.ingress -}}
+{{- if or (eq $rootScope.Release.Name "tag") (eq $value.type "internal") }}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ $rootScope.Chart.Name }}-{{ .backendServiceName }}{{ template "suffix" $rootScope }}-{{ $key | lower }}
+  annotations:
+{{ if .backendCaSecretName }}
+    nginx.ingress.kubernetes.io/auth-tls-pass-certificate-to-upstream: "true"
+    nginx.ingress.kubernetes.io/auth-tls-secret: {{ $rootScope.Release.Namespace }}/{{ .backendCaSecretName }}
+    nginx.ingress.kubernetes.io/auth-tls-verify-client: "on"
+    nginx.ingress.kubernetes.io/auth-tls-verify-depth: "1"
+{{ end }}
+    nginx.ingress.kubernetes.io/backend-protocol: "https"
+    nginx.ingress.kubernetes.io/secure-backends: "true"
+    nginx.org/ssl-services: {{ $rootScope.Chart.Name }}-{{ $value.backendServiceName }}{{ template "suffix" $rootScope }}
+spec:
+  tls:
+    - hosts:
+        - "{{ template "prefix" $rootScope }}{{ $value.domain }}"
+      secretName: "{{ $value.certSecretName }}"
+  rules:
+    - host: "{{ template "prefix" $rootScope }}{{ $value.domain }}"
+      http:
+        paths:
+          - backend:
+              serviceName: {{ $rootScope.Chart.Name }}-{{ $value.backendServiceName }}{{ template "suffix" $rootScope }}
+              servicePort: {{ $value.backendServicePort }}
+            path: /
+
+---
+{{- end }}
+{{- end -}}

@@ -1,0 +1,24 @@
+# Deployment environment: evolution, presentation, sandbox or production
+environment: production
+
+docker:
+  cpservice:
+    image: harbor.infra.kube/cryptopay/cpservice
+    tag: latest
+
+ingress:
+  API:
+    type: external
+    domain: api.cryptopay.band
+    certSecretName: ingress-api
+    # API does not require client's certificate
+    #backendCaSecretName:
+    backendServiceName: cpservice
+    backendServicePort: 8080
+  Dashboard:
+    type: external
+    domain: dashboard.cryptopay.band
+    certSecretName: ingress-api
+    backendCaSecretName: client-ca-api
+    backendServiceName: cpservice
+    backendServicePort: 8082

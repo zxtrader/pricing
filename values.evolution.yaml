@@ -1,0 +1,23 @@
+environment: evolution
+
+docker:
+  cpservice:
+    image: devdocker.infra.kube/cryptopay/cpservice
+    tag: latest
+
+ingress:
+  API:
+    type: internal
+    domain: api-evolution-cryptopay.dev.kube
+    certSecretName: dev
+    # API does not require client's certificate
+    #backendCaSecretName:
+    backendServiceName: cpservice
+    backendServicePort: 8080
+  Dashboard:
+    type: internal
+    domain: dashboard-evolution-cryptopay.dev.kube
+    certSecretName: dev
+    backendCaSecretName: ca-secret
+    backendServiceName: cpservice
+    backendServicePort: 8082

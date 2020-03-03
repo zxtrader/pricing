@@ -1,0 +1,45 @@
+#include: 'https://gitlab.wnb:28443/pub/gitlab-pipelines/raw/master/common.yml'
+
+variables:
+  BUILD_IMAGE: alpine/helm:2.14.0
+
+.functions: &functions |
+  function verify_version() {
+    if [ -z "${CI_COMMIT_TAG}" ]; then
+      echo "The function verify_version() is able to use for tags only. Variable CI_COMMIT_TAG is not set." >&2
+      exit 127
+    fi
+    local HELM_CHART_APP_VERSION=$(grep -e '^appVersion:' Chart.yaml | cut -d ':' -f 2)
+    if [ "$HELM_CHART_APP_VERSION" != "$CI_COMMIT_TAG" ]; then
+      echo "Helm Chart appVersion '${HELM_CHART_APP_VERSION}; is not same as tag version '${CI_COMMIT_TAG}'" >&2
+      exit 255
+    fi
+  }
+  function kube_config_setup() {
+    if [ -z "${KUBECONF_BASE64}" ]; then
+      echo "kube_deploy_dev_image() wrong arguments. Expected environment variable KUBECONF_BASE64" >&2
+      exit 1
+    fi
+    mkdir -p ~/.kube
+    echo "$KUBECONF_BASE64" | base64 -d > ~/.kube/config
+  }
+
+image: ${BUILD_IMAGE}
+
+before_script:
+  - *functions
+  - kube_config_setup
+
+stages:
+  - deploy
+
+evolution:
+  stage: deploy
+  when: manual
+  script:
+    - helm --tiller-namespace "cryptopay-evolution" upgrade --install --namespace "cryptopay-evolution" --values "values.evolution.yaml" --set docker.cpservice.tag=${IMAGE_TAG} "$TARGET" .
+  only:
+    variables:
+      - $ENV == "evolution"
+      - $IMAGE_TAG
+      - $TARGET

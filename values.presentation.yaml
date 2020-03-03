@@ -1,0 +1,38 @@
+environment: presentation
+
+docker:
+  cpservice:
+    image: devdocker.infra.kube/cryptopay/cpservice
+    tag: latest
+
+ingress:
+  API-Internal:
+    type: internal
+    domain: api-presentation-cryptopay.dev.kube
+    certSecretName: dev
+    # API does not require client's certificate
+    #backendCaSecretName:
+    backendServiceName: cpservice
+    backendServicePort: 8080
+  API-External:
+    type: external
+    domain: api-testnet.cryptopay.band
+    certSecretName: dev
+    # API does not require client's certificate
+    #backendCaSecretName:
+    backendServiceName: cpservice
+    backendServicePort: 8080
+  Dashboard-Internal:
+    type: internal
+    domain: dashboard-presentation-cryptopay.dev.kube
+    certSecretName: dev
+    backendCaSecretName: ca-secret
+    backendServiceName: cpservice
+    backendServicePort: 8082
+  Dashboard-External:
+    type: external
+    domain: dashboard-testnet.cryptopay.band
+    certSecretName: dev
+    backendCaSecretName: ca-secret
+    backendServiceName: cpservice
+    backendServicePort: 8082
