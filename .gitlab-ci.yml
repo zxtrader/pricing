@@ -34,6 +34,7 @@ evolution:
   stage: deploy
   script:
     - helm --tiller-namespace "cryptopay-evolution" upgrade --install --namespace "cryptopay-evolution" --values "values.evolution.yaml" --set "docker.cpservice.tag=${IMAGE_TAG}" "$TARGET" .
+    - env
   environment:
     name: evolution
     url: https://evolution-cryptopay.dev.kube
@@ -48,6 +49,7 @@ evolution:
 presentation:
   stage: deploy
   script:
+    - env
     - helm --tiller-namespace "cryptopay-presentation" upgrade --install --namespace "cryptopay-presentation" --values "values.presentation.yaml" --set "docker.cpservice.tag=${IMAGE_TAG}" "$TARGET" .
   environment:
     name: presentation
