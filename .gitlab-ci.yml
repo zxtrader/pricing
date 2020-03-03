@@ -10,12 +10,14 @@
       exit 255
     fi
   }
-  function verify_deployment_vars() {
+  function verify_imagetag_var() {
     if [ -z "${IMAGE_TAG}" ]; then
       echo "Variable IMAGE_TAG is not set." >&2
       echo "Expected IMAGE_TAG: '<branch>.<commit_sha_head>'' or tag name (like 2.x.x)"
       exit 127
     fi
+  }
+  function verify_target_var() {
     if [ -z "${TARGET}" ]; then
       echo "Variable TARGET is not set." >&2
       echo "Expected TARGET: "tag" or branch name" >&2
@@ -45,7 +47,8 @@ stages:
 evolution:
   stage: deploy
   script:
-    - verify_deployment_vars
+    - verify_imagetag_var
+    - verify_target_var
     - helm --tiller-namespace "cryptopay-evolution" upgrade --install --namespace "cryptopay-evolution" --values "values.evolution.yaml" --set "docker.cpservice.tag=${IMAGE_TAG}" "$TARGET" .
   environment:
     name: evolution
@@ -57,7 +60,8 @@ evolution:
 presentation:
   stage: deploy
   script:
-    - verify_deployment_vars
+    - verify_imagetag_var
+    - verify_target_var
     - helm --tiller-namespace "cryptopay-presentation" upgrade --install --namespace "cryptopay-presentation" --values "values.presentation.yaml" --set "docker.cpservice.tag=${IMAGE_TAG}" "$TARGET" .
   environment:
     name: presentation
@@ -65,3 +69,17 @@ presentation:
   only:
     variables:
       - $ENVIRONMENT == "presentation"
+
+production:
+  stage: deploy
+  script:
+    - verify_imagetag_var
+    - helm --tiller-namespace "cryptopay-production" upgrade --install --namespace "cryptopay-production" --values "values.production.yaml" tag .
+  environment:
+    name: production
+    url: https://cryptopay.band/
+  only:
+    variables:
+      - $ENVIRONMENT == "production"
+    refs:
+      - tags
