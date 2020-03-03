@@ -59,7 +59,7 @@ spec:
             name: cpservice-envvars
         env:
         - name: RUNTIME
-          value: {{ .Values.environment "production" }}
+          value: {{ .Values.environment }}
 {{- if .Values.docker.cpservice.cmdbin }}
         - name: CMDBIN
           value: {{ .Values.docker.cpservice.cmdbin }}
