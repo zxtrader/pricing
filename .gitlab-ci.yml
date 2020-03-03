@@ -1,8 +1,3 @@
-#include: 'https://gitlab.wnb:28443/pub/gitlab-pipelines/raw/master/common.yml'
-
-variables:
-  BUILD_IMAGE: alpine/helm:2.14.0
-
 .functions: &functions |
   function verify_version() {
     if [ -z "${CI_COMMIT_TAG}" ]; then
@@ -24,7 +19,9 @@ variables:
     echo "$KUBECONF_BASE64" | base64 -d > ~/.kube/config
   }
 
-image: ${BUILD_IMAGE}
+image:
+  name: alpine/helm:2.14.0
+  entrypoint: ["/bin/sh"]
 
 before_script:
   - *functions
@@ -35,7 +32,6 @@ stages:
 
 evolution:
   stage: deploy
-  when: manual
   script:
     - helm --tiller-namespace "cryptopay-evolution" upgrade --install --namespace "cryptopay-evolution" --values "values.evolution.yaml" --set docker.cpservice.tag=${IMAGE_TAG} "$TARGET" .
   only:
