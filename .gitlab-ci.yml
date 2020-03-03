@@ -10,6 +10,18 @@
       exit 255
     fi
   }
+  function verify_deployment_vars() {
+    if [ -z "${IMAGE_TAG}" ]; then
+      echo "Variable IMAGE_TAG is not set." >&2
+      echo "Expected IMAGE_TAG: '<branch>.<commit_sha_head>'' or tag name (like 2.x.x)"
+      exit 127
+    fi
+    if [ -z "${TARGET}" ]; then
+      echo "Variable TARGET is not set." >&2
+      echo "Expected TARGET: "tag" or branch name" >&2
+      exit 127
+    fi
+  }
   function kube_config_setup() {
     if [ -z "${KUBECONF_BASE64}" ]; then
       echo "kube_deploy_dev_image() wrong arguments. Expected environment variable KUBECONF_BASE64" >&2
@@ -33,23 +45,19 @@ stages:
 evolution:
   stage: deploy
   script:
+    - verify_deployment_vars
     - helm --tiller-namespace "cryptopay-evolution" upgrade --install --namespace "cryptopay-evolution" --values "values.evolution.yaml" --set "docker.cpservice.tag=${IMAGE_TAG}" "$TARGET" .
-    - env
   environment:
     name: evolution
     url: https://evolution-cryptopay.dev.kube
   only:
     variables:
       - $ENV == "evolution"
-      # IMAGE_TAG: "<branch>.<commit_sha_head>" or tag name (like 2.x.x)
-      - $IMAGE_TAG
-      # TARGET: "tag" of branch name
-      - $TARGET
 
 presentation:
   stage: deploy
   script:
-    - env
+    - verify_deployment_vars
     - helm --tiller-namespace "cryptopay-presentation" upgrade --install --namespace "cryptopay-presentation" --values "values.presentation.yaml" --set "docker.cpservice.tag=${IMAGE_TAG}" "$TARGET" .
   environment:
     name: presentation
@@ -57,7 +65,3 @@ presentation:
   only:
     variables:
       - $ENV == "presentation"
-      # IMAGE_TAG: "<branch>.<commit_sha_head>" or tag name (like 2.x.x)
-      - $IMAGE_TAG
-      # TARGET: "tag" of branch name
-      - $TARGET
