@@ -52,7 +52,7 @@ evolution:
     url: https://evolution-cryptopay.dev.kube
   only:
     variables:
-      - $ENV == "evolution"
+      - $ENVIRONMENT == "presentation"
 
 presentation:
   stage: deploy
@@ -64,4 +64,4 @@ presentation:
     url: https://presentation-cryptopay.dev.kube
   only:
     variables:
-      - $ENV == "presentation"
+      - $ENVIRONMENT == "presentation"
