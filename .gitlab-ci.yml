@@ -21,7 +21,7 @@
 
 image:
   name: alpine/helm:2.14.0
-  entrypoint: ["/bin/sh"]
+  entrypoint: [""]
 
 before_script:
   - *functions
