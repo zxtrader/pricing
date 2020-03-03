@@ -33,9 +33,29 @@ stages:
 evolution:
   stage: deploy
   script:
-    - helm --tiller-namespace "cryptopay-evolution" upgrade --install --namespace "cryptopay-evolution" --values "values.evolution.yaml" --set docker.cpservice.tag=${IMAGE_TAG} "$TARGET" .
+    - helm --tiller-namespace "cryptopay-evolution" upgrade --install --namespace "cryptopay-evolution" --values "values.evolution.yaml" --set "docker.cpservice.tag=${IMAGE_TAG}" "$TARGET" .
+  environment:
+    name: evolution
+    url: https://evolution-cryptopay.dev.kube
   only:
     variables:
       - $ENV == "evolution"
+      # IMAGE_TAG: "<branch>.<commit_sha_head>" or tag name (like 2.x.x)
       - $IMAGE_TAG
+      # TARGET: "tag" of branch name
+      - $TARGET
+
+presentation:
+  stage: deploy
+  script:
+    - helm --tiller-namespace "cryptopay-presentation" upgrade --install --namespace "cryptopay-presentation" --values "values.presentation.yaml" --set "docker.cpservice.tag=${IMAGE_TAG}" "$TARGET" .
+  environment:
+    name: presentation
+    url: https://presentation-cryptopay.dev.kube
+  only:
+    variables:
+      - $ENV == "presentation"
+      # IMAGE_TAG: "<branch>.<commit_sha_head>" or tag name (like 2.x.x)
+      - $IMAGE_TAG
+      # TARGET: "tag" of branch name
       - $TARGET
