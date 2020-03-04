@@ -1,4 +1,3 @@
-# Deployment environment: evolution, presentation, sandbox or production
 environment: production
 
 docker:
