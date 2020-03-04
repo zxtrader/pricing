@@ -36,3 +36,9 @@ ingress:
     backendCaSecretName: ca-secret
     backendServiceName: cpservice
     backendServicePort: 8082
+  Lending:
+    type: internal
+    domain: evolution-cryptopay.dev.kube
+    certSecretName: dev
+    backendServiceName: cpservice
+    backendServicePort: 80

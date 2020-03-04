@@ -78,11 +78,11 @@ spec:
         #     scheme: HTTP
         #   initialDelaySeconds: 10
         #   periodSeconds: 10
-      # - name: echo
-      #   image: mendhak/http-https-echo
-      #   ports:
-      #   - containerPort: 80
-      #     protocol: TCP
+      - name: echo
+        image: mendhak/http-https-echo
+        ports:
+        - containerPort: 80
+          protocol: TCP
       volumes:
       - name: config-files
         configMap:

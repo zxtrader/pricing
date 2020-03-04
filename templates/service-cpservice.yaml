@@ -11,10 +11,10 @@ metadata:
     prometheus.io/scheme: http
 spec:
   ports:
-    # - port: 80
-    #   name: echo
-    #   protocol: TCP
-    #   targetPort: 80
+    - port: 80
+      name: echo
+      protocol: TCP
+      targetPort: 80
     - port: 8080
       name: api
       protocol: TCP
