@@ -74,6 +74,7 @@ data:
   endpoint.dashboard.jwtSecret: VE9ETw==
   postgres.api.url: VE9ETw==
   postgres.dashboard.url: VE9ETw==
+  postgres.readonly.url: VE9ETw==
   postgres.sysadmin.url: VE9ETw==
   pss.aggregator.signatureSecretKey: VE9ETw==
   pss.cryptoWalletHelper.signatureSecretKey: VE9ETw==
