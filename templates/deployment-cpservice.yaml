@@ -21,6 +21,9 @@ spec:
           mountPath: /etc/cexiolabs/cryptopay/secrets
           # The service will delete all files after read its. So need write access.
           readOnly: false
+        envFrom:
+        - configMapRef:
+            name: cpservice-migration-envvars
       containers:
       - name: cpservice
         image: {{ .Values.docker.cpservice.serviceImage }}:{{ .Values.docker.cpservice.tag }}
@@ -31,8 +34,6 @@ spec:
 {{ end }}
 {{- end }}
         ports:
-        # - containerPort: 80
-        #   protocol: TCP
         - containerPort: 8080
           protocol: TCP
 {{- if ne .Values.environment "production" }}

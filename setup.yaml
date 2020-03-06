@@ -21,6 +21,17 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
+  name: cpservice-migration-envvars
+data:
+  db.user.api: cryptopay-api
+  db.user.dashboard: cryptopay-dashboard
+  db.user.readonly: cryptopay-readonly
+  db.user.sysadmin: cryptopay-sysadmin
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
   name: cpservice-files
 data:
   trusted-aggregator-ca.crt: |-
