@@ -42,6 +42,8 @@ spec:
 {{- end }}
         - containerPort: 8082
           protocol: TCP
+        - containerPort: 8083
+          protocol: TCP
         - containerPort: 9090
           protocol: TCP
         volumeMounts:

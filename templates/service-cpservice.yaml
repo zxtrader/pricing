@@ -29,6 +29,10 @@ spec:
       name: dashboard
       protocol: TCP
       targetPort: 8082
+    - port: 8083
+      name: specs
+      protocol: TCP
+      targetPort: 8083
   type: ClusterIP
   selector:
     app: {{ .Chart.Name }}-cpservice{{ template "suffix" . }}

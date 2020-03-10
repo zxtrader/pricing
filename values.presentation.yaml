@@ -14,7 +14,7 @@ ingress:
     # API does not require client's certificate
     #backendCaSecretName:
     backendServiceName: cpservice
-    backendServicePort: 80
+    backendServicePort: 8080
     backendServiceInsecure: yes
   API-External:
     type: external
@@ -23,14 +23,14 @@ ingress:
     # API does not require client's certificate
     #backendCaSecretName:
     backendServiceName: cpservice
-    backendServicePort: 80
+    backendServicePort: 8080
     backendServiceInsecure: yes
   SysAdmin-Internal:
     type: internal
     domain: sysadmin-presentation-cryptopay.dev.kube
     certSecretName: dev
     backendServiceName: cpservice
-    backendServicePort: 80
+    backendServicePort: 8081
     backendServiceInsecure: yes
   Dashboard-Internal:
     type: internal
@@ -48,18 +48,18 @@ ingress:
     backendServiceName: cpservice
     backendServicePort: 80
     backendServiceInsecure: yes
-  Landing-External:
+  Specs-External:
     type: external
     domain: testnet.cryptopay.band
     certSecretName: cryptopay-band
     #backendCaSecretName: ca-secret
     backendServiceName: cpservice
-    backendServicePort: 80
+    backendServicePort: 8083
     backendServiceInsecure: yes
-  Landing-Internal:
+  Specs-Internal:
     type: internal
     domain: presentation-cryptopay.dev.kube
     certSecretName: dev
     backendServiceName: cpservice
-    backendServicePort: 80
+    backendServicePort: 8083
     backendServiceInsecure: yes
