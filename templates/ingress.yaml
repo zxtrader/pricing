@@ -1,24 +1,25 @@
 {{ $rootScope := . }}
 {{- range $key, $value := .Values.ingress -}}
 {{- if or (eq $rootScope.Release.Name "tag") (eq $value.type "internal") }}
+# Skip external ingress for non-tag release
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: {{ $rootScope.Chart.Name }}-{{ .backendServiceName }}{{ template "suffix" $rootScope }}-{{ $key | lower }}
+  name: {{ $rootScope.Chart.Name }}-{{ $key | lower }}{{ template "suffix" $rootScope }}
   annotations:
-{{ if .backendCaSecretName }}
+{{ if $value.backendCaSecretName }}
     nginx.ingress.kubernetes.io/auth-tls-pass-certificate-to-upstream: "true"
     nginx.ingress.kubernetes.io/auth-tls-secret: {{ $rootScope.Release.Namespace }}/{{ .backendCaSecretName }}
     nginx.ingress.kubernetes.io/auth-tls-verify-client: "on"
     nginx.ingress.kubernetes.io/auth-tls-verify-depth: "1"
 {{ end }}
-{{ if .backendServiceInsecure }}
+{{ if $value.backendInsecure }}
     nginx.ingress.kubernetes.io/backend-protocol: "http"
     nginx.ingress.kubernetes.io/secure-backends: "false"
 {{ else }}
     nginx.ingress.kubernetes.io/backend-protocol: "https"
     nginx.ingress.kubernetes.io/secure-backends: "true"
-    nginx.org/ssl-services: {{ $rootScope.Chart.Name }}-{{ $value.backendServiceName }}{{ template "suffix" $rootScope }}
+    nginx.org/ssl-services: {{ range $bindPath, $serviceConnectivity := $value.paths }}{{ $rootScope.Chart.Name }}-{{ $serviceConnectivity.backendServiceName }}{{ template "suffix" $rootScope }}{{ end }}
 {{ end }}
 spec:
   tls:
@@ -29,11 +30,12 @@ spec:
     - host: "{{ template "prefix" $rootScope }}{{ $value.domain }}"
       http:
         paths:
+{{ range $bindPath, $serviceConnectivity := $value.paths }}
           - backend:
-              serviceName: {{ $rootScope.Chart.Name }}-{{ $value.backendServiceName }}{{ template "suffix" $rootScope }}
-              servicePort: {{ $value.backendServicePort }}
-            path: /
-
+              serviceName: {{ $rootScope.Chart.Name }}-{{ $serviceConnectivity.backendServiceName }}{{ template "suffix" $rootScope }}
+              servicePort: {{ $serviceConnectivity.backendServicePort }}
+            path: {{ $bindPath }}
+{{ end }}
 ---
 {{- end }}
 {{- end -}}

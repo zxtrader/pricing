@@ -33,6 +33,12 @@ spec:
       name: specs
       protocol: TCP
       targetPort: 8083
+{{ if and (eq .Release.Name "tag") (eq .Values.environment "evolution") }}
+    - port: 8084
+      name: notifier
+      protocol: TCP
+      targetPort: 8084
+{{ end }}
   type: ClusterIP
   selector:
     app: {{ .Chart.Name }}-cpservice{{ template "suffix" . }}

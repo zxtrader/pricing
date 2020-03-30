@@ -20,28 +20,39 @@ ingress:
     certSecretName: dev
     # API does not require client's certificate
     #backendCaSecretName:
-    backendServiceName: cpservice
-    backendServicePort: 8080
-    backendServiceInsecure: yes
+    backendInsecure: yes
+    paths:
+      "/":
+        backendServiceName: cpservice
+        backendServicePort: 8080
   SysAdmin:
     type: internal
     domain: sysadmin-evolution-cryptopay.dev.kube
     certSecretName: dev
-    backendServiceName: cpservice
-    backendServicePort: 8081
-    backendServiceInsecure: yes
+    backendInsecure: yes
+    paths:
+      "/":
+        backendServiceName: cpservice
+        backendServicePort: 8081
   Dashboard:
     type: internal
     domain: dashboard-evolution-cryptopay.dev.kube
     certSecretName: dev
     backendCaSecretName: ca-secret
-    backendServiceName: cpservice
-    backendServicePort: 8082
-    backendServiceInsecure: yes
+    backendInsecure: yes
+    paths:
+      "/":
+        backendServiceName: cpservice
+        backendServicePort: 8082
   Specs:
     type: internal
     domain: evolution-cryptopay.dev.kube
     certSecretName: dev
-    backendServiceName: cpservice
-    backendServicePort: 8083
-    backendServiceInsecure: yes
+    backendInsecure: yes
+    paths:
+      "/":
+        backendServiceName: cpservice
+        backendServicePort: 8083
+      "/v2/callback/cryptoproviders/cex/":
+        backendServiceName: cpservice
+        backendServicePort: 8084

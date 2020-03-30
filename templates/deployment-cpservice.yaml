@@ -86,6 +86,18 @@ spec:
         ports:
         - containerPort: 80
           protocol: TCP
+{{ if and (eq .Release.Name "tag") (eq .Values.environment "evolution") }}
+      - name: notifier
+        image: docker.registry.zxteam.net/pub/node/notifier/service:master.4cb52cff
+        env:
+        - name: "server.main.listenPort"
+          value: "8084"
+        - name: "endpoint.subscriber.bindPath"
+          value: "/v2/callback/cryptoproviders/cex/wtf2pss-subscriber"
+        ports:
+        - containerPort: 8084
+          protocol: TCP
+{{ end }}
       volumes:
       - name: config-files
         configMap:

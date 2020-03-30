@@ -45,3 +45,7 @@ $ helm --tiller-namespace "cryptopay-${ENV}" delete --purge cpservice
 ```bash
 $ helm --tiller-namespace "cryptopay-${ENV}" upgrade --install --namespace "cryptopay-${ENV}" --values "values.${ENV}.yaml" tag .
 ```
+
+```bash
+$ helm --tiller-namespace "cryptopay-${ENV}" upgrade --install --namespace "cryptopay-${ENV}" --values "values.${ENV}.yaml" --set "docker.cpservice.tag=dev.fcb068db" tag .
+```

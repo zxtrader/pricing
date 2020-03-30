@@ -13,53 +13,67 @@ ingress:
     certSecretName: dev
     # API does not require client's certificate
     #backendCaSecretName:
-    backendServiceName: cpservice
-    backendServicePort: 8080
-    backendServiceInsecure: yes
+    backendInsecure: no
+    paths:
+      "/":
+        backendServiceName: cpservice
+        backendServicePort: 8080
   API-External:
     type: external
     domain: api-testnet.cryptopay.band
     certSecretName: cryptopay-band
     # API does not require client's certificate
     #backendCaSecretName:
-    backendServiceName: cpservice
-    backendServicePort: 8080
-    backendServiceInsecure: yes
+    backendInsecure: no
+    paths:
+      "/":
+        backendServiceName: cpservice
+        backendServicePort: 8080
   SysAdmin-Internal:
     type: internal
     domain: sysadmin-presentation-cryptopay.dev.kube
     certSecretName: dev
-    backendServiceName: cpservice
-    backendServicePort: 8081
-    backendServiceInsecure: yes
+    backendInsecure: yes
+    paths:
+      "/":
+        backendServiceName: cpservice
+        backendServicePort: 8081
   Dashboard-Internal:
     type: internal
     domain: dashboard-presentation-cryptopay.dev.kube
     certSecretName: dev
     #backendCaSecretName: ca-secret
-    backendServiceName: cpservice
-    backendServicePort: 80
-    backendServiceInsecure: yes
+    backendInsecure: yes
+    paths:
+      "/":
+        backendServiceName: cpservice
+        backendServicePort: 80
   Dashboard-External:
     type: external
     domain: dashboard-testnet.cryptopay.band
     certSecretName: cryptopay-band
     #backendCaSecretName: ca-secret
-    backendServiceName: cpservice
-    backendServicePort: 80
-    backendServiceInsecure: yes
+    backendInsecure: yes
+    paths:
+      "/":
+        backendServiceName: cpservice
+        backendServicePort: 80
   Specs-External:
     type: external
     domain: testnet.cryptopay.band
     certSecretName: cryptopay-band
     #backendCaSecretName: ca-secret
-    backendServiceName: cpservice
-    backendServicePort: 8083
-    backendServiceInsecure: yes
+    backendInsecure: yes
+    paths:
+      "/":
+        backendServiceName: cpservice
+        backendServicePort: 8083
   Specs-Internal:
     type: internal
     domain: presentation-cryptopay.dev.kube
     certSecretName: dev
-    backendServiceName: cpservice
-    backendServicePort: 8083
-    backendServiceInsecure: yes
+    backendInsecure: yes
+    paths:
+      "/":
+        backendServiceName: cpservice
+        backendServicePort: 8083
