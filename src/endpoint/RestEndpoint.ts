@@ -72,7 +72,7 @@ export class RestEndpoint extends ServersBindEndpoint {
 		this._router.get("/batch", async (req: express.Request, res: express.Response, next: express.NextFunction) => {
 			try {
 				if (log.isTraceEnabled) { log.trace(`Rate batch request ${req.url}`); }
-				const args = priceRuntime.parseBatchArgs(req.query.items);
+				const args = priceRuntime.parseBatchArgs(req.query.items as string);
 				const prices = await priceService.getHistoricalPrices(DUMMY_CANCELLATION_TOKEN, args);
 				return res.status(200).end(priceRuntime.renderForBatch(prices, args));
 			} catch (e) {
