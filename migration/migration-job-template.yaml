@@ -1,0 +1,28 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: migration
+spec:
+  template:
+    spec:
+      containers:
+        - name: "migration-ARG_TIMESTAMP"
+          image: "ARG_IMAGE:ARG_TAG"
+          volumeMounts:
+            - name: migration-secret-files
+              mountPath: /etc/cexiolabs/cryptopay/secrets
+              # The service will delete all files after read its. So need write access.
+              readOnly: false
+          envFrom:
+            - configMapRef:
+                name: migration-envvars
+      volumes:
+        - name: migration-secret-files
+          secret:
+            secretName: migration
+      restartPolicy: Never
+  backoffLimit: 5
+  # The activeDeadlineSeconds applies to the duration of the job, no matter how many Pods are created.
+  # Once a Job reaches activeDeadlineSeconds, all of its running Pods are terminated and
+  #   the Job status will become type: Failed with reason: DeadlineExceeded.
+  activeDeadlineSeconds: 300

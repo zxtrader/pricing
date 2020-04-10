@@ -1,0 +1,80 @@
+#!/bin/bash
+#
+
+# Exit on first fail
+set -e
+
+if [ $# -eq 0 ]; then
+	echo
+	echo "	Usage example:"
+	echo
+	echo "		POSTGRES_URL=postgres://xxx:xxx@xxx:xxx/xxx $0 --image=devdocker.infra.kube/cryptopay/migration --tag=X.Y.Z"
+	echo
+	exit 1
+fi
+
+# Check args
+while [[ "$1" =~ ^--.* ]]; do
+	case "$1" in
+		--image=*)
+			ARG_IMAGE=$(echo "$1" | cut -d= -f2)
+			;;
+		--tag=*)
+			ARG_TAG=$(echo "$1" | cut -d= -f2)
+			;;
+		*)
+			echo "Unexpected parameter $1" >&2
+			exit 42
+	esac
+	shift
+done
+
+function validateArg() {
+	local ARG=$1
+	local PARAM=$2
+	if [ -z "$ARG" ]; then
+		echo >&2
+		echo "	[!] Failure. Argument $PARAM was not provided" >&2
+		echo >&2
+		exit -127
+	fi
+}
+
+validateArg "$ARG_IMAGE" "--image"
+validateArg "$ARG_TAG" "--tag"
+
+
+ARG_TIMESTAMP="$(date '+%Y%m%d%H%M%S')"
+
+# Normalize SCRIPT_DIR
+SCRIPT_DIR=$(dirname "$0")
+cd "${SCRIPT_DIR}"
+SCRIPT_DIR=$(pwd -LP)
+cd - > /dev/null
+
+TEMP_FILE=$(mktemp)
+#kubectl delete 
+
+cat "${SCRIPT_DIR}/migration-job-template.yaml" | sed "s!ARG_IMAGE!${ARG_IMAGE}!g" | sed "s!ARG_TAG!${ARG_TAG}!g" | sed "s!ARG_TIMESTAMP!${ARG_TIMESTAMP}!g" > "${TEMP_FILE}"
+
+echo
+echo "# Job definition YAML"
+cat "${TEMP_FILE}"
+
+
+IS_EXIST_PREV_JOB=$(kubectl get --ignore-not-found jobs migration)
+if [ -n "${IS_EXIST_PREV_JOB}" ]; then
+
+	echo
+	echo "Job already exists. Wait 10 seconds and remove it."
+	sleep 10
+	kubectl delete jobs migration
+
+	echo "Job was deleted. Wait 5 seconds to continue."
+	sleep 5
+fi
+
+echo
+echo "# Apply the Job"
+exec kubectl apply -f "${TEMP_FILE}"
+echo
