@@ -39,7 +39,6 @@ image:
 
 before_script:
   - *functions
-  - kube_config_setup
 
 stages:
   - deploy
