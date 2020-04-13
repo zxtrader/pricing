@@ -1,95 +1,233 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: cpservice-envvars
+  name: processing-envvars
 data:
-  aggregator.url: wss://api-aggr..../ws
-  notifier.subscriber.url: wss://notifier-evolution-cryptopay.......
-  pss.aggregator.url: https://pss-rpc..../aggregator
-  pss.cryptoWalletHelper.url: https://pss-rpc..../cryptopay
-  pss.cryptopay.url: https://pss-rpc..../cryptopay
-  pss.es.url: https://pss-rpc..../cryptopay
-  wtf1.BCH.host: ...wtf...
-  wtf1.BCH.port: "2832"
-  wtf1.BTC.host: ...wtf...
-  wtf1.BTC.port: "2782"
-  wtf1.LTC.host: ...wtf...
-  wtf1.LTC.port: "2792"
-  wtf2pss.url: https://pss-provider-wtf2..../
+  aggregator.url: wss://api-aggr-demo.dev.kube/ws
+  endpoint.account.cors.allowedHeaders: "*"
+  endpoint.account.cors.methods: GET, POST, PUT, DELETE
+  endpoint.account.cors.whiteList: http://localhost:8080 http://127.0.0.1:8080 https://dev-api-evolution-cryptopay.dev.kube/v2/account
+  endpoint.swaggerUi.servers: api
+  endpoint.swaggerUi.specsExtendServer.evolution-dev.description: Evolution Environment (dev branch)
+  endpoint.swaggerUi.specsExtendServer.evolution-dev.url: https://dev-api-evolution-cryptopay.dev.kube/
+  endpoint.swaggerUi.specsExtendServer.evolution-master.description: Evolution Environment (master branch)
+  endpoint.swaggerUi.specsExtendServer.evolution-master.url: https://master-api-evolution-cryptopay.dev.kube/
+  endpoint.swaggerUi.specsExtendServer.evolution.description: Evolution Environment (last tag)
+  endpoint.swaggerUi.specsExtendServer.evolution.url: https://api-evolution-cryptopay.dev.kube/
+  endpoint.swaggerUi.specsExtendServer.presentation-internal-master.description: Presentation Environment (master branch) (Internal Network)
+  endpoint.swaggerUi.specsExtendServer.presentation-internal-master.url: https://master-api-presentation-cryptopay.dev.kube/
+  endpoint.swaggerUi.specsExtendServer.presentation-internal.description: Presentation Environment (last tag) (Internal Network)
+  endpoint.swaggerUi.specsExtendServer.presentation-internal.url: https://api-presentation-cryptopay.dev.kube/
+  endpoint.swaggerUi.specsExtendServers: evolution evolution-dev evolution-master presentation-internal presentation-internal-master
+  endpoints: account dashboard instrument internalInfo merchant network notification order risk sysadmin swaggerUi time apiV1Adapter wtf1cb wtf2psscb
+  notifier.subscriber.url: wss://notifier-evolution-cryptopay.dev.kube/subscriber/websockethost/8ed7cb38-1b9d-41bc-b3d4-8fc8aae324b3
+  pss.aggregator.url: https://pss-rpc.dev.kube/aggregator
+  pss.cryptoWalletHelper.url: https://pss-rpc.dev.kube/cryptopay
+  pss.cryptopay.url: https://pss-rpc.dev.kube/cryptopay
+  pss.es.url: https://pss-rpc.dev.kube/cryptopay
+  server.sysadmin.listenHost: 0.0.0.0
+  setup.merchant.DEVTEAM.description: Merchant Dev Team (evolution)
+  setup.merchant.DEVTEAM.enabled: "true"
+  setup.merchant.DEVTEAM.parent: INTERMEDIATE
+  setup.merchants: DEVTEAM
+  wtf2pss.url: https://pss-provider-wtf2.dev.kube
 
 ---
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: cpservice-migration-envvars
+  name: migration-envvars
 data:
-  db.user.api: cryptopay-api
-  db.user.dashboard: cryptopay-dashboard
-  db.user.readonly: cryptopay-readonly
-  db.user.sysadmin: cryptopay-sysadmin
+  db.user.api: cryptopay-evolution-api
+  db.user.dashboard: cryptopay-evolution-dashboard
+  db.user.readonly: cryptopay-evolution-readonly
+  db.user.sysadmin: cryptopay-evolution-sysadmin
 
 ---
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: cpservice-files
+  name: processing-files
 data:
   trusted-aggregator-ca.crt: |-
     -----BEGIN CERTIFICATE-----
-    TODO
+    MIIC+zCCAeOgAwIBAgIJAL+WKDjrPicJMA0GCSqGSIb3DQEBCwUAMBQxEjAQBgNV
+    BAMMCURldkN1YmVDQTAeFw0xODExMTMwMzM4MzVaFw0yODExMTAwMzM4MzVaMBQx
+    EjAQBgNVBAMMCURldkN1YmVDQTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoC
+    ggEBAK46Ufg03ITIJJB/zhxfxSpP/ErsY+z6V9gW+5rcvMK93i6XAfsBdvGgmSoY
+    Jxuz6sfp8HKaORfWhbaiqC3OSZZB+qf2j1LcafplsyXs5JlsKyayhZxMgAEsniTf
+    LK02x64YAExWy6Khj/ksWG1Iuz7xBvxjhNxq1Av7xxELeX72HNadQnX+SPhMqMmC
+    iDYpZ4/ZB+u+HH7bvH85p15XSqmVFaOJYQ9nzU89lNvk7LjZY1bZYjxQMGLG3iMM
+    nBvF00dNXKE0H0ggWXKqZBQ/Ga5vQD9fWuJJ8tllWw0FJ0VKYpv9UxqNRlhLYKeS
+    Tph1mb+Zz2SkCV6usAQUjY1lUr8CAwEAAaNQME4wHQYDVR0OBBYEFHFM744LvPZa
+    oSmiaLn84bkkPmRaMB8GA1UdIwQYMBaAFHFM744LvPZaoSmiaLn84bkkPmRaMAwG
+    A1UdEwQFMAMBAf8wDQYJKoZIhvcNAQELBQADggEBABXjoNJxuTMCODqEss5JVSVx
+    /iO4vhWzK22mjrNw2MhYcn1S0/SjnrZej+iYATLS6dJHy3zLiCt5okk3IQvABK5z
+    x3WoCcle3nAwYCUEcGH75FJ2v8/2usBc8KgMS0ChfDJ6SeHeU/6baIsQNtzUC6oh
+    6YlqkpmwWe4EiWTxtkg6OPiBkO8gpEfmGCZMcaBXh2ECo3rbAZd/ExBTrpOjeUqM
+    by0rQ4vBeRtUwQjqqpkbxkhRZTt3fbcpOCC9UfM7efpAvt0QQd5ZopNnQp4SZdv/
+    +H7iW/hOXvy3PIlBn92NobrFZhJNRGl0zYdpfyN3nYF3/p2pCDxi5j+hOy9QtM8=
     -----END CERTIFICATE-----
   trusted-notifier-ca.crt: |-
     -----BEGIN CERTIFICATE-----
-    TODO
+    MIIDljCCAn6gAwIBAgIUD24zuoOQNAuIP9yj4qvgrAgMxwMwDQYJKoZIhvcNAQEL
+    BQAwLTEWMBQGA1UECgwNV05CIFNvbHV0aW9uczETMBEGA1UEAwwKSW5mcmFXTkJD
+    QTAeFw0xOTA4MDcxNTI0MTFaFw0yOTA4MDQxNTI0MTFaMC0xFjAUBgNVBAoMDVdO
+    QiBTb2x1dGlvbnMxEzARBgNVBAMMCkluZnJhV05CQ0EwggEiMA0GCSqGSIb3DQEB
+    AQUAA4IBDwAwggEKAoIBAQDW7V7uXeJt1u19ct/Xqom5PHPJBbXFSJzkmZb9OGwy
+    O88B/EBkLdOrYG6yVh81bRM2BAhYe4kWQ7Gxv0+8IVZlvOr15izBLyAj6HJ72S65
+    muRNHC9s/zGt5U+3Lsr7hc7pc1lSXc2+CUuFgS+pOwVf4btxCvukOUGgOXenyK3y
+    wPNJPWDCN+Zfe/aGKu3Qz+hZuqvJME10FZN6EGl+PFuqLfbub8uOIcQUV+Bay/zo
+    LM1M5h/Tmcs0QcRkk3dFaD2k5YtBRzxGGRIZfBbAvxrWFpdcRAGXEsTH7F85G9+u
+    0+e4O/6B1dlxpZ2xtcylEhyvG/RLJYcMMpYoUXaHSlYvAgMBAAGjga0wgaowDwYD
+    VR0TAQH/BAUwAwEB/zAOBgNVHQ8BAf8EBAMCAQYwHQYDVR0OBBYEFN79y6IAEzSk
+    TvP0707bJZ9pimlrMGgGA1UdIwRhMF+AFN79y6IAEzSkTvP0707bJZ9pimlroTGk
+    LzAtMRYwFAYDVQQKDA1XTkIgU29sdXRpb25zMRMwEQYDVQQDDApJbmZyYVdOQkNB
+    ghQPbjO6g5A0C4g/3KPiq+CsCAzHAzANBgkqhkiG9w0BAQsFAAOCAQEAeyrGsLUz
+    4mhsUh25TR+EFM47QpkO5vkCoR7Ey4NBDaPwreCvlMfVH6p7LmVNRjPvZZ3XuRy4
+    IfxaqGPW1ayFSywT/7sQuPlGERoVSFpiP52tg1gHEhYMrw5aLNj/1vtRfSXwcbg8
+    fcgsH2JFE7oeSrJiYCz/KcQLCh+GcRODsh6bplAQ9T/DZ6RsaOuwpN/GuyOdJRMU
+    hJuiNGe5F68sCu8AG9pYgPfPks6hSSOjWbt2RbdRvD5O27E9xZpN3oMWlnveNTcD
+    sLQ+LfDODy8padt2P3GgWj/RTn4yAIvtvUJg9+HqpqIYmq5HANzW85oNGTg7/KOH
+    qBHLI7AoM+YmlA==
     -----END CERTIFICATE-----
   trusted-pssaggregator-ca.crt: |-
     -----BEGIN CERTIFICATE-----
-    TODO
+    MIIDljCCAn6gAwIBAgIUD24zuoOQNAuIP9yj4qvgrAgMxwMwDQYJKoZIhvcNAQEL
+    BQAwLTEWMBQGA1UECgwNV05CIFNvbHV0aW9uczETMBEGA1UEAwwKSW5mcmFXTkJD
+    QTAeFw0xOTA4MDcxNTI0MTFaFw0yOTA4MDQxNTI0MTFaMC0xFjAUBgNVBAoMDVdO
+    QiBTb2x1dGlvbnMxEzARBgNVBAMMCkluZnJhV05CQ0EwggEiMA0GCSqGSIb3DQEB
+    AQUAA4IBDwAwggEKAoIBAQDW7V7uXeJt1u19ct/Xqom5PHPJBbXFSJzkmZb9OGwy
+    O88B/EBkLdOrYG6yVh81bRM2BAhYe4kWQ7Gxv0+8IVZlvOr15izBLyAj6HJ72S65
+    muRNHC9s/zGt5U+3Lsr7hc7pc1lSXc2+CUuFgS+pOwVf4btxCvukOUGgOXenyK3y
+    wPNJPWDCN+Zfe/aGKu3Qz+hZuqvJME10FZN6EGl+PFuqLfbub8uOIcQUV+Bay/zo
+    LM1M5h/Tmcs0QcRkk3dFaD2k5YtBRzxGGRIZfBbAvxrWFpdcRAGXEsTH7F85G9+u
+    0+e4O/6B1dlxpZ2xtcylEhyvG/RLJYcMMpYoUXaHSlYvAgMBAAGjga0wgaowDwYD
+    VR0TAQH/BAUwAwEB/zAOBgNVHQ8BAf8EBAMCAQYwHQYDVR0OBBYEFN79y6IAEzSk
+    TvP0707bJZ9pimlrMGgGA1UdIwRhMF+AFN79y6IAEzSkTvP0707bJZ9pimlroTGk
+    LzAtMRYwFAYDVQQKDA1XTkIgU29sdXRpb25zMRMwEQYDVQQDDApJbmZyYVdOQkNB
+    ghQPbjO6g5A0C4g/3KPiq+CsCAzHAzANBgkqhkiG9w0BAQsFAAOCAQEAeyrGsLUz
+    4mhsUh25TR+EFM47QpkO5vkCoR7Ey4NBDaPwreCvlMfVH6p7LmVNRjPvZZ3XuRy4
+    IfxaqGPW1ayFSywT/7sQuPlGERoVSFpiP52tg1gHEhYMrw5aLNj/1vtRfSXwcbg8
+    fcgsH2JFE7oeSrJiYCz/KcQLCh+GcRODsh6bplAQ9T/DZ6RsaOuwpN/GuyOdJRMU
+    hJuiNGe5F68sCu8AG9pYgPfPks6hSSOjWbt2RbdRvD5O27E9xZpN3oMWlnveNTcD
+    sLQ+LfDODy8padt2P3GgWj/RTn4yAIvtvUJg9+HqpqIYmq5HANzW85oNGTg7/KOH
+    qBHLI7AoM+YmlA==
     -----END CERTIFICATE-----
   trusted-psscryptopay-ca.crt: |-
     -----BEGIN CERTIFICATE-----
-    TODO
+    MIIDljCCAn6gAwIBAgIUD24zuoOQNAuIP9yj4qvgrAgMxwMwDQYJKoZIhvcNAQEL
+    BQAwLTEWMBQGA1UECgwNV05CIFNvbHV0aW9uczETMBEGA1UEAwwKSW5mcmFXTkJD
+    QTAeFw0xOTA4MDcxNTI0MTFaFw0yOTA4MDQxNTI0MTFaMC0xFjAUBgNVBAoMDVdO
+    QiBTb2x1dGlvbnMxEzARBgNVBAMMCkluZnJhV05CQ0EwggEiMA0GCSqGSIb3DQEB
+    AQUAA4IBDwAwggEKAoIBAQDW7V7uXeJt1u19ct/Xqom5PHPJBbXFSJzkmZb9OGwy
+    O88B/EBkLdOrYG6yVh81bRM2BAhYe4kWQ7Gxv0+8IVZlvOr15izBLyAj6HJ72S65
+    muRNHC9s/zGt5U+3Lsr7hc7pc1lSXc2+CUuFgS+pOwVf4btxCvukOUGgOXenyK3y
+    wPNJPWDCN+Zfe/aGKu3Qz+hZuqvJME10FZN6EGl+PFuqLfbub8uOIcQUV+Bay/zo
+    LM1M5h/Tmcs0QcRkk3dFaD2k5YtBRzxGGRIZfBbAvxrWFpdcRAGXEsTH7F85G9+u
+    0+e4O/6B1dlxpZ2xtcylEhyvG/RLJYcMMpYoUXaHSlYvAgMBAAGjga0wgaowDwYD
+    VR0TAQH/BAUwAwEB/zAOBgNVHQ8BAf8EBAMCAQYwHQYDVR0OBBYEFN79y6IAEzSk
+    TvP0707bJZ9pimlrMGgGA1UdIwRhMF+AFN79y6IAEzSkTvP0707bJZ9pimlroTGk
+    LzAtMRYwFAYDVQQKDA1XTkIgU29sdXRpb25zMRMwEQYDVQQDDApJbmZyYVdOQkNB
+    ghQPbjO6g5A0C4g/3KPiq+CsCAzHAzANBgkqhkiG9w0BAQsFAAOCAQEAeyrGsLUz
+    4mhsUh25TR+EFM47QpkO5vkCoR7Ey4NBDaPwreCvlMfVH6p7LmVNRjPvZZ3XuRy4
+    IfxaqGPW1ayFSywT/7sQuPlGERoVSFpiP52tg1gHEhYMrw5aLNj/1vtRfSXwcbg8
+    fcgsH2JFE7oeSrJiYCz/KcQLCh+GcRODsh6bplAQ9T/DZ6RsaOuwpN/GuyOdJRMU
+    hJuiNGe5F68sCu8AG9pYgPfPks6hSSOjWbt2RbdRvD5O27E9xZpN3oMWlnveNTcD
+    sLQ+LfDODy8padt2P3GgWj/RTn4yAIvtvUJg9+HqpqIYmq5HANzW85oNGTg7/KOH
+    qBHLI7AoM+YmlA==
     -----END CERTIFICATE-----
   trusted-psscryptowallethelper-ca.crt: |-
     -----BEGIN CERTIFICATE-----
-    TODO
+    MIIDljCCAn6gAwIBAgIUD24zuoOQNAuIP9yj4qvgrAgMxwMwDQYJKoZIhvcNAQEL
+    BQAwLTEWMBQGA1UECgwNV05CIFNvbHV0aW9uczETMBEGA1UEAwwKSW5mcmFXTkJD
+    QTAeFw0xOTA4MDcxNTI0MTFaFw0yOTA4MDQxNTI0MTFaMC0xFjAUBgNVBAoMDVdO
+    QiBTb2x1dGlvbnMxEzARBgNVBAMMCkluZnJhV05CQ0EwggEiMA0GCSqGSIb3DQEB
+    AQUAA4IBDwAwggEKAoIBAQDW7V7uXeJt1u19ct/Xqom5PHPJBbXFSJzkmZb9OGwy
+    O88B/EBkLdOrYG6yVh81bRM2BAhYe4kWQ7Gxv0+8IVZlvOr15izBLyAj6HJ72S65
+    muRNHC9s/zGt5U+3Lsr7hc7pc1lSXc2+CUuFgS+pOwVf4btxCvukOUGgOXenyK3y
+    wPNJPWDCN+Zfe/aGKu3Qz+hZuqvJME10FZN6EGl+PFuqLfbub8uOIcQUV+Bay/zo
+    LM1M5h/Tmcs0QcRkk3dFaD2k5YtBRzxGGRIZfBbAvxrWFpdcRAGXEsTH7F85G9+u
+    0+e4O/6B1dlxpZ2xtcylEhyvG/RLJYcMMpYoUXaHSlYvAgMBAAGjga0wgaowDwYD
+    VR0TAQH/BAUwAwEB/zAOBgNVHQ8BAf8EBAMCAQYwHQYDVR0OBBYEFN79y6IAEzSk
+    TvP0707bJZ9pimlrMGgGA1UdIwRhMF+AFN79y6IAEzSkTvP0707bJZ9pimlroTGk
+    LzAtMRYwFAYDVQQKDA1XTkIgU29sdXRpb25zMRMwEQYDVQQDDApJbmZyYVdOQkNB
+    ghQPbjO6g5A0C4g/3KPiq+CsCAzHAzANBgkqhkiG9w0BAQsFAAOCAQEAeyrGsLUz
+    4mhsUh25TR+EFM47QpkO5vkCoR7Ey4NBDaPwreCvlMfVH6p7LmVNRjPvZZ3XuRy4
+    IfxaqGPW1ayFSywT/7sQuPlGERoVSFpiP52tg1gHEhYMrw5aLNj/1vtRfSXwcbg8
+    fcgsH2JFE7oeSrJiYCz/KcQLCh+GcRODsh6bplAQ9T/DZ6RsaOuwpN/GuyOdJRMU
+    hJuiNGe5F68sCu8AG9pYgPfPks6hSSOjWbt2RbdRvD5O27E9xZpN3oMWlnveNTcD
+    sLQ+LfDODy8padt2P3GgWj/RTn4yAIvtvUJg9+HqpqIYmq5HANzW85oNGTg7/KOH
+    qBHLI7AoM+YmlA==
     -----END CERTIFICATE-----
   trusted-wtf1-ca.crt: |-
     -----BEGIN CERTIFICATE-----
-    TODO
+    MIIDljCCAn6gAwIBAgIUD24zuoOQNAuIP9yj4qvgrAgMxwMwDQYJKoZIhvcNAQEL
+    BQAwLTEWMBQGA1UECgwNV05CIFNvbHV0aW9uczETMBEGA1UEAwwKSW5mcmFXTkJD
+    QTAeFw0xOTA4MDcxNTI0MTFaFw0yOTA4MDQxNTI0MTFaMC0xFjAUBgNVBAoMDVdO
+    QiBTb2x1dGlvbnMxEzARBgNVBAMMCkluZnJhV05CQ0EwggEiMA0GCSqGSIb3DQEB
+    AQUAA4IBDwAwggEKAoIBAQDW7V7uXeJt1u19ct/Xqom5PHPJBbXFSJzkmZb9OGwy
+    O88B/EBkLdOrYG6yVh81bRM2BAhYe4kWQ7Gxv0+8IVZlvOr15izBLyAj6HJ72S65
+    muRNHC9s/zGt5U+3Lsr7hc7pc1lSXc2+CUuFgS+pOwVf4btxCvukOUGgOXenyK3y
+    wPNJPWDCN+Zfe/aGKu3Qz+hZuqvJME10FZN6EGl+PFuqLfbub8uOIcQUV+Bay/zo
+    LM1M5h/Tmcs0QcRkk3dFaD2k5YtBRzxGGRIZfBbAvxrWFpdcRAGXEsTH7F85G9+u
+    0+e4O/6B1dlxpZ2xtcylEhyvG/RLJYcMMpYoUXaHSlYvAgMBAAGjga0wgaowDwYD
+    VR0TAQH/BAUwAwEB/zAOBgNVHQ8BAf8EBAMCAQYwHQYDVR0OBBYEFN79y6IAEzSk
+    TvP0707bJZ9pimlrMGgGA1UdIwRhMF+AFN79y6IAEzSkTvP0707bJZ9pimlroTGk
+    LzAtMRYwFAYDVQQKDA1XTkIgU29sdXRpb25zMRMwEQYDVQQDDApJbmZyYVdOQkNB
+    ghQPbjO6g5A0C4g/3KPiq+CsCAzHAzANBgkqhkiG9w0BAQsFAAOCAQEAeyrGsLUz
+    4mhsUh25TR+EFM47QpkO5vkCoR7Ey4NBDaPwreCvlMfVH6p7LmVNRjPvZZ3XuRy4
+    IfxaqGPW1ayFSywT/7sQuPlGERoVSFpiP52tg1gHEhYMrw5aLNj/1vtRfSXwcbg8
+    fcgsH2JFE7oeSrJiYCz/KcQLCh+GcRODsh6bplAQ9T/DZ6RsaOuwpN/GuyOdJRMU
+    hJuiNGe5F68sCu8AG9pYgPfPks6hSSOjWbt2RbdRvD5O27E9xZpN3oMWlnveNTcD
+    sLQ+LfDODy8padt2P3GgWj/RTn4yAIvtvUJg9+HqpqIYmq5HANzW85oNGTg7/KOH
+    qBHLI7AoM+YmlA==
     -----END CERTIFICATE-----
   trusted-wtf2pss-ca.crt: |-
     -----BEGIN CERTIFICATE-----
-    TODO
+    MIIDljCCAn6gAwIBAgIUD24zuoOQNAuIP9yj4qvgrAgMxwMwDQYJKoZIhvcNAQEL
+    BQAwLTEWMBQGA1UECgwNV05CIFNvbHV0aW9uczETMBEGA1UEAwwKSW5mcmFXTkJD
+    QTAeFw0xOTA4MDcxNTI0MTFaFw0yOTA4MDQxNTI0MTFaMC0xFjAUBgNVBAoMDVdO
+    QiBTb2x1dGlvbnMxEzARBgNVBAMMCkluZnJhV05CQ0EwggEiMA0GCSqGSIb3DQEB
+    AQUAA4IBDwAwggEKAoIBAQDW7V7uXeJt1u19ct/Xqom5PHPJBbXFSJzkmZb9OGwy
+    O88B/EBkLdOrYG6yVh81bRM2BAhYe4kWQ7Gxv0+8IVZlvOr15izBLyAj6HJ72S65
+    muRNHC9s/zGt5U+3Lsr7hc7pc1lSXc2+CUuFgS+pOwVf4btxCvukOUGgOXenyK3y
+    wPNJPWDCN+Zfe/aGKu3Qz+hZuqvJME10FZN6EGl+PFuqLfbub8uOIcQUV+Bay/zo
+    LM1M5h/Tmcs0QcRkk3dFaD2k5YtBRzxGGRIZfBbAvxrWFpdcRAGXEsTH7F85G9+u
+    0+e4O/6B1dlxpZ2xtcylEhyvG/RLJYcMMpYoUXaHSlYvAgMBAAGjga0wgaowDwYD
+    VR0TAQH/BAUwAwEB/zAOBgNVHQ8BAf8EBAMCAQYwHQYDVR0OBBYEFN79y6IAEzSk
+    TvP0707bJZ9pimlrMGgGA1UdIwRhMF+AFN79y6IAEzSkTvP0707bJZ9pimlroTGk
+    LzAtMRYwFAYDVQQKDA1XTkIgU29sdXRpb25zMRMwEQYDVQQDDApJbmZyYVdOQkNB
+    ghQPbjO6g5A0C4g/3KPiq+CsCAzHAzANBgkqhkiG9w0BAQsFAAOCAQEAeyrGsLUz
+    4mhsUh25TR+EFM47QpkO5vkCoR7Ey4NBDaPwreCvlMfVH6p7LmVNRjPvZZ3XuRy4
+    IfxaqGPW1ayFSywT/7sQuPlGERoVSFpiP52tg1gHEhYMrw5aLNj/1vtRfSXwcbg8
+    fcgsH2JFE7oeSrJiYCz/KcQLCh+GcRODsh6bplAQ9T/DZ6RsaOuwpN/GuyOdJRMU
+    hJuiNGe5F68sCu8AG9pYgPfPks6hSSOjWbt2RbdRvD5O27E9xZpN3oMWlnveNTcD
+    sLQ+LfDODy8padt2P3GgWj/RTn4yAIvtvUJg9+HqpqIYmq5HANzW85oNGTg7/KOH
+    qBHLI7AoM+YmlA==
     -----END CERTIFICATE-----
 
 ---
 apiVersion: v1
 kind: Secret
 metadata:
-  name: cpservice
+  name: processing
 type: Opaque
 data:
-  database.encryptionPassword: VE9ETw==
-  endpoint.dashboard.jwtSecret: VE9ETw==
-  postgres.api.url: VE9ETw==
-  postgres.dashboard.url: VE9ETw==
-  postgres.readonly.url: VE9ETw==
-  postgres.sysadmin.url: VE9ETw==
-  pss.aggregator.signatureSecretKey: VE9ETw==
-  pss.cryptoWalletHelper.signatureSecretKey: VE9ETw==
-  pss.cryptopay.signatureSecretKey: VE9ETw==
-  rabbitmq.url: VE9ETw==
-  redis.url: VE9ETw==
-  setup.intermediateMerchant.key: VE9ETw==
-  setup.intermediateMerchant.passphrase: VE9ETw==
-  setup.intermediateMerchant.secret: VE9ETw==
+  database.encryptionPassword: ZGErcHJpYnVkZXQrcytuYW1pK3NpbGE=
+  endpoint.dashboard.jwtSecret: eHV5YWtfaV9udXh1eWFr
+  postgres.api.url: cG9zdGdyZXM6Ly9jcnlwdG9wYXktZXZvbHV0aW9uLWFwaTpycXY0YmU1NlloNGpRQVZqQHBvc3RncmVzLmNyeXB0b3BheS1pbmZyYTo1NDMyL2NyeXB0b3BheS1ldm9sdXRpb24=
+  postgres.dashboard.url: cG9zdGdyZXM6Ly9jcnlwdG9wYXktZXZvbHV0aW9uLWRhc2hib2FyZDoybkRNRU5Rc1l0Wm41Z0tNQHBvc3RncmVzLmNyeXB0b3BheS1pbmZyYTo1NDMyL2NyeXB0b3BheS1ldm9sdXRpb24=
+  postgres.readonly.url: cG9zdGdyZXM6Ly9jcnlwdG9wYXktZXZvbHV0aW9uLXJlYWRvbmx5OlhDY3lhODhGMlAyYXNtRWRAcG9zdGdyZXMuY3J5cHRvcGF5LWluZnJhOjU0MzIvY3J5cHRvcGF5LWV2b2x1dGlvbg==
+  postgres.sysadmin.url: cG9zdGdyZXM6Ly9jcnlwdG9wYXktZXZvbHV0aW9uLXN5c2FkbWluOlRqR21lMmFyc0NDeXF0MzRAcG9zdGdyZXMuY3J5cHRvcGF5LWluZnJhOjU0MzIvY3J5cHRvcGF5LWV2b2x1dGlvbg==
+  rabbitmq.url: YW1xcDovL2NyeXB0b3BheTpTQUQyM2Q0MjM0Y2FzMjNAcmFiYml0bXEuY3J5cHRvcGF5LWluZnJhOjU2NzIv
+  redis.url: cmVkaXM6Ly86U0FEMjM0Y2FzMjNAcmVkaXMtcHJvY2Vzc2luZy5jcnlwdG9wYXktaW5mcmE6NjM3OS80
 
 ---
 apiVersion: v1
 kind: Secret
 metadata:
-  name: cpservice-migration
+  name: migration
 type: Opaque
 data:
-  postgres.url: VE9ETw==
+  postgres.url: cG9zdGdyZXM6Ly9jcnlwdG9wYXktZXZvbHV0aW9uLW93bmVyOjZqRzlxVVRIZTNCdnl6U3dAcG9zdGdyZXMuY3J5cHRvcGF5LWluZnJhOjU0MzIvY3J5cHRvcGF5LWV2b2x1dGlvbg==
