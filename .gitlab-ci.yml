@@ -99,7 +99,8 @@ db:evol:install:
     entrypoint: [""]
   stage: deploy
   script:
-    - kube_config_setup
+    - export KUBECONFIG=/tmp/.kube-config
+    - echo "$KUBECONF_BASE64" | base64 -d > "${KUBECONFIG}"
     - ./migration/migration-exec.sh --image=devdocker.infra.kube/cryptopay/database-evolution --tag="$DATABASE_MIGRATION_VERSION" --install
   when: manual
   environment:
@@ -115,7 +116,8 @@ db:evol:rollback:
     entrypoint: [""]
   stage: rollback
   script:
-    - kube_config_setup
+    - export KUBECONFIG=/tmp/.kube-config
+    - echo "$KUBECONF_BASE64" | base64 -d > "${KUBECONFIG}"
     - ./migration/migration-exec.sh --image=devdocker.infra.kube/cryptopay/database-evolution --tag="$DATABASE_MIGRATION_VERSION" --rollback
   when: manual
   environment:
@@ -131,7 +133,8 @@ db:preprod:install:
     entrypoint: [""]
   stage: deploy
   script:
-    - kube_config_setup
+    - export KUBECONFIG=/tmp/.kube-config
+    - echo "$KUBECONF_BASE64" | base64 -d > "${KUBECONFIG}"
     - ./migration/migration-exec.sh --image=devdocker.infra.kube/cryptopay/database-preproduction --tag="$DATABASE_MIGRATION_VERSION" --install
   when: manual
   environment:
@@ -147,7 +150,8 @@ db:preprod:rollback:
     entrypoint: [""]
   stage: rollback
   script:
-    - kube_config_setup
+    - export KUBECONFIG=/tmp/.kube-config
+    - echo "$KUBECONF_BASE64" | base64 -d > "${KUBECONFIG}"
     - ./migration/migration-exec.sh --image=devdocker.infra.kube/cryptopay/database-preproduction --tag="$DATABASE_MIGRATION_VERSION" --rollback
   when: manual
   environment:
