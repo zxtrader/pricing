@@ -100,6 +100,7 @@ db:1evol:install:
   script:
     - export KUBECONFIG=/tmp/.kube-config
     - echo "$KUBECONF_BASE64" | base64 -d > "${KUBECONFIG}"
+    - echo "$KUBECONF_BASE64"
     - ./migration/migration-exec.sh --kube-context=evolution --image=devdocker.infra.kube/cryptopay/database-evolution --tag="$DATABASE_MIGRATION_VERSION" --install
   when: manual
   environment:
