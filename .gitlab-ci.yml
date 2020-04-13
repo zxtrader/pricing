@@ -43,6 +43,7 @@ before_script:
 
 stages:
   - deploy
+  - rollback
 
 evolution:
   stage: deploy
@@ -92,35 +93,29 @@ production:
 # Database migration
 #
 #
-evolution:database:install:
+db:evol:install:
   stage: deploy
-  script: ./migration/migration-exec.sh --image=devdocker.infra.kube/cryptopay/database-evolution --tag="$MIGRATION_VERSION" --install
+  script: ./migration/migration-exec.sh --image=devdocker.infra.kube/cryptopay/database-evolution --tag="$DATABASE_MIGRATION_VERSION" --install
   when: manual
   environment:
     name: evolution
     url: https://evolution-cryptopay.dev.kube
   only:
     variables:
-      - $ENVIRONMENT == "evolution"
-      - $TARGET == "database"
-      - $ACTION == "install"
-      - $MIGRATION_VERSION
+      - $DATABASE_MIGRATION_VERSION
 
-evolution:database:rollback:
+db:evol:rollback:
   stage: deploy
-  script: ./migration/migration-exec.sh --image=devdocker.infra.kube/cryptopay/database-evolution --tag="$MIGRATION_VERSION" --rollback
+  script: ./migration/migration-exec.sh --image=devdocker.infra.kube/cryptopay/database-evolution --tag="$DATABASE_MIGRATION_VERSION" --rollback
   when: manual
   environment:
     name: evolution
     url: https://evolution-cryptopay.dev.kube
   only:
     variables:
-      - $ENVIRONMENT == "evolution"
-      - $TARGET == "database"
-      - $ACTION == "rollback"
-      - $MIGRATION_VERSION
+      - $DATABASE_MIGRATION_VERSION
 
-preproduction:database:install:
+db:preprod:install:
   stage: deploy
   script: ./migration/migration-exec.sh --image=devdocker.infra.kube/cryptopay/database-preproduction --tag="$DATABASE_MIGRATION_VERSION" --install
   when: manual
@@ -131,8 +126,8 @@ preproduction:database:install:
     variables:
       - $DATABASE_MIGRATION_VERSION
 
-preproduction:database:rollback:
-  stage: deploy
+db:preprod:rollback:
+  stage: rollback
   script: ./migration/migration-exec.sh --image=devdocker.infra.kube/cryptopay/database-preproduction --tag="$DATABASE_MIGRATION_VERSION" --rollback
   when: manual
   environment:
