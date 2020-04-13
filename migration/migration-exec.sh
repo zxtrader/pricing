@@ -8,7 +8,7 @@ if [ $# -eq 0 ]; then
 	echo
 	echo "	Usage example:"
 	echo
-	echo "		$0 <--install|--rollback> --image=devdocker.infra.kube/cryptopay/database-preproduction --tag=vXX.YY"
+	echo "		$0 [--kube-context=evolution] --image=devdocker.infra.kube/cryptopay/database-preproduction --tag=vXX.YY <--install|--rollback>"
 	echo
 	exit 1
 fi
@@ -16,6 +16,9 @@ fi
 # Check args
 while [ "$1" != "" ]; do
 	case "$1" in
+		--kube-context=*)
+			ARG_KUBE_CONTEXT=$(echo "$1" | cut -d= -f2)
+			;;
 		--image=*)
 			ARG_IMAGE=$(echo "$1" | cut -d= -f2)
 			;;
@@ -70,13 +73,16 @@ echo "# Job definition YAML"
 cat "${TEMP_FILE}"
 
 
-IS_EXIST_PREV_JOB=$(kubectl get --ignore-not-found jobs migration)
+KUBE_OPTS=""
+[ -n "${ARG_KUBE_CONTEXT}" ] && KUBE_OPTS="${KUBE_OPTS} --context ${ARG_KUBE_CONTEXT}"
+
+IS_EXIST_PREV_JOB=$(kubectl ${KUBE_OPTS} get --ignore-not-found jobs migration)
 if [ -n "${IS_EXIST_PREV_JOB}" ]; then
 
 	echo
 	echo "Job already exists. Wait 10 seconds and remove it."
 	sleep 10
-	kubectl delete jobs migration
+	kubectl ${KUBE_OPTS} delete jobs migration
 
 	echo "Job was deleted. Wait 5 seconds to continue."
 	sleep 5
@@ -84,5 +90,5 @@ fi
 
 echo
 echo "# Apply the Job"
-exec kubectl apply -f "${TEMP_FILE}"
+exec kubectl ${KUBE_OPTS} apply -f "${TEMP_FILE}"
 echo
