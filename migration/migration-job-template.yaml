@@ -16,9 +16,6 @@ spec:
           env:
             - name: LOG_LEVEL
               value: trace
-          envFrom:
-            - configMapRef:
-                name: migration-envvars
       volumes:
         - name: migration-secret-files
           secret:
