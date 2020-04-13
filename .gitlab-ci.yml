@@ -94,8 +94,13 @@ production:
 #
 #
 db:evol:install:
+  image:
+    name: bitnami/kubectl
+    entrypoint: [""]
   stage: deploy
-  script: ./migration/migration-exec.sh --image=devdocker.infra.kube/cryptopay/database-evolution --tag="$DATABASE_MIGRATION_VERSION" --install
+  script:
+    - kube_config_setup
+    - ./migration/migration-exec.sh --image=devdocker.infra.kube/cryptopay/database-evolution --tag="$DATABASE_MIGRATION_VERSION" --install
   when: manual
   environment:
     name: evolution
@@ -105,8 +110,13 @@ db:evol:install:
       - $DATABASE_MIGRATION_VERSION
 
 db:evol:rollback:
-  stage: deploy
-  script: ./migration/migration-exec.sh --image=devdocker.infra.kube/cryptopay/database-evolution --tag="$DATABASE_MIGRATION_VERSION" --rollback
+  image:
+    name: bitnami/kubectl
+    entrypoint: [""]
+  stage: rollback
+  script:
+    - kube_config_setup
+    - ./migration/migration-exec.sh --image=devdocker.infra.kube/cryptopay/database-evolution --tag="$DATABASE_MIGRATION_VERSION" --rollback
   when: manual
   environment:
     name: evolution
@@ -116,8 +126,13 @@ db:evol:rollback:
       - $DATABASE_MIGRATION_VERSION
 
 db:preprod:install:
+  image:
+    name: bitnami/kubectl
+    entrypoint: [""]
   stage: deploy
-  script: ./migration/migration-exec.sh --image=devdocker.infra.kube/cryptopay/database-preproduction --tag="$DATABASE_MIGRATION_VERSION" --install
+  script:
+    - kube_config_setup
+    - ./migration/migration-exec.sh --image=devdocker.infra.kube/cryptopay/database-preproduction --tag="$DATABASE_MIGRATION_VERSION" --install
   when: manual
   environment:
     name: preproduction
@@ -127,8 +142,13 @@ db:preprod:install:
       - $DATABASE_MIGRATION_VERSION
 
 db:preprod:rollback:
+  image:
+    name: bitnami/kubectl
+    entrypoint: [""]
   stage: rollback
-  script: ./migration/migration-exec.sh --image=devdocker.infra.kube/cryptopay/database-preproduction --tag="$DATABASE_MIGRATION_VERSION" --rollback
+  script:
+    - kube_config_setup
+    - ./migration/migration-exec.sh --image=devdocker.infra.kube/cryptopay/database-preproduction --tag="$DATABASE_MIGRATION_VERSION" --rollback
   when: manual
   environment:
     name: preproduction
