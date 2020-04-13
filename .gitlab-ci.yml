@@ -126,6 +126,40 @@ db:evol:rollback:
     variables:
       - $DATABASE_MIGRATION_VERSION
 
+db:pres:install:
+  image:
+    name: bitnami/kubectl
+    entrypoint: [""]
+  stage: deploy
+  script:
+    - export KUBECONFIG=/tmp/.kube-config
+    - echo "$KUBECONF_BASE64" | base64 -d > "${KUBECONFIG}"
+    - ./migration/migration-exec.sh --kube-context=presentation --image=devdocker.infra.kube/cryptopay/database-presentation --tag="$DATABASE_MIGRATION_VERSION" --install
+  when: manual
+  environment:
+    name: presentation
+    url: https://presentation-cryptopay.dev.kube
+  only:
+    variables:
+      - $DATABASE_MIGRATION_VERSION
+
+db:pres:rollback:
+  image:
+    name: bitnami/kubectl
+    entrypoint: [""]
+  stage: rollback
+  script:
+    - export KUBECONFIG=/tmp/.kube-config
+    - echo "$KUBECONF_BASE64" | base64 -d > "${KUBECONFIG}"
+    - ./migration/migration-exec.sh --kube-context=presentation --image=devdocker.infra.kube/cryptopay/database-presentation --tag="$DATABASE_MIGRATION_VERSION" --rollback
+  when: manual
+  environment:
+    name: presentation
+    url: https://presentation-cryptopay.dev.kube
+  only:
+    variables:
+      - $DATABASE_MIGRATION_VERSION
+
 db:preprod:install:
   image:
     name: bitnami/kubectl
@@ -140,6 +174,8 @@ db:preprod:install:
     name: preproduction
     url: https://preproduction-cryptopay.dev.kube
   only:
+    refs:
+      - tags
     variables:
       - $DATABASE_MIGRATION_VERSION
 
@@ -157,5 +193,47 @@ db:preprod:rollback:
     name: preproduction
     url: https://preproduction-cryptopay.dev.kube
   only:
+    refs:
+      - tags
+    variables:
+      - $DATABASE_MIGRATION_VERSION
+
+db:PROD:install:
+  image:
+    name: bitnami/kubectl
+    entrypoint: [""]
+  stage: deploy
+  script:
+    - export KUBECONFIG=/tmp/.kube-config
+    - echo "$KUBECONF_BASE64" | base64 -d > "${KUBECONFIG}"
+    - ./migration/migration-exec.sh --kube-context=production --image=devdocker.infra.kube/cryptopay/database-production --tag="$DATABASE_MIGRATION_VERSION" --install
+  when: manual
+  environment:
+    name: production
+    url: https://cryptopay.band/
+  only:
+    refs:
+      - tags
+    variables:
+      - $DATABASE_MIGRATION_VERSION
+
+db:PROD:rollback:
+  image:
+    name: bitnami/kubectl
+    entrypoint: [""]
+  stage: rollback
+  script:
+    - export KUBECONFIG=/tmp/.kube-config
+    - echo "$KUBECONF_BASE64" | base64 -d > "${KUBECONFIG}"
+    - ./migration/migration-exec.sh --kube-context=production --image=devdocker.infra.kube/cryptopay/database-production --tag="$DATABASE_MIGRATION_VERSION" --rollback
+  when: manual
+  environment:
+    name: production
+    url: https://cryptopay.band/
+  tags:
+    - crtpdpl
+  only:
+    refs:
+      - tags
     variables:
       - $DATABASE_MIGRATION_VERSION
