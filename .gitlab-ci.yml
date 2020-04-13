@@ -95,6 +95,7 @@ production:
 evolution:database:install:
   stage: deploy
   script: ./migration/migration-exec.sh --image=devdocker.infra.kube/cryptopay/database-evolution --tag="$MIGRATION_VERSION" --install
+  when: manual
   environment:
     name: evolution
     url: https://evolution-cryptopay.dev.kube
@@ -108,6 +109,7 @@ evolution:database:install:
 evolution:database:rollback:
   stage: deploy
   script: ./migration/migration-exec.sh --image=devdocker.infra.kube/cryptopay/database-evolution --tag="$MIGRATION_VERSION" --rollback
+  when: manual
   environment:
     name: evolution
     url: https://evolution-cryptopay.dev.kube
@@ -120,26 +122,22 @@ evolution:database:rollback:
 
 preproduction:database:install:
   stage: deploy
-  script: ./migration/migration-exec.sh --image=devdocker.infra.kube/cryptopay/database-preproduction --tag="$MIGRATION_VERSION" --install
+  script: ./migration/migration-exec.sh --image=devdocker.infra.kube/cryptopay/database-preproduction --tag="$DATABASE_MIGRATION_VERSION" --install
+  when: manual
   environment:
     name: preproduction
     url: https://preproduction-cryptopay.dev.kube
   only:
     variables:
-      - $ENVIRONMENT == "preproduction"
-      - $TARGET == "database"
-      - $ACTION == "install"
-      - $MIGRATION_VERSION
+      - $DATABASE_MIGRATION_VERSION
 
 preproduction:database:rollback:
   stage: deploy
-  script: ./migration/migration-exec.sh --image=devdocker.infra.kube/cryptopay/database-preproduction --tag="$MIGRATION_VERSION" --rollback
+  script: ./migration/migration-exec.sh --image=devdocker.infra.kube/cryptopay/database-preproduction --tag="$DATABASE_MIGRATION_VERSION" --rollback
+  when: manual
   environment:
     name: preproduction
     url: https://preproduction-cryptopay.dev.kube
   only:
     variables:
-      - $ENVIRONMENT == "preproduction"
-      - $TARGET == "database"
-      - $ACTION == "rollback"
-      - $MIGRATION_VERSION
+      - $DATABASE_MIGRATION_VERSION
