@@ -8,7 +8,7 @@ if [ $# -eq 0 ]; then
 	echo
 	echo "	Usage example:"
 	echo
-	echo "		POSTGRES_URL=postgres://xxx:xxx@xxx:xxx/xxx $0 --image=devdocker.infra.kube/cryptopay/migration --tag=X.Y.Z"
+	echo "		$0 <--install|--rollback> --image=devdocker.infra.kube/cryptopay/database-preproduction --tag=vXX.YY"
 	echo
 	exit 1
 fi
@@ -22,9 +22,16 @@ while [[ "$1" =~ ^--.* ]]; do
 		--tag=*)
 			ARG_TAG=$(echo "$1" | cut -d= -f2)
 			;;
+		--install)
+			ARG_ACTION=install
+			;;
+		--rollback)
+			ARG_ACTION=rollback
+			;;
 		*)
 			echo "Unexpected parameter $1" >&2
 			exit 42
+			;;
 	esac
 	shift
 done
@@ -42,6 +49,7 @@ function validateArg() {
 
 validateArg "$ARG_IMAGE" "--image"
 validateArg "$ARG_TAG" "--tag"
+validateArg "$ARG_ACTION" "--install|--rollback"
 
 
 ARG_TIMESTAMP="$(date '+%Y%m%d%H%M%S')"
@@ -55,7 +63,7 @@ cd - > /dev/null
 TEMP_FILE=$(mktemp)
 #kubectl delete 
 
-cat "${SCRIPT_DIR}/migration-job-template.yaml" | sed "s!ARG_IMAGE!${ARG_IMAGE}!g" | sed "s!ARG_TAG!${ARG_TAG}!g" | sed "s!ARG_TIMESTAMP!${ARG_TIMESTAMP}!g" > "${TEMP_FILE}"
+cat "${SCRIPT_DIR}/migration-job-template.yaml" | sed "s!ARG_IMAGE!${ARG_IMAGE}!g" | sed "s!ARG_ACTION!${ARG_ACTION}!g" | sed "s!ARG_TAG!${ARG_TAG}!g" | sed "s!ARG_TIMESTAMP!${ARG_TIMESTAMP}!g" > "${TEMP_FILE}"
 
 echo
 echo "# Job definition YAML"

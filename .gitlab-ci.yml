@@ -55,6 +55,7 @@ evolution:
     url: https://evolution-cryptopay.dev.kube
   only:
     variables:
+      - $TARGET == "processing"
       - $ENVIRONMENT == "evolution"
 
 presentation:
@@ -68,6 +69,7 @@ presentation:
     url: https://presentation-cryptopay.dev.kube
   only:
     variables:
+      - $TARGET == "processing"
       - $ENVIRONMENT == "presentation"
 
 production:
@@ -80,6 +82,64 @@ production:
     url: https://cryptopay.band/
   only:
     variables:
+      - $TARGET == "processing"
       - $ENVIRONMENT == "production"
     refs:
       - tags
+
+#
+#
+# Database migration
+#
+#
+evolution:database:install:
+  stage: deploy
+  script: ./migration/migration-exec.sh --image=devdocker.infra.kube/cryptopay/database-evolution --tag="$MIGRATION_VERSION" --install
+  environment:
+    name: evolution
+    url: https://evolution-cryptopay.dev.kube
+  only:
+    variables:
+      - $ENVIRONMENT == "evolution"
+      - $TARGET == "database"
+      - $ACTION == "install"
+      - $MIGRATION_VERSION
+
+evolution:database:rollback:
+  stage: deploy
+  script: ./migration/migration-exec.sh --image=devdocker.infra.kube/cryptopay/database-evolution --tag="$MIGRATION_VERSION" --rollback
+  environment:
+    name: evolution
+    url: https://evolution-cryptopay.dev.kube
+  only:
+    variables:
+      - $ENVIRONMENT == "evolution"
+      - $TARGET == "database"
+      - $ACTION == "rollback"
+      - $MIGRATION_VERSION
+
+preproduction:database:install:
+  stage: deploy
+  script: ./migration/migration-exec.sh --image=devdocker.infra.kube/cryptopay/database-preproduction --tag="$MIGRATION_VERSION" --install
+  environment:
+    name: preproduction
+    url: https://preproduction-cryptopay.dev.kube
+  only:
+    variables:
+      - $ENVIRONMENT == "preproduction"
+      - $TARGET == "database"
+      - $ACTION == "install"
+      - $MIGRATION_VERSION
+
+preproduction:database:rollback:
+  stage: deploy
+  script: ./migration/migration-exec.sh --image=devdocker.infra.kube/cryptopay/database-preproduction --tag="$MIGRATION_VERSION" --rollback
+  environment:
+    name: preproduction
+    url: https://preproduction-cryptopay.dev.kube
+  only:
+    variables:
+      - $ENVIRONMENT == "preproduction"
+      - $TARGET == "database"
+      - $ACTION == "rollback"
+      - $MIGRATION_VERSION

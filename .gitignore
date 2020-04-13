@@ -1,3 +1,4 @@
 .backup/
+.release*/
 .DS_Store
 
