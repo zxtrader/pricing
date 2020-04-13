@@ -36,7 +36,7 @@ while [ "$1" != "" ]; do
 	shift
 done
 
-function validateArg() {
+validateArg() {
 	local ARG=$1
 	local PARAM=$2
 	if [ -z "$ARG" ]; then
