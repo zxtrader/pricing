@@ -92,7 +92,7 @@ production:
 # Database migration
 #
 #
-db:evol:install:
+db:1evol:install:
   image:
     name: bitnami/kubectl
     entrypoint: [""]
@@ -109,7 +109,7 @@ db:evol:install:
     variables:
       - $DATABASE_MIGRATION_VERSION
 
-db:evol:rollback:
+db:1evol:rollback:
   image:
     name: bitnami/kubectl
     entrypoint: [""]
@@ -126,7 +126,7 @@ db:evol:rollback:
     variables:
       - $DATABASE_MIGRATION_VERSION
 
-db:pres:install:
+db:2pres:install:
   image:
     name: bitnami/kubectl
     entrypoint: [""]
@@ -143,7 +143,7 @@ db:pres:install:
     variables:
       - $DATABASE_MIGRATION_VERSION
 
-db:pres:rollback:
+db:2pres:rollback:
   image:
     name: bitnami/kubectl
     entrypoint: [""]
@@ -160,7 +160,7 @@ db:pres:rollback:
     variables:
       - $DATABASE_MIGRATION_VERSION
 
-db:preprod:install:
+db:3preprod:install:
   image:
     name: bitnami/kubectl
     entrypoint: [""]
@@ -179,7 +179,7 @@ db:preprod:install:
     variables:
       - $DATABASE_MIGRATION_VERSION
 
-db:preprod:rollback:
+db:3preprod:rollback:
   image:
     name: bitnami/kubectl
     entrypoint: [""]
@@ -198,7 +198,7 @@ db:preprod:rollback:
     variables:
       - $DATABASE_MIGRATION_VERSION
 
-db:PROD:install:
+db:4PROD:install:
   image:
     name: bitnami/kubectl
     entrypoint: [""]
@@ -211,13 +211,15 @@ db:PROD:install:
   environment:
     name: production
     url: https://cryptopay.band/
+  tags:
+    - crtpdpl
   only:
     refs:
       - tags
     variables:
       - $DATABASE_MIGRATION_VERSION
 
-db:PROD:rollback:
+db:4PROD:rollback:
   image:
     name: bitnami/kubectl
     entrypoint: [""]
