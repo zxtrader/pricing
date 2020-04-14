@@ -2,6 +2,7 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: migration
+  namespace: ARG_KUBE_NAMESPACE
 spec:
   template:
     spec:

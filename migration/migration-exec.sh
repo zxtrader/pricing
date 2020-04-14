@@ -8,7 +8,7 @@ if [ $# -eq 0 ]; then
 	echo
 	echo "	Usage example:"
 	echo
-	echo "		$0 [--kube-context=evolution] --image=devdocker.infra.kube/cryptopay/database-preproduction --tag=vXX.YY <--install|--rollback>"
+	echo "		$0 [--kube-context=evolution] --image=devdocker.infra.kube/cryptopay/database-evolution --tag=vXX.YY <--install|--rollback>"
 	echo
 	exit 1
 fi
@@ -18,6 +18,9 @@ while [ "$1" != "" ]; do
 	case "$1" in
 		--kube-context=*)
 			ARG_KUBE_CONTEXT=$(echo "$1" | cut -d= -f2)
+			;;
+		--kube-namespace=*)
+			ARG_KUBE_NAMESPACE=$(echo "$1" | cut -d= -f2)
 			;;
 		--image=*)
 			ARG_IMAGE=$(echo "$1" | cut -d= -f2)
@@ -54,8 +57,14 @@ validateArg "$ARG_IMAGE" "--image"
 validateArg "$ARG_TAG" "--tag"
 validateArg "$ARG_ACTION" "--install|--rollback"
 
-
 ARG_TIMESTAMP="$(date '+%Y%m%d%H%M%S')"
+if [ -z "${ARG_KUBE_NAMESPACE}" ]; then
+	if [ -n "${ARG_KUBE_CONTEXT}" ]; then
+		ARG_KUBE_NAMESPACE="cryptopay-${ARG_KUBE_CONTEXT}"
+	else
+		ARG_KUBE_NAMESPACE="cryptopay"
+	fi
+fi
 
 # Normalize SCRIPT_DIR
 SCRIPT_DIR=$(dirname "$0")
@@ -66,7 +75,11 @@ cd - > /dev/null
 TEMP_FILE=$(mktemp)
 #kubectl delete 
 
-cat "${SCRIPT_DIR}/migration-job-template.yaml" | sed "s!ARG_IMAGE!${ARG_IMAGE}!g" | sed "s!ARG_ACTION!${ARG_ACTION}!g" | sed "s!ARG_TAG!${ARG_TAG}!g" | sed "s!ARG_TIMESTAMP!${ARG_TIMESTAMP}!g" > "${TEMP_FILE}"
+cat "${SCRIPT_DIR}/migration-job-template.yaml" \
+	| sed "s!ARG_IMAGE!${ARG_IMAGE}!g" \
+	| sed "s!ARG_ACTION!${ARG_ACTION}!g" | sed "s!ARG_TAG!${ARG_TAG}!g" \
+	| sed "s!ARG_TIMESTAMP!${ARG_TIMESTAMP}!g" \
+	| sed "s!ARG_KUBE_NAMESPACE!${ARG_KUBE_NAMESPACE}!g" > "${TEMP_FILE}"
 
 echo
 echo "# Job definition YAML"

@@ -168,7 +168,7 @@ production:
     variables:
       - $CI_COMMIT_TAG =~ /^DB-.*/
 
-3PRERPROD:install:db:
+3UAT:install:db:
   image:
     name: bitnami/kubectl
     entrypoint: [""]
@@ -187,7 +187,7 @@ production:
     variables:
       - $CI_COMMIT_TAG =~ /^DB-.*/
 
-3PRERPROD:rollback:db:
+3UAT:rollback:db:
   image:
     name: bitnami/kubectl
     entrypoint: [""]
@@ -214,7 +214,7 @@ production:
   script:
     - export KUBECONFIG=/tmp/.kube-config
     - echo "$KUBECONF_BASE64" | base64 -d > "${KUBECONFIG}"
-    - ./migration/migration-exec.sh --kube-context=prod --image=harbor.infra.kube/cryptopay/database-production --tag="$(echo $CI_COMMIT_TAG | sed 's/^DB-//g')" --install
+    - ./migration/migration-exec.sh --kube-context=prod --kube-namespace=cryptopay --image=harbor.infra.kube/cryptopay/database-production --tag="$(echo $CI_COMMIT_TAG | sed 's/^DB-//g')" --install
   when: manual
   environment:
     name: production
@@ -225,7 +225,7 @@ production:
     refs:
       - tags
     variables:
-      - $DATABASE_MIGRATION_VERSION
+      - $CI_COMMIT_TAG =~ /^DB-.*/
 
 4PROD:rollback:db:
   image:
@@ -235,7 +235,7 @@ production:
   script:
     - export KUBECONFIG=/tmp/.kube-config
     - echo "$KUBECONF_BASE64" | base64 -d > "${KUBECONFIG}"
-    - ./migration/migration-exec.sh --kube-context=prod --image=harbor.infra.kube/cryptopay/database-production --tag="$(echo $CI_COMMIT_TAG | sed 's/^DB-//g')" --rollback
+    - ./migration/migration-exec.sh --kube-context=prod --kube-namespace=cryptopay --image=harbor.infra.kube/cryptopay/database-production --tag="$(echo $CI_COMMIT_TAG | sed 's/^DB-//g')" --rollback
   when: manual
   environment:
     name: production
