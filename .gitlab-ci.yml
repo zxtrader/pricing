@@ -102,7 +102,9 @@ db:1evol:install:
     - echo "$KUBECONF_BASE64" | base64 -d > "${KUBECONFIG}"
     - echo "$KUBECONF_BASE64"
     - echo "$KUBECONF_BASE64" | sha1sum
-    - ./migration/migration-exec.sh --kube-context=evolution --image=devdocker.infra.kube/cryptopay/database-evolution --tag="$DATABASE_MIGRATION_VERSION" --install
+    - kubectl config view -o yaml --raw
+    - kubectl --context evolution get --ignore-not-found jobs migration
+  #    - ./migration/migration-exec.sh --kube-context=evolution --image=devdocker.infra.kube/cryptopay/database-evolution --tag="$DATABASE_MIGRATION_VERSION" --install
   when: manual
   environment:
     name: evolution
