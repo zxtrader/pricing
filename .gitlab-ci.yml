@@ -92,7 +92,7 @@ production:
 # Database migration
 #
 #
-db:1evol:install:
+1EVO:install:db:
   image:
     name: harbor.infra.kube/infra/helm
     entrypoint: [""]
@@ -107,9 +107,9 @@ db:1evol:install:
     url: https://evolution-cryptopay.dev.kube
   only:
     variables:
-      - $DATABASE_MIGRATION_VERSION
+      - $CI_COMMIT_TAG == /^DB-/
 
-db:1evol:rollback:
+1EVO:rollback:db:
   image:
     name: bitnami/kubectl
     entrypoint: [""]
@@ -126,7 +126,7 @@ db:1evol:rollback:
     variables:
       - $DATABASE_MIGRATION_VERSION
 
-db:2pres:install:
+2PRSN:install:db:
   image:
     name: bitnami/kubectl
     entrypoint: [""]
@@ -143,7 +143,7 @@ db:2pres:install:
     variables:
       - $DATABASE_MIGRATION_VERSION
 
-db:2pres:rollback:
+2PRSN:rollback:db:
   image:
     name: bitnami/kubectl
     entrypoint: [""]
@@ -160,7 +160,7 @@ db:2pres:rollback:
     variables:
       - $DATABASE_MIGRATION_VERSION
 
-db:3preprod:install:
+3PRERPROD:install:db:
   image:
     name: bitnami/kubectl
     entrypoint: [""]
@@ -179,7 +179,7 @@ db:3preprod:install:
     variables:
       - $DATABASE_MIGRATION_VERSION
 
-db:3preprod:rollback:
+3PRERPROD:rollback:db:
   image:
     name: bitnami/kubectl
     entrypoint: [""]
@@ -198,7 +198,7 @@ db:3preprod:rollback:
     variables:
       - $DATABASE_MIGRATION_VERSION
 
-db:4PROD:install:
+4PROD:install:db:
   image:
     name: bitnami/kubectl
     entrypoint: [""]
@@ -219,7 +219,7 @@ db:4PROD:install:
     variables:
       - $DATABASE_MIGRATION_VERSION
 
-db:4PROD:rollback:
+4PROD:rollback:db:
   image:
     name: bitnami/kubectl
     entrypoint: [""]
@@ -238,4 +238,4 @@ db:4PROD:rollback:
     refs:
       - tags
     variables:
-      - $DATABASE_MIGRATION_VERSION
+      - $CI_COMMIT_TAG == /^DB-/
