@@ -2,7 +2,7 @@
 #
 
 # Exit on first fail
-set -ex
+set -e
 
 if [ $# -eq 0 ]; then
 	echo
