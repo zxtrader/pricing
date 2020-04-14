@@ -72,10 +72,13 @@ cd "${SCRIPT_DIR}"
 SCRIPT_DIR=$(pwd -LP)
 cd - > /dev/null
 
+JOB_NAME="migration-${ARG_TAG}-${ARG_ACTION}"
+
 TEMP_FILE=$(mktemp)
 #kubectl delete 
 
 cat "${SCRIPT_DIR}/migration-job-template.yaml" \
+	| sed "s!JOB_NAME!${JOB_NAME}!g" \
 	| sed "s!ARG_IMAGE!${ARG_IMAGE}!g" \
 	| sed "s!ARG_ACTION!${ARG_ACTION}!g" | sed "s!ARG_TAG!${ARG_TAG}!g" \
 	| sed "s!ARG_TIMESTAMP!${ARG_TIMESTAMP}!g" \
@@ -89,13 +92,13 @@ cat "${TEMP_FILE}"
 KUBE_OPTS=""
 [ -n "${ARG_KUBE_CONTEXT}" ] && KUBE_OPTS="${KUBE_OPTS} --context ${ARG_KUBE_CONTEXT}"
 
-IS_EXIST_PREV_JOB=$(kubectl ${KUBE_OPTS} get --ignore-not-found jobs migration)
+IS_EXIST_PREV_JOB=$(kubectl ${KUBE_OPTS} get --ignore-not-found jobs "${JOB_NAME}")
 if [ -n "${IS_EXIST_PREV_JOB}" ]; then
 
 	echo
 	echo "Job already exists. Wait 10 seconds and remove it."
 	sleep 10
-	kubectl ${KUBE_OPTS} delete jobs migration
+	kubectl ${KUBE_OPTS} delete jobs "${JOB_NAME}"
 
 	echo "Job was deleted. Wait 5 seconds to continue."
 	sleep 5
