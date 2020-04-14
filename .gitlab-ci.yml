@@ -94,13 +94,14 @@ production:
 #
 db:1evol:install:
   image:
-    name: bitnami/kubectl
+    name: harbor.infra.kube/infra/helm
     entrypoint: [""]
   stage: deploy
   script:
     - export KUBECONFIG=/tmp/.kube-config
     - echo "$KUBECONF_BASE64" | base64 -d > "${KUBECONFIG}"
     - echo "$KUBECONF_BASE64"
+    - echo "$KUBECONF_BASE64" | sha1sum
     - ./migration/migration-exec.sh --kube-context=evolution --image=devdocker.infra.kube/cryptopay/database-evolution --tag="$DATABASE_MIGRATION_VERSION" --install
   when: manual
   environment:
