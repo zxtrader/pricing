@@ -107,7 +107,7 @@ production:
     url: https://evolution-cryptopay.dev.kube
   only:
     variables:
-      - $CI_COMMIT_TAG == /^DB-/
+      - $CI_COMMIT_TAG =~ /^((?!DB-).)*$/
 
 1EVO:rollback:db:
   image:
