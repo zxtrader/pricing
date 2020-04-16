@@ -75,7 +75,6 @@ cd - > /dev/null
 JOB_NAME="migration-${ARG_TAG}-${ARG_ACTION}"
 
 TEMP_FILE=$(mktemp)
-#kubectl delete 
 
 cat "${SCRIPT_DIR}/migration-job-template.yaml" \
 	| sed "s!JOB_NAME!${JOB_NAME}!g" \
@@ -92,6 +91,9 @@ cat "${TEMP_FILE}"
 KUBE_OPTS=""
 [ -n "${ARG_KUBE_CONTEXT}" ] && KUBE_OPTS="${KUBE_OPTS} --context ${ARG_KUBE_CONTEXT}"
 
+echo "# KUBE_OPTS is: ${$KUBE_OPTS}"
+
+echo "# Checking ${JOB_NAME} for existence..."
 IS_EXIST_PREV_JOB=$(kubectl ${KUBE_OPTS} get --ignore-not-found jobs "${JOB_NAME}")
 if [ -n "${IS_EXIST_PREV_JOB}" ]; then
 
