@@ -87,11 +87,10 @@ echo
 echo "# Job definition YAML"
 cat "${TEMP_FILE}"
 
-
 KUBE_OPTS=""
 [ -n "${ARG_KUBE_CONTEXT}" ] && KUBE_OPTS="${KUBE_OPTS} --context ${ARG_KUBE_CONTEXT}"
 
-echo "# KUBE_OPTS is: ${$KUBE_OPTS}"
+echo "# KUBE_OPTS is: ${KUBE_OPTS}"
 
 echo "# Checking ${JOB_NAME} for existence..."
 IS_EXIST_PREV_JOB=$(kubectl ${KUBE_OPTS} get --ignore-not-found jobs "${JOB_NAME}")
