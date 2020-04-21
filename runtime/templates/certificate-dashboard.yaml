@@ -1,12 +1,12 @@
 apiVersion: certmanager.k8s.io/v1alpha1
 kind: Certificate
 metadata:
-  name: {{ .Chart.Name }}-cpservice{{ template "suffix" . }}-certificate
+  name: {{ .Chart.Name }}-dashboard{{ template "suffix" . }}-certificate
 spec:
-  secretName: {{ .Chart.Name }}-cpservice{{ template "suffix" . }}-certificate
+  secretName: {{ .Chart.Name }}-dashboard{{ template "suffix" . }}-certificate
   issuerRef:
     name: ca-issuer
     # We can reference ClusterIssuers by changing the kind here.
     # The default value is Issuer (i.e. a locally namespaced Issuer)
     kind: ClusterIssuer
-  commonName: {{ .Chart.Name }}-cpservice{{ template "suffix" . }}
+  commonName: {{ .Chart.Name }}-dashboard{{ template "suffix" . }}

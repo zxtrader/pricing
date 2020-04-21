@@ -2,8 +2,8 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   labels:
-    app: {{ .Chart.Name }}-cpservice{{ template "suffix" . }}
-  name: {{ .Chart.Name }}-cpservice{{ template "suffix" . }}
+    app: {{ .Chart.Name }}-processing{{ template "suffix" . }}
+  name: {{ .Chart.Name }}-processing{{ template "suffix" . }}
 spec:
   replicas: 1
   strategy:
@@ -11,25 +11,25 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ .Chart.Name }}-cpservice{{ template "suffix" . }}
+        app: {{ .Chart.Name }}-processing{{ template "suffix" . }}
     spec:
-      initContainers:
-      - name: migration
-        image: {{ .Values.docker.cpservice.migrationImage }}:{{ .Values.docker.cpservice.tag }}
-        volumeMounts:
-        - name: secret-files-migration
-          mountPath: /etc/cexiolabs/cryptopay/secrets
-          # The service will delete all files after read its. So need write access.
-          readOnly: false
-        envFrom:
-        - configMapRef:
-            name: cpservice-migration-envvars
+      # initContainers:
+      # - name: migration
+      #   image: {{ .Values.docker.processing.migrationImage }}:{{ .Values.docker.processing.tag }}
+      #   volumeMounts:
+      #   - name: secret-files-migration
+      #     mountPath: /etc/cexiolabs/cryptopay/secrets
+      #     # The service will delete all files after read its. So need write access.
+      #     readOnly: false
+      #   envFrom:
+      #   - configMapRef:
+      #       name: processing-migration-envvars
       containers:
-      - name: cpservice
-        image: {{ .Values.docker.cpservice.serviceImage }}:{{ .Values.docker.cpservice.tag }}
-{{- if .Values.docker.cpservice.cmd }}
+      - name: processing
+        image: {{ .Values.docker.processing.serviceImage }}:{{ .Values.docker.processing.tag }}
+{{- if .Values.docker.processing.args }}
         args:
-{{ range .Values.docker.cpservice.cmd }}
+{{ range .Values.docker.processing.args }}
           - {{ . }}
 {{ end }}
 {{- end }}
@@ -47,7 +47,7 @@ spec:
         - containerPort: 9090
           protocol: TCP
         volumeMounts:
-        - name: config-files
+        - name: processing-files
           mountPath: /etc/cexiolabs/cryptopay
           readOnly: true
         - name: secret-certificate
@@ -59,13 +59,17 @@ spec:
           readOnly: false
         envFrom:
         - configMapRef:
-            name: cpservice-envvars
+            name: processing-envvars
         env:
         - name: RUNTIME
           value: {{ .Values.environment }}
-{{- if .Values.docker.cpservice.cmdbin }}
+        - name: HTTP_PORT
+          value: "8083"
+        - name: HTTPS_PORT
+          value: "8483"
+{{- if .Values.docker.processing.cmdbin }}
         - name: CMDBIN
-          value: {{ .Values.docker.cpservice.cmdbin }}
+          value: {{ .Values.docker.processing.cmdbin }}
 {{- end }}
         # livenessProbe:
         #   httpGet:
@@ -99,15 +103,12 @@ spec:
           protocol: TCP
 {{ end }}
       volumes:
-      - name: config-files
+      - name: processing-files
         configMap:
-          name: cpservice-files
+          name: processing-files
       - name: secret-files
         secret:
-          secretName: cpservice
-      - name: secret-files-migration
-        secret:
-          secretName: cpservice-migration
+          secretName: processing
       - name: secret-certificate
         secret:
-          secretName: {{ .Chart.Name }}-cpservice{{ template "suffix" . }}-certificate
+          secretName: {{ .Chart.Name }}-processing{{ template "suffix" . }}-certificate

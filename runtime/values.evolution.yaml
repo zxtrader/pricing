@@ -1,17 +1,19 @@
 environment: evolution
 
 docker:
-  cpservice:
-    migrationImage: devdocker.infra.kube/cryptopay/cpservice-migration
-    serviceImage: devdocker.infra.kube/cryptopay/cpservice-devel
-    tag: latest,
-    cmd:
-      [
-        "--config-file=/etc/cexiolabs/cryptopay.service/service.config",
-        "--config-secrets-dir=/etc/cexiolabs/cryptopay/secrets",
-        "--config-env",
-      ]
-    cmdbin: "aggrless"
+  processing:
+    serviceImage: mendhak/http-https-echo
+    tag: latest
+    # args:
+    #   [
+    #     "--config-file=/etc/cexiolabs/cryptopay.processing/service.config",
+    #     "--config-secrets-dir=/etc/cexiolabs/cryptopay/secrets",
+    #     "--config-env",
+    #   ]
+    # cmdbin: "aggrless"
+  dashboard:
+    serviceImage: devdocker.infra.kube/cryptopay/dashboard
+    tag: latest
 
 ingress:
   API:
@@ -23,36 +25,38 @@ ingress:
     backendInsecure: yes
     paths:
       "/":
-        backendServiceName: cpservice
+        backendServiceName: processing
         backendServicePort: 8080
   SysAdmin:
     type: internal
     domain: sysadmin-evolution-cryptopay.dev.kube
+    # API does not require client's certificate
+    #backendCaSecretName:
     certSecretName: dev
     backendInsecure: yes
     paths:
       "/":
-        backendServiceName: cpservice
+        backendServiceName: processing
         backendServicePort: 8081
   Dashboard:
     type: internal
     domain: dashboard-evolution-cryptopay.dev.kube
     certSecretName: dev
-    backendCaSecretName: ca-secret
+    #backendCaSecretName: ca-secret
     backendInsecure: yes
     paths:
       "/":
-        backendServiceName: cpservice
-        backendServicePort: 8082
-  Specs:
+        backendServiceName: dashboard
+        backendServicePort: 8080
+  SpecsAndWtf2PssCallbacks:
     type: internal
     domain: evolution-cryptopay.dev.kube
     certSecretName: dev
     backendInsecure: yes
     paths:
       "/":
-        backendServiceName: cpservice
+        backendServiceName: processing
         backendServicePort: 8083
       "/v2/callback/cryptoproviders/cex/":
-        backendServiceName: cpservice
+        backendServiceName: processing
         backendServicePort: 8084

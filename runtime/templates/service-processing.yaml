@@ -2,8 +2,8 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    app: {{ .Chart.Name }}-cpservice{{ template "suffix" . }}
-  name: {{ .Chart.Name }}-cpservice{{ template "suffix" . }}
+    app: {{ .Chart.Name }}-processing{{ template "suffix" . }}
+  name: {{ .Chart.Name }}-processing{{ template "suffix" . }}
   annotations:
     prometheus.io/scrape: "true"
     prometheus.io/path: /metrics
@@ -41,4 +41,4 @@ spec:
 {{ end }}
   type: ClusterIP
   selector:
-    app: {{ .Chart.Name }}-cpservice{{ template "suffix" . }}
+    app: {{ .Chart.Name }}-processing{{ template "suffix" . }}

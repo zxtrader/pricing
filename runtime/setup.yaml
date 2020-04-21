@@ -3,7 +3,7 @@ kind: ConfigMap
 metadata:
   name: processing-envvars
 data:
-  aggregator.url: wss://api-aggr-demo.dev.kube/ws
+  aggregator.url: wss://external-api-aggr-demo.dev.kube/ws
   endpoint.account.cors.allowedHeaders: "*"
   endpoint.account.cors.methods: GET, POST, PUT, DELETE
   endpoint.account.cors.whiteList: http://localhost:8080 http://127.0.0.1:8080 https://dev-api-evolution-cryptopay.dev.kube/v2/account
@@ -219,7 +219,7 @@ data:
   postgres.api.url: cG9zdGdyZXM6Ly9jcnlwdG9wYXktZXZvbHV0aW9uLWFwaTpycXY0YmU1NlloNGpRQVZqQHBvc3RncmVzLmNyeXB0b3BheS1pbmZyYTo1NDMyL2NyeXB0b3BheS1ldm9sdXRpb24=
   postgres.dashboard.url: cG9zdGdyZXM6Ly9jcnlwdG9wYXktZXZvbHV0aW9uLWRhc2hib2FyZDoybkRNRU5Rc1l0Wm41Z0tNQHBvc3RncmVzLmNyeXB0b3BheS1pbmZyYTo1NDMyL2NyeXB0b3BheS1ldm9sdXRpb24=
   postgres.readonly.url: cG9zdGdyZXM6Ly9jcnlwdG9wYXktZXZvbHV0aW9uLXJlYWRvbmx5OlhDY3lhODhGMlAyYXNtRWRAcG9zdGdyZXMuY3J5cHRvcGF5LWluZnJhOjU0MzIvY3J5cHRvcGF5LWV2b2x1dGlvbg==
-  postgres.sysadmin.url: cG9zdGdyZXM6Ly9jcnlwdG9wYXktZXZvbHV0aW9uLXN5c2FkbWluOlRqR21lMmFyc0NDeXF0MzRAcG9zdGdyZXMuY3J5cHRvcGF5LWluZnJhOjU0MzIvY3J5cHRvcGF5LWV2b2x1dGlvbg==
+  postgres.sysadmintool.url: cG9zdGdyZXM6Ly9jcnlwdG9wYXktZXZvbHV0aW9uLXN5c2FkbWluOlRqR21lMmFyc0NDeXF0MzRAcG9zdGdyZXMuY3J5cHRvcGF5LWluZnJhOjU0MzIvY3J5cHRvcGF5LWV2b2x1dGlvbg==
   rabbitmq.url: YW1xcDovL2NyeXB0b3BheTpTQUQyM2Q0MjM0Y2FzMjNAcmFiYml0bXEuY3J5cHRvcGF5LWluZnJhOjU2NzIv
   redis.url: cmVkaXM6Ly86U0FEMjM0Y2FzMjNAcmVkaXMtcHJvY2Vzc2luZy5jcnlwdG9wYXktaW5mcmE6NjM3OS80
 

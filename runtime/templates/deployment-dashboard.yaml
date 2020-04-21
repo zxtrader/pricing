@@ -1,0 +1,43 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: {{ .Chart.Name }}-dashboard{{ template "suffix" . }}
+  name: {{ .Chart.Name }}-dashboard{{ template "suffix" . }}
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: {{ .Chart.Name }}-dashboard{{ template "suffix" . }}
+    spec:
+      containers:
+      - name: dashboard-serve
+        image: {{ .Values.docker.dashboard.serviceImage }}:{{ .Values.docker.dashboard.tag }}
+        volumeMounts:
+        - name: secret-certificate
+          mountPath: /etc/cexiolabs/cryptopay/ssl
+          readOnly: true
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+        # livenessProbe:
+        #   httpGet:
+        #     path: /livenessProbe
+        #     port: 9090
+        #     scheme: HTTP
+        #   initialDelaySeconds: 10
+        #   periodSeconds: 10
+        # readinessProbe:
+        #   httpGet:
+        #     path: /readinessProbe
+        #     port: 9090
+        #     scheme: HTTP
+        #   initialDelaySeconds: 10
+        #   periodSeconds: 10
+      volumes:
+      - name: secret-certificate
+        secret:
+          secretName: {{ .Chart.Name }}-dashboard{{ template "suffix" . }}-certificate
