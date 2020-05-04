@@ -1,4 +1,4 @@
 .backup/
 .release*/
 .DS_Store
-
+setup-*.yaml

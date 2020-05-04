@@ -89,7 +89,80 @@ production:
 
 #
 #
-# Database migration
+# Database migration master/dev
+#
+#
+devel-1EVO:install:db:
+  image:
+    name: harbor.infra.kube/infra/helm
+    entrypoint: [""]
+  stage: deploy
+  script:
+    - export KUBECONFIG=/tmp/.kube-config
+    - echo "$KUBECONF_BASE64" | base64 -d > "${KUBECONFIG}"
+    - ./migration/migration-exec.sh --kube-context=evolution --image=devdocker.infra.kube/cryptopay/database-evolution --tag="$DEVEL_DB_IMAGE_TAG" --install
+  when: manual
+  environment:
+    name: evolution
+    url: https://evolution-cryptopay.dev.kube
+  only:
+    variables:
+      - $DEVEL_DB_IMAGE_TAG
+
+devel-1EVO:rollback:db:
+  image:
+    name: bitnami/kubectl
+    entrypoint: [""]
+  stage: rollback
+  script:
+    - export KUBECONFIG=/tmp/.kube-config
+    - echo "$KUBECONF_BASE64" | base64 -d > "${KUBECONFIG}"
+    - ./migration/migration-exec.sh --kube-context=evolution --image=devdocker.infra.kube/cryptopay/database-evolution --tag="$DEVEL_DB_IMAGE_TAG" --rollback
+  when: manual
+  environment:
+    name: evolution
+    url: https://evolution-cryptopay.dev.kube
+  only:
+    variables:
+      - $DEVEL_DB_IMAGE_TAG
+
+devel-2PRSN:install:db:
+  image:
+    name: bitnami/kubectl
+    entrypoint: [""]
+  stage: deploy
+  script:
+    - export KUBECONFIG=/tmp/.kube-config
+    - echo "$KUBECONF_BASE64" | base64 -d > "${KUBECONFIG}"
+    - ./migration/migration-exec.sh --kube-context=presentation --image=devdocker.infra.kube/cryptopay/database-presentation --tag="$DEVEL_DB_IMAGE_TAG" --install
+  when: manual
+  environment:
+    name: presentation
+    url: https://presentation-cryptopay.dev.kube
+  only:
+    variables:
+      - $DEVEL_DB_IMAGE_TAG
+
+devel-2PRSN:rollback:db:
+  image:
+    name: bitnami/kubectl
+    entrypoint: [""]
+  stage: rollback
+  script:
+    - export KUBECONFIG=/tmp/.kube-config
+    - echo "$KUBECONF_BASE64" | base64 -d > "${KUBECONFIG}"
+    - ./migration/migration-exec.sh --kube-context=presentation --image=devdocker.infra.kube/cryptopay/database-presentation --tag="$DEVEL_DB_IMAGE_TAG" --rollback
+  when: manual
+  environment:
+    name: presentation
+    url: https://presentation-cryptopay.dev.kube
+  only:
+    variables:
+      - $DEVEL_DB_IMAGE_TAG
+
+#
+#
+# Database migration TAGs
 #
 #
 1EVO:install:db:
