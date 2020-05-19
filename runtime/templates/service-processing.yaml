@@ -29,16 +29,24 @@ spec:
       name: dashboard
       protocol: TCP
       targetPort: 8082
+{{ if or (eq .Values.environment "evolution") (eq .Values.environment "presentation") }}
     - port: 8083
       name: specs
       protocol: TCP
       targetPort: 8083
-{{ if and (eq .Release.Name "tag") (eq .Values.environment "evolution") }}
+{{ end }}
     - port: 8084
+{{ if and (eq .Release.Name "tag") (eq .Values.environment "evolution") }}
       name: notifier
+{{ else }}
+      name: pss-provider-wtf2-callbacks
+{{ end }}
       protocol: TCP
       targetPort: 8084
-{{ end }}
+    - port: 8086
+      name: widget
+      protocol: TCP
+      targetPort: 8086
   type: ClusterIP
   selector:
     app: {{ .Chart.Name }}-processing{{ template "suffix" . }}

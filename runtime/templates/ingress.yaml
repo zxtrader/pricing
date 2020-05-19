@@ -21,6 +21,12 @@ metadata:
     nginx.ingress.kubernetes.io/secure-backends: "true"
     nginx.org/ssl-services: {{ range $bindPath, $serviceConnectivity := $value.paths }}{{ $rootScope.Chart.Name }}-{{ $serviceConnectivity.backendServiceName }}{{ template "suffix" $rootScope }}{{ end }}
 {{ end }}
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      add_header Last-Modified $date_gmt;
+      add_header Cache-Control 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0';
+      if_modified_since off;
+      expires off;
+      etag off;
 spec:
   tls:
     - hosts:

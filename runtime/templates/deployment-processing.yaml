@@ -42,7 +42,16 @@ spec:
 {{- end }}
         - containerPort: 8082
           protocol: TCP
+{{ if or (eq .Values.environment "evolution") (eq .Values.environment "presentation") }}
         - containerPort: 8083
+          protocol: TCP
+{{ end }}
+{{ if not (and (eq .Release.Name "tag") (eq .Values.environment "evolution")) }}
+        # In "evolution" we use proxy-service called "notifier", to handle callbacks on local workstation via WebSocket
+        - containerPort: 8084
+          protocol: TCP
+{{ end }}
+        - containerPort: 8086
           protocol: TCP
         - containerPort: 9090
           protocol: TCP
@@ -57,19 +66,25 @@ spec:
           mountPath: /etc/cexiolabs/cryptopay/secrets
           # The service will delete all files after read its. So need write access.
           readOnly: false
+        - name: secret-setup-files
+          mountPath: /etc/cexiolabs/cryptopay/secrets-setup
+          # The service will delete all files after read its. So need write access.
+          readOnly: false
         envFrom:
         - configMapRef:
             name: processing-envvars
+        - configMapRef:
+            name: processing-envvars-setup
         env:
         - name: RUNTIME
           value: {{ .Values.environment }}
-        - name: HTTP_PORT
-          value: "8083"
-        - name: HTTPS_PORT
-          value: "8483"
 {{- if .Values.docker.processing.cmdbin }}
         - name: CMDBIN
           value: {{ .Values.docker.processing.cmdbin }}
+{{- end }}
+{{- if .Values.docker.processing.debugPort }}
+        - name: DEBUG_PORT
+          value: "{{ .Values.docker.processing.debugPort }}"
 {{- end }}
         # livenessProbe:
         #   httpGet:
@@ -109,6 +124,9 @@ spec:
       - name: secret-files
         secret:
           secretName: processing
+      - name: secret-setup-files
+        secret:
+          secretName: processing-setup
       - name: secret-certificate
         secret:
           secretName: {{ .Chart.Name }}-processing{{ template "suffix" . }}-certificate

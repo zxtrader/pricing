@@ -2,15 +2,18 @@ environment: presentation
 
 docker:
   processing:
-    serviceImage: mendhak/http-https-echo
+    serviceImage: devdocker.infra.kube/cryptopay/cpservice-devel
     tag: latest
-    # args:
-    #   [
-    #     "--config-file=/etc/cexiolabs/cryptopay.processing/service.config",
-    #     "--config-secrets-dir=/etc/cexiolabs/cryptopay/secrets",
-    #     "--config-env",
-    #   ]
-    # cmdbin: "aggrless"
+    args:
+      [
+        "--config-file=/etc/cexiolabs/cryptopay.processing/service.config",
+        "--config-file=/etc/cexiolabs/cryptopay.processing/gateway.config",
+        "--config-secrets-dir=/etc/cexiolabs/cryptopay/secrets",
+        "--config-secrets-dir=/etc/cexiolabs/cryptopay/secrets-setup",
+        "--config-env",
+      ]
+    cmdbin: "aggrless"
+    debugPort: 9229
   dashboard:
     serviceImage: devdocker.infra.kube/cryptopay/dashboard
     tag: latest
@@ -20,9 +23,6 @@ ingress:
     type: internal
     domain: api-presentation-cryptopay.dev.kube
     certSecretName: dev
-    # API does not require client's certificate
-    #backendCaSecretName:
-    backendInsecure: yes
     paths:
       "/":
         backendServiceName: processing
@@ -31,9 +31,6 @@ ingress:
     type: external
     domain: api-testnet.cryptopay.band
     certSecretName: cryptopay-band
-    # API does not require client's certificate
-    #backendCaSecretName:
-    backendInsecure: yes
     paths:
       "/":
         backendServiceName: processing
@@ -41,10 +38,9 @@ ingress:
   SysAdmin-Internal:
     type: internal
     domain: sysadmin-presentation-cryptopay.dev.kube
-    # API does not require client's certificate
+    # TODO Add: require client's certificate
     #backendCaSecretName:
     certSecretName: dev
-    backendInsecure: yes
     paths:
       "/":
         backendServiceName: processing
@@ -69,25 +65,34 @@ ingress:
       "/":
         backendServiceName: dashboard
         backendServicePort: 8080
-  Specs-External:
+  SpecsAndWidgetAndGateway-External:
     type: external
     domain: testnet.cryptopay.band
     certSecretName: cryptopay-band
-    #backendCaSecretName: ca-secret
-    backendInsecure: yes
     paths:
       "/":
         backendServiceName: processing
         backendServicePort: 8083
+      "/v2/gateway/api":
+        backendServiceName: processing
+        backendServicePort: 8080
+      "/widget":
+        backendServiceName: processing
+        backendServicePort: 8086
   SpecsAndWtf2PssCallbacks-Internal:
     type: internal
     domain: presentation-cryptopay.dev.kube
     certSecretName: dev
-    backendInsecure: yes
     paths:
       "/":
         backendServiceName: processing
         backendServicePort: 8083
-      "/v2/callback/cryptoproviders/cex/":
+      "/v2/gateway/api":
+        backendServiceName: processing
+        backendServicePort: 8080
+      "/widget":
+        backendServiceName: processing
+        backendServicePort: 8086
+      "/v2/callback/cryptoproviders/cex/wtf2pss/":
         backendServiceName: processing
         backendServicePort: 8084
