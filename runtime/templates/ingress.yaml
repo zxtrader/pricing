@@ -14,12 +14,14 @@ metadata:
     nginx.ingress.kubernetes.io/auth-tls-verify-depth: "1"
 {{ end }}
 {{ if $value.backendInsecure }}
-    nginx.ingress.kubernetes.io/backend-protocol: "http"
+    # https://github.com/kubernetes/ingress-nginx/blob/master/docs/user-guide/nginx-configuration/annotations.md#backend-protocol
+#    nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
     nginx.ingress.kubernetes.io/secure-backends: "false"
 {{ else }}
-    nginx.ingress.kubernetes.io/backend-protocol: "https"
+    # https://github.com/kubernetes/ingress-nginx/blob/master/docs/user-guide/nginx-configuration/annotations.md#backend-protocol
+#    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
     nginx.ingress.kubernetes.io/secure-backends: "true"
-    nginx.org/ssl-services: {{ range $bindPath, $serviceConnectivity := $value.paths }}{{ $rootScope.Chart.Name }}-{{ $serviceConnectivity.backendServiceName }}{{ template "suffix" $rootScope }}{{ end }}
+#     nginx.org/ssl-services: {{ range $bindPath, $serviceConnectivity := $value.paths }}{{ $rootScope.Chart.Name }}-{{ $serviceConnectivity.backendServiceName }}{{ template "suffix" $rootScope }}{{ end }}
 {{ end }}
     nginx.ingress.kubernetes.io/configuration-snippet: |
       add_header Last-Modified $date_gmt;

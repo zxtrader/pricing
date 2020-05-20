@@ -35,36 +35,28 @@ ingress:
       "/":
         backendServiceName: processing
         backendServicePort: 8080
-  SysAdmin-Internal:
-    type: internal
-    domain: sysadmin-presentation-cryptopay.dev.kube
-    # TODO Add: require client's certificate
-    #backendCaSecretName:
-    certSecretName: dev
-    paths:
-      "/":
-        backendServiceName: processing
-        backendServicePort: 8081
   Dashboard-Internal:
     type: internal
     domain: dashboard-presentation-cryptopay.dev.kube
     certSecretName: dev
-    #backendCaSecretName: ca-secret
-    backendInsecure: yes
     paths:
       "/":
         backendServiceName: dashboard
         backendServicePort: 8080
+      "/v2/dashboard/":
+        backendServiceName: processing
+        backendServicePort: 8082
   Dashboard-External:
     type: external
     domain: dashboard-testnet.cryptopay.band
     certSecretName: cryptopay-band
-    #backendCaSecretName: ca-secret
-    backendInsecure: yes
     paths:
       "/":
         backendServiceName: dashboard
         backendServicePort: 8080
+      "/v2/dashboard/":
+        backendServiceName: processing
+        backendServicePort: 8082
   SpecsAndWidgetAndGateway-External:
     type: external
     domain: testnet.cryptopay.band
@@ -73,13 +65,13 @@ ingress:
       "/":
         backendServiceName: processing
         backendServicePort: 8083
-      "/v2/gateway/api":
+      "/v2/gateway/api/":
         backendServiceName: processing
         backendServicePort: 8080
-      "/widget":
+      "/widget/":
         backendServiceName: processing
         backendServicePort: 8086
-  SpecsAndWtf2PssCallbacks-Internal:
+  SpecsAndWidgetAndGatewayAndWtf2PssCallbacks-Internal:
     type: internal
     domain: presentation-cryptopay.dev.kube
     certSecretName: dev
@@ -87,12 +79,12 @@ ingress:
       "/":
         backendServiceName: processing
         backendServicePort: 8083
-      "/v2/gateway/api":
+      "/v2/gateway/api/":
         backendServiceName: processing
-        backendServicePort: 8080
-      "/widget":
-        backendServiceName: processing
-        backendServicePort: 8086
+        backendServicePort: 8082
       "/v2/callback/cryptoproviders/cex/wtf2pss/":
         backendServiceName: processing
         backendServicePort: 8084
+      "/widget/":
+        backendServiceName: processing
+        backendServicePort: 8086
