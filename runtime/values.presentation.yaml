@@ -12,7 +12,7 @@ docker:
         "--config-secrets-dir=/etc/cexiolabs/cryptopay/secrets-setup",
         "--config-env",
       ]
-    cmdbin: "aggrless"
+    cmdbin: "devel"
     debugPort: 9229
   dashboard:
     serviceImage: devdocker.infra.kube/cryptopay/dashboard

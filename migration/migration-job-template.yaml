@@ -7,7 +7,7 @@ spec:
   template:
     spec:
       containers:
-        - name: "database-migrate-ARG_TIMESTAMP"
+        - name: "migration-database"
           image: "ARG_IMAGE:ARG_TAG"
           args: ["ARG_ACTION"]
           volumeMounts:

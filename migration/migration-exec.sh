@@ -72,14 +72,15 @@ cd "${SCRIPT_DIR}"
 SCRIPT_DIR=$(pwd -LP)
 cd - > /dev/null
 
-JOB_NAME="migration-${ARG_TAG}-${ARG_ACTION}"
+JOB_NAME="migration-${ARG_TIMESTAMP}-${ARG_ACTION}"
 
 TEMP_FILE=$(mktemp)
 
 cat "${SCRIPT_DIR}/migration-job-template.yaml" \
 	| sed "s!JOB_NAME!${JOB_NAME}!g" \
 	| sed "s!ARG_IMAGE!${ARG_IMAGE}!g" \
-	| sed "s!ARG_ACTION!${ARG_ACTION}!g" | sed "s!ARG_TAG!${ARG_TAG}!g" \
+	| sed "s!ARG_ACTION!${ARG_ACTION}!g" \
+	| sed "s!ARG_TAG!${ARG_TAG}!g" \
 	| sed "s!ARG_TIMESTAMP!${ARG_TIMESTAMP}!g" \
 	| sed "s!ARG_KUBE_NAMESPACE!${ARG_KUBE_NAMESPACE}!g" > "${TEMP_FILE}"
 
