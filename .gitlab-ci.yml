@@ -5,7 +5,7 @@
       exit 127
     fi
     local EXPECTED_VERSION=$(echo "${CI_COMMIT_TAG}" | sed 's/^runtime-//g')
-    local HELM_CHART_APP_VERSION=$(grep -e '^appVersion:' Chart.yaml | cut -d ':' -f 2)
+    local HELM_CHART_APP_VERSION=$(grep -e '^appVersion:' runtime/Chart.yaml | cut -d ':' -f 2)
     if [ "runtime-$HELM_CHART_APP_VERSION" != "$CI_COMMIT_TAG" ]; then
       echo "Helm Chart appVersion '${HELM_CHART_APP_VERSION}' is not same as tag version '${EXPECTED_VERSION}'. Your tag should named as 'runtime-$HELM_CHART_APP_VERSION' for the case." >&2
       exit 255
