@@ -51,12 +51,8 @@ devel-2PRSN:install:runtime:
     - export DEVEL_RUNTIME=latest
     - kube_config_setup
     - cd runtime
-    - helm --tiller-namespace "cryptopay-presentation" upgrade --install --namespace "cryptopay-presentation" \
-      --values "values.presentation.yaml" \
-      --set "docker.processing.tag=$DEVEL_RUNTIME" \
-      --set "docker.dashboardserve.tag=$DEVEL_RUNTIME" \
-      --set "docker.gatewayserve.tag=$DEVEL_RUNTIME" \
-      "$DEVEL_RUNTIME" .
+    - ls -l
+    - helm --tiller-namespace "cryptopay-presentation" upgrade --install --namespace "cryptopay-presentation" --values "values.presentation.yaml" --set "docker.processing.tag=$DEVEL_RUNTIME" --set "docker.dashboardserve.tag=$DEVEL_RUNTIME" --set "docker.gatewayserve.tag=$DEVEL_RUNTIME" "$DEVEL_RUNTIME" .
   environment:
     name: presentation
     url: https://$DEVEL_RUNTIME-presentation-cryptopay.dev.kube
