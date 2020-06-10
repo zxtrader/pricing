@@ -1,12 +1,13 @@
 .functions: &functions |
-  function verify_version() {
+  function verify_runtime_version() {
     if [ -z "${CI_COMMIT_TAG}" ]; then
-      echo "The function verify_version() is able to use for tags only. Variable CI_COMMIT_TAG is not set." >&2
+      echo "The function verify_runtime_version() is able to use for tags only. Variable CI_COMMIT_TAG is not set." >&2
       exit 127
     fi
+    local EXPECTED_VERSION=$(echo "${CI_COMMIT_TAG}" | sed 's/^runtime-//g')
     local HELM_CHART_APP_VERSION=$(grep -e '^appVersion:' Chart.yaml | cut -d ':' -f 2)
-    if [ "$HELM_CHART_APP_VERSION" != "$CI_COMMIT_TAG" ]; then
-      echo "Helm Chart appVersion '${HELM_CHART_APP_VERSION}; is not same as tag version '${CI_COMMIT_TAG}'" >&2
+    if [ "runtime-$HELM_CHART_APP_VERSION" != "$CI_COMMIT_TAG" ]; then
+      echo "Helm Chart appVersion '${HELM_CHART_APP_VERSION}' is not same as tag version '${EXPECTED_VERSION}'. Your tag should named as 'runtime-$HELM_CHART_APP_VERSION' for the case." >&2
       exit 255
     fi
   }
@@ -45,29 +46,44 @@ stages:
   - rollback
 
 # Runtime deployment master/dev
+devel-1EVO:install:runtime:
+  stage: deploy
+  script:
+    - kube_config_setup
+    - cd runtime
+    - helm --tiller-namespace "cryptopay-evolution" upgrade --install --namespace "cryptopay-evolution" --values "values.evolution.yaml" --set "docker.processing.tag=$DEVEL_RUNTIME" --set "docker.dashboardserve.tag=$DEVEL_RUNTIME" --set "docker.gatewayserve.tag=$DEVEL_RUNTIME" "$DEVEL_RUNTIME" .
+  when: manual
+  environment:
+    name: evolution
+    url: https://$DEVEL_RUNTIME-evolution-cryptopay.dev.kube
+  only:
+    variables:
+      - $DEVEL_RUNTIME =~ /^master|dev|latest$/
+
 devel-2PRSN:install:runtime:
   stage: deploy
   script:
-    - export DEVEL_RUNTIME=latest
     - kube_config_setup
     - cd runtime
-    - ls -l
     - helm --tiller-namespace "cryptopay-presentation" upgrade --install --namespace "cryptopay-presentation" --values "values.presentation.yaml" --set "docker.processing.tag=$DEVEL_RUNTIME" --set "docker.dashboardserve.tag=$DEVEL_RUNTIME" --set "docker.gatewayserve.tag=$DEVEL_RUNTIME" "$DEVEL_RUNTIME" .
+  when: manual
   environment:
     name: presentation
     url: https://$DEVEL_RUNTIME-presentation-cryptopay.dev.kube
-  # only:
-  #   variables:
-  #     - $DEVEL_RUNTIME =~ /^master|dev|latest$/
+  only:
+    variables:
+      - $DEVEL_RUNTIME =~ /^master|dev|latest$/
 
 
 # Runtime deployment TAGs
 1EVO:install:runtime:
   stage: deploy
   script:
-    - verify_imagetag_var
-    - verify_target_var
-    - helm --tiller-namespace "cryptopay-evolution" upgrade --install --namespace "cryptopay-evolution" --values "values.evolution.yaml" --set "docker.cpservice.tag=${IMAGE_TAG}" "$TARGET" .
+    - verify_runtime_version
+    - kube_config_setup
+    - cd runtime
+    - helm --tiller-namespace "cryptopay-evolution" upgrade --install --namespace "cryptopay-evolution" --values "values.evolution.yaml" tag .
+  when: manual
   environment:
     name: evolution
     url: https://evolution-cryptopay.dev.kube
@@ -80,9 +96,11 @@ devel-2PRSN:install:runtime:
 2PRSN:install:runtime:
   stage: deploy
   script:
-    - verify_imagetag_var
-    - verify_target_var
-    - helm --tiller-namespace "cryptopay-presentation" upgrade --install --namespace "cryptopay-presentation" --values "values.presentation.yaml" --set "docker.cpservice.tag=${IMAGE_TAG}" "$TARGET" .
+    - verify_runtime_version
+    - kube_config_setup
+    - cd runtime
+    - helm --tiller-namespace "cryptopay-presentation" upgrade --install --namespace "cryptopay-presentation" --values "values.presentation.yaml" tag .
+  when: manual
   environment:
     name: presentation
     url: https://presentation-cryptopay.dev.kube
@@ -95,8 +113,11 @@ devel-2PRSN:install:runtime:
 4PROD:install:runtime:
   stage: deploy
   script:
-    - verify_imagetag_var
+    - verify_runtime_version
+    - kube_config_setup
+    - cd runtime
     - helm --tiller-namespace "cryptopay-production" upgrade --install --namespace "cryptopay-production" --values "values.production.yaml" tag .
+  when: manual
   environment:
     name: production
     url: https://cryptopay.band/
