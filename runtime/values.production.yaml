@@ -32,7 +32,6 @@ ingress:
     certSecretName: ingress-api
     # API does not require client's certificate
     #backendCaSecretName:
-    backendInsecure: yes
     paths:
       "/":
         backendServiceName: processing
@@ -43,7 +42,6 @@ ingress:
     certSecretName: ingress-api
     # Dashboard does not require client's certificate
     #backendCaSecretName:
-    backendInsecure: yes
     paths:
       "/":
         backendServiceName: dashboardserve
@@ -54,7 +52,6 @@ ingress:
     certSecretName: ingress-api
     # Gateway does not require client's certificate
     #backendCaSecretName:
-    backendInsecure: yes
     paths:
       "/":
         backendServiceName: gatewayserve
