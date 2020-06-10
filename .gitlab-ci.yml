@@ -48,7 +48,9 @@ stages:
 devel-2PRSN:install:runtime:
   stage: deploy
   script:
+    - export DEVEL_RUNTIME=latest
     - kube_config_setup
+    - cd runtime
     - helm --tiller-namespace "cryptopay-presentation" upgrade --install --namespace "cryptopay-presentation" \
       --values "values.presentation.yaml" \
       --set "docker.processing.tag=$DEVEL_RUNTIME" \
@@ -58,9 +60,9 @@ devel-2PRSN:install:runtime:
   environment:
     name: presentation
     url: https://$DEVEL_RUNTIME-presentation-cryptopay.dev.kube
-  only:
-    variables:
-      - $DEVEL_RUNTIME =~ /^master|dev|latest$/
+  # only:
+  #   variables:
+  #     - $DEVEL_RUNTIME =~ /^master|dev|latest$/
 
 
 # Runtime deployment TAGs
