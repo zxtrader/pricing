@@ -74,7 +74,6 @@ devel-2PRSN:install:runtime:
     variables:
       - $DEVEL_RUNTIME =~ /^master|dev|latest$/
 
-
 # Runtime deployment TAGs
 1EVO:install:runtime:
   stage: deploy
@@ -121,18 +120,13 @@ devel-2PRSN:install:runtime:
   environment:
     name: production
     url: https://cryptopay.band/
-  only:
-    variables:
-      - $TARGET == "processing"
-      - $ENVIRONMENT == "production"
-    refs:
-      - tags
+  tags:
+    - crtpdpl
   only:
     refs:
       - tags
     variables:
       - $CI_COMMIT_TAG =~ /^runtime-.*/
-
 
 #
 #
