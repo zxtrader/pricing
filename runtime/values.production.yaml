@@ -1,11 +1,30 @@
 environment: production
 
 docker:
-  cpservice:
-    migrationImage: harbor.infra.kube/cryptopay/cpservice-migration
-    serviceImage: harbor.infra.kube/cryptopay/cpservice
+  processing:
+    # serviceImage: harbor.infra.kube/cryptopay/cpservice
+    serviceImage: cexiolabs/http-https-echo
     tag: latest
-
+    env:
+      SSL_CERT_FILE: /etc/cexiolabs/cryptopay/ssl/tls.crt
+      SSL_KEY_FILE: /etc/cexiolabs/cryptopay/ssl/tls.key
+      HTTPS_PORT: 8080
+  dashboardserve:
+    # serviceImage: harbor.infra.kube/cryptopay/dashboard
+    serviceImage: cexiolabs/http-https-echo
+    tag: latest
+    env:
+      SSL_CERT_FILE: /etc/cexiolabs/cryptopay/ssl/tls.crt
+      SSL_KEY_FILE: /etc/cexiolabs/cryptopay/ssl/tls.key
+      HTTPS_PORT: 8080
+  gatewayserve:
+    # serviceImage: harbor.infra.kube/cryptopay/gateway
+    serviceImage: cexiolabs/http-https-echo
+    tag: latest
+    env:
+      SSL_CERT_FILE: /etc/cexiolabs/cryptopay/ssl/tls.crt
+      SSL_KEY_FILE: /etc/cexiolabs/cryptopay/ssl/tls.key
+      HTTPS_PORT: 8080
 ingress:
   API:
     type: external
@@ -13,12 +32,41 @@ ingress:
     certSecretName: ingress-api
     # API does not require client's certificate
     #backendCaSecretName:
-    backendServiceName: cpservice
-    backendServicePort: 8080
+    backendInsecure: yes
+    paths:
+      "/":
+        backendServiceName: processing
+        backendServicePort: 8080
   Dashboard:
     type: external
     domain: dashboard.cryptopay.band
     certSecretName: ingress-api
-    backendCaSecretName: client-ca-api
-    backendServiceName: cpservice
-    backendServicePort: 8082
+    # Dashboard does not require client's certificate
+    #backendCaSecretName:
+    backendInsecure: yes
+    paths:
+      "/":
+        backendServiceName: dashboardserve
+        backendServicePort: 8080
+  Gateway:
+    type: external
+    domain: gateway.cryptopay.band
+    certSecretName: ingress-api
+    # Gateway does not require client's certificate
+    #backendCaSecretName:
+    backendInsecure: yes
+    paths:
+      "/":
+        backendServiceName: gatewayserve
+        backendServicePort: 8080
+      "/v2/gateway/api/":
+        backendServiceName: processing
+        backendServicePort: 8080
+  Wtf2PssCallbacks:
+    type: internal
+    domain: cp2.prodcryptopay.kube
+    certSecretName: ingress-api
+    paths:
+      "/v2/callback/cryptoproviders/":
+        backendServiceName: processing
+        backendServicePort: 8080

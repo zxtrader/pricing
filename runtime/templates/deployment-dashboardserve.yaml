@@ -1,0 +1,64 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: {{ .Chart.Name }}-dashboardserve{{ template "suffix" . }}
+  name: {{ .Chart.Name }}-dashboardserve{{ template "suffix" . }}
+spec:
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: {{ .Chart.Name }}-dashboardserve{{ template "suffix" . }}
+    spec:
+      containers:
+      - name: dashboardserve
+        image: {{ .Values.docker.dashboardserve.serviceImage }}:{{ .Values.docker.dashboardserve.tag }}
+{{- if .Values.docker.dashboardserve.command }}
+        command:
+{{ range .Values.docker.dashboardserve.command }}
+        - {{ . }}
+{{ end }}
+{{- end }}
+{{- if .Values.docker.dashboardserve.args }}
+        args:
+{{ range .Values.docker.dashboardserve.args }}
+        - {{ . }}
+{{ end }}
+{{- end }}
+        volumeMounts:
+        - name: secret-certificate
+          mountPath: /etc/cexiolabs/cryptopay/ssl
+          readOnly: true
+        env:
+        - name: RUNTIME
+          value: {{ .Values.environment }}
+{{- if .Values.docker.dashboardserve.env }}
+{{ range $key, $value := .Values.docker.dashboardserve.env }}
+        - name: "{{ $key }}"
+          value: "{{ $value }}"
+{{ end }}
+{{- end }}
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+        # livenessProbe:
+        #   httpGet:
+        #     path: /livenessProbe
+        #     port: 9090
+        #     scheme: HTTP
+        #   initialDelaySeconds: 10
+        #   periodSeconds: 10
+        # readinessProbe:
+        #   httpGet:
+        #     path: /readinessProbe
+        #     port: 9090
+        #     scheme: HTTP
+        #   initialDelaySeconds: 10
+        #   periodSeconds: 10
+      volumes:
+      - name: secret-certificate
+        secret:
+          secretName: {{ .Chart.Name }}-dashboardserve{{ template "suffix" . }}-certificate

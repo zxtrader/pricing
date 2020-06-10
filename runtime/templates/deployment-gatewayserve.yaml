@@ -1,0 +1,64 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: {{ .Chart.Name }}-gatewayserve{{ template "suffix" . }}
+  name: {{ .Chart.Name }}-gatewayserve{{ template "suffix" . }}
+spec:
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: {{ .Chart.Name }}-gatewayserve{{ template "suffix" . }}
+    spec:
+      containers:
+      - name: gatewayserve
+        image: {{ .Values.docker.gatewayserve.serviceImage }}:{{ .Values.docker.gatewayserve.tag }}
+{{- if .Values.docker.gatewayserve.command }}
+        command:
+{{ range .Values.docker.gatewayserve.command }}
+        - {{ . }}
+{{ end }}
+{{- end }}
+{{- if .Values.docker.gatewayserve.args }}
+        args:
+{{ range .Values.docker.gatewayserve.args }}
+        - {{ . }}
+{{ end }}
+{{- end }}
+        volumeMounts:
+        - name: secret-certificate
+          mountPath: /etc/cexiolabs/cryptopay/ssl
+          readOnly: true
+        env:
+        - name: RUNTIME
+          value: {{ .Values.environment }}
+{{- if .Values.docker.gatewayserve.env }}
+{{ range $key, $value := .Values.docker.gatewayserve.env }}
+        - name: "{{ $key }}"
+          value: "{{ $value }}"
+{{ end }}
+{{- end }}
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+        # livenessProbe:
+        #   httpGet:
+        #     path: /livenessProbe
+        #     port: 9090
+        #     scheme: HTTP
+        #   initialDelaySeconds: 10
+        #   periodSeconds: 10
+        # readinessProbe:
+        #   httpGet:
+        #     path: /readinessProbe
+        #     port: 9090
+        #     scheme: HTTP
+        #   initialDelaySeconds: 10
+        #   periodSeconds: 10
+      volumes:
+      - name: secret-certificate
+        secret:
+          secretName: {{ .Chart.Name }}-gatewayserve{{ template "suffix" . }}-certificate

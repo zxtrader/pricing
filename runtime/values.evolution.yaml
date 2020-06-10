@@ -58,6 +58,6 @@ ingress:
       "/":
         backendServiceName: processing
         backendServicePort: 8083
-      "/v2/callback/cryptoproviders/cex/":
+      "/v2/callback/cryptoproviders/":
         backendServiceName: processing
         backendServicePort: 8084

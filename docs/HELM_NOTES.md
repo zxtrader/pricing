@@ -47,5 +47,5 @@ $ helm --tiller-namespace "cryptopay-${ENV}" upgrade --install --namespace "cryp
 ```
 
 ```bash
-$ helm --tiller-namespace "cryptopay-${ENV}" upgrade --install --namespace "cryptopay-${ENV}" --values "values.${ENV}.yaml" --set "docker.cpservice.tag=dev.fcb068db" tag .
+$ helm --tiller-namespace "cryptopay-${ENV}" upgrade --install --namespace "cryptopay-${ENV}" --values "values.${ENV}.yaml" --set "docker.processing.tag=dev.f08e1c0b" --set "docker.dashboard.tag=master.76ccdc35" tag .
 ```

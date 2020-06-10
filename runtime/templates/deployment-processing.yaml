@@ -5,7 +5,7 @@ metadata:
     app: {{ .Chart.Name }}-processing{{ template "suffix" . }}
   name: {{ .Chart.Name }}-processing{{ template "suffix" . }}
 spec:
-  replicas: 1
+  replicas: 2
   strategy:
     type: RollingUpdate
   template:
@@ -27,10 +27,16 @@ spec:
       containers:
       - name: processing
         image: {{ .Values.docker.processing.serviceImage }}:{{ .Values.docker.processing.tag }}
+{{- if .Values.docker.processing.command }}
+        command:
+{{ range .Values.docker.processing.command }}
+        - {{ . }}
+{{ end }}
+{{- end }}
 {{- if .Values.docker.processing.args }}
         args:
 {{ range .Values.docker.processing.args }}
-          - {{ . }}
+        - {{ . }}
 {{ end }}
 {{- end }}
         ports:
@@ -78,13 +84,11 @@ spec:
         env:
         - name: RUNTIME
           value: {{ .Values.environment }}
-{{- if .Values.docker.processing.cmdbin }}
-        - name: CMDBIN
-          value: {{ .Values.docker.processing.cmdbin }}
-{{- end }}
-{{- if .Values.docker.processing.debugPort }}
-        - name: DEBUG_PORT
-          value: "{{ .Values.docker.processing.debugPort }}"
+{{- if .Values.docker.processing.env }}
+{{ range $key, $value := .Values.docker.processing.env }}
+        - name: "{{ $key }}"
+          value: "{{ $value }}"
+{{ end }}
 {{- end }}
         # livenessProbe:
         #   httpGet:
@@ -100,19 +104,14 @@ spec:
         #     scheme: HTTP
         #   initialDelaySeconds: 10
         #   periodSeconds: 10
-      - name: echo
-        image: mendhak/http-https-echo
-        ports:
-        - containerPort: 80
-          protocol: TCP
 {{ if and (eq .Release.Name "tag") (eq .Values.environment "evolution") }}
       - name: notifier
-        image: docker.registry.zxteam.net/pub/node/notifier/service:master.4cb52cff
+        image: docker.registry.zxteam.net/pub/node/notifier/service:master.85b024fb
         env:
         - name: "server.main.listenPort"
           value: "8084"
         - name: "endpoint.subscriber.bindPath"
-          value: "/v2/callback/cryptoproviders/cex/wtf2pss-subscriber"
+          value: "/v2/callback/cryptoproviders/pss-provider-wtf2-subscriber"
         ports:
         - containerPort: 8084
           protocol: TCP

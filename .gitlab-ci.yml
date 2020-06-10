@@ -44,7 +44,27 @@ stages:
   - deploy
   - rollback
 
-evolution:
+# Runtime deployment master/dev
+devel-2PRSN:install:runtime:
+  stage: deploy
+  script:
+    - kube_config_setup
+    - helm --tiller-namespace "cryptopay-presentation" upgrade --install --namespace "cryptopay-presentation" \
+      --values "values.presentation.yaml" \
+      --set "docker.processing.tag=$DEVEL_RUNTIME" \
+      --set "docker.dashboardserve.tag=$DEVEL_RUNTIME" \
+      --set "docker.gatewayserve.tag=$DEVEL_RUNTIME" \
+      "$DEVEL_RUNTIME" .
+  environment:
+    name: presentation
+    url: https://$DEVEL_RUNTIME-presentation-cryptopay.dev.kube
+  only:
+    variables:
+      - $DEVEL_RUNTIME =~ /^master|dev|latest$/
+
+
+# Runtime deployment TAGs
+1EVO:install:runtime:
   stage: deploy
   script:
     - verify_imagetag_var
@@ -54,11 +74,12 @@ evolution:
     name: evolution
     url: https://evolution-cryptopay.dev.kube
   only:
+    refs:
+      - tags
     variables:
-      - $TARGET == "processing"
-      - $ENVIRONMENT == "evolution"
+      - $CI_COMMIT_TAG =~ /^runtime-.*/
 
-presentation:
+2PRSN:install:runtime:
   stage: deploy
   script:
     - verify_imagetag_var
@@ -68,11 +89,12 @@ presentation:
     name: presentation
     url: https://presentation-cryptopay.dev.kube
   only:
+    refs:
+      - tags
     variables:
-      - $TARGET == "processing"
-      - $ENVIRONMENT == "presentation"
+      - $CI_COMMIT_TAG =~ /^runtime-.*/
 
-production:
+4PROD:install:runtime:
   stage: deploy
   script:
     - verify_imagetag_var
@@ -86,6 +108,12 @@ production:
       - $ENVIRONMENT == "production"
     refs:
       - tags
+  only:
+    refs:
+      - tags
+    variables:
+      - $CI_COMMIT_TAG =~ /^runtime-.*/
+
 
 #
 #
