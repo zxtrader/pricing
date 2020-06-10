@@ -115,7 +115,7 @@ devel-2PRSN:install:runtime:
     - verify_runtime_version
     - kube_config_setup
     - cd runtime
-    - helm --tiller-namespace "cryptopay-production" upgrade --install --namespace "cryptopay-production" --values "values.production.yaml" tag .
+    - helm --tiller-namespace "cryptopay" upgrade --install --namespace "cryptopay" --values "values.production.yaml" tag .
   when: manual
   environment:
     name: production
