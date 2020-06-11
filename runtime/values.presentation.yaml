@@ -2,31 +2,22 @@ environment: presentation
 
 docker:
   processing:
-    #serviceImage: devdocker.infra.kube/cryptopay/cpservice-devel
-    serviceImage: cexiolabs/http-https-echo
-    tag: latest
-    # args:
-    #   [
-    #     "--config-file=/etc/cexiolabs/cryptopay.processing/service.config",
-    #     "--config-file=/etc/cexiolabs/cryptopay.processing/gateway.config",
-    #     "--config-secrets-dir=/etc/cexiolabs/cryptopay/secrets",
-    #     "--config-secrets-dir=/etc/cexiolabs/cryptopay/secrets-setup",
-    #     "--config-env",
-    #   ]
+    serviceImage: devdocker.infra.kube/cryptopay/cpservice-devel
+    tag: dev.66214bd5
+    args:
+      [
+        "--config-file=/etc/cexiolabs/cryptopay.processing/service.config",
+        "--config-toml-file=/etc/cexiolabs/cryptopay.processing/service.toml",
+        "--config-secrets-dir=/etc/cexiolabs/cryptopay/secrets",
+        "--config-secrets-dir=/etc/cexiolabs/cryptopay/secrets-setup",
+        "--config-env",
+      ]
     env:
       CMDBIN: "devel"
       DEBUG_PORT: 9229
-      SSL_CERT_FILE: /etc/cexiolabs/cryptopay/ssl/tls.crt
-      SSL_KEY_FILE: /etc/cexiolabs/cryptopay/ssl/tls.key
-      HTTPS_PORT: 8080
   dashboardserve:
-    # serviceImage: devdocker.infra.kube/cryptopay/dashboard
-    serviceImage: cexiolabs/http-https-echo
-    tag: latest
-    env:
-      SSL_CERT_FILE: /etc/cexiolabs/cryptopay/ssl/tls.crt
-      SSL_KEY_FILE: /etc/cexiolabs/cryptopay/ssl/tls.key
-      HTTPS_PORT: 8080
+    serviceImage: devdocker.infra.kube/cryptopay/dashboard
+    tag: master.76ccdc35
   gatewayserve:
     # serviceImage: harbor.infra.kube/cryptopay/gateway
     serviceImage: cexiolabs/http-https-echo
@@ -62,7 +53,7 @@ ingress:
         backendServicePort: 8080
       "/v2/dashboard/":
         backendServiceName: processing
-        backendServicePort: 8080
+        backendServicePort: 8082
   Dashboard-External:
     type: external
     domain: dashboard-testnet.cryptopay.band
@@ -73,29 +64,29 @@ ingress:
         backendServicePort: 8080
       "/v2/dashboard/":
         backendServiceName: processing
-        backendServicePort: 8080
+        backendServicePort: 8082
   Gateway-Internal:
     type: internal
     domain: gateway-presentation-cryptopay.dev.kube
     certSecretName: dev
     paths:
       "/":
-        backendServiceName: gatewayserve
-        backendServicePort: 8080
+        backendServiceName: processing
+        backendServicePort: 8086
       "/v2/gateway/api/":
         backendServiceName: processing
-        backendServicePort: 8080
+        backendServicePort: 8085
   Gateway-External:
     type: external
     domain: gateway-testnet.cryptopay.band
     certSecretName: cryptopay-band
     paths:
       "/":
-        backendServiceName: gatewayserve
-        backendServicePort: 8080
-      "/v2/widget/":
         backendServiceName: processing
-        backendServicePort: 8080
+        backendServicePort: 8086
+      "/v2/gateway/api/":
+        backendServiceName: processing
+        backendServicePort: 8085
   Specs-External:
     type: external
     domain: testnet.cryptopay.band
@@ -103,7 +94,7 @@ ingress:
     paths:
       "/":
         backendServiceName: processing
-        backendServicePort: 8080
+        backendServicePort: 8083
   SpecsAndWtf2PssCallbacks-Internal:
     type: internal
     domain: presentation-cryptopay.dev.kube
@@ -111,7 +102,7 @@ ingress:
     paths:
       "/":
         backendServiceName: processing
-        backendServicePort: 8080
+        backendServicePort: 8083
       "/v2/callback/cryptoproviders/":
         backendServiceName: processing
-        backendServicePort: 8080
+        backendServicePort: 8084
