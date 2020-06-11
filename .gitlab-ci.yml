@@ -82,7 +82,9 @@ devel-2PRSN:install:runtime:
     - verify_runtime_version
     - kube_config_setup
     - cd runtime
+    - helm --tiller-namespace "cryptopay-evolution" list
     - helm --tiller-namespace "cryptopay-evolution" upgrade --install --namespace "cryptopay-evolution" --values "values.evolution.yaml" tag .
+    - helm --tiller-namespace "cryptopay-evolution" history tag --max=5
   when: manual
   environment:
     name: evolution
@@ -139,8 +141,8 @@ devel-2PRSN:install:runtime:
     - kube_config_setup
     - cd runtime
     - helm --tiller-namespace "cryptopay-presentation" list
-    - helm --tiller-namespace "cryptopay-presentation" history tag --max=5
     - helm --tiller-namespace "cryptopay-presentation" upgrade --install --namespace "cryptopay-presentation" --values "values.presentation.yaml" tag .
+    - helm --tiller-namespace "cryptopay-presentation" history tag --max=5
   when: manual
   environment:
     name: presentation
@@ -196,7 +198,9 @@ devel-2PRSN:install:runtime:
     - verify_runtime_version
     - kube_config_setup
     - cd runtime
+    - helm --tiller-namespace "cryptopay" list
     - helm --tiller-namespace "cryptopay" upgrade --install --namespace "cryptopay" --values "values.production.yaml" tag .
+    - helm --tiller-namespace "cryptopay" history tag --max=5
   when: manual
   environment:
     name: production
