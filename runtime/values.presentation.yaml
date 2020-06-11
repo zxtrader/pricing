@@ -3,7 +3,7 @@ environment: presentation
 docker:
   processing:
     serviceImage: devdocker.infra.kube/cryptopay/cpservice-devel
-    tag: dev.66214bd5
+    tag: dev.3ab5a9b5
     args:
       [
         "--config-file=/etc/cexiolabs/cryptopay.processing/service.config",
@@ -19,13 +19,8 @@ docker:
     serviceImage: devdocker.infra.kube/cryptopay/dashboard
     tag: master.76ccdc35
   gatewayserve:
-    # serviceImage: harbor.infra.kube/cryptopay/gateway
-    serviceImage: cexiolabs/http-https-echo
-    tag: latest
-    env:
-      SSL_CERT_FILE: /etc/cexiolabs/cryptopay/ssl/tls.crt
-      SSL_KEY_FILE: /etc/cexiolabs/cryptopay/ssl/tls.key
-      HTTPS_PORT: 8080
+    serviceImage: devdocker.infra.kube/cryptopay/payment-widget
+    tag: master.58f7dc13
 ingress:
   API-Internal:
     type: internal
@@ -71,8 +66,8 @@ ingress:
     certSecretName: dev
     paths:
       "/":
-        backendServiceName: processing
-        backendServicePort: 8086
+        backendServiceName: gatewayserve
+        backendServicePort: 8080
       "/v2/gateway/api/":
         backendServiceName: processing
         backendServicePort: 8085
@@ -82,8 +77,8 @@ ingress:
     certSecretName: cryptopay-band
     paths:
       "/":
-        backendServiceName: processing
-        backendServicePort: 8086
+        backendServiceName: gatewayserve
+        backendServicePort: 8080
       "/v2/gateway/api/":
         backendServiceName: processing
         backendServicePort: 8085

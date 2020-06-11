@@ -29,7 +29,7 @@ ingress:
   API:
     type: external
     domain: api.cryptopay.band
-    certSecretName: ingress-api
+    certSecretName: ingress-gate-api-dashboard
     # API does not require client's certificate
     #backendCaSecretName:
     paths:
@@ -39,7 +39,7 @@ ingress:
   Dashboard:
     type: external
     domain: dashboard.cryptopay.band
-    certSecretName: ingress-api
+    certSecretName: ingress-gate-api-dashboard
     # Dashboard does not require client's certificate
     #backendCaSecretName:
     paths:
@@ -49,7 +49,7 @@ ingress:
   Gateway:
     type: external
     domain: gateway.cryptopay.band
-    certSecretName: ingress-api
+    certSecretName: ingress-gate-api-dashboard
     # Gateway does not require client's certificate
     #backendCaSecretName:
     paths:
@@ -61,8 +61,10 @@ ingress:
         backendServicePort: 8080
   Wtf2PssCallbacks:
     type: internal
-    domain: cp2.prodcryptopay.kube
+    domain: pss-provider-wtf2-callbacks.prodcryptopay.kube
     certSecretName: ingress-api
+    # Gateway does not require client's certificate
+    #backendCaSecretName:
     paths:
       "/v2/callback/cryptoproviders/":
         backendServiceName: processing
