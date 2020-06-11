@@ -48,7 +48,7 @@ ingress:
         backendServicePort: 8080
   Gateway:
     type: external
-    domain: gateway.cryptopay.band
+    domain: gate.cryptopay.band
     certSecretName: ingress-gate-api-dashboard
     # Gateway does not require client's certificate
     #backendCaSecretName:

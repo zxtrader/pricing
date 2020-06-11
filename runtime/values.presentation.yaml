@@ -62,7 +62,7 @@ ingress:
         backendServicePort: 8082
   Gateway-Internal:
     type: internal
-    domain: gateway-presentation-cryptopay.dev.kube
+    domain: gate-presentation-cryptopay.dev.kube
     certSecretName: dev
     paths:
       "/":
@@ -73,7 +73,7 @@ ingress:
         backendServicePort: 8085
   Gateway-External:
     type: external
-    domain: gateway-testnet.cryptopay.band
+    domain: gate-testnet.cryptopay.band
     certSecretName: cryptopay-band
     paths:
       "/":
