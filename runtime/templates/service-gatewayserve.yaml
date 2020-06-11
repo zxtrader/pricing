@@ -2,14 +2,14 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    app: {{ .Chart.Name }}-gatewayserve{{ template "suffix" . }}
-  name: {{ .Chart.Name }}-gatewayserve{{ template "suffix" . }}
+    app: {{ .Chart.Name }}-gateuiserve{{ template "suffix" . }}
+  name: {{ .Chart.Name }}-gateuiserve{{ template "suffix" . }}
 spec:
   ports:
     - port: 8080
-      name: gatewayserve
+      name: gateuiserve
       protocol: TCP
       targetPort: 8080
   type: ClusterIP
   selector:
-    app: {{ .Chart.Name }}-gatewayserve{{ template "suffix" . }}
+    app: {{ .Chart.Name }}-gateuiserve{{ template "suffix" . }}

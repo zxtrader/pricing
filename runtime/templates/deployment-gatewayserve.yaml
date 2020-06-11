@@ -2,8 +2,8 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   labels:
-    app: {{ .Chart.Name }}-gatewayserve{{ template "suffix" . }}
-  name: {{ .Chart.Name }}-gatewayserve{{ template "suffix" . }}
+    app: {{ .Chart.Name }}-gateuiserve{{ template "suffix" . }}
+  name: {{ .Chart.Name }}-gateuiserve{{ template "suffix" . }}
 spec:
   replicas: 2
   strategy:
@@ -11,20 +11,20 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ .Chart.Name }}-gatewayserve{{ template "suffix" . }}
+        app: {{ .Chart.Name }}-gateuiserve{{ template "suffix" . }}
     spec:
       containers:
-      - name: gatewayserve
-        image: {{ .Values.docker.gatewayserve.serviceImage }}:{{ .Values.docker.gatewayserve.tag }}
-{{- if .Values.docker.gatewayserve.command }}
+      - name: gateuiserve
+        image: {{ .Values.docker.gateuiserve.serviceImage }}:{{ .Values.docker.gateuiserve.tag }}
+{{- if .Values.docker.gateuiserve.command }}
         command:
-{{ range .Values.docker.gatewayserve.command }}
+{{ range .Values.docker.gateuiserve.command }}
         - {{ . }}
 {{ end }}
 {{- end }}
-{{- if .Values.docker.gatewayserve.args }}
+{{- if .Values.docker.gateuiserve.args }}
         args:
-{{ range .Values.docker.gatewayserve.args }}
+{{ range .Values.docker.gateuiserve.args }}
         - {{ . }}
 {{ end }}
 {{- end }}
@@ -35,8 +35,8 @@ spec:
         env:
         - name: RUNTIME
           value: {{ .Values.environment }}
-{{- if .Values.docker.gatewayserve.env }}
-{{ range $key, $value := .Values.docker.gatewayserve.env }}
+{{- if .Values.docker.gateuiserve.env }}
+{{ range $key, $value := .Values.docker.gateuiserve.env }}
         - name: "{{ $key }}"
           value: "{{ $value }}"
 {{ end }}
@@ -61,4 +61,4 @@ spec:
       volumes:
       - name: secret-certificate
         secret:
-          secretName: {{ .Chart.Name }}-gatewayserve{{ template "suffix" . }}-certificate
+          secretName: {{ .Chart.Name }}-gateuiserve{{ template "suffix" . }}-certificate

@@ -18,9 +18,9 @@ docker:
   dashboardserve:
     serviceImage: devdocker.infra.kube/cryptopay/dashboard
     tag: master.76ccdc35
-  gatewayserve:
-    serviceImage: devdocker.infra.kube/cryptopay/payment-widget
-    tag: master.58f7dc13
+  gateuiserve:
+    serviceImage: devdocker.infra.kube/cryptopay/gate-ui
+    tag: master.38195a75
 ingress:
   API-Internal:
     type: internal
@@ -66,7 +66,7 @@ ingress:
     certSecretName: dev
     paths:
       "/":
-        backendServiceName: gatewayserve
+        backendServiceName: gateserve
         backendServicePort: 8080
       "/v2/gateway/api/":
         backendServiceName: processing
@@ -77,7 +77,7 @@ ingress:
     certSecretName: cryptopay-band
     paths:
       "/":
-        backendServiceName: gatewayserve
+        backendServiceName: gateuiserve
         backendServicePort: 8080
       "/v2/gateway/api/":
         backendServiceName: processing

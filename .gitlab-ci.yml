@@ -52,7 +52,9 @@ devel-1EVO:install:runtime:
   script:
     - kube_config_setup
     - cd runtime
-    - helm --tiller-namespace "cryptopay-evolution" upgrade --install --namespace "cryptopay-evolution" --values "values.evolution.yaml" --set "docker.processing.tag=$DEVEL_RUNTIME" --set "docker.dashboardserve.tag=$DEVEL_RUNTIME" --set "docker.gatewayserve.tag=$DEVEL_RUNTIME" "$DEVEL_RUNTIME" .
+    - helm --tiller-namespace "cryptopay-evolution" list
+    - helm --tiller-namespace "cryptopay-evolution" upgrade --install --namespace "cryptopay-evolution" --values "values.evolution.yaml" --set "docker.processing.tag=$DEVEL_RUNTIME" --set "docker.dashboardserve.tag=$DEVEL_RUNTIME" --set "docker.gateuiserve.tag=$DEVEL_RUNTIME" "$DEVEL_RUNTIME" .
+    - helm --tiller-namespace "cryptopay-evolution" history "$DEVEL_RUNTIME" --max=5
   when: manual
   environment:
     name: evolution
@@ -66,7 +68,9 @@ devel-2PRSN:install:runtime:
   script:
     - kube_config_setup
     - cd runtime
-    - helm --tiller-namespace "cryptopay-presentation" upgrade --install --namespace "cryptopay-presentation" --values "values.presentation.yaml" --set "docker.processing.tag=$DEVEL_RUNTIME" --set "docker.dashboardserve.tag=$DEVEL_RUNTIME" --set "docker.gatewayserve.tag=$DEVEL_RUNTIME" "$DEVEL_RUNTIME" .
+    - helm --tiller-namespace "cryptopay-presentation" list
+    - helm --tiller-namespace "cryptopay-presentation" upgrade --install --namespace "cryptopay-presentation" --values "values.presentation.yaml" --set "docker.processing.tag=$DEVEL_RUNTIME" --set "docker.dashboardserve.tag=$DEVEL_RUNTIME" --set "docker.gateuiserve.tag=$DEVEL_RUNTIME" "$DEVEL_RUNTIME" .
+    - helm --tiller-namespace "cryptopay-presentation" history "$DEVEL_RUNTIME" --max=5
   when: manual
   environment:
     name: presentation
