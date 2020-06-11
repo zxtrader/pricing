@@ -93,6 +93,45 @@ devel-2PRSN:install:runtime:
     variables:
       - $CI_COMMIT_TAG =~ /^runtime-.*/
 
+1EVO:rollback:runtime:
+  stage: rollback
+  script:
+    - verify_runtime_version
+    - kube_config_setup
+    - cd runtime
+    - helm --tiller-namespace "cryptopay-evolution" list
+    - helm --tiller-namespace "cryptopay-evolution" history tag --max=5
+    - helm --tiller-namespace "cryptopay-evolution" rollback --recreate-pods tag 0
+    - helm --tiller-namespace "cryptopay-evolution" history tag --max=5
+  when: manual
+  environment:
+    name: evolution
+    url: https://evolution-cryptopay.dev.kube
+  only:
+    refs:
+      - tags
+    variables:
+      - $CI_COMMIT_TAG =~ /^runtime-.*/
+
+1EVO:delete:runtime:
+  stage: delete
+  script:
+    - verify_runtime_version
+    - kube_config_setup
+    - cd runtime
+    - helm --tiller-namespace "cryptopay-evolution" list
+    - helm --tiller-namespace "cryptopay-evolution" history tag --max=5
+    - helm --tiller-namespace "cryptopay-evolution" delete --purge tag
+  when: manual
+  environment:
+    name: evolution
+    url: https://evolution-cryptopay.dev.kube
+  only:
+    refs:
+      - tags
+    variables:
+      - $CI_COMMIT_TAG =~ /^runtime-.*/
+
 2PRSN:install:runtime:
   stage: deploy
   script:
@@ -158,6 +197,49 @@ devel-2PRSN:install:runtime:
     - kube_config_setup
     - cd runtime
     - helm --tiller-namespace "cryptopay" upgrade --install --namespace "cryptopay" --values "values.production.yaml" tag .
+  when: manual
+  environment:
+    name: production
+    url: https://cryptopay.band/
+  tags:
+    - crtpdpl
+  only:
+    refs:
+      - tags
+    variables:
+      - $CI_COMMIT_TAG =~ /^runtime-.*/
+
+4PROD:rollback:runtime:
+  stage: rollback
+  script:
+    - verify_runtime_version
+    - kube_config_setup
+    - cd runtime
+    - helm --tiller-namespace "cryptopay" list
+    - helm --tiller-namespace "cryptopay" history tag --max=5
+    - helm --tiller-namespace "cryptopay" rollback --recreate-pods tag 0
+    - helm --tiller-namespace "cryptopay" history tag --max=5
+  when: manual
+  environment:
+    name: production
+    url: https://cryptopay.band/
+  tags:
+    - crtpdpl
+  only:
+    refs:
+      - tags
+    variables:
+      - $CI_COMMIT_TAG =~ /^runtime-.*/
+
+4PROD:delete:runtime:
+  stage: delete
+  script:
+    - verify_runtime_version
+    - kube_config_setup
+    - cd runtime
+    - helm --tiller-namespace "cryptopay" list
+    - helm --tiller-namespace "cryptopay" history tag --max=5
+    - helm --tiller-namespace "cryptopay" delete --purge tag
   when: manual
   environment:
     name: production
