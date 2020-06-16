@@ -1,13 +1,14 @@
 environment: presentation
 
-docker:
+application:
   processing:
     serviceImage: devdocker.infra.kube/cryptopay/cpservice-devel
-    tag: dev.3ab5a9b5
+    tag: dev.107a51e5
     args:
       [
         "--config-file=/etc/cexiolabs/cryptopay.processing/service.config",
         "--config-toml-file=/etc/cexiolabs/cryptopay.processing/service.toml",
+        "--config-toml-file=/etc/cexiolabs/cryptopay.processing/service-presentation.toml",
         "--config-secrets-dir=/etc/cexiolabs/cryptopay/secrets",
         "--config-secrets-dir=/etc/cexiolabs/cryptopay/secrets-setup",
         "--config-env",
@@ -15,17 +16,21 @@ docker:
     env:
       CMDBIN: "devel"
       DEBUG_PORT: 9229
+    replicas: 1
   dashboardserve:
-    serviceImage: devdocker.infra.kube/cryptopay/dashboard
-    tag: master.76ccdc35
+    serviceImage: devdocker.infra.kube/cryptopay/dashboard-ui
+    tag: master.8bb17518
   gateuiserve:
     serviceImage: devdocker.infra.kube/cryptopay/gate-ui
-    tag: master.38195a75
+    tag: master.f005f0ca
+
 ingress:
   API-Internal:
     type: internal
     domain: api-presentation-cryptopay.dev.kube
     certSecretName: dev
+    nginxConfigurationSnippet: |
+      rewrite ^/$ /v2/time redirect;
     paths:
       "/":
         backendServiceName: processing
@@ -34,6 +39,8 @@ ingress:
     type: external
     domain: api-testnet.cryptopay.band
     certSecretName: cryptopay-band
+    nginxConfigurationSnippet: |
+      rewrite ^/$ /v2/time redirect;
     paths:
       "/":
         backendServiceName: processing
@@ -42,6 +49,12 @@ ingress:
     type: internal
     domain: dashboard-presentation-cryptopay.dev.kube
     certSecretName: dev
+    nginxConfigurationSnippet: |
+      add_header Last-Modified $date_gmt;
+      add_header Cache-Control 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0';
+      if_modified_since off;
+      expires off;
+      etag off;
     paths:
       "/":
         backendServiceName: dashboardserve
@@ -53,6 +66,12 @@ ingress:
     type: external
     domain: dashboard-testnet.cryptopay.band
     certSecretName: cryptopay-band
+    nginxConfigurationSnippet: |
+      add_header Last-Modified $date_gmt;
+      add_header Cache-Control 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0';
+      if_modified_since off;
+      expires off;
+      etag off;
     paths:
       "/":
         backendServiceName: dashboardserve
@@ -64,28 +83,52 @@ ingress:
     type: internal
     domain: gate-presentation-cryptopay.dev.kube
     certSecretName: dev
+    nginxConfigurationSnippet: |
+      add_header Last-Modified $date_gmt;
+      add_header Cache-Control 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0';
+      if_modified_since off;
+      expires off;
+      etag off;
     paths:
       "/":
-        backendServiceName: gateserve
+        backendServiceName: gateuiserve
         backendServicePort: 8080
-      "/v2/gateway/api/":
+      "/v2/gate/":
+        backendServiceName: processing
+        backendServicePort: 8085
+      "/v2/gate-callback/":
         backendServiceName: processing
         backendServicePort: 8085
   Gateway-External:
     type: external
     domain: gate-testnet.cryptopay.band
     certSecretName: cryptopay-band
+    nginxConfigurationSnippet: |
+      add_header Last-Modified $date_gmt;
+      add_header Cache-Control 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0';
+      if_modified_since off;
+      expires off;
+      etag off;
     paths:
       "/":
         backendServiceName: gateuiserve
         backendServicePort: 8080
-      "/v2/gateway/api/":
+      "/v2/gate/":
+        backendServiceName: processing
+        backendServicePort: 8085
+      "/v2/gate-callback/":
         backendServiceName: processing
         backendServicePort: 8085
   Specs-External:
     type: external
     domain: testnet.cryptopay.band
     certSecretName: cryptopay-band
+    nginxConfigurationSnippet: |
+      add_header Last-Modified $date_gmt;
+      add_header Cache-Control 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0';
+      if_modified_since off;
+      expires off;
+      etag off;
     paths:
       "/":
         backendServiceName: processing
@@ -98,6 +141,6 @@ ingress:
       "/":
         backendServiceName: processing
         backendServicePort: 8083
-      "/v2/callback/cryptoproviders/":
+      "/v2/callback/cryptoproviders/pss-provider-wtf2/":
         backendServiceName: processing
         backendServicePort: 8084

@@ -5,7 +5,7 @@ metadata:
     app: {{ .Chart.Name }}-dashboardserve{{ template "suffix" . }}
   name: {{ .Chart.Name }}-dashboardserve{{ template "suffix" . }}
 spec:
-  replicas: 2
+  replicas: {{ .Values.application.dashboardserve.replicas | default 2 }}
   strategy:
     type: RollingUpdate
   template:
@@ -15,16 +15,16 @@ spec:
     spec:
       containers:
       - name: dashboardserve
-        image: {{ .Values.docker.dashboardserve.serviceImage }}:{{ .Values.docker.dashboardserve.tag }}
-{{- if .Values.docker.dashboardserve.command }}
+        image: {{ .Values.application.dashboardserve.serviceImage }}:{{ .Values.application.dashboardserve.tag }}
+{{- if .Values.application.dashboardserve.command }}
         command:
-{{ range .Values.docker.dashboardserve.command }}
+{{ range .Values.application.dashboardserve.command }}
         - {{ . }}
 {{ end }}
 {{- end }}
-{{- if .Values.docker.dashboardserve.args }}
+{{- if .Values.application.dashboardserve.args }}
         args:
-{{ range .Values.docker.dashboardserve.args }}
+{{ range .Values.application.dashboardserve.args }}
         - {{ . }}
 {{ end }}
 {{- end }}
@@ -35,8 +35,8 @@ spec:
         env:
         - name: RUNTIME
           value: {{ .Values.environment }}
-{{- if .Values.docker.dashboardserve.env }}
-{{ range $key, $value := .Values.docker.dashboardserve.env }}
+{{- if .Values.application.dashboardserve.env }}
+{{ range $key, $value := .Values.application.dashboardserve.env }}
         - name: "{{ $key }}"
           value: "{{ $value }}"
 {{ end }}

@@ -43,9 +43,9 @@ $ helm --tiller-namespace "cryptopay-${ENV}" delete --purge cpservice
 
 ### Deploy the service into cluster
 ```bash
-$ helm --tiller-namespace "cryptopay-${ENV}" upgrade --install --namespace "cryptopay-${ENV}" --values "values.${ENV}.yaml" tag .
+$ helm --tiller-namespace "cryptopay-${ENV}" upgrade --install --namespace "cryptopay-${ENV}" --values "values-base.yaml" --values "values.${ENV}.yaml" tag .
 ```
 
 ```bash
-$ helm --tiller-namespace "cryptopay-${ENV}" upgrade --install --namespace "cryptopay-${ENV}" --values "values.${ENV}.yaml" --set "docker.processing.tag=dev.f08e1c0b" --set "docker.dashboard.tag=master.76ccdc35" tag .
+$ helm --tiller-namespace "cryptopay-${ENV}" upgrade --install --namespace "cryptopay-${ENV}" --values "values-base.yaml" --values "values.${ENV}.yaml" --set "docker.processing.tag=dev.f08e1c0b" --set "docker.dashboard.tag=master.76ccdc35" tag .
 ```

@@ -1,59 +1,85 @@
 environment: evolution
 
-docker:
+application:
   processing:
+    #serviceImage: devdocker.infra.kube/cryptopay/cpservice-devel
+    #tag: dev.3ab5a9b5
     serviceImage: mendhak/http-https-echo
     tag: latest
     # args:
     #   [
     #     "--config-file=/etc/cexiolabs/cryptopay.processing/service.config",
+    #     "--config-toml-file=/etc/cexiolabs/cryptopay.processing/service.toml",
     #     "--config-secrets-dir=/etc/cexiolabs/cryptopay/secrets",
+    #     "--config-secrets-dir=/etc/cexiolabs/cryptopay/secrets-setup",
     #     "--config-env",
     #   ]
-    # cmdbin: "aggrless"
-    debugPort: 9229
-  dashboard:
+    env:
+      SSL_CERT_FILE: /etc/cexiolabs/cryptopay/ssl/tls.crt
+      SSL_KEY_FILE: /etc/cexiolabs/cryptopay/ssl/tls.key
+      HTTPS_PORT: 8080
+      # CMDBIN: "aggrless"
+      # DEBUG_PORT: 9229
+    replicas: 1
+  dashboardserve:
     serviceImage: devdocker.infra.kube/cryptopay/dashboard
-    tag: latest
+    tag: master.8bb17518
+  gateuiserve:
+    serviceImage: devdocker.infra.kube/cryptopay/gate-ui
+    tag: master.f005f0ca
 
 ingress:
   API:
     type: internal
     domain: api-evolution-cryptopay.dev.kube
     certSecretName: dev
-    # API does not require client's certificate
-    #backendCaSecretName:
-    backendInsecure: yes
+    nginxConfigurationSnippet: |
+      rewrite ^/$ /v2/time redirect;
     paths:
       "/":
         backendServiceName: processing
         backendServicePort: 8080
-  SysAdmin:
-    type: internal
-    domain: sysadmin-evolution-cryptopay.dev.kube
-    # API does not require client's certificate
-    #backendCaSecretName:
-    certSecretName: dev
-    backendInsecure: yes
-    paths:
-      "/":
-        backendServiceName: processing
-        backendServicePort: 8081
   Dashboard:
     type: internal
     domain: dashboard-evolution-cryptopay.dev.kube
     certSecretName: dev
-    #backendCaSecretName: ca-secret
-    backendInsecure: yes
+    nginxConfigurationSnippet: |
+      add_header Last-Modified $date_gmt;
+      add_header Cache-Control 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0';
+      if_modified_since off;
+      expires off;
+      etag off;
     paths:
       "/":
-        backendServiceName: dashboard
+        backendServiceName: dashboardserve
         backendServicePort: 8080
+      "/v2/dashboard/":
+        backendServiceName: processing
+        backendServicePort: 8082
+  Gate:
+    type: internal
+    domain: gate-evolution-cryptopay.dev.kube
+    certSecretName: dev
+    nginxConfigurationSnippet: |
+      add_header Last-Modified $date_gmt;
+      add_header Cache-Control 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0';
+      if_modified_since off;
+      expires off;
+      etag off;
+    paths:
+      "/":
+        backendServiceName: gateuiserve
+        backendServicePort: 8080
+      "/v2/gate/":
+        backendServiceName: processing
+        backendServicePort: 8085
+      "/v2/gate-callback/":
+        backendServiceName: processing
+        backendServicePort: 8085
   SpecsAndWtf2PssCallbacks:
     type: internal
     domain: evolution-cryptopay.dev.kube
     certSecretName: dev
-    backendInsecure: yes
     paths:
       "/":
         backendServiceName: processing

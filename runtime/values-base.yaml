@@ -1,0 +1,13 @@
+application:
+  processing:
+    serviceImage: harbor.infra.kube/cryptopay/cpservice
+    tag: latest
+    replicas: 2
+  dashboardserve:
+    serviceImage: harbor.infra.kube/cryptopay/dashboard-ui
+    tag: latest
+    replicas: 2
+  gateuiserve:
+    serviceImage: harbor.infra.kube/cryptopay/gate-ui
+    tag: latest
+    replicas: 2

@@ -5,7 +5,7 @@ metadata:
     app: {{ .Chart.Name }}-processing{{ template "suffix" . }}
   name: {{ .Chart.Name }}-processing{{ template "suffix" . }}
 spec:
-  replicas: 2
+  replicas: {{ .Values.application.processing.replicas | default 2 }}
   strategy:
     type: RollingUpdate
   template:
@@ -15,7 +15,7 @@ spec:
     spec:
       # initContainers:
       # - name: migration
-      #   image: {{ .Values.docker.processing.migrationImage }}:{{ .Values.docker.processing.tag }}
+      #   image: {{ .Values.application.processing.migrationImage }}:{{ .Values.application.processing.tag }}
       #   volumeMounts:
       #   - name: secret-files-migration
       #     mountPath: /etc/cexiolabs/cryptopay/secrets
@@ -26,16 +26,16 @@ spec:
       #       name: processing-migration-envvars
       containers:
       - name: processing
-        image: {{ .Values.docker.processing.serviceImage }}:{{ .Values.docker.processing.tag }}
-{{- if .Values.docker.processing.command }}
+        image: {{ .Values.application.processing.serviceImage }}:{{ .Values.application.processing.tag }}
+{{- if .Values.application.processing.command }}
         command:
-{{ range .Values.docker.processing.command }}
+{{ range .Values.application.processing.command }}
         - {{ . }}
 {{ end }}
 {{- end }}
-{{- if .Values.docker.processing.args }}
+{{- if .Values.application.processing.args }}
         args:
-{{ range .Values.docker.processing.args }}
+{{ range .Values.application.processing.args }}
         - {{ . }}
 {{ end }}
 {{- end }}
@@ -84,8 +84,8 @@ spec:
         env:
         - name: RUNTIME
           value: {{ .Values.environment }}
-{{- if .Values.docker.processing.env }}
-{{ range $key, $value := .Values.docker.processing.env }}
+{{- if .Values.application.processing.env }}
+{{ range $key, $value := .Values.application.processing.env }}
         - name: "{{ $key }}"
           value: "{{ $value }}"
 {{ end }}
@@ -108,13 +108,25 @@ spec:
       - name: notifier
         image: docker.registry.zxteam.net/pub/node/notifier/service:master.85b024fb
         env:
+        - name: "server.main.type"
+          value: "https"
         - name: "server.main.listenPort"
           value: "8084"
+        - name: "server.main.clientCertificateMode"
+          value: "none"
+        - name: "server.main.serverCertificate"
+          value: "/etc/cexiolabs/cryptopay/ssl/tls.crt"
+        - name: "server.main.serverKey"
+          value: "/etc/cexiolabs/cryptopay/ssl/tls.key"
         - name: "endpoint.subscriber.bindPath"
           value: "/v2/callback/cryptoproviders/pss-provider-wtf2-subscriber"
         ports:
         - containerPort: 8084
           protocol: TCP
+        volumeMounts:
+        - name: secret-certificate
+          mountPath: /etc/cexiolabs/cryptopay/ssl
+          readOnly: true
 {{ end }}
       volumes:
       - name: processing-files

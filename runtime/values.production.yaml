@@ -1,6 +1,6 @@
 environment: production
 
-docker:
+application:
   processing:
     # serviceImage: harbor.infra.kube/cryptopay/cpservice
     serviceImage: cexiolabs/http-https-echo
@@ -10,7 +10,6 @@ docker:
       SSL_KEY_FILE: /etc/cexiolabs/cryptopay/ssl/tls.key
       HTTPS_PORT: 8080
   dashboardserve:
-    # serviceImage: harbor.infra.kube/cryptopay/dashboard
     serviceImage: cexiolabs/http-https-echo
     tag: latest
     env:
@@ -18,13 +17,13 @@ docker:
       SSL_KEY_FILE: /etc/cexiolabs/cryptopay/ssl/tls.key
       HTTPS_PORT: 8080
   gateuiserve:
-    # serviceImage: harbor.infra.kube/cryptopay/gate-ui
     serviceImage: cexiolabs/http-https-echo
     tag: latest
     env:
       SSL_CERT_FILE: /etc/cexiolabs/cryptopay/ssl/tls.crt
       SSL_KEY_FILE: /etc/cexiolabs/cryptopay/ssl/tls.key
       HTTPS_PORT: 8080
+
 ingress:
   API:
     type: external
@@ -32,6 +31,8 @@ ingress:
     certSecretName: ingress-gate-api-dashboard
     # API does not require client's certificate
     #backendCaSecretName:
+    nginxConfigurationSnippet: |
+      rewrite ^/$ /v2/time redirect;
     paths:
       "/":
         backendServiceName: processing
@@ -46,6 +47,9 @@ ingress:
       "/":
         backendServiceName: dashboardserve
         backendServicePort: 8080
+      "/v2/dashboard/":
+        backendServiceName: processing
+        backendServicePort: 8080
   Gateway:
     type: external
     domain: gate.cryptopay.band
@@ -56,16 +60,19 @@ ingress:
       "/":
         backendServiceName: gateuiserve
         backendServicePort: 8080
-      "/v2/gateway/api/":
+      "/v2/gate/":
         backendServiceName: processing
         backendServicePort: 8080
+      "/v2/gate-callback/":
+        backendServiceName: processing
+        backendServicePort: 8085
   Wtf2PssCallbacks:
     type: internal
-    domain: pss-provider-wtf2-callbacks.prodcryptopay.kube
-    certSecretName: ingress-api
+    domain: callback.prodcryptopay.kube
+    certSecretName: callback
     # Gateway does not require client's certificate
     #backendCaSecretName:
     paths:
-      "/v2/callback/cryptoproviders/":
+      "/v2/callback/cryptoproviders/pss-provider-wtf2/":
         backendServiceName: processing
         backendServicePort: 8080

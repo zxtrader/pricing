@@ -5,7 +5,7 @@ metadata:
     app: {{ .Chart.Name }}-gateuiserve{{ template "suffix" . }}
   name: {{ .Chart.Name }}-gateuiserve{{ template "suffix" . }}
 spec:
-  replicas: 2
+  replicas: {{ .Values.application.gateuiserve.replicas | default 2 }}
   strategy:
     type: RollingUpdate
   template:
@@ -15,16 +15,16 @@ spec:
     spec:
       containers:
       - name: gateuiserve
-        image: {{ .Values.docker.gateuiserve.serviceImage }}:{{ .Values.docker.gateuiserve.tag }}
-{{- if .Values.docker.gateuiserve.command }}
+        image: {{ .Values.application.gateuiserve.serviceImage }}:{{ .Values.application.gateuiserve.tag }}
+{{- if .Values.application.gateuiserve.command }}
         command:
-{{ range .Values.docker.gateuiserve.command }}
+{{ range .Values.application.gateuiserve.command }}
         - {{ . }}
 {{ end }}
 {{- end }}
-{{- if .Values.docker.gateuiserve.args }}
+{{- if .Values.application.gateuiserve.args }}
         args:
-{{ range .Values.docker.gateuiserve.args }}
+{{ range .Values.application.gateuiserve.args }}
         - {{ . }}
 {{ end }}
 {{- end }}
@@ -35,8 +35,8 @@ spec:
         env:
         - name: RUNTIME
           value: {{ .Values.environment }}
-{{- if .Values.docker.gateuiserve.env }}
-{{ range $key, $value := .Values.docker.gateuiserve.env }}
+{{- if .Values.application.gateuiserve.env }}
+{{ range $key, $value := .Values.application.gateuiserve.env }}
         - name: "{{ $key }}"
           value: "{{ $value }}"
 {{ end }}
