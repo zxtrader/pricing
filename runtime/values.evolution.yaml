@@ -22,7 +22,7 @@ application:
       # DEBUG_PORT: 9229
     replicas: 1
   dashboardserve:
-    serviceImage: devdocker.infra.kube/cryptopay/dashboard
+    serviceImage: devdocker.infra.kube/cryptopay/dashboard-ui
     tag: master.8bb17518
   gateuiserve:
     serviceImage: devdocker.infra.kube/cryptopay/gate-ui

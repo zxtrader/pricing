@@ -28,7 +28,9 @@ spec:
   tls:
     - hosts:
         - "{{ template "prefix" $rootScope }}{{ $value.domain }}"
+{{ if $value.certSecretName }}
       secretName: "{{ $value.certSecretName }}"
+{{ end }}
   rules:
     - host: "{{ template "prefix" $rootScope }}{{ $value.domain }}"
       http:

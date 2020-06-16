@@ -38,7 +38,6 @@ ingress:
   API-External:
     type: external
     domain: api-testnet.cryptopay.band
-    certSecretName: cryptopay-band
     nginxConfigurationSnippet: |
       rewrite ^/$ /v2/time redirect;
     paths:
@@ -65,7 +64,6 @@ ingress:
   Dashboard-External:
     type: external
     domain: dashboard-testnet.cryptopay.band
-    certSecretName: cryptopay-band
     nginxConfigurationSnippet: |
       add_header Last-Modified $date_gmt;
       add_header Cache-Control 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0';
@@ -102,7 +100,6 @@ ingress:
   Gateway-External:
     type: external
     domain: gate-testnet.cryptopay.band
-    certSecretName: cryptopay-band
     nginxConfigurationSnippet: |
       add_header Last-Modified $date_gmt;
       add_header Cache-Control 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0';
@@ -122,7 +119,6 @@ ingress:
   Specs-External:
     type: external
     domain: testnet.cryptopay.band
-    certSecretName: cryptopay-band
     nginxConfigurationSnippet: |
       add_header Last-Modified $date_gmt;
       add_header Cache-Control 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0';
