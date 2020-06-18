@@ -1,0 +1,73 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: processing-envvars
+data:
+  aggregator.url: wss://externalapi.aggrprod.kube/ws
+  wtf2pss.url: https://provider-wtf2.prodpss.kube/api
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: processing-envvars-setup
+data:
+  setup.merchant.INTERNALPROD.accessKey.769c144196e23d4022fcfbc9356a2727.tag: API Access Key for devel team
+  setup.merchant.INTERNALPROD.accessKey.54119aad9812385dea7407b562b449d9.tag: API Access Key for Ecommpay/Dach
+  setup.merchant.INTERNALPROD.accessKeys: 769c144196e23d4022fcfbc9356a2727 54119aad9812385dea7407b562b449d9
+  setup.merchant.INTERNALPROD.description: Internal test merchant (mainnet)
+  setup.merchant.INTERNALPROD.enabled: "true"
+  setup.merchant.INTERNALPROD.parent: INTERMEDIATE
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: processing-files
+data:
+  trusted-aggregator-ca.crt: |-
+    -----BEGIN CERTIFICATE-----
+    MIIDzDCCArSgAwIBAgIBBTANBgkqhkiG9w0BAQsFADAjMREwDwYDVQQKDAhQUk9E
+    QUdHUjEOMAwGA1UEAwwFcm5kY2EwHhcNMTkwMTI4MjI0NDI1WhcNMjkwMTI1MjI0
+    NDI1WjBVMRIwEAYDVQQDDAlwcm9kYWdhcGkxETAPBgNVBAoMCFBST0RBR0dSMSww
+    KgYDVQQLDCNQUk9EIEFnZ3JlZ2F0b3IgYWdhcGktYWdmaXggU2VydmljZTCCASIw
+    DQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAOQG5NwUz+oFSCu234IElzCKyjZQ
+    Dqg4zLS5GsZnhG+b6EZFl3ioDzyuhfjD7GOSyUY3vv0/S6D63QTmuZihLNTbeJUq
+    ZQfegYYxtZ9bDP3eKkoQfWg5TK682vhq3ePfdAQlRKaUCSTwpK15LDhlV1IU19uh
+    IrJWoqxnnade80IZCKapG6oTFyizJxNGBfWo6zk0o0b2mdtjf4Mf3V0PouJ58ncW
+    bI8UPMxGRrrLCMpGSzl7ld62y7yrbnLoNzuvWLuyqbZxm3C/ow1EgcYr9g3SMxO4
+    2ie3M1YhCgB/aTEOF3hhS8WnN6Cr/IVuFaaAqqNHfEZBsueFJEvJtUpKa7ECAwEA
+    AaOB2DCB1TAJBgNVHRMEAjAAMA4GA1UdDwEB/wQEAwIFoDATBgNVHSUEDDAKBggr
+    BgEFBQcDATAdBgNVHQ4EFgQU3RYnkVAXBYJ861biuvZPugLD/QMwPQYDVR0jBDYw
+    NKEnpCUwIzERMA8GA1UECgwIUFJPREFHR1IxDjAMBgNVBAMMBXJuZGNhggkAyIew
+    8dppKpEwRQYDVR0RBD4wPIIJcHJvZGFnZml4gglwcm9kYWdhcGmCEWFwaS5hZ2dy
+    cHJvZC5rdWJlghFmaXguYWdncnByb2Qua3ViZTANBgkqhkiG9w0BAQsFAAOCAQEA
+    Bid7GjNeoPyd5qYNDdVbJ5w1R2loX2TBifwNF9Poo2NL9CUbWwlOXH8OgLm9km5U
+    bsGlWU4UW4ntGs6p8Evh2Py47iPZn/lcZbCtdTD2DhGIaxmOUSfzAvPiQTKRRlsJ
+    cHoUjRjwBIZaq1Ar1PkUX4oNzKB0wLKvGQsMtwvq7CoV/jx4NY5Ag9hcvJkYbcAy
+    6Ux5C06AYQvHlJHCS9MIkQSWsi8sSM2O/GVmSA82w9e8Ezb22uJwLmZWuxtVwQ3N
+    0Xz2YcZz93/01z300m28eCZbdD/GhcSDBRj4FqlvJfA/ZNw8PEJyCrJ0OiCKeH3B
+    q+Z+v7ZZ0r+cvgMHU3zAUQ==
+    -----END CERTIFICATE-----
+  trusted-wtf2pss-ca.crt: |-
+    -----BEGIN CERTIFICATE-----
+    MIID6DCCAtCgAwIBAgIBJDANBgkqhkiG9w0BAQsFADAvMRkwFwYDVQQKDBBQUk9E
+    UFNTIEt1YmUgUEtJMRIwEAYDVQQDDAlQcm9kUFNTQ0EwHhcNMTkxMDAyMTQwMjUy
+    WhcNMjkwOTI5MTQwMjUyWjBjMSMwIQYDVQQDDBpwcm92aWRlci13dGYyLnByb2Rw
+    c3Mua3ViZTEZMBcGA1UECgwQUFJPRFBTUyBLdWJlIFBLSTEhMB8GA1UECwwYUFJP
+    RFBTUyBLdWJlIFBLSSBTZXJ2ZXJzMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIB
+    CgKCAQEA1IMFxKQWMgXhwS2ukJmVudLUaUka0NC4yPab0kjaP0U8iXEkoiIE5/m5
+    n/VwLHrJpxap+ZudOMP5G9wLZqpVir82MFkZbHVX2bwXE2sl0EymiEtFoRroaP1Q
+    rnDIpTDUieX62ZQadv2DxHuaQHl5ISzStmpaBvFl7Fr02oVvuDKl2N+gPORzU9WY
+    10eBDiSwNECFDQvqktkb13PppXcG8S9n2JoKaCyQc8bC+qTkfBoeSnI29go17llH
+    3f/1K1exODHoMc/iqUadLQe3n+K6hRHJ31EJAEDlxTRPfkqOxdqu6Gq0tSUBXVwa
+    ONOCZfnGDptoOz5IAz8y0i/JsWx8aQIDAQABo4HaMIHXMAkGA1UdEwQCMAAwDgYD
+    VR0PAQH/BAQDAgWgMBMGA1UdJQQMMAoGCCsGAQUFBwMBMB0GA1UdDgQWBBS0hI8/
+    qNI1k51phffrS2sVWM+ThTBfBgNVHSMEWDBWgBTzPowVOL3Am1fLdBjdp3OjAnbj
+    3KEzpDEwLzEZMBcGA1UECgwQUFJPRFBTUyBLdWJlIFBLSTESMBAGA1UEAwwJUHJv
+    ZFBTU0NBggkAtrCXMb/6nf0wJQYDVR0RBB4wHIIacHJvdmlkZXItd3RmMi5wcm9k
+    cHNzLmt1YmUwDQYJKoZIhvcNAQELBQADggEBAMihl9XszRMLa1x89Azprfom5uln
+    KR4URDtwzZ9ZwMReVxs/JfgKe/LeCFMotgJnKR2jHntCZ49OIjE01I9BCJB2+FQ3
+    JyuSq/6y/KWZeKUUkPQeJ4eoVnWhSsdVwV6H1F84r9Zmfe9A49E/B45ciTAYuqQl
+    ceAaOLT3Qp2cloWNSoc8JFdaUBLXETpEhdTKemHsCisXrwXQGHcPXIQ3sfrsNXBq
+    1O0I97P0bzKmG8XbQFPasxg+YzGcsiHYVRmp9QaFjAU6ENgwEzrXjr4mfHwaEwfy
+    ScHf5iG0r/6SO2+cVN4OevMi4XYS1JsF6yJ8ejvp1GhBslRCFQKAsH526eM=
+    -----END CERTIFICATE-----
