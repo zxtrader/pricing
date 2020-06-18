@@ -1,1 +1,72 @@
 # for OBJ in ConfigMap/processing-envvars ConfigMap/processing-envvars-setup ConfigMap/processing-files; do kubectl --context cppreprd get --output=yaml $OBJ; echo "---"; done
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: processing-envvars
+data:
+  runtime.aggregator.url: wss://externalapi.aggrprod.kube/ws
+  runtime.wtf2pss.url: https://provider-wtf2.prodpss.kube/api
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: processing-envvars-setup
+  namespace: cryptopay
+data:
+  setup.accessKeyCreate.a288c875379a5e3440c18a17fc494c1c.merchantName: INTERNAL_PREPROD
+  setup.accessKeyCreate.a288c875379a5e3440c18a17fc494c1c.passphrase: ud200659094
+  setup.accessKeyCreate.a288c875379a5e3440c18a17fc494c1c.tag: API Access Key for devel team
+  setup.accessKeyCreates: a288c875379a5e3440c18a17fc494c1c
+  setup.merchantCreate.INTERNAL_PREPROD.description: "Internal pre-production test merchant (PSS: cpwtf-demo, CEX Aggregator: CP_DEMO)"
+  setup.merchantCreate.INTERNAL_PREPROD.enabled: "true"
+  setup.merchantCreate.INTERNAL_PREPROD.parent: INTERMEDIATE
+  setup.merchantCreate_indexer: INTERNAL_PREPROD
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: processing-files
+data:
+  trusted-aggregator-ca.crt: |-
+    -----BEGIN CERTIFICATE-----
+    MIIC+zCCAeOgAwIBAgIJAL+WKDjrPicJMA0GCSqGSIb3DQEBCwUAMBQxEjAQBgNV
+    BAMMCURldkN1YmVDQTAeFw0xODExMTMwMzM4MzVaFw0yODExMTAwMzM4MzVaMBQx
+    EjAQBgNVBAMMCURldkN1YmVDQTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoC
+    ggEBAK46Ufg03ITIJJB/zhxfxSpP/ErsY+z6V9gW+5rcvMK93i6XAfsBdvGgmSoY
+    Jxuz6sfp8HKaORfWhbaiqC3OSZZB+qf2j1LcafplsyXs5JlsKyayhZxMgAEsniTf
+    LK02x64YAExWy6Khj/ksWG1Iuz7xBvxjhNxq1Av7xxELeX72HNadQnX+SPhMqMmC
+    iDYpZ4/ZB+u+HH7bvH85p15XSqmVFaOJYQ9nzU89lNvk7LjZY1bZYjxQMGLG3iMM
+    nBvF00dNXKE0H0ggWXKqZBQ/Ga5vQD9fWuJJ8tllWw0FJ0VKYpv9UxqNRlhLYKeS
+    Tph1mb+Zz2SkCV6usAQUjY1lUr8CAwEAAaNQME4wHQYDVR0OBBYEFHFM744LvPZa
+    oSmiaLn84bkkPmRaMB8GA1UdIwQYMBaAFHFM744LvPZaoSmiaLn84bkkPmRaMAwG
+    A1UdEwQFMAMBAf8wDQYJKoZIhvcNAQELBQADggEBABXjoNJxuTMCODqEss5JVSVx
+    /iO4vhWzK22mjrNw2MhYcn1S0/SjnrZej+iYATLS6dJHy3zLiCt5okk3IQvABK5z
+    x3WoCcle3nAwYCUEcGH75FJ2v8/2usBc8KgMS0ChfDJ6SeHeU/6baIsQNtzUC6oh
+    6YlqkpmwWe4EiWTxtkg6OPiBkO8gpEfmGCZMcaBXh2ECo3rbAZd/ExBTrpOjeUqM
+    by0rQ4vBeRtUwQjqqpkbxkhRZTt3fbcpOCC9UfM7efpAvt0QQd5ZopNnQp4SZdv/
+    +H7iW/hOXvy3PIlBn92NobrFZhJNRGl0zYdpfyN3nYF3/p2pCDxi5j+hOy9QtM8=
+    -----END CERTIFICATE-----
+  trusted-wtf2pss-ca.crt: |-
+    -----BEGIN CERTIFICATE-----
+    MIIDljCCAn6gAwIBAgIUD24zuoOQNAuIP9yj4qvgrAgMxwMwDQYJKoZIhvcNAQEL
+    BQAwLTEWMBQGA1UECgwNV05CIFNvbHV0aW9uczETMBEGA1UEAwwKSW5mcmFXTkJD
+    QTAeFw0xOTA4MDcxNTI0MTFaFw0yOTA4MDQxNTI0MTFaMC0xFjAUBgNVBAoMDVdO
+    QiBTb2x1dGlvbnMxEzARBgNVBAMMCkluZnJhV05CQ0EwggEiMA0GCSqGSIb3DQEB
+    AQUAA4IBDwAwggEKAoIBAQDW7V7uXeJt1u19ct/Xqom5PHPJBbXFSJzkmZb9OGwy
+    O88B/EBkLdOrYG6yVh81bRM2BAhYe4kWQ7Gxv0+8IVZlvOr15izBLyAj6HJ72S65
+    muRNHC9s/zGt5U+3Lsr7hc7pc1lSXc2+CUuFgS+pOwVf4btxCvukOUGgOXenyK3y
+    wPNJPWDCN+Zfe/aGKu3Qz+hZuqvJME10FZN6EGl+PFuqLfbub8uOIcQUV+Bay/zo
+    LM1M5h/Tmcs0QcRkk3dFaD2k5YtBRzxGGRIZfBbAvxrWFpdcRAGXEsTH7F85G9+u
+    0+e4O/6B1dlxpZ2xtcylEhyvG/RLJYcMMpYoUXaHSlYvAgMBAAGjga0wgaowDwYD
+    VR0TAQH/BAUwAwEB/zAOBgNVHQ8BAf8EBAMCAQYwHQYDVR0OBBYEFN79y6IAEzSk
+    TvP0707bJZ9pimlrMGgGA1UdIwRhMF+AFN79y6IAEzSkTvP0707bJZ9pimlroTGk
+    LzAtMRYwFAYDVQQKDA1XTkIgU29sdXRpb25zMRMwEQYDVQQDDApJbmZyYVdOQkNB
+    ghQPbjO6g5A0C4g/3KPiq+CsCAzHAzANBgkqhkiG9w0BAQsFAAOCAQEAeyrGsLUz
+    4mhsUh25TR+EFM47QpkO5vkCoR7Ey4NBDaPwreCvlMfVH6p7LmVNRjPvZZ3XuRy4
+    IfxaqGPW1ayFSywT/7sQuPlGERoVSFpiP52tg1gHEhYMrw5aLNj/1vtRfSXwcbg8
+    fcgsH2JFE7oeSrJiYCz/KcQLCh+GcRODsh6bplAQ9T/DZ6RsaOuwpN/GuyOdJRMU
+    hJuiNGe5F68sCu8AG9pYgPfPks6hSSOjWbt2RbdRvD5O27E9xZpN3oMWlnveNTcD
+    sLQ+LfDODy8padt2P3GgWj/RTn4yAIvtvUJg9+HqpqIYmq5HANzW85oNGTg7/KOH
+    qBHLI7AoM+YmlA==
+    -----END CERTIFICATE-----

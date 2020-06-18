@@ -2,26 +2,34 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: processing-envvars
+  namespace: cryptopay
 data:
-  aggregator.url: wss://externalapi.aggrprod.kube/ws
-  wtf2pss.url: https://provider-wtf2.prodpss.kube/api
+  runtime.aggregator.url: wss://externalapi.aggrprod.kube/ws
+  runtime.wtf2pss.url: https://provider-wtf2.prodpss.kube/api
 ---
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: processing-envvars-setup
+  namespace: cryptopay
 data:
-  setup.merchant.INTERNALPROD.accessKey.769c144196e23d4022fcfbc9356a2727.tag: API Access Key for devel team
-  setup.merchant.INTERNALPROD.accessKey.54119aad9812385dea7407b562b449d9.tag: API Access Key for Ecommpay/Dach
-  setup.merchant.INTERNALPROD.accessKeys: 769c144196e23d4022fcfbc9356a2727 54119aad9812385dea7407b562b449d9
-  setup.merchant.INTERNALPROD.description: Internal test merchant (mainnet)
-  setup.merchant.INTERNALPROD.enabled: "true"
-  setup.merchant.INTERNALPROD.parent: INTERMEDIATE
+  setup.accessKeyCreate.769c144196e23d4022fcfbc9356a2727.merchantName: INTERNAL_PROD
+  setup.accessKeyCreate.769c144196e23d4022fcfbc9356a2727.passphrase: up123863231
+  setup.accessKeyCreate.769c144196e23d4022fcfbc9356a2727.tag: API Access Key for devel team
+  setup.accessKeyCreate.54119aad9812385dea7407b562b449d9.merchantName: INTERNAL_PROD
+  setup.accessKeyCreate.54119aad9812385dea7407b562b449d9.passphrase: up123863231
+  setup.accessKeyCreate.54119aad9812385dea7407b562b449d9.tag: API Access Key for Ecommpay/Dach
+  setup.accessKeyCreates: 769c144196e23d4022fcfbc9356a2727 54119aad9812385dea7407b562b449d9
+  setup.merchantCreate.INTERNAL_PROD.description: "Internal production test merchant (PSS: cpwtf, CEX Aggregator: CP_DACH:d092d750)"
+  setup.merchantCreate.INTERNAL_PROD.enabled: "true"
+  setup.merchantCreate.INTERNAL_PROD.parent: INTERMEDIATE
+  setup.merchantCreate_indexer: INTERNAL_PROD
 ---
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: processing-files
+  namespace: cryptopay
 data:
   trusted-aggregator-ca.crt: |-
     -----BEGIN CERTIFICATE-----
