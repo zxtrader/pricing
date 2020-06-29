@@ -79,4 +79,4 @@ ingress:
     paths:
       "/v2/callback/cryptoproviders/pss-provider-wtf2/":
         backendServiceName: processing
-        backendServicePort: 8080
+        backendServicePort: 8084
