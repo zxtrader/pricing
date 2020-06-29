@@ -2,9 +2,8 @@ environment: evolution
 
 application:
   processing:
-    #serviceImage: devdocker.infra.kube/cryptopay/cpservice-devel
-    #tag: dev.3ab5a9b5
-    serviceImage: mendhak/http-https-echo
+    serviceImage: devdocker.infra.kube/cryptopay/cpservice-devel
+    tag: 2.0.2-alpha
     tag: latest
     # args:
     #   [
@@ -12,7 +11,7 @@ application:
     #     "--config-toml-file=/etc/cexiolabs/cryptopay.processing/service.toml",
     #     "--config-secrets-dir=/etc/cexiolabs/cryptopay/secrets",
     #     "--config-secrets-dir=/etc/cexiolabs/cryptopay/secrets-setup",
-    #     "--config-env",
+    #     "--config-env"
     #   ]
     env:
       SSL_CERT_FILE: /etc/cexiolabs/cryptopay/ssl/tls.crt

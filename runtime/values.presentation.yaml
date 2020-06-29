@@ -3,7 +3,7 @@ environment: presentation
 application:
   processing:
     serviceImage: devdocker.infra.kube/cryptopay/cpservice-devel
-    tag: dev.107a51e5
+    tag: 2.0.2-alpha
     args:
       [
         "--config-file=/etc/cexiolabs/cryptopay.processing/service.config",
@@ -11,7 +11,7 @@ application:
         "--config-toml-file=/etc/cexiolabs/cryptopay.processing/service-presentation.toml",
         "--config-secrets-dir=/etc/cexiolabs/cryptopay/secrets",
         "--config-secrets-dir=/etc/cexiolabs/cryptopay/secrets-setup",
-        "--config-env",
+        "--config-env"
       ]
     env:
       CMDBIN: "devel"
