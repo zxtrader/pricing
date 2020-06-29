@@ -12,6 +12,7 @@ application:
         "--config-secrets-dir=/etc/cexiolabs/cryptopay/secrets-setup",
         "--config-env"
       ]
+    replicas: 1
   dashboardserve:
     serviceImage: cexiolabs/http-https-echo
     tag: latest
