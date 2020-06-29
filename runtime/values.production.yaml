@@ -2,16 +2,18 @@ environment: production
 
 application:
   processing:
-    tag: 2.0.2-alpha
-    args:
-      [
-        "--config-file=/etc/cexiolabs/cryptopay.processing/service.config",
-        "--config-toml-file=/etc/cexiolabs/cryptopay.processing/service.toml",
-        "--config-toml-file=/etc/cexiolabs/cryptopay.processing/service-production.toml",
-        "--config-secrets-dir=/etc/cexiolabs/cryptopay/secrets",
-        "--config-secrets-dir=/etc/cexiolabs/cryptopay/secrets-setup",
-        "--config-env"
-      ]
+    serviceImage: cexiolabs/http-https-echo
+    tag: latest
+    #tag: 2.0.2-alpha
+    # args:
+    #   [
+    #     "--config-file=/etc/cexiolabs/cryptopay.processing/service.config",
+    #     "--config-toml-file=/etc/cexiolabs/cryptopay.processing/service.toml",
+    #     "--config-toml-file=/etc/cexiolabs/cryptopay.processing/service-production.toml",
+    #     "--config-secrets-dir=/etc/cexiolabs/cryptopay/secrets",
+    #     "--config-secrets-dir=/etc/cexiolabs/cryptopay/secrets-setup",
+    #     "--config-env"
+    #   ]
     replicas: 1
   dashboardserve:
     serviceImage: cexiolabs/http-https-echo
