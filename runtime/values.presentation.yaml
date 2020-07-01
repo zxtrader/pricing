@@ -3,7 +3,7 @@ environment: presentation
 application:
   processing:
     serviceImage: devdocker.infra.kube/cryptopay/cpservice-devel
-    tag: 2.0.2-alpha
+    tag: dev.fcd0606d
     args:
       [
         "--config-file=/etc/cexiolabs/cryptopay.processing/service.config",
@@ -11,11 +11,13 @@ application:
         "--config-toml-file=/etc/cexiolabs/cryptopay.processing/service-presentation.toml",
         "--config-secrets-dir=/etc/cexiolabs/cryptopay/secrets",
         "--config-secrets-dir=/etc/cexiolabs/cryptopay/secrets-setup",
-        "--config-env"
+        "--config-env",
+        "--runtime-use-notifier-service",
       ]
     env:
       CMDBIN: "devel"
       DEBUG_PORT: 9229
+      DEBUG_WAIT: "no"
     replicas: 1
   dashboardserve:
     serviceImage: devdocker.infra.kube/cryptopay/dashboard-ui
@@ -129,7 +131,7 @@ ingress:
       "/":
         backendServiceName: processing
         backendServicePort: 8083
-  SpecsAndWtf2PssCallbacks-Internal:
+  Specs-Internal:
     type: internal
     domain: presentation-cryptopay.dev.kube
     certSecretName: dev
@@ -137,6 +139,4 @@ ingress:
       "/":
         backendServiceName: processing
         backendServicePort: 8083
-      "/v2/callback/cryptoproviders/pss-provider-wtf2/":
-        backendServiceName: processing
-        backendServicePort: 8084
+

@@ -3,22 +3,21 @@ environment: evolution
 application:
   processing:
     serviceImage: devdocker.infra.kube/cryptopay/cpservice-devel
-    tag: 2.0.2-alpha
-    tag: latest
-    # args:
-    #   [
-    #     "--config-file=/etc/cexiolabs/cryptopay.processing/service.config",
-    #     "--config-toml-file=/etc/cexiolabs/cryptopay.processing/service.toml",
-    #     "--config-secrets-dir=/etc/cexiolabs/cryptopay/secrets",
-    #     "--config-secrets-dir=/etc/cexiolabs/cryptopay/secrets-setup",
-    #     "--config-env"
-    #   ]
+    tag: dev.fcd0606d
+    args:
+      [
+        "--config-file=/etc/cexiolabs/cryptopay.processing/service.config",
+        "--config-toml-file=/etc/cexiolabs/cryptopay.processing/service.toml",
+        "--config-toml-file=/etc/cexiolabs/cryptopay.processing/service-evolution.toml",
+        "--config-secrets-dir=/etc/cexiolabs/cryptopay/secrets",
+        "--config-secrets-dir=/etc/cexiolabs/cryptopay/secrets-setup",
+        "--config-env",
+        "--runtime-use-notifier-service",
+      ]
     env:
-      SSL_CERT_FILE: /etc/cexiolabs/cryptopay/ssl/tls.crt
-      SSL_KEY_FILE: /etc/cexiolabs/cryptopay/ssl/tls.key
-      HTTPS_PORT: 8080
-      # CMDBIN: "aggrless"
-      # DEBUG_PORT: 9229
+      CMDBIN: "devel"
+      DEBUG_PORT: 9229
+      DEBUG_WAIT: "no"
     replicas: 1
   dashboardserve:
     serviceImage: devdocker.infra.kube/cryptopay/dashboard-ui
@@ -75,7 +74,7 @@ ingress:
       "/v2/gate-callback/":
         backendServiceName: processing
         backendServicePort: 8085
-  SpecsAndWtf2PssCallbacks:
+  Specs:
     type: internal
     domain: evolution-cryptopay.dev.kube
     certSecretName: dev
@@ -83,6 +82,4 @@ ingress:
       "/":
         backendServiceName: processing
         backendServicePort: 8083
-      "/v2/callback/cryptoproviders/":
-        backendServiceName: processing
-        backendServicePort: 8084
+

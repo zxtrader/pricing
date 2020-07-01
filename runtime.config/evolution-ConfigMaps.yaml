@@ -35,27 +35,32 @@ data:
   runtime.endpoint.risk.cors.methods: GET, POST, PUT, DELETE
   runtime.endpoint.risk.cors.whiteList: https://evolution-cryptopay.dev.kube
   runtime.endpoint.swaggerUi.bindPath: /specs
-  runtime.endpoint.swaggerUi.servers: presentationSrv
+  runtime.endpoint.swaggerUi.servers: evolutionSrv
   runtime.endpoint.time.cors.allowedHeaders: "*"
   runtime.endpoint.time.cors.methods: GET, POST, PUT, DELETE
   runtime.endpoint.time.cors.whiteList: https://evolution-cryptopay.dev.kube
-  runtime.endpoint_indexer: account dashboard gateApi gateCallback instrument
-    internalInfo merchant network notification order risk swaggerUi sysadmin time
-    wtf2psscb
+  runtime.endpoint_indexer: account dashboard instrument internalInfo gateApi gateCallback merchant network notification order rate risk sysadmin swaggerUi time wtf2psscb
   runtime.gateway.CPService.url: http://127.0.0.1:8081
+  runtime.notifier.subscriber.kind: web-socket-client
+  runtime.notifier.subscriber.url: ws://notifier.cryptopay-infra:8080/v2/callback/cryptoproviders/pss-provider-wtf2-subscriber/websockethost/maks4683-a00d-4269-b116-6959fb9ac889
   runtime.pss.aggregator.url: https://pss-rpc.dev.kube/aggregator
   runtime.pss.cryptoWalletHelper.url: https://pss-rpc.dev.kube/cryptopay
   runtime.pss.cryptopay.url: https://pss-rpc.dev.kube/cryptopay
   runtime.pss.es.url: https://pss-rpc.dev.kube/cryptopay
-  runtime.server.presentationSrv.clientCertificateMode: none
-  runtime.server.presentationSrv.listenHost: 0.0.0.0
-  runtime.server.presentationSrv.listenPort: "8083"
-  runtime.server.presentationSrv.serverCertificate: /etc/cexiolabs/cryptopay/ssl/tls.crt
-  runtime.server.presentationSrv.serverKey: /etc/cexiolabs/cryptopay/ssl/tls.key
-  runtime.server.presentationSrv.trustProxy: "true"
-  runtime.server.presentationSrv.type: https
+  runtime.server.evolutionSrv.clientCertificateMode: none
+  runtime.server.evolutionSrv.listenHost: 0.0.0.0
+  runtime.server.evolutionSrv.listenPort: "8083"
+  runtime.server.evolutionSrv.serverCertificate: /etc/cexiolabs/cryptopay/ssl/tls.crt
+  runtime.server.evolutionSrv.serverKey: /etc/cexiolabs/cryptopay/ssl/tls.key
+  runtime.server.evolutionSrv.trustProxy: "true"
+  runtime.server.evolutionSrv.type: https
+  runtime.server.sysadminSrv.clientCertificateMode: none
   runtime.server.sysadminSrv.listenHost: 0.0.0.0
-  runtime.server_indexer: processingApiSrv dashboardApiSrv gatewayApiSrv gatewayUiSrv monitoringSrv pssProviderWtf2CallbacksSrv sysadminSrv presentationSrv
+  runtime.server.sysadminSrv.serverCertificate: /etc/cexiolabs/cryptopay/ssl/tls.crt
+  runtime.server.sysadminSrv.serverKey: /etc/cexiolabs/cryptopay/ssl/tls.key
+  runtime.server.sysadminSrv.trustProxy: "true"
+  runtime.server.sysadminSrv.type: https
+  runtime.server_indexer: processingApiSrv dashboardApiSrv gateApiSrv monitoringSrv pssProviderWtf2CallbacksSrv sysadminSrv evolutionSrv
   runtime.wtf2pss.url: https://pss-provider-wtf2.dev.kube
 kind: ConfigMap
 metadata:
@@ -229,14 +234,15 @@ metadata:
 apiVersion: v1
 data:
   setup.accessKeyCreate.53f75b533edfe38d176f02c270dac6c0.merchantName: INTERNAL_DEV
-  setup.accessKeyCreate.53f75b533edfe38d176f02c270dac6c0.passphrase: bWVvdy1tZW93
-  setup.accessKeyCreate.53f75b533edfe38d176f02c270dac6c0.tag:
-    Key for INTERNAL_DEV
-    merchant
-  setup.accessKeyCreates: 53f75b533edfe38d176f02c270dac6c0
+  setup.accessKeyCreate.53f75b533edfe38d176f02c270dac6c0.passphrase: ud200659094
+  setup.accessKeyCreate.53f75b533edfe38d176f02c270dac6c0.tag: Key for INTERNAL_DEV merchant
+  setup.accessKeyCreate_indexer: 53f75b533edfe38d176f02c270dac6c0
   setup.merchantCreate.INTERNAL_DEV.description: Internal test merchant for ud200562164/CP_DEV
   setup.merchantCreate.INTERNAL_DEV.enabled: "true"
   setup.merchantCreate.INTERNAL_DEV.parent: INTERMEDIATE
+  setup.merchantCreate.INTERNAL_TESTNET__SUB.description: Internal test sub-merchant for ud200659094/CP_DEMO
+  setup.merchantCreate.INTERNAL_TESTNET__SUB.enabled: "true"
+  setup.merchantCreate.INTERNAL_TESTNET__SUB.parent: INTERNAL_TESTNET
   setup.merchantCreate.SWAGGER.description: Swagger Merchant
   setup.merchantCreate.SWAGGER.enabled: "true"
   setup.merchantCreate.SWAGGER.parent: INTERNAL_DEV

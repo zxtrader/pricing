@@ -47,6 +47,8 @@ data:
   runtime.endpoint.time.cors.whiteList: https://presentation-cryptopay.dev.kube https://testnet.cryptopay.band
   runtime.endpoint_indexer: account dashboard instrument internalInfo gateApi gateCallback merchant network notification order rate risk sysadmin swaggerUi time wtf2psscb
   runtime.gateway.CPService.url: http://127.0.0.1:8081
+  runtime.notifier.subscriber.kind: web-socket-client
+  runtime.notifier.subscriber.url: ws://notifier.cryptopay-infra:8080/v2/callback/cryptoproviders/pss-provider-wtf2-subscriber/websockethost/maks4683-a00d-4269-b116-6959fb9ac889
   runtime.pss.aggregator.url: https://pss-rpc.dev.kube/aggregator
   runtime.pss.cryptoWalletHelper.url: https://pss-rpc.dev.kube/cryptopay
   runtime.pss.cryptopay.url: https://pss-rpc.dev.kube/cryptopay
@@ -82,7 +84,7 @@ data:
   setup.accessKeyCreate.f59e662d34c119486315762709fb2a32.merchantName: INTERNAL_TESTNET__SUB
   setup.accessKeyCreate.f59e662d34c119486315762709fb2a32.passphrase: oo60iukxnjrwavlc
   setup.accessKeyCreate.f59e662d34c119486315762709fb2a32.tag: Second key for INTERNAL_TESTNET__SUB merchant (for Ecommpay)
-  setup.accessKeyCreates: 3e45e6e50b1ba24461e26e530cd27d24 aefa6878ee07ef5548dbc16622cef0f3 f59e662d34c119486315762709fb2a32
+  setup.accessKeyCreate_indexer: 3e45e6e50b1ba24461e26e530cd27d24 aefa6878ee07ef5548dbc16622cef0f3 f59e662d34c119486315762709fb2a32
   setup.merchantCreate.INTERNAL_TESTNET.description: Internal test merchant for ud200659094/CP_DEMO
   setup.merchantCreate.INTERNAL_TESTNET.enabled: "true"
   setup.merchantCreate.INTERNAL_TESTNET.parent: INTERMEDIATE
