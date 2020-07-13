@@ -2,7 +2,7 @@ environment: production
 
 application:
   processing:
-    tag: 2.0.4
+    tag: 2.0.5
     args:
       [
         "--config-file=/etc/cexiolabs/cryptopay.processing/service.config",
@@ -13,13 +13,8 @@ application:
         "--config-env",
       ]
     replicas: 1
-  dashboardserve:
-    serviceImage: cexiolabs/http-https-echo
-    tag: latest
-    env:
-      SSL_CERT_FILE: /etc/cexiolabs/cryptopay/ssl/tls.crt
-      SSL_KEY_FILE: /etc/cexiolabs/cryptopay/ssl/tls.key
-      HTTPS_PORT: 8080
+  dashboarduiserve:
+    tag: 0.1.11
   gateuiserve:
     serviceImage: cexiolabs/http-https-echo
     tag: latest
@@ -49,7 +44,7 @@ ingress:
     #backendCaSecretName:
     paths:
       "/":
-        backendServiceName: dashboardserve
+        backendServiceName: dashboarduiserve
         backendServicePort: 8080
       "/v2/dashboard/":
         backendServiceName: processing

@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: {{ .Chart.Name }}-dashboarduiserve{{ template "suffix" . }}
+  name: {{ .Chart.Name }}-dashboarduiserve{{ template "suffix" . }}
+spec:
+  ports:
+    - port: 8080
+      name: dashboarduiserve
+      protocol: TCP
+      targetPort: 8080
+  type: ClusterIP
+  selector:
+    app: {{ .Chart.Name }}-dashboarduiserve{{ template "suffix" . }}

@@ -19,7 +19,7 @@ application:
       DEBUG_PORT: 9229
       DEBUG_WAIT: "no"
     replicas: 1
-  dashboardserve:
+  dashboarduiserve:
     serviceImage: devdocker.infra.kube/cryptopay/dashboard-ui
     tag: master.8bb17518
   gateuiserve:
@@ -49,7 +49,7 @@ ingress:
       etag off;
     paths:
       "/":
-        backendServiceName: dashboardserve
+        backendServiceName: dashboarduiserve
         backendServicePort: 8080
       "/v2/dashboard/":
         backendServiceName: processing
@@ -82,4 +82,3 @@ ingress:
       "/":
         backendServiceName: processing
         backendServicePort: 8083
-

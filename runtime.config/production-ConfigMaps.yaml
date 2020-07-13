@@ -5,7 +5,8 @@ metadata:
   namespace: cryptopay
 data:
   runtime.aggregator.url: wss://externalapi.aggrprod.kube/ws
-  runtime.wtf2pss.url: https://provider-wtf2.prodpss.kube/api
+  runtime.pss.cryptoWalletHelper.url: https://rpc.prodpss.kube/cryptopay
+  runtime.wtf2pss.url: https://provider-wtf2.prodpss.kube
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -14,10 +15,8 @@ metadata:
   namespace: cryptopay
 data:
   setup.accessKeyCreate.769c144196e23d4022fcfbc9356a2727.merchantName: INTERNAL_PROD
-  setup.accessKeyCreate.769c144196e23d4022fcfbc9356a2727.passphrase: up123863231
   setup.accessKeyCreate.769c144196e23d4022fcfbc9356a2727.tag: API Access Key for devel team
   setup.accessKeyCreate.54119aad9812385dea7407b562b449d9.merchantName: INTERNAL_PROD
-  setup.accessKeyCreate.54119aad9812385dea7407b562b449d9.passphrase: up123863231
   setup.accessKeyCreate.54119aad9812385dea7407b562b449d9.tag: API Access Key for Ecommpay/Dach
   setup.accessKeyCreates: 769c144196e23d4022fcfbc9356a2727 54119aad9812385dea7407b562b449d9
   setup.merchantCreate.INTERNAL_PROD.description: "Internal production test merchant (PSS: cpwtf, CEX Aggregator: CP_DACH:d092d750)"

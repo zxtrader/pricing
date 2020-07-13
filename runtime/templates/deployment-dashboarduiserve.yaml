@@ -2,29 +2,29 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   labels:
-    app: {{ .Chart.Name }}-dashboardserve{{ template "suffix" . }}
-  name: {{ .Chart.Name }}-dashboardserve{{ template "suffix" . }}
+    app: {{ .Chart.Name }}-dashboarduiserve{{ template "suffix" . }}
+  name: {{ .Chart.Name }}-dashboarduiserve{{ template "suffix" . }}
 spec:
-  replicas: {{ .Values.application.dashboardserve.replicas | default 2 }}
+  replicas: {{ .Values.application.dashboarduiserve.replicas | default 2 }}
   strategy:
     type: RollingUpdate
   template:
     metadata:
       labels:
-        app: {{ .Chart.Name }}-dashboardserve{{ template "suffix" . }}
+        app: {{ .Chart.Name }}-dashboarduiserve{{ template "suffix" . }}
     spec:
       containers:
-      - name: dashboardserve
-        image: {{ .Values.application.dashboardserve.serviceImage }}:{{ .Values.application.dashboardserve.tag }}
-{{- if .Values.application.dashboardserve.command }}
+      - name: dashboarduiserve
+        image: {{ .Values.application.dashboarduiserve.serviceImage }}:{{ .Values.application.dashboarduiserve.tag }}
+{{- if .Values.application.dashboarduiserve.command }}
         command:
-{{ range .Values.application.dashboardserve.command }}
+{{ range .Values.application.dashboarduiserve.command }}
         - {{ . }}
 {{ end }}
 {{- end }}
-{{- if .Values.application.dashboardserve.args }}
+{{- if .Values.application.dashboarduiserve.args }}
         args:
-{{ range .Values.application.dashboardserve.args }}
+{{ range .Values.application.dashboarduiserve.args }}
         - {{ . }}
 {{ end }}
 {{- end }}
@@ -35,8 +35,8 @@ spec:
         env:
         - name: RUNTIME
           value: {{ .Values.environment }}
-{{- if .Values.application.dashboardserve.env }}
-{{ range $key, $value := .Values.application.dashboardserve.env }}
+{{- if .Values.application.dashboarduiserve.env }}
+{{ range $key, $value := .Values.application.dashboarduiserve.env }}
         - name: "{{ $key }}"
           value: "{{ $value }}"
 {{ end }}
@@ -61,4 +61,4 @@ spec:
       volumes:
       - name: secret-certificate
         secret:
-          secretName: {{ .Chart.Name }}-dashboardserve{{ template "suffix" . }}-certificate
+          secretName: {{ .Chart.Name }}-dashboarduiserve{{ template "suffix" . }}-certificate

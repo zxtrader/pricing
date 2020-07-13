@@ -13,17 +13,6 @@ spec:
       labels:
         app: {{ .Chart.Name }}-processing{{ template "suffix" . }}
     spec:
-      # initContainers:
-      # - name: migration
-      #   image: {{ .Values.application.processing.migrationImage }}:{{ .Values.application.processing.tag }}
-      #   volumeMounts:
-      #   - name: secret-files-migration
-      #     mountPath: /etc/cexiolabs/cryptopay/secrets
-      #     # The service will delete all files after read its. So need write access.
-      #     readOnly: false
-      #   envFrom:
-      #   - configMapRef:
-      #       name: processing-migration-envvars
       containers:
       - name: processing
         image: {{ .Values.application.processing.serviceImage }}:{{ .Values.application.processing.tag }}
@@ -43,17 +32,20 @@ spec:
         - containerPort: 8080
           protocol: TCP
 {{- if ne .Values.environment "production" }}
+        # Sysadmin should not exposed outside productoin container
         - containerPort: 8081
           protocol: TCP
 {{- end }}
         - containerPort: 8082
           protocol: TCP
 {{ if or (eq .Values.environment "evolution") (eq .Values.environment "presentation") }}
+        # Swagger and welcome page used in "evolution" and "presentation" only, 
         - containerPort: 8083
           protocol: TCP
 {{ end }}
-{{ if not (and (eq .Release.Name "tag") (eq .Values.environment "evolution")) }}
-        # In "evolution" we use proxy-service called "notifier", to handle callbacks on local workstation via WebSocket
+{{ if not (or (eq .Values.environment "evolution") (eq .Values.environment "presentation")) }}
+        # In "evolution" and "presentation" we use proxy-service called "notifier", 
+        # to handle callbacks via WebSocket, so we do not need this port
         - containerPort: 8084
           protocol: TCP
 {{ end }}
@@ -97,37 +89,13 @@ spec:
         #     scheme: HTTP
         #   initialDelaySeconds: 10
         #   periodSeconds: 10
-        # readinessProbe:
-        #   httpGet:
-        #     path: /readinessProbe
-        #     port: 9090
-        #     scheme: HTTP
-        #   initialDelaySeconds: 10
-        #   periodSeconds: 10
-{{ if and (eq .Release.Name "tag") (eq .Values.environment "evolution") }}
-      - name: notifier
-        image: docker.registry.zxteam.net/pub/node/notifier/service:master.85b024fb
-        env:
-        - name: "server.main.type"
-          value: "https"
-        - name: "server.main.listenPort"
-          value: "8084"
-        - name: "server.main.clientCertificateMode"
-          value: "none"
-        - name: "server.main.serverCertificate"
-          value: "/etc/cexiolabs/cryptopay/ssl/tls.crt"
-        - name: "server.main.serverKey"
-          value: "/etc/cexiolabs/cryptopay/ssl/tls.key"
-        - name: "endpoint.subscriber.bindPath"
-          value: "/v2/callback/cryptoproviders/pss-provider-wtf2-subscriber"
-        ports:
-        - containerPort: 8084
-          protocol: TCP
-        volumeMounts:
-        - name: secret-certificate
-          mountPath: /etc/cexiolabs/cryptopay/ssl
-          readOnly: true
-{{ end }}
+        readinessProbe:
+          httpGet:
+            path: /v2/time
+            port: 8080
+            scheme: HTTPS
+          initialDelaySeconds: 10
+          periodSeconds: 10
       volumes:
       - name: processing-files
         configMap:

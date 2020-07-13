@@ -3,7 +3,7 @@ application:
     serviceImage: harbor.infra.kube/cryptopay/cpservice
     tag: latest
     replicas: 2
-  dashboardserve:
+  dashboarduiserve:
     serviceImage: harbor.infra.kube/cryptopay/dashboard-ui
     tag: latest
     replicas: 2
