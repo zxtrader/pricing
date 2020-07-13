@@ -45,7 +45,7 @@ ingress:
         backendServicePort: 8080
       "/v2/dashboard/":
         backendServiceName: processing
-        backendServicePort: 8080
+        backendServicePort: 8082
   Gateway:
     type: external
     domain: gate.cryptopay.band
@@ -58,7 +58,7 @@ ingress:
         backendServicePort: 8080
       "/v2/gate/":
         backendServiceName: processing
-        backendServicePort: 8080
+        backendServicePort: 8085
       "/v2/gate-callback/":
         backendServiceName: processing
         backendServicePort: 8085

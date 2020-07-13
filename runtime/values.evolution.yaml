@@ -22,6 +22,7 @@ application:
     serviceImage: devdocker.infra.kube/cryptopay/dashboard-ui
   gateuiserve:
     serviceImage: devdocker.infra.kube/cryptopay/gate-ui
+    tag: master
 
 ingress:
   API:
