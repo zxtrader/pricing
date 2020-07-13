@@ -2,7 +2,6 @@ environment: production
 
 application:
   processing:
-    tag: 2.0.5
     args:
       [
         "--config-file=/etc/cexiolabs/cryptopay.processing/service.config",
@@ -13,8 +12,6 @@ application:
         "--config-env",
       ]
     replicas: 1
-  dashboarduiserve:
-    tag: 0.1.11
   gateuiserve:
     serviceImage: cexiolabs/http-https-echo
     tag: latest

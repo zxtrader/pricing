@@ -3,7 +3,6 @@ environment: evolution
 application:
   processing:
     serviceImage: devdocker.infra.kube/cryptopay/cpservice-devel
-    tag: dev.fcd0606d
     args:
       [
         "--config-file=/etc/cexiolabs/cryptopay.processing/service.config",
@@ -21,10 +20,8 @@ application:
     replicas: 1
   dashboarduiserve:
     serviceImage: devdocker.infra.kube/cryptopay/dashboard-ui
-    tag: master.8bb17518
   gateuiserve:
     serviceImage: devdocker.infra.kube/cryptopay/gate-ui
-    tag: master.f005f0ca
 
 ingress:
   API:
