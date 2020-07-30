@@ -6,6 +6,7 @@ application:
       [
         "--config-file=/etc/cexiolabs/cryptopay.processing/service.config",
         "--config-toml-file=/etc/cexiolabs/cryptopay.processing/service.toml",
+        "--config-toml-file=/etc/cexiolabs/cryptopay.processing/service-production-models.toml",
         "--config-toml-file=/etc/cexiolabs/cryptopay.processing/service-production.toml",
         "--config-secrets-dir=/etc/cexiolabs/cryptopay/secrets",
         "--config-secrets-dir=/etc/cexiolabs/cryptopay/secrets-setup",
