@@ -45,7 +45,7 @@ data:
   runtime.endpoint.time.cors.allowedHeaders: "*"
   runtime.endpoint.time.cors.methods: GET, POST, PUT, DELETE
   runtime.endpoint.time.cors.whiteList: https://evolution-cryptopay.dev.kube
-  runtime.endpoint_indexer: account dashboard instrument internalInfo gateApi gateCallback merchant network notification order rate risk sysadmin swaggerUi time wtf2psscb
+  runtime.endpoint_indexer: account dashboard instrument internalInfo gateApi gateCallback merchant network notification order rate risk sysadmin swaggerUi time wtf2psscb monitoring
   runtime.gateway.CPService.url: http://127.0.0.1:8081
   runtime.notifier.subscriber.kind: web-socket-client
   runtime.notifier.subscriber.url: ws://notifier.cryptopay-infra:8080/v2/callback/cryptoproviders/pss-provider-wtf2-subscriber/websockethost/maks4683-a00d-4269-b116-6959fb9ac889
