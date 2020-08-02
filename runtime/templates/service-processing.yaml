@@ -8,7 +8,7 @@ metadata:
     prometheus.io/scrape: "true"
     prometheus.io/path: /metrics
     prometheus.io/port: "9090"
-    prometheus.io/scheme: http
+    prometheus.io/scheme: https
 spec:
   ports:
     - port: 8080
