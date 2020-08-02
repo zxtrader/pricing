@@ -3,30 +3,8 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: processing-envvars
-data:
-  runtime.aggregator.url: wss://externalapi.aggrprod.kube/ws
-  runtime.wtf2pss.url: https://provider-wtf2.prodpss.kube/api
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: processing-envvars-setup
-  namespace: cryptopay
-data:
-  setup.accessKeyCreate.a288c875379a5e3440c18a17fc494c1c.merchantName: INTERNAL_PREPROD
-  setup.accessKeyCreate.a288c875379a5e3440c18a17fc494c1c.passphrase: ud200659094
-  setup.accessKeyCreate.a288c875379a5e3440c18a17fc494c1c.tag: API Access Key for devel team
-  setup.accessKeyCreates: a288c875379a5e3440c18a17fc494c1c
-  setup.merchantCreate.INTERNAL_PREPROD.description: "Internal pre-production test merchant (PSS: cpwtf-demo, CEX Aggregator: CP_DEMO)"
-  setup.merchantCreate.INTERNAL_PREPROD.enabled: "true"
-  setup.merchantCreate.INTERNAL_PREPROD.parent: INTERMEDIATE
-  setup.merchantCreate_indexer: INTERNAL_PREPROD
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
   name: processing-files
+  namespace: cryptopay
 data:
   trusted-aggregator-ca.crt: |-
     -----BEGIN CERTIFICATE-----

@@ -1,0 +1,10 @@
+# for OBJ in ConfigMap/processing-envvars ConfigMap/processing-envvars-setup ConfigMap/processing-files; do kubectl --context cppreprd get --output=yaml $OBJ; echo "---"; done
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: processing-envvars
+  namespace: cryptopay
+data:
+  runtime.aggregator.url: wss://externalapi.aggrprod.kube/ws
+  runtime.wtf2pss.url: https://provider-wtf2.prodpss.kube/api

@@ -1,0 +1,16 @@
+# for OBJ in ConfigMap/processing-envvars ConfigMap/processing-envvars-setup ConfigMap/processing-files; do kubectl --context cppreprd get --output=yaml $OBJ; echo "---"; done
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: processing-envvars-setup
+  namespace: cryptopay
+data:
+  setup.accessKeyCreate.a288c875379a5e3440c18a17fc494c1c.merchantName: INTERNAL_PREPROD
+  setup.accessKeyCreate.a288c875379a5e3440c18a17fc494c1c.passphrase: ud200659094
+  setup.accessKeyCreate.a288c875379a5e3440c18a17fc494c1c.tag: API Access Key for devel team
+  setup.accessKeyCreates: a288c875379a5e3440c18a17fc494c1c
+  setup.merchantCreate.INTERNAL_PREPROD.description: "Internal pre-production test merchant (PSS: cpwtf-demo, CEX Aggregator: CP_DEMO)"
+  setup.merchantCreate.INTERNAL_PREPROD.enabled: "true"
+  setup.merchantCreate.INTERNAL_PREPROD.parent: INTERMEDIATE
+  setup.merchantCreate_indexer: INTERNAL_PREPROD

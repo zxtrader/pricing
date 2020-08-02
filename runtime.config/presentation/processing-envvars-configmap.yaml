@@ -1,0 +1,74 @@
+# for OBJ in ConfigMap/processing-envvars ConfigMap/processing-envvars-setup ConfigMap/processing-files; do kubectl --context cpprs get --output=yaml $OBJ; echo "---"; done
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: processing-envvars
+  namespace: cryptopay-presentation
+data:
+  LOG_LEVEL: debug
+  runtime.aggregator.url: wss://external-api-aggr-demo.dev.kube/ws
+  runtime.endpoint.account.cors.allowedHeaders: "*"
+  runtime.endpoint.account.cors.methods: GET, POST, PUT, DELETE
+  runtime.endpoint.account.cors.whiteList: https://presentation-cryptopay.dev.kube https://testnet.cryptopay.band
+  runtime.endpoint.dashboard.cors.allowedHeaders: "*"
+  runtime.endpoint.dashboard.cors.methods: GET, POST, PUT, DELETE
+  runtime.endpoint.dashboard.cors.whiteList: https://presentation-cryptopay.dev.kube https://testnet.cryptopay.band
+  runtime.endpoint.gateCallback.servers: sysadminSrv
+  runtime.endpoint.instrument.cors.allowedHeaders: "*"
+  runtime.endpoint.instrument.cors.methods: GET, POST, PUT, DELETE
+  runtime.endpoint.instrument.cors.whiteList: https://presentation-cryptopay.dev.kube https://testnet.cryptopay.band
+  runtime.endpoint.merchant.cors.allowedHeaders: "*"
+  runtime.endpoint.merchant.cors.methods: GET, POST, PUT, DELETE
+  runtime.endpoint.merchant.cors.whiteList: https://presentation-cryptopay.dev.kube https://testnet.cryptopay.band
+  runtime.endpoint.monitoring-log-middleware.servers: monitoring pss-provider-wtf2-callbacks
+  runtime.endpoint.network.cors.allowedHeaders: "*"
+  runtime.endpoint.network.cors.methods: GET, POST, PUT, DELETE
+  runtime.endpoint.network.cors.whiteList: https://presentation-cryptopay.dev.kube https://testnet.cryptopay.band
+  runtime.endpoint.notification.cors.allowedHeaders: "*"
+  runtime.endpoint.notification.cors.methods: GET, POST, PUT, DELETE
+  runtime.endpoint.notification.cors.whiteList: https://presentation-cryptopay.dev.kube https://testnet.cryptopay.band
+  runtime.endpoint.order.cors.allowedHeaders: "*"
+  runtime.endpoint.order.cors.methods: GET, POST, PUT, DELETE
+  runtime.endpoint.order.cors.whiteList: https://presentation-cryptopay.dev.kube https://testnet.cryptopay.band
+  runtime.endpoint.order.servers: processingApiSrv sysadminSrv
+  runtime.endpoint.paymentGateway.cors.allowedHeaders: "*"
+  runtime.endpoint.paymentGateway.cors.methods: GET, POST, PUT, DELETE
+  runtime.endpoint.paymentGateway.cors.whiteList: https://presentation-cryptopay.dev.kube https://testnet.cryptopay.band
+  runtime.endpoint.risk.cors.allowedHeaders: "*"
+  runtime.endpoint.risk.cors.methods: GET, POST, PUT, DELETE
+  runtime.endpoint.risk.cors.whiteList: https://presentation-cryptopay.dev.kube https://testnet.cryptopay.band
+  runtime.endpoint.swaggerUi.bindPath: /specs
+  runtime.endpoint.swaggerUi.servers: presentationSrv
+  runtime.endpoint.swaggerUi.type: swagger-ui
+  runtime.endpoint.swaggerUi.specs.Cryptopay: /v2/cryptopay.v2.oas3.yaml
+  runtime.endpoint.swaggerUi.specs.Gateway: /gateway/gateway.v2.oas3.yaml
+  runtime.endpoint.swaggerUi.specsExtendServer.testnet-public.description: Testnet (Presentation) Environment
+  runtime.endpoint.swaggerUi.specsExtendServer.testnet-public.url: https://api-testnet.cryptopay.band
+  runtime.endpoint.swaggerUi.specsExtendServer_indexer: testnet-public
+  runtime.endpoint.time.cors.allowedHeaders: "*"
+  runtime.endpoint.time.cors.methods: GET, POST, PUT, DELETE
+  runtime.endpoint.time.cors.whiteList: https://presentation-cryptopay.dev.kube https://testnet.cryptopay.band
+  runtime.endpoint_indexer: account dashboard instrument internalInfo gateApi gateCallback merchant network notification order rate risk sysadmin swaggerUi time wtf2psscb
+  runtime.gateway.CPService.url: http://127.0.0.1:8081
+  runtime.notifier.subscriber.kind: web-socket-client
+  runtime.notifier.subscriber.url: ws://notifier.cryptopay-infra:8080/v2/callback/cryptoproviders/pss-provider-wtf2-subscriber/websockethost/maks4683-a00d-4269-b116-6959fb9ac889
+  runtime.pss.aggregator.url: https://pss-rpc.dev.kube/aggregator
+  runtime.pss.cryptoWalletHelper.url: https://pss-rpc.dev.kube/cryptopay
+  runtime.pss.cryptopay.url: https://pss-rpc.dev.kube/cryptopay
+  runtime.pss.es.url: https://pss-rpc.dev.kube/cryptopay
+  runtime.server.presentationSrv.clientCertificateMode: none
+  runtime.server.presentationSrv.listenHost: 0.0.0.0
+  runtime.server.presentationSrv.listenPort: "8083"
+  runtime.server.presentationSrv.serverCertificate: /etc/cexiolabs/cryptopay/ssl/tls.crt
+  runtime.server.presentationSrv.serverKey: /etc/cexiolabs/cryptopay/ssl/tls.key
+  runtime.server.presentationSrv.trustProxy: "true"
+  runtime.server.presentationSrv.type: https
+  runtime.server.sysadminSrv.clientCertificateMode: none
+  runtime.server.sysadminSrv.listenHost: 0.0.0.0
+  runtime.server.sysadminSrv.serverCertificate: /etc/cexiolabs/cryptopay/ssl/tls.crt
+  runtime.server.sysadminSrv.serverKey: /etc/cexiolabs/cryptopay/ssl/tls.key
+  runtime.server.sysadminSrv.trustProxy: "true"
+  runtime.server.sysadminSrv.type: https
+  runtime.server_indexer: processingApiSrv dashboardApiSrv gateApiSrv monitoringSrv pssProviderWtf2CallbacksSrv sysadminSrv presentationSrv
+  runtime.wtf2pss.url: https://pss-provider-wtf2.dev.kube
