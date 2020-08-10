@@ -1,4 +1,4 @@
-# for OBJ in ConfigMap/processing-envvars ConfigMap/processing-envvars-setup ConfigMap/processing-files; do kubectl --context cpevo get --output=yaml $OBJ; echo "---"; done
+# kubectl --context cpevo get --output=yaml ConfigMap/processing-envvars-setup
 
 apiVersion: v1
 kind: ConfigMap
@@ -6,17 +6,11 @@ metadata:
   name: processing-envvars-setup
   namespace: cryptopay-evolution
 data:
-  setup.accessKeyCreate.53f75b533edfe38d176f02c270dac6c0.merchantName: INTERNAL_DEV
-  setup.accessKeyCreate.53f75b533edfe38d176f02c270dac6c0.passphrase: ud200659094
-  setup.accessKeyCreate.53f75b533edfe38d176f02c270dac6c0.tag: Key for INTERNAL_DEV merchant
-  setup.accessKeyCreate_indexer: 53f75b533edfe38d176f02c270dac6c0
-  setup.merchantCreate.INTERNAL_DEV.description: Internal test merchant for ud200562164/CP_DEV
-  setup.merchantCreate.INTERNAL_DEV.enabled: "true"
-  setup.merchantCreate.INTERNAL_DEV.parent: INTERMEDIATE
-  setup.merchantCreate.INTERNAL_TESTNET__SUB.description: Internal test sub-merchant for ud200659094/CP_DEMO
-  setup.merchantCreate.INTERNAL_TESTNET__SUB.enabled: "true"
-  setup.merchantCreate.INTERNAL_TESTNET__SUB.parent: INTERNAL_TESTNET
-  setup.merchantCreate.SWAGGER.description: Swagger Merchant
-  setup.merchantCreate.SWAGGER.enabled: "true"
-  setup.merchantCreate.SWAGGER.parent: INTERNAL_DEV
-  setup.merchantCreate_indexer: INTERNAL_DEV SWAGGER
+  setup.accessKeyCreate.3e45e6e50b1ba24461e26e530cd27d24.merchantName: INTERNAL_DEBUG
+  setup.accessKeyCreate.3e45e6e50b1ba24461e26e530cd27d24.passphrase: ud200659094
+  setup.accessKeyCreate.3e45e6e50b1ba24461e26e530cd27d24.tag: Key for INTERNAL_DEBUG merchant
+  setup.accessKeyCreate.ccb2ecef368c8bf194adb66918f29e64.merchantName: QA
+  setup.accessKeyCreate.ccb2ecef368c8bf194adb66918f29e64.passphrase: 1xb93hmg5zt9d2io
+  setup.accessKeyCreate.ccb2ecef368c8bf194adb66918f29e64.tag: Key for QA merchant
+  setup.accessKeyCreate_indexer: 3e45e6e50b1ba24461e26e530cd27d24 ccb2ecef368c8bf194adb66918f29e64
+  setup.merchantCreate_indexer: INTERNAL_DEBUG QA SWAGGER

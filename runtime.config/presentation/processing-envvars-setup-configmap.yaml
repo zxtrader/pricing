@@ -1,4 +1,4 @@
-# for OBJ in ConfigMap/processing-envvars ConfigMap/processing-envvars-setup ConfigMap/processing-files; do kubectl --context cpprs get --output=yaml $OBJ; echo "---"; done
+# kubectl --context cpprs get --output=yaml ConfigMap/processing-envvars-setup
 
 apiVersion: v1
 kind: ConfigMap
@@ -6,23 +6,17 @@ metadata:
   name: processing-envvars-setup
   namespace: cryptopay-presentation
 data:
-  setup.accessKeyCreate.3e45e6e50b1ba24461e26e530cd27d24.merchantName: INTERNAL_TESTNET
+  setup.accessKeyCreate.3e45e6e50b1ba24461e26e530cd27d24.merchantName: INTERNAL_DEBUG
   setup.accessKeyCreate.3e45e6e50b1ba24461e26e530cd27d24.passphrase: ud200659094
-  setup.accessKeyCreate.3e45e6e50b1ba24461e26e530cd27d24.tag: Key for INTERNAL_TESTNET merchant
-  setup.accessKeyCreate.aefa6878ee07ef5548dbc16622cef0f3.merchantName: INTERNAL_TESTNET__SUB
-  setup.accessKeyCreate.aefa6878ee07ef5548dbc16622cef0f3.passphrase: ud200659094
-  setup.accessKeyCreate.aefa6878ee07ef5548dbc16622cef0f3.tag: Key for INTERNAL_TESTNET__SUB merchant
-  setup.accessKeyCreate.f59e662d34c119486315762709fb2a32.merchantName: INTERNAL_TESTNET__SUB
+  setup.accessKeyCreate.3e45e6e50b1ba24461e26e530cd27d24.tag: Key for INTERNAL_DEBUG merchant
+  setup.accessKeyCreate.ccb2ecef368c8bf194adb66918f29e64.merchantName: QA
+  setup.accessKeyCreate.ccb2ecef368c8bf194adb66918f29e64.passphrase: 1xb93hmg5zt9d2io
+  setup.accessKeyCreate.ccb2ecef368c8bf194adb66918f29e64.tag: Key for QA merchant
+  setup.accessKeyCreate.f59e662d34c119486315762709fb2a32.merchantName: DACH_DEBUG
   setup.accessKeyCreate.f59e662d34c119486315762709fb2a32.passphrase: oo60iukxnjrwavlc
-  setup.accessKeyCreate.f59e662d34c119486315762709fb2a32.tag: Second key for INTERNAL_TESTNET__SUB merchant (for Ecommpay)
-  setup.accessKeyCreate_indexer: 3e45e6e50b1ba24461e26e530cd27d24 aefa6878ee07ef5548dbc16622cef0f3 f59e662d34c119486315762709fb2a32
-  setup.merchantCreate.INTERNAL_TESTNET.description: Internal test merchant for ud200659094/CP_DEMO
-  setup.merchantCreate.INTERNAL_TESTNET.enabled: "true"
-  setup.merchantCreate.INTERNAL_TESTNET.parent: INTERMEDIATE
-  setup.merchantCreate.INTERNAL_TESTNET__SUB.description: Internal test sub-merchant for ud200659094/CP_DEMO
-  setup.merchantCreate.INTERNAL_TESTNET__SUB.enabled: "true"
-  setup.merchantCreate.INTERNAL_TESTNET__SUB.parent: INTERNAL_TESTNET
-  setup.merchantCreate.SWAGGER.description: Swagger Merchant
-  setup.merchantCreate.SWAGGER.enabled: "true"
-  setup.merchantCreate.SWAGGER.parent: INTERNAL_TESTNET
-  setup.merchantCreate_indexer: INTERNAL_TESTNET INTERNAL_TESTNET__SUB SWAGGER
+  setup.accessKeyCreate.f59e662d34c119486315762709fb2a32.tag: Key for DACH_DEBUG merchant (for Ecommpay's testing)
+  setup.accessKeyCreate_indexer: 3e45e6e50b1ba24461e26e530cd27d24 f59e662d34c119486315762709fb2a32 ccb2ecef368c8bf194adb66918f29e64
+  setup.createCallbackKey.4ee85def4a367d76de5d78c30f1c54e1.index: 4ee85def4a367d76de5d78c30f1c54e1
+  setup.createCallbackKey.4ee85def4a367d76de5d78c30f1c54e1.merchantName: DACH_DEBUG
+  setup.createCallbackKey_indexer: 4ee85def4a367d76de5d78c30f1c54e1
+  setup.merchantCreate_indexer: INTERNAL_DEBUG INTERNAL_DACH DACH DACH__DEBUG QA SWAGGER

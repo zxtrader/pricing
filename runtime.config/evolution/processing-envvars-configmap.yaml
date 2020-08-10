@@ -1,4 +1,4 @@
-# for OBJ in ConfigMap/processing-envvars ConfigMap/processing-envvars-setup ConfigMap/processing-files; do kubectl --context cpevo get --output=yaml $OBJ; echo "---"; done
+# kubectl --context cpevo get --output=yaml ConfigMap/processing-envvars
 
 apiVersion: v1
 kind: ConfigMap
@@ -7,6 +7,10 @@ metadata:
   namespace: cryptopay-evolution
 data:
   runtime.aggregator.url: wss://external-api-aggr-demo.dev.kube/ws
+  runtime.dashboardAuth.apiKey: AKIA5YOJLJKEIFAKNWBV
+  runtime.dashboardAuth.cognitoClientId: 6jusd0r1854j4aksj34dkuhuh
+  runtime.dashboardAuth.cognitoUserPool: us-east-1_QNzFm4L9A
+  runtime.dashboardAuth.region: us-east-1
   runtime.endpoint.account.cors.allowedHeaders: "*"
   runtime.endpoint.account.cors.methods: GET, POST, PUT, DELETE
   runtime.endpoint.account.cors.whiteList: https://evolution-cryptopay.dev.kube
@@ -40,16 +44,16 @@ data:
   runtime.endpoint.risk.cors.whiteList: https://evolution-cryptopay.dev.kube
   runtime.endpoint.swaggerUi.bindPath: /specs
   runtime.endpoint.swaggerUi.servers: evolutionSrv
-  runtime.endpoint.swaggerUi.type: swagger-ui
   runtime.endpoint.swaggerUi.specs.Cryptopay: /v2/cryptopay.v2.oas3.yaml
   runtime.endpoint.swaggerUi.specs.Gateway: /gateway/gateway.v2.oas3.yaml
   runtime.endpoint.swaggerUi.specsExtendServer.evolution.description: Evolution Environment
   runtime.endpoint.swaggerUi.specsExtendServer.evolution.url: https://evolution-cryptopay.dev.kube
   runtime.endpoint.swaggerUi.specsExtendServer_indexer: evolution
+  runtime.endpoint.swaggerUi.type: swagger-ui
   runtime.endpoint.time.cors.allowedHeaders: "*"
   runtime.endpoint.time.cors.methods: GET, POST, PUT, DELETE
   runtime.endpoint.time.cors.whiteList: https://evolution-cryptopay.dev.kube
-  runtime.endpoint_indexer: account dashboard instrument internalInfo gateApi gateCallback merchant network notification order rate risk sysadmin swaggerUi time wtf2psscb monitoring
+  runtime.endpoint_indexer: account dashboard instrument internalInfo gateApi gateCallback merchant monitoring network notification order rate risk sysadmin swaggerUi time
   runtime.gateway.CPService.url: http://127.0.0.1:8081
   runtime.notifier.subscriber.kind: web-socket-client
   runtime.notifier.subscriber.url: ws://notifier.cryptopay-infra:8080/v2/callback/cryptoproviders/pss-provider-wtf2-subscriber/websockethost/maks4683-a00d-4269-b116-6959fb9ac889
@@ -70,5 +74,5 @@ data:
   runtime.server.sysadminSrv.serverKey: /etc/cexiolabs/cryptopay/ssl/tls.key
   runtime.server.sysadminSrv.trustProxy: "true"
   runtime.server.sysadminSrv.type: https
-  runtime.server_indexer: processingApiSrv dashboardApiSrv gateApiSrv monitoringSrv pssProviderWtf2CallbacksSrv sysadminSrv evolutionSrv
+  runtime.server_indexer: dashboardApiSrv evolutionSrv gateApiSrv monitoringSrv processingApiSrv sysadminSrv
   runtime.wtf2pss.url: https://pss-provider-wtf2.dev.kube

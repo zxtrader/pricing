@@ -1,4 +1,4 @@
-# for OBJ in ConfigMap/processing-envvars ConfigMap/processing-envvars-setup ConfigMap/processing-files; do kubectl --context cppreprd get --output=yaml $OBJ; echo "---"; done
+# kubectl --context cppreprd get --output=yaml ConfigMap/processing-files
 
 apiVersion: v1
 kind: ConfigMap

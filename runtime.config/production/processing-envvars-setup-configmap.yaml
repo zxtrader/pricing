@@ -4,12 +4,8 @@ metadata:
   name: processing-envvars-setup
   namespace: cryptopay
 data:
-  setup.accessKeyCreate.769c144196e23d4022fcfbc9356a2727.merchantName: INTERNAL_PROD
+  setup.accessKeyCreate.769c144196e23d4022fcfbc9356a2727.merchantName: INTERNAL_DEBUG
   setup.accessKeyCreate.769c144196e23d4022fcfbc9356a2727.tag: API Access Key for devel team
-  setup.accessKeyCreate.54119aad9812385dea7407b562b449d9.merchantName: INTERNAL_PROD
+  setup.accessKeyCreate.54119aad9812385dea7407b562b449d9.merchantName: DACH_DEBUG
   setup.accessKeyCreate.54119aad9812385dea7407b562b449d9.tag: API Access Key for Ecommpay/Dach
   setup.accessKeyCreates: 769c144196e23d4022fcfbc9356a2727 54119aad9812385dea7407b562b449d9
-  setup.merchantCreate.INTERNAL_PROD.description: "Internal production test merchant (PSS: cpwtf, CEX Aggregator: CP_DACH:d092d750)"
-  setup.merchantCreate.INTERNAL_PROD.enabled: "true"
-  setup.merchantCreate.INTERNAL_PROD.parent: INTERMEDIATE
-  setup.merchantCreate_indexer: INTERNAL_PROD
