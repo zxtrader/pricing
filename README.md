@@ -40,3 +40,5 @@ NOTE! Перед созданием тега, вы должны убедитьс
 ```bash
 curl --insecure -X POST -F "token=$DEPLOY_PIPELINE_TOKEN" -F "ref=master" -F "variables[DEVEL_DB_IMAGE_TAG]=dev.57e5a60e" https://gitlab.wnb:28443/api/v4/projects/684/trigger/pipeline
 ```
+
+ devdocker.infra.kube/cryptopay/cpservice-devel:dev.f1bddd7b

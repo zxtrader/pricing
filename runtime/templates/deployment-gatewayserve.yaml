@@ -58,14 +58,14 @@ spec:
         #     scheme: HTTP
         #   initialDelaySeconds: 10
         #   periodSeconds: 10
+        resources:
+          limits:
+            cpu: 400m
+            memory: 512Gi
+          requests:
+            cpu: 100m
+            memory: 128Mi
       volumes:
       - name: secret-certificate
         secret:
           secretName: {{ .Chart.Name }}-gateuiserve{{ template "suffix" . }}-certificate
-      resources:
-        limits:
-          cpu: 400m
-          memory: 512Gi
-        requests:
-          cpu: 100m
-          memory: 128Mi
