@@ -62,3 +62,10 @@ spec:
       - name: secret-certificate
         secret:
           secretName: {{ .Chart.Name }}-dashboarduiserve{{ template "suffix" . }}-certificate
+      resources:
+        limits:
+          cpu: 400m
+          memory: 512Gi
+        requests:
+          cpu: 100m
+          memory: 128Mi

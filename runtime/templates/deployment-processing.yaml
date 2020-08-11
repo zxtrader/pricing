@@ -109,3 +109,10 @@ spec:
       - name: secret-certificate
         secret:
           secretName: {{ .Chart.Name }}-processing{{ template "suffix" . }}-certificate
+      resources:
+        limits:
+          cpu: 500m
+          memory: 1Gi
+        requests:
+          cpu: 125m
+          memory: 256Mi
