@@ -13,7 +13,7 @@ name: cryptopay
 version: 2.0.0
 
 # The version of the app that this contains (optional). This needn't be SemVer.
-appVersion: 2.0.15-alpha01
+appVersion: 2.0.16-alpha01
 
 # The URL of this project's home page (optional)
 home: https://www.cryptopay.band/
@@ -33,3 +33,5 @@ sources:
 maintainers:
   - name: Maksym Anurin
     email: m.anurin@wnb.com.ua
+  - name: Serhii Kozlov
+    email: s.kozlov@wnb.com.ua    
