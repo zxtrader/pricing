@@ -15,7 +15,7 @@
 	"editable": true,
 	"gnetId": null,
 	"graphTooltip": 0,
-	"id": 130,
+	"id": 132,
 	"links": [],
 	"panels": [
 	  {
@@ -360,10 +360,10 @@
 		"steppedLine": false,
 		"targets": [
 		  {
-			"expr": "(1 - (sum by (kubernetes_node)(http_request_duration_seconds_count{kubernetes_namespace=\"cryptopay-presentation\", kubernetes_name=\"cryptopay-processing\", status_code=~\"[23].*\"})) / (sum by (kubernetes_node)(http_request_duration_seconds_count{kubernetes_namespace=\"cryptopay-presentation\", kubernetes_name=\"cryptopay-processing\"})))",
+			"expr": "(1 - (sum by (pod)(http_request_duration_seconds_count{kubernetes_namespace=\"cryptopay-presentation\", kubernetes_name=\"cryptopay-processing\", status_code=~\"[23].*\"})) / (sum by (pod)(http_request_duration_seconds_count{kubernetes_namespace=\"cryptopay-presentation\", kubernetes_name=\"cryptopay-processing\"})))",
 			"format": "time_series",
 			"intervalFactor": 1,
-			"legendFormat": "{{kubernetes_node}}",
+			"legendFormat": "{{pod}}",
 			"refId": "A"
 		  }
 		],
@@ -492,10 +492,10 @@
 		"steppedLine": false,
 		"targets": [
 		  {
-			"expr": "sum by (kubernetes_node) (critical_errors{kubernetes_namespace=\"cryptopay-presentation\", kubernetes_name=\"cryptopay-processing\"})",
+			"expr": "sum by (pod) (critical_errors{kubernetes_namespace=\"cryptopay-presentation\", kubernetes_name=\"cryptopay-processing\"})",
 			"format": "time_series",
 			"intervalFactor": 1,
-			"legendFormat": "{{kubernetes_node}}",
+			"legendFormat": "{{pod}}",
 			"refId": "A"
 		  }
 		],
@@ -624,10 +624,10 @@
 		"steppedLine": false,
 		"targets": [
 		  {
-			"expr": "sum by (kubernetes_node) (rate(general_errors{kubernetes_namespace=\"cryptopay-presentation\", kubernetes_name=\"cryptopay-processing\"}[1h])) * 3600",
+			"expr": "sum by (pod) (rate(general_errors{kubernetes_namespace=\"cryptopay-presentation\", kubernetes_name=\"cryptopay-processing\", pod!=\"\"}[1h])) * 3600",
 			"format": "time_series",
 			"intervalFactor": 1,
-			"legendFormat": "{{kubernetes_node}}",
+			"legendFormat": "{{pod}}",
 			"refId": "A"
 		  }
 		],
@@ -719,5 +719,5 @@
 	"timezone": "",
 	"title": "Cryptopay-Alerts-Presentation",
 	"uid": "pQ7YZSSGk",
-	"version": 17
+	"version": 5
   }
