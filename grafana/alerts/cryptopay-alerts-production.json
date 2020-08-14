@@ -15,11 +15,12 @@
 	"editable": true,
 	"gnetId": null,
 	"graphTooltip": 0,
-	"id": 132,
+	"id": 325,
 	"links": [],
 	"panels": [
 	  {
 		"alert": {
+		  "alertRuleTags": {},
 		  "conditions": [
 			{
 			  "evaluator": {
@@ -55,6 +56,9 @@
 		  "notifications": [
 			{
 			  "id": 1
+			},
+			{
+			  "uid": "R67O3VIGk"
 			}
 		  ]
 		},
@@ -62,13 +66,22 @@
 		"bars": false,
 		"dashLength": 10,
 		"dashes": false,
+		"datasource": null,
+		"fieldConfig": {
+		  "defaults": {
+			"custom": {}
+		  },
+		  "overrides": []
+		},
 		"fill": 1,
+		"fillGradient": 0,
 		"gridPos": {
 		  "h": 7,
 		  "w": 24,
 		  "x": 0,
 		  "y": 0
 		},
+		"hiddenSeries": false,
 		"id": 4,
 		"legend": {
 		  "alignAsTable": true,
@@ -85,6 +98,9 @@
 		"linewidth": 1,
 		"links": [],
 		"nullPointMode": "null",
+		"options": {
+		  "dataLinks": []
+		},
 		"percentage": false,
 		"pointradius": 5,
 		"points": false,
@@ -97,6 +113,7 @@
 		  {
 			"expr": "sum by (container,pod)(rate(container_cpu_usage_seconds_total{namespace=\"cryptopay\", slave=\"prodgnr\",container!=\"\",container!=\"POD\"}[5m])) / sum by (container,pod)(kube_pod_container_resource_requests_cpu_cores{namespace=\"cryptopay\", slave=\"prodgnr\"})",
 			"format": "time_series",
+			"interval": "",
 			"intervalFactor": 1,
 			"legendFormat": "{{pod}}",
 			"refId": "A"
@@ -154,6 +171,7 @@
 	  },
 	  {
 		"alert": {
+		  "alertRuleTags": {},
 		  "conditions": [
 			{
 			  "evaluator": {
@@ -188,6 +206,9 @@
 		  "notifications": [
 			{
 			  "id": 1
+			},
+			{
+			  "uid": "R67O3VIGk"
 			}
 		  ]
 		},
@@ -195,13 +216,22 @@
 		"bars": false,
 		"dashLength": 10,
 		"dashes": false,
+		"datasource": null,
+		"fieldConfig": {
+		  "defaults": {
+			"custom": {}
+		  },
+		  "overrides": []
+		},
 		"fill": 1,
+		"fillGradient": 0,
 		"gridPos": {
 		  "h": 7,
 		  "w": 24,
 		  "x": 0,
 		  "y": 7
 		},
+		"hiddenSeries": false,
 		"id": 2,
 		"legend": {
 		  "alignAsTable": true,
@@ -218,6 +248,9 @@
 		"linewidth": 1,
 		"links": [],
 		"nullPointMode": "null",
+		"options": {
+		  "dataLinks": []
+		},
 		"percentage": false,
 		"pointradius": 5,
 		"points": false,
@@ -286,6 +319,7 @@
 	  },
 	  {
 		"alert": {
+		  "alertRuleTags": {},
 		  "conditions": [
 			{
 			  "evaluator": {
@@ -320,6 +354,9 @@
 		  "notifications": [
 			{
 			  "id": 1
+			},
+			{
+			  "uid": "R67O3VIGk"
 			}
 		  ]
 		},
@@ -327,13 +364,22 @@
 		"bars": false,
 		"dashLength": 10,
 		"dashes": false,
+		"datasource": null,
+		"fieldConfig": {
+		  "defaults": {
+			"custom": {}
+		  },
+		  "overrides": []
+		},
 		"fill": 1,
+		"fillGradient": 0,
 		"gridPos": {
 		  "h": 7,
 		  "w": 8,
 		  "x": 0,
 		  "y": 14
 		},
+		"hiddenSeries": false,
 		"id": 6,
 		"legend": {
 		  "alignAsTable": true,
@@ -350,6 +396,9 @@
 		"linewidth": 1,
 		"links": [],
 		"nullPointMode": "null",
+		"options": {
+		  "dataLinks": []
+		},
 		"percentage": false,
 		"pointradius": 5,
 		"points": false,
@@ -418,6 +467,7 @@
 	  },
 	  {
 		"alert": {
+		  "alertRuleTags": {},
 		  "conditions": [
 			{
 			  "evaluator": {
@@ -452,6 +502,9 @@
 		  "notifications": [
 			{
 			  "id": 1
+			},
+			{
+			  "uid": "R67O3VIGk"
 			}
 		  ]
 		},
@@ -459,13 +512,22 @@
 		"bars": false,
 		"dashLength": 10,
 		"dashes": false,
+		"datasource": null,
+		"fieldConfig": {
+		  "defaults": {
+			"custom": {}
+		  },
+		  "overrides": []
+		},
 		"fill": 1,
+		"fillGradient": 0,
 		"gridPos": {
 		  "h": 7,
 		  "w": 8,
 		  "x": 8,
 		  "y": 14
 		},
+		"hiddenSeries": false,
 		"id": 8,
 		"legend": {
 		  "alignAsTable": true,
@@ -482,6 +544,9 @@
 		"linewidth": 1,
 		"links": [],
 		"nullPointMode": "null",
+		"options": {
+		  "dataLinks": []
+		},
 		"percentage": false,
 		"pointradius": 5,
 		"points": false,
@@ -550,6 +615,7 @@
 	  },
 	  {
 		"alert": {
+		  "alertRuleTags": {},
 		  "conditions": [
 			{
 			  "evaluator": {
@@ -584,6 +650,9 @@
 		  "notifications": [
 			{
 			  "id": 1
+			},
+			{
+			  "uid": "R67O3VIGk"
 			}
 		  ]
 		},
@@ -591,13 +660,22 @@
 		"bars": false,
 		"dashLength": 10,
 		"dashes": false,
+		"datasource": null,
+		"fieldConfig": {
+		  "defaults": {
+			"custom": {}
+		  },
+		  "overrides": []
+		},
 		"fill": 1,
+		"fillGradient": 0,
 		"gridPos": {
 		  "h": 7,
 		  "w": 8,
 		  "x": 16,
 		  "y": 14
 		},
+		"hiddenSeries": false,
 		"id": 10,
 		"legend": {
 		  "alignAsTable": true,
@@ -614,6 +692,9 @@
 		"linewidth": 1,
 		"links": [],
 		"nullPointMode": "null",
+		"options": {
+		  "dataLinks": []
+		},
 		"percentage": false,
 		"pointradius": 5,
 		"points": false,
@@ -681,7 +762,8 @@
 		}
 	  }
 	],
-	"schemaVersion": 16,
+	"refresh": false,
+	"schemaVersion": 25,
 	"style": "dark",
 	"tags": [],
 	"templating": {
@@ -719,5 +801,5 @@
 	"timezone": "",
 	"title": "Cryptopay-Alerts",
 	"uid": "pQ7YZSSGk",
-	"version": 5
+	"version": 12
   }

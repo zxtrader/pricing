@@ -15,12 +15,13 @@
 	"editable": true,
 	"gnetId": null,
 	"graphTooltip": 0,
-	"id": 129,
-	"iteration": 1597323955870,
+	"id": 326,
+	"iteration": 1597401363560,
 	"links": [],
 	"panels": [
 	  {
 		"collapsed": false,
+		"datasource": null,
 		"gridPos": {
 		  "h": 1,
 		  "w": 24,
@@ -43,6 +44,12 @@
 		],
 		"datasource": "Prometheus",
 		"description": "Total requests",
+		"fieldConfig": {
+		  "defaults": {
+			"custom": {}
+		  },
+		  "overrides": []
+		},
 		"format": "none",
 		"gauge": {
 		  "maxValue": 100,
@@ -123,7 +130,14 @@
 		  "rgba(237, 129, 40, 0.89)",
 		  "#d44a3a"
 		],
+		"datasource": null,
 		"description": "Total count of successful request",
+		"fieldConfig": {
+		  "defaults": {
+			"custom": {}
+		  },
+		  "overrides": []
+		},
 		"format": "none",
 		"gauge": {
 		  "maxValue": 100,
@@ -206,6 +220,13 @@
 		  "rgba(237, 129, 40, 0.89)",
 		  "#299c46"
 		],
+		"datasource": null,
+		"fieldConfig": {
+		  "defaults": {
+			"custom": {}
+		  },
+		  "overrides": []
+		},
 		"format": "percentunit",
 		"gauge": {
 		  "maxValue": 1,
@@ -288,6 +309,12 @@
 		],
 		"datasource": "Prometheus",
 		"description": "Percentage of 4xx responses",
+		"fieldConfig": {
+		  "defaults": {
+			"custom": {}
+		  },
+		  "overrides": []
+		},
 		"format": "percentunit",
 		"gauge": {
 		  "maxValue": 1,
@@ -371,6 +398,12 @@
 		],
 		"datasource": "Prometheus",
 		"description": "Percentage of 5xx responses",
+		"fieldConfig": {
+		  "defaults": {
+			"custom": {}
+		  },
+		  "overrides": []
+		},
 		"format": "percentunit",
 		"gauge": {
 		  "maxValue": 1,
@@ -456,6 +489,12 @@
 		],
 		"datasource": "Prometheus",
 		"description": "Total count of general errors",
+		"fieldConfig": {
+		  "defaults": {
+			"custom": {}
+		  },
+		  "overrides": []
+		},
 		"format": "none",
 		"gauge": {
 		  "maxValue": 100,
@@ -504,7 +543,7 @@
 		  "lineColor": "rgb(31, 120, 193)",
 		  "show": false
 		},
-		"tableColumn": "__name__",
+		"tableColumn": "",
 		"targets": [
 		  {
 			"expr": "sum(increase(general_errors{kubernetes_namespace=\"cryptopay\", slave=\"prodgnr\", kubernetes_name=~\"$service\", pod=~\"$instance\"}[$__range]))",
@@ -539,6 +578,12 @@
 		],
 		"datasource": "Prometheus",
 		"description": "Total count of critical errors",
+		"fieldConfig": {
+		  "defaults": {
+			"custom": {}
+		  },
+		  "overrides": []
+		},
 		"format": "none",
 		"gauge": {
 		  "maxValue": 100,
@@ -611,6 +656,7 @@
 	  },
 	  {
 		"collapsed": false,
+		"datasource": null,
 		"gridPos": {
 		  "h": 1,
 		  "w": 24,
@@ -625,6 +671,12 @@
 	  {
 		"columns": [],
 		"datasource": "Prometheus",
+		"fieldConfig": {
+		  "defaults": {
+			"custom": {}
+		  },
+		  "overrides": []
+		},
 		"fontSize": "100%",
 		"gridPos": {
 		  "h": 5,
@@ -644,12 +696,14 @@
 		"styles": [
 		  {
 			"alias": "Time",
+			"align": "auto",
 			"dateFormat": "YYYY-MM-DD HH:mm:ss",
 			"pattern": "Time",
 			"type": "hidden"
 		  },
 		  {
 			"alias": "Started-up",
+			"align": "auto",
 			"colorMode": null,
 			"colors": [
 			  "rgba(245, 54, 54, 0.9)",
@@ -666,6 +720,7 @@
 		  },
 		  {
 			"alias": "Instance",
+			"align": "auto",
 			"colorMode": null,
 			"colors": [
 			  "rgba(245, 54, 54, 0.9)",
@@ -682,6 +737,7 @@
 		  },
 		  {
 			"alias": "Version",
+			"align": "auto",
 			"colorMode": null,
 			"colors": [
 			  "rgba(245, 54, 54, 0.9)",
@@ -698,6 +754,7 @@
 		  },
 		  {
 			"alias": "Node",
+			"align": "auto",
 			"colorMode": null,
 			"colors": [
 			  "rgba(245, 54, 54, 0.9)",
@@ -714,6 +771,7 @@
 		  },
 		  {
 			"alias": "",
+			"align": "auto",
 			"colorMode": null,
 			"colors": [
 			  "rgba(245, 54, 54, 0.9)",
@@ -729,19 +787,38 @@
 		],
 		"targets": [
 		  {
-			"expr": "max_over_time(process_start_time_seconds{kubernetes_namespace=\"cryptopay\", slave=\"prodgnr\", kubernetes_name=~\"$service\"}[${__range}]) * 1000",
+			"expr": "max_over_time(process_start_time_seconds{kubernetes_namespace=\"cryptopay\", slave=\"prodgnr\", kubernetes_name=~\"$service\", pod!=\"\"}[${__range}]) * 1000",
 			"format": "table",
 			"instant": true,
+			"interval": "",
 			"intervalFactor": 1,
+			"legendFormat": "",
 			"refId": "A"
 		  }
 		],
 		"title": "Instances",
 		"transform": "table",
-		"type": "table"
+		"transformations": [
+		  {
+			"id": "organize",
+			"options": {
+			  "excludeByName": {
+				"Time": false,
+				"app": false,
+				"chart": false,
+				"job": false,
+				"kubernetes_name": false
+			  },
+			  "indexByName": {},
+			  "renameByName": {}
+			}
+		  }
+		],
+		"type": "table-old"
 	  },
 	  {
 		"collapsed": false,
+		"datasource": null,
 		"gridPos": {
 		  "h": 1,
 		  "w": 24,
@@ -760,13 +837,21 @@
 		"dashes": false,
 		"datasource": "Prometheus",
 		"description": "Average response time",
+		"fieldConfig": {
+		  "defaults": {
+			"custom": {}
+		  },
+		  "overrides": []
+		},
 		"fill": 3,
+		"fillGradient": 0,
 		"gridPos": {
 		  "h": 7,
 		  "w": 12,
 		  "x": 0,
 		  "y": 13
 		},
+		"hiddenSeries": false,
 		"id": 24,
 		"legend": {
 		  "alignAsTable": false,
@@ -785,6 +870,9 @@
 		"linewidth": 2,
 		"links": [],
 		"nullPointMode": "null",
+		"options": {
+		  "dataLinks": []
+		},
 		"percentage": false,
 		"pointradius": 5,
 		"points": false,
@@ -848,6 +936,12 @@
 		"columns": [],
 		"datasource": "Prometheus",
 		"description": "Top-20 Failed Requests",
+		"fieldConfig": {
+		  "defaults": {
+			"custom": {}
+		  },
+		  "overrides": []
+		},
 		"fontSize": "100%",
 		"gridPos": {
 		  "h": 16,
@@ -867,6 +961,7 @@
 		"styles": [
 		  {
 			"alias": "",
+			"align": "auto",
 			"colorMode": null,
 			"colors": [
 			  "rgba(245, 54, 54, 0.9)",
@@ -883,6 +978,7 @@
 		  },
 		  {
 			"alias": "Count",
+			"align": "auto",
 			"colorMode": null,
 			"colors": [
 			  "rgba(245, 54, 54, 0.9)",
@@ -899,6 +995,7 @@
 		  },
 		  {
 			"alias": "Version",
+			"align": "auto",
 			"colorMode": null,
 			"colors": [
 			  "rgba(245, 54, 54, 0.9)",
@@ -915,6 +1012,7 @@
 		  },
 		  {
 			"alias": "Service",
+			"align": "auto",
 			"colorMode": null,
 			"colors": [
 			  "rgba(245, 54, 54, 0.9)",
@@ -931,6 +1029,7 @@
 		  },
 		  {
 			"alias": "Method",
+			"align": "auto",
 			"colorMode": null,
 			"colors": [
 			  "rgba(245, 54, 54, 0.9)",
@@ -947,6 +1046,7 @@
 		  },
 		  {
 			"alias": "Path",
+			"align": "auto",
 			"colorMode": null,
 			"colors": [
 			  "rgba(245, 54, 54, 0.9)",
@@ -963,6 +1063,7 @@
 		  },
 		  {
 			"alias": "Pod",
+			"align": "auto",
 			"colorMode": null,
 			"colors": [
 			  "rgba(245, 54, 54, 0.9)",
@@ -979,6 +1080,7 @@
 		  },
 		  {
 			"alias": "Status Code",
+			"align": "auto",
 			"colorMode": null,
 			"colors": [
 			  "rgba(245, 54, 54, 0.9)",
@@ -1007,7 +1109,7 @@
 		],
 		"title": "Top-20 Failed Requests",
 		"transform": "table",
-		"type": "table"
+		"type": "table-old"
 	  },
 	  {
 		"cards": {
@@ -1024,6 +1126,12 @@
 		"dataFormat": "tsbuckets",
 		"datasource": "Prometheus",
 		"description": "Response time distribution",
+		"fieldConfig": {
+		  "defaults": {
+			"custom": {}
+		  },
+		  "overrides": []
+		},
 		"gridPos": {
 		  "h": 9,
 		  "w": 12,
@@ -1031,12 +1139,14 @@
 		  "y": 20
 		},
 		"heatmap": {},
+		"hideZeroBuckets": false,
 		"highlightCards": true,
 		"id": 20,
 		"legend": {
 		  "show": true
 		},
 		"links": [],
+		"reverseYBuckets": false,
 		"targets": [
 		  {
 			"expr": "sum(increase(http_request_duration_seconds_bucket{kubernetes_namespace=\"cryptopay\", slave=\"prodgnr\", kubernetes_name=~\"$service\", pod=~\"$instance\"}[$__interval])) by (le)",
@@ -1073,6 +1183,7 @@
 	  },
 	  {
 		"collapsed": false,
+		"datasource": null,
 		"gridPos": {
 		  "h": 1,
 		  "w": 24,
@@ -1091,13 +1202,21 @@
 		"dashes": false,
 		"datasource": "Prometheus",
 		"description": "Process CPU usage",
+		"fieldConfig": {
+		  "defaults": {
+			"custom": {}
+		  },
+		  "overrides": []
+		},
 		"fill": 1,
+		"fillGradient": 0,
 		"gridPos": {
 		  "h": 9,
 		  "w": 12,
 		  "x": 0,
 		  "y": 30
 		},
+		"hiddenSeries": false,
 		"id": 26,
 		"legend": {
 		  "avg": false,
@@ -1112,6 +1231,9 @@
 		"linewidth": 1,
 		"links": [],
 		"nullPointMode": "null",
+		"options": {
+		  "dataLinks": []
+		},
 		"percentage": false,
 		"pointradius": 5,
 		"points": false,
@@ -1176,14 +1298,23 @@
 		"bars": false,
 		"dashLength": 10,
 		"dashes": false,
+		"datasource": null,
 		"description": "Process RAM usage",
+		"fieldConfig": {
+		  "defaults": {
+			"custom": {}
+		  },
+		  "overrides": []
+		},
 		"fill": 1,
+		"fillGradient": 0,
 		"gridPos": {
 		  "h": 9,
 		  "w": 12,
 		  "x": 12,
 		  "y": 30
 		},
+		"hiddenSeries": false,
 		"id": 28,
 		"legend": {
 		  "avg": false,
@@ -1198,6 +1329,9 @@
 		"linewidth": 1,
 		"links": [],
 		"nullPointMode": "null",
+		"options": {
+		  "dataLinks": []
+		},
 		"percentage": false,
 		"pointradius": 5,
 		"points": false,
@@ -1263,13 +1397,21 @@
 		"dashes": false,
 		"datasource": "Prometheus",
 		"description": "NodeJS Event Loop Lag",
+		"fieldConfig": {
+		  "defaults": {
+			"custom": {}
+		  },
+		  "overrides": []
+		},
 		"fill": 1,
+		"fillGradient": 0,
 		"gridPos": {
 		  "h": 9,
 		  "w": 12,
 		  "x": 0,
 		  "y": 39
 		},
+		"hiddenSeries": false,
 		"id": 32,
 		"legend": {
 		  "avg": false,
@@ -1284,6 +1426,9 @@
 		"linewidth": 1,
 		"links": [],
 		"nullPointMode": "null",
+		"options": {
+		  "dataLinks": []
+		},
 		"percentage": false,
 		"pointradius": 5,
 		"points": false,
@@ -1347,14 +1492,23 @@
 		"bars": false,
 		"dashLength": 10,
 		"dashes": false,
+		"datasource": null,
 		"description": "Process virtual memory usage",
+		"fieldConfig": {
+		  "defaults": {
+			"custom": {}
+		  },
+		  "overrides": []
+		},
 		"fill": 1,
+		"fillGradient": 0,
 		"gridPos": {
 		  "h": 9,
 		  "w": 12,
 		  "x": 12,
 		  "y": 39
 		},
+		"hiddenSeries": false,
 		"id": 30,
 		"legend": {
 		  "avg": false,
@@ -1369,6 +1523,9 @@
 		"linewidth": 1,
 		"links": [],
 		"nullPointMode": "null",
+		"options": {
+		  "dataLinks": []
+		},
 		"percentage": false,
 		"pointradius": 5,
 		"points": false,
@@ -1429,7 +1586,7 @@
 	  }
 	],
 	"refresh": false,
-	"schemaVersion": 16,
+	"schemaVersion": 25,
 	"style": "dark",
 	"tags": [],
 	"templating": {
@@ -1437,35 +1594,11 @@
 		{
 		  "allValue": null,
 		  "current": {
-			"text": "presentation",
-			"value": "presentation"
-		  },
-		  "hide": 0,
-		  "includeAll": false,
-		  "label": "Environment",
-		  "multi": false,
-		  "name": "env",
-		  "options": [
-			{
-			  "selected": false,
-			  "text": "evolution",
-			  "value": "evolution"
-			},
-			{
-			  "selected": true,
-			  "text": "presentation",
-			  "value": "presentation"
-			}
-		  ],
-		  "query": "evolution, presentation",
-		  "skipUrlSync": false,
-		  "type": "custom"
-		},
-		{
-		  "allValue": null,
-		  "current": {
+			"selected": true,
 			"text": "All",
-			"value": "$__all"
+			"value": [
+			  "$__all"
+			]
 		  },
 		  "datasource": "Prometheus",
 		  "definition": "query_result(max_over_time(process_start_time_seconds{kubernetes_namespace=\"cryptopay\", slave=\"prodgnr\"}[${__range}]))",
@@ -1489,8 +1622,11 @@
 		{
 		  "allValue": null,
 		  "current": {
+			"selected": true,
 			"text": "All",
-			"value": "$__all"
+			"value": [
+			  "$__all"
+			]
 		  },
 		  "datasource": "Prometheus",
 		  "definition": "query_result(max_over_time(process_start_time_seconds{kubernetes_name=~\"${service}\", kubernetes_namespace=\"cryptopay\", slave=\"prodgnr\"}[${__range}]))",
@@ -1519,7 +1655,6 @@
 	},
 	"timepicker": {
 	  "refresh_intervals": [
-		"5s",
 		"10s",
 		"30s",
 		"1m",
@@ -1545,5 +1680,5 @@
 	"timezone": "",
 	"title": "Cryptopay-Health",
 	"uid": "_0mRvmSGk",
-	"version": 21
+	"version": 2
   }
