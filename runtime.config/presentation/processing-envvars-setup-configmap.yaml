@@ -12,11 +12,10 @@ data:
   setup.accessKeyCreate.ccb2ecef368c8bf194adb66918f29e64.merchantName: QA
   setup.accessKeyCreate.ccb2ecef368c8bf194adb66918f29e64.passphrase: 1xb93hmg5zt9d2io
   setup.accessKeyCreate.ccb2ecef368c8bf194adb66918f29e64.tag: Key for QA merchant
-  setup.accessKeyCreate.f59e662d34c119486315762709fb2a32.merchantName: DACH_DEBUG
+  setup.accessKeyCreate.f59e662d34c119486315762709fb2a32.merchantName: DACH__DEBUG
   setup.accessKeyCreate.f59e662d34c119486315762709fb2a32.passphrase: oo60iukxnjrwavlc
-  setup.accessKeyCreate.f59e662d34c119486315762709fb2a32.tag: Key for DACH_DEBUG merchant (for Ecommpay's testing)
+  setup.accessKeyCreate.f59e662d34c119486315762709fb2a32.tag: Key for DACH__DEBUG merchant (for Ecommpay's testing)
   setup.accessKeyCreate_indexer: 3e45e6e50b1ba24461e26e530cd27d24 f59e662d34c119486315762709fb2a32 ccb2ecef368c8bf194adb66918f29e64
   setup.createCallbackKey.4ee85def4a367d76de5d78c30f1c54e1.index: 4ee85def4a367d76de5d78c30f1c54e1
-  setup.createCallbackKey.4ee85def4a367d76de5d78c30f1c54e1.merchantName: DACH_DEBUG
+  setup.createCallbackKey.4ee85def4a367d76de5d78c30f1c54e1.merchantName: DACH__DEBUG
   setup.createCallbackKey_indexer: 4ee85def4a367d76de5d78c30f1c54e1
-  setup.merchantCreate_indexer: INTERNAL_DEBUG INTERNAL_DACH DACH DACH__DEBUG QA SWAGGER

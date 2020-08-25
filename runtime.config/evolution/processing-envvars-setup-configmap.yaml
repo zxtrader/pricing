@@ -13,4 +13,3 @@ data:
   setup.accessKeyCreate.ccb2ecef368c8bf194adb66918f29e64.passphrase: 1xb93hmg5zt9d2io
   setup.accessKeyCreate.ccb2ecef368c8bf194adb66918f29e64.tag: Key for QA merchant
   setup.accessKeyCreate_indexer: 3e45e6e50b1ba24461e26e530cd27d24 ccb2ecef368c8bf194adb66918f29e64
-  setup.merchantCreate_indexer: INTERNAL_DEBUG QA SWAGGER
