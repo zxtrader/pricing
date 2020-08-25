@@ -15,8 +15,8 @@
 	"editable": true,
 	"gnetId": null,
 	"graphTooltip": 0,
-	"id": 326,
-	"iteration": 1597401363560,
+	"id": 329,
+	"iteration": 1598367205826,
 	"links": [],
 	"panels": [
 	  {
@@ -101,7 +101,7 @@
 		"tableColumn": "",
 		"targets": [
 		  {
-			"expr": "sum(increase(http_request_duration_seconds_count{kubernetes_namespace=\"cryptopay\", slave=\"prodgnr\", kubernetes_name=~\"$service\", pod=~\"$instance\"}[$__range]))",
+			"expr": "sum(increase(http_request_duration_seconds_count{kubernetes_namespace=\"cryptopay\", kubernetes_name=~\"$service\", pod=~\"$instance\"}[$__range]))",
 			"format": "time_series",
 			"instant": false,
 			"intervalFactor": 1,
@@ -190,7 +190,7 @@
 		"tableColumn": "",
 		"targets": [
 		  {
-			"expr": "sum(increase(http_request_duration_seconds_count{kubernetes_namespace=\"cryptopay\", slave=\"prodgnr\", kubernetes_name=~\"$service\", pod=~\"$instance\", status_code=~\"[23].*\"}[$__range]))",
+			"expr": "sum(increase(http_request_duration_seconds_count{kubernetes_namespace=\"cryptopay\", kubernetes_name=~\"$service\", pod=~\"$instance\", status_code=~\"[23].*\"}[$__range]))",
 			"format": "time_series",
 			"instant": false,
 			"intervalFactor": 1,
@@ -278,7 +278,7 @@
 		"tableColumn": "",
 		"targets": [
 		  {
-			"expr": "(sum(increase(http_request_duration_seconds_count{kubernetes_namespace=\"cryptopay\", slave=\"prodgnr\", kubernetes_name=~\"$service\", pod=~\"$instance\", status_code=~\"[23].*\"}[$__range]))) / (sum(increase(http_request_duration_seconds_count{kubernetes_namespace=\"cryptopay\", slave=\"prodgnr\", kubernetes_name=~\"$service\", pod=~\"$instance\"}[$__range])))",
+			"expr": "(sum(increase(http_request_duration_seconds_count{kubernetes_namespace=\"cryptopay\", kubernetes_name=~\"$service\", pod=~\"$instance\", status_code=~\"[23].*\"}[$__range]))) / (sum(increase(http_request_duration_seconds_count{kubernetes_namespace=\"cryptopay\", kubernetes_name=~\"$service\", pod=~\"$instance\"}[$__range])))",
 			"format": "time_series",
 			"instant": true,
 			"intervalFactor": 1,
@@ -366,7 +366,7 @@
 		"tableColumn": "",
 		"targets": [
 		  {
-			"expr": "(sum(increase(http_request_duration_seconds_count{kubernetes_namespace=\"cryptopay\", slave=\"prodgnr\", kubernetes_name=~\"$service\", pod=~\"$instance\", status_code=~\"[4].*\"}[$__range]))) / (sum(increase(http_request_duration_seconds_count{kubernetes_namespace=\"cryptopay\", slave=\"prodgnr\", kubernetes_name=~\"$service\", pod=~\"$instance\"}[$__range])))",
+			"expr": "(sum(increase(http_request_duration_seconds_count{kubernetes_namespace=\"cryptopay\", kubernetes_name=~\"$service\", pod=~\"$instance\", status_code=~\"[4].*\"}[$__range]))) / (sum(increase(http_request_duration_seconds_count{kubernetes_namespace=\"cryptopay\", kubernetes_name=~\"$service\", pod=~\"$instance\"}[$__range])))",
 			"format": "time_series",
 			"instant": true,
 			"interval": "",
@@ -455,7 +455,7 @@
 		"tableColumn": "",
 		"targets": [
 		  {
-			"expr": "(sum(increase(http_request_duration_seconds_count{kubernetes_namespace=\"cryptopay\", slave=\"prodgnr\", kubernetes_name=~\"$service\", pod=~\"$instance\", status_code=~\"[5].*\"}[$__range]))) / (sum(increase(http_request_duration_seconds_count{kubernetes_namespace=\"cryptopay\", slave=\"prodgnr\", kubernetes_name=~\"$service\", pod=~\"$instance\"}[$__range])))",
+			"expr": "(sum(increase(http_request_duration_seconds_count{kubernetes_namespace=\"cryptopay\", kubernetes_name=~\"$service\", pod=~\"$instance\", status_code=~\"[5].*\"}[$__range]))) / (sum(increase(http_request_duration_seconds_count{kubernetes_namespace=\"cryptopay\", kubernetes_name=~\"$service\", pod=~\"$instance\"}[$__range])))",
 			"format": "time_series",
 			"hide": false,
 			"instant": true,
@@ -546,7 +546,7 @@
 		"tableColumn": "",
 		"targets": [
 		  {
-			"expr": "sum(increase(general_errors{kubernetes_namespace=\"cryptopay\", slave=\"prodgnr\", kubernetes_name=~\"$service\", pod=~\"$instance\"}[$__range]))",
+			"expr": "sum(increase(general_errors{kubernetes_namespace=\"cryptopay\", kubernetes_name=~\"$service\", pod=~\"$instance\"}[$__range]))",
 			"format": "time_series",
 			"interval": "",
 			"intervalFactor": 1,
@@ -635,7 +635,7 @@
 		"tableColumn": "",
 		"targets": [
 		  {
-			"expr": "sum(increase(critical_errors{kubernetes_namespace=\"cryptopay\", slave=\"prodgnr\", kubernetes_name=~\"$service\", pod=~\"$instance\"}[$__range]))",
+			"expr": "sum(increase(critical_errors{kubernetes_namespace=\"cryptopay\", kubernetes_name=~\"$service\", pod=~\"$instance\"}[$__range]))",
 			"format": "time_series",
 			"intervalFactor": 1,
 			"refId": "A"
@@ -787,33 +787,15 @@
 		],
 		"targets": [
 		  {
-			"expr": "max_over_time(process_start_time_seconds{kubernetes_namespace=\"cryptopay\", slave=\"prodgnr\", kubernetes_name=~\"$service\", pod!=\"\"}[${__range}]) * 1000",
+			"expr": "max_over_time(process_start_time_seconds{kubernetes_namespace=\"cryptopay\", kubernetes_name=~\"$service\"}[${__range}]) * 1000",
 			"format": "table",
 			"instant": true,
-			"interval": "",
 			"intervalFactor": 1,
-			"legendFormat": "",
 			"refId": "A"
 		  }
 		],
 		"title": "Instances",
 		"transform": "table",
-		"transformations": [
-		  {
-			"id": "organize",
-			"options": {
-			  "excludeByName": {
-				"Time": false,
-				"app": false,
-				"chart": false,
-				"job": false,
-				"kubernetes_name": false
-			  },
-			  "indexByName": {},
-			  "renameByName": {}
-			}
-		  }
-		],
 		"type": "table-old"
 	  },
 	  {
@@ -883,7 +865,7 @@
 		"steppedLine": false,
 		"targets": [
 		  {
-			"expr": "sum(increase(http_request_duration_seconds_sum{kubernetes_namespace=\"cryptopay\", slave=\"prodgnr\", kubernetes_name=~\"$service\", pod=~\"$instance\"}[$__range])) / sum(increase(http_request_duration_seconds_count{kubernetes_namespace=\"cryptopay\", slave=\"prodgnr\", kubernetes_name=~\"$service\", pod=~\"$instance\"}[$__range]))",
+			"expr": "sum(increase(http_request_duration_seconds_sum{kubernetes_namespace=\"cryptopay\", kubernetes_name=~\"$service\", pod=~\"$instance\"}[$__range])) / sum(increase(http_request_duration_seconds_count{kubernetes_namespace=\"cryptopay\", kubernetes_name=~\"$service\", pod=~\"$instance\"}[$__range]))",
 			"format": "time_series",
 			"interval": "30s",
 			"intervalFactor": 1,
@@ -1098,7 +1080,7 @@
 		],
 		"targets": [
 		  {
-			"expr": "topk(20, sort_desc(sum(increase(http_request_duration_seconds_count{kubernetes_namespace=\"cryptopay\", slave=\"prodgnr\", kubernetes_name=~\"$service\", pod=~\"$instance\", status_code=~\"[45].*\"}[$__range]) > 0) by (method, path, status_code, pod, app_version, kubernetes_name)))",
+			"expr": "topk(20, sort_desc(sum(increase(http_request_duration_seconds_count{kubernetes_namespace=\"cryptopay\", kubernetes_name=~\"$service\", pod=~\"$instance\", status_code=~\"[45].*\"}[$__range]) > 0) by (method, path, status_code, pod, app_version, kubernetes_name)))",
 			"format": "table",
 			"instant": true,
 			"interval": "",
@@ -1149,7 +1131,7 @@
 		"reverseYBuckets": false,
 		"targets": [
 		  {
-			"expr": "sum(increase(http_request_duration_seconds_bucket{kubernetes_namespace=\"cryptopay\", slave=\"prodgnr\", kubernetes_name=~\"$service\", pod=~\"$instance\"}[$__interval])) by (le)",
+			"expr": "sum(increase(http_request_duration_seconds_bucket{kubernetes_namespace=\"cryptopay\", kubernetes_name=~\"$service\", pod=~\"$instance\"}[$__interval])) by (le)",
 			"format": "heatmap",
 			"interval": "5m",
 			"intervalFactor": 1,
@@ -1244,7 +1226,7 @@
 		"steppedLine": false,
 		"targets": [
 		  {
-			"expr": "sum (irate(process_cpu_seconds_total{kubernetes_namespace=\"cryptopay\", slave=\"prodgnr\", kubernetes_name=~\"$service\", pod=~\"$instance\"}[5m])) by (pod)",
+			"expr": "sum (irate(process_cpu_seconds_total{kubernetes_namespace=\"cryptopay\", kubernetes_name=~\"$service\", pod=~\"$instance\"}[5m])) by (pod)",
 			"format": "time_series",
 			"interval": "30s",
 			"intervalFactor": 1,
@@ -1342,7 +1324,7 @@
 		"steppedLine": false,
 		"targets": [
 		  {
-			"expr": "sum(process_resident_memory_bytes{kubernetes_namespace=\"cryptopay\", slave=\"prodgnr\", kubernetes_name=~\"$service\", pod=~\"$instance\"}) by (pod)",
+			"expr": "sum(process_resident_memory_bytes{kubernetes_namespace=\"cryptopay\", kubernetes_name=~\"$service\", pod=~\"$instance\"}) by (pod)",
 			"format": "time_series",
 			"intervalFactor": 1,
 			"legendFormat": "{{pod}}",
@@ -1439,7 +1421,7 @@
 		"steppedLine": false,
 		"targets": [
 		  {
-			"expr": "sum(nodejs_eventloop_lag_seconds{kubernetes_namespace=\"cryptopay\", slave=\"prodgnr\", kubernetes_name=~\"$service\", pod=~\"$instance\"}) by (pod)",
+			"expr": "sum(nodejs_eventloop_lag_seconds{kubernetes_namespace=\"cryptopay\", kubernetes_name=~\"$service\", pod=~\"$instance\"}) by (pod)",
 			"format": "time_series",
 			"intervalFactor": 1,
 			"legendFormat": "{{pod}}",
@@ -1536,7 +1518,7 @@
 		"steppedLine": false,
 		"targets": [
 		  {
-			"expr": "sum(process_virtual_memory_bytes{kubernetes_namespace=\"cryptopay\", slave=\"prodgnr\", kubernetes_name=~\"$service\", pod=~\"$instance\"}) by (pod)",
+			"expr": "sum(process_virtual_memory_bytes{kubernetes_namespace=\"cryptopay\", kubernetes_name=~\"$service\", pod=~\"$instance\"}) by (pod)",
 			"format": "time_series",
 			"intervalFactor": 1,
 			"legendFormat": "{{pod}}",
@@ -1583,6 +1565,560 @@
 		  "align": false,
 		  "alignLevel": null
 		}
+	  },
+	  {
+		"collapsed": false,
+		"datasource": null,
+		"gridPos": {
+		  "h": 1,
+		  "w": 24,
+		  "x": 0,
+		  "y": 48
+		},
+		"id": 52,
+		"panels": [],
+		"title": "Wtf Status",
+		"type": "row"
+	  },
+	  {
+		"aliasColors": {},
+		"bars": false,
+		"dashLength": 10,
+		"dashes": false,
+		"datasource": null,
+		"fieldConfig": {
+		  "defaults": {
+			"custom": {}
+		  },
+		  "overrides": []
+		},
+		"fill": 1,
+		"fillGradient": 0,
+		"gridPos": {
+		  "h": 9,
+		  "w": 8,
+		  "x": 0,
+		  "y": 49
+		},
+		"hiddenSeries": false,
+		"id": 54,
+		"legend": {
+		  "avg": false,
+		  "current": false,
+		  "max": false,
+		  "min": false,
+		  "show": true,
+		  "total": false,
+		  "values": false
+		},
+		"lines": true,
+		"linewidth": 1,
+		"links": [],
+		"nullPointMode": "null",
+		"options": {
+		  "dataLinks": []
+		},
+		"percentage": false,
+		"pointradius": 5,
+		"points": false,
+		"renderer": "flot",
+		"seriesOverrides": [],
+		"spaceLength": 10,
+		"stack": false,
+		"steppedLine": false,
+		"targets": [
+		  {
+			"expr": "sum by (pod) (rate(wtf_request_duration_seconds_count{kubernetes_namespace=\"cryptopay\", kubernetes_name=~\"$service\", pod=~\"$instance\"}[1h])) * 3600",
+			"format": "time_series",
+			"intervalFactor": 1,
+			"legendFormat": "{{pod}}",
+			"refId": "A"
+		  }
+		],
+		"thresholds": [],
+		"timeFrom": null,
+		"timeRegions": [],
+		"timeShift": null,
+		"title": "Wtf Requests Count / Hour",
+		"tooltip": {
+		  "shared": true,
+		  "sort": 0,
+		  "value_type": "individual"
+		},
+		"type": "graph",
+		"xaxis": {
+		  "buckets": null,
+		  "mode": "time",
+		  "name": null,
+		  "show": true,
+		  "values": []
+		},
+		"yaxes": [
+		  {
+			"format": "short",
+			"label": null,
+			"logBase": 1,
+			"max": null,
+			"min": null,
+			"show": true
+		  },
+		  {
+			"format": "short",
+			"label": null,
+			"logBase": 1,
+			"max": null,
+			"min": null,
+			"show": true
+		  }
+		],
+		"yaxis": {
+		  "align": false,
+		  "alignLevel": null
+		}
+	  },
+	  {
+		"aliasColors": {},
+		"bars": false,
+		"dashLength": 10,
+		"dashes": false,
+		"datasource": null,
+		"fieldConfig": {
+		  "defaults": {
+			"custom": {}
+		  },
+		  "overrides": []
+		},
+		"fill": 1,
+		"fillGradient": 0,
+		"gridPos": {
+		  "h": 9,
+		  "w": 8,
+		  "x": 8,
+		  "y": 49
+		},
+		"hiddenSeries": false,
+		"id": 56,
+		"legend": {
+		  "avg": false,
+		  "current": false,
+		  "max": false,
+		  "min": false,
+		  "show": true,
+		  "total": false,
+		  "values": false
+		},
+		"lines": true,
+		"linewidth": 1,
+		"links": [],
+		"nullPointMode": "null",
+		"options": {
+		  "dataLinks": []
+		},
+		"percentage": false,
+		"pointradius": 5,
+		"points": false,
+		"renderer": "flot",
+		"seriesOverrides": [],
+		"spaceLength": 10,
+		"stack": false,
+		"steppedLine": false,
+		"targets": [
+		  {
+			"expr": "(sum by (pod) (wtf_request_duration_seconds_count{kubernetes_namespace=\"cryptopay\", kubernetes_name=~\"$service\", pod=~\"$instance\", status!~\"[2,3].*\"})) / (sum by (pod) (wtf_request_duration_seconds_count{kubernetes_namespace=\"cryptopay\", kubernetes_name=~\"$service\", pod=~\"$instance\"}))",
+			"format": "time_series",
+			"intervalFactor": 1,
+			"refId": "A"
+		  }
+		],
+		"thresholds": [],
+		"timeFrom": null,
+		"timeRegions": [],
+		"timeShift": null,
+		"title": "Wtf Failed Requests %",
+		"tooltip": {
+		  "shared": true,
+		  "sort": 0,
+		  "value_type": "individual"
+		},
+		"type": "graph",
+		"xaxis": {
+		  "buckets": null,
+		  "mode": "time",
+		  "name": null,
+		  "show": true,
+		  "values": []
+		},
+		"yaxes": [
+		  {
+			"format": "short",
+			"label": null,
+			"logBase": 1,
+			"max": null,
+			"min": null,
+			"show": true
+		  },
+		  {
+			"format": "short",
+			"label": null,
+			"logBase": 1,
+			"max": null,
+			"min": null,
+			"show": true
+		  }
+		],
+		"yaxis": {
+		  "align": false,
+		  "alignLevel": null
+		}
+	  },
+	  {
+		"cards": {
+		  "cardPadding": null,
+		  "cardRound": null
+		},
+		"color": {
+		  "cardColor": "#b4ff00",
+		  "colorScale": "sqrt",
+		  "colorScheme": "interpolateMagma",
+		  "exponent": 0.5,
+		  "mode": "spectrum"
+		},
+		"dataFormat": "tsbuckets",
+		"datasource": null,
+		"fieldConfig": {
+		  "defaults": {
+			"custom": {}
+		  },
+		  "overrides": []
+		},
+		"gridPos": {
+		  "h": 9,
+		  "w": 8,
+		  "x": 16,
+		  "y": 49
+		},
+		"heatmap": {},
+		"hideZeroBuckets": false,
+		"highlightCards": true,
+		"id": 58,
+		"legend": {
+		  "show": true
+		},
+		"links": [],
+		"reverseYBuckets": false,
+		"targets": [
+		  {
+			"expr": "sum(increase(wtf_request_duration_seconds_bucket{kubernetes_namespace=\"cryptopay\", kubernetes_name=~\"$service\", pod=~\"$instance\"}[$__interval])) by (le)",
+			"format": "heatmap",
+			"interval": "5m",
+			"intervalFactor": 1,
+			"legendFormat": "{{le}}",
+			"refId": "A"
+		  }
+		],
+		"title": "Wtf Response Time Distribution",
+		"tooltip": {
+		  "show": true,
+		  "showHistogram": true
+		},
+		"tooltipDecimals": 2,
+		"type": "heatmap",
+		"xAxis": {
+		  "show": true
+		},
+		"xBucketNumber": null,
+		"xBucketSize": null,
+		"yAxis": {
+		  "decimals": null,
+		  "format": "s",
+		  "logBase": 1,
+		  "max": null,
+		  "min": null,
+		  "show": true,
+		  "splitFactor": null
+		},
+		"yBucketBound": "auto",
+		"yBucketNumber": null,
+		"yBucketSize": null
+	  },
+	  {
+		"collapsed": false,
+		"datasource": null,
+		"gridPos": {
+		  "h": 1,
+		  "w": 24,
+		  "x": 0,
+		  "y": 58
+		},
+		"id": 44,
+		"panels": [],
+		"title": "Aggregator Status",
+		"type": "row"
+	  },
+	  {
+		"aliasColors": {},
+		"bars": false,
+		"dashLength": 10,
+		"dashes": false,
+		"datasource": null,
+		"description": "Aggregator requests count per hour",
+		"fieldConfig": {
+		  "defaults": {
+			"custom": {}
+		  },
+		  "overrides": []
+		},
+		"fill": 1,
+		"fillGradient": 0,
+		"gridPos": {
+		  "h": 9,
+		  "w": 8,
+		  "x": 0,
+		  "y": 59
+		},
+		"hiddenSeries": false,
+		"id": 46,
+		"legend": {
+		  "avg": false,
+		  "current": false,
+		  "max": false,
+		  "min": false,
+		  "show": true,
+		  "total": false,
+		  "values": false
+		},
+		"lines": true,
+		"linewidth": 1,
+		"links": [],
+		"nullPointMode": "null",
+		"options": {
+		  "dataLinks": []
+		},
+		"percentage": false,
+		"pointradius": 5,
+		"points": false,
+		"renderer": "flot",
+		"seriesOverrides": [],
+		"spaceLength": 10,
+		"stack": false,
+		"steppedLine": false,
+		"targets": [
+		  {
+			"expr": "sum by (pod) (rate(aggregator_request_duration_seconds_count{kubernetes_namespace=\"cryptopay\", kubernetes_name=~\"$service\", pod=~\"$instance\"}[1h])) * 3600",
+			"format": "time_series",
+			"intervalFactor": 1,
+			"legendFormat": "{{pod}}",
+			"refId": "A"
+		  }
+		],
+		"thresholds": [],
+		"timeFrom": null,
+		"timeRegions": [],
+		"timeShift": null,
+		"title": "Aggregator Requests Count / Hour",
+		"tooltip": {
+		  "shared": true,
+		  "sort": 0,
+		  "value_type": "individual"
+		},
+		"type": "graph",
+		"xaxis": {
+		  "buckets": null,
+		  "mode": "time",
+		  "name": null,
+		  "show": true,
+		  "values": []
+		},
+		"yaxes": [
+		  {
+			"format": "short",
+			"label": null,
+			"logBase": 1,
+			"max": null,
+			"min": null,
+			"show": true
+		  },
+		  {
+			"format": "short",
+			"label": null,
+			"logBase": 1,
+			"max": null,
+			"min": null,
+			"show": true
+		  }
+		],
+		"yaxis": {
+		  "align": false,
+		  "alignLevel": null
+		}
+	  },
+	  {
+		"aliasColors": {},
+		"bars": false,
+		"dashLength": 10,
+		"dashes": false,
+		"datasource": null,
+		"description": "Percent of failed requests to Aggregator",
+		"fieldConfig": {
+		  "defaults": {
+			"custom": {}
+		  },
+		  "overrides": []
+		},
+		"fill": 1,
+		"fillGradient": 0,
+		"gridPos": {
+		  "h": 9,
+		  "w": 8,
+		  "x": 8,
+		  "y": 59
+		},
+		"hiddenSeries": false,
+		"id": 48,
+		"legend": {
+		  "avg": false,
+		  "current": false,
+		  "max": false,
+		  "min": false,
+		  "show": true,
+		  "total": false,
+		  "values": false
+		},
+		"lines": true,
+		"linewidth": 1,
+		"links": [],
+		"nullPointMode": "null",
+		"options": {
+		  "dataLinks": []
+		},
+		"percentage": false,
+		"pointradius": 5,
+		"points": false,
+		"renderer": "flot",
+		"seriesOverrides": [],
+		"spaceLength": 10,
+		"stack": false,
+		"steppedLine": false,
+		"targets": [
+		  {
+			"expr": "(sum by (pod) (aggregator_request_duration_seconds_count{kubernetes_namespace=\"cryptopay\", kubernetes_name=~\"$service\", pod=~\"$instance\", status!=\"OK\"})) / (sum by (pod) (aggregator_request_duration_seconds_count{kubernetes_namespace=\"cryptopay\", kubernetes_name=~\"$service\", pod=~\"$instance\"}))",
+			"format": "time_series",
+			"intervalFactor": 1,
+			"refId": "A"
+		  }
+		],
+		"thresholds": [],
+		"timeFrom": null,
+		"timeRegions": [],
+		"timeShift": null,
+		"title": "Aggregator Failed Requests %",
+		"tooltip": {
+		  "shared": true,
+		  "sort": 0,
+		  "value_type": "individual"
+		},
+		"type": "graph",
+		"xaxis": {
+		  "buckets": null,
+		  "mode": "time",
+		  "name": null,
+		  "show": true,
+		  "values": []
+		},
+		"yaxes": [
+		  {
+			"format": "percentunit",
+			"label": null,
+			"logBase": 1,
+			"max": null,
+			"min": null,
+			"show": true
+		  },
+		  {
+			"format": "short",
+			"label": null,
+			"logBase": 1,
+			"max": null,
+			"min": null,
+			"show": true
+		  }
+		],
+		"yaxis": {
+		  "align": false,
+		  "alignLevel": null
+		}
+	  },
+	  {
+		"cards": {
+		  "cardPadding": null,
+		  "cardRound": null
+		},
+		"color": {
+		  "cardColor": "#b4ff00",
+		  "colorScale": "sqrt",
+		  "colorScheme": "interpolateMagma",
+		  "exponent": 0.5,
+		  "mode": "spectrum"
+		},
+		"dataFormat": "tsbuckets",
+		"datasource": null,
+		"description": "Aggregator response time distribution",
+		"fieldConfig": {
+		  "defaults": {
+			"custom": {}
+		  },
+		  "overrides": []
+		},
+		"gridPos": {
+		  "h": 9,
+		  "w": 8,
+		  "x": 16,
+		  "y": 59
+		},
+		"heatmap": {},
+		"hideZeroBuckets": false,
+		"highlightCards": true,
+		"id": 50,
+		"legend": {
+		  "show": true
+		},
+		"links": [],
+		"reverseYBuckets": false,
+		"targets": [
+		  {
+			"expr": "sum(increase(aggregator_request_duration_seconds_bucket{kubernetes_namespace=\"cryptopay\", kubernetes_name=~\"$service\", pod=~\"$instance\"}[$__interval])) by (le)",
+			"format": "heatmap",
+			"instant": false,
+			"interval": "5m",
+			"intervalFactor": 1,
+			"legendFormat": "{{le}}",
+			"refId": "A"
+		  }
+		],
+		"title": "Aggregator Response Time Distrbution",
+		"tooltip": {
+		  "show": true,
+		  "showHistogram": true
+		},
+		"tooltipDecimals": 2,
+		"type": "heatmap",
+		"xAxis": {
+		  "show": true
+		},
+		"xBucketNumber": null,
+		"xBucketSize": null,
+		"yAxis": {
+		  "decimals": null,
+		  "format": "s",
+		  "logBase": 1,
+		  "max": null,
+		  "min": null,
+		  "show": true,
+		  "splitFactor": null
+		},
+		"yBucketBound": "auto",
+		"yBucketNumber": null,
+		"yBucketSize": null
 	  }
 	],
 	"refresh": false,
@@ -1595,20 +2131,20 @@
 		  "allValue": null,
 		  "current": {
 			"selected": true,
-			"text": "All",
+			"text": "cryptopay-processing",
 			"value": [
-			  "$__all"
+			  "cryptopay-processing"
 			]
 		  },
 		  "datasource": "Prometheus",
-		  "definition": "query_result(max_over_time(process_start_time_seconds{kubernetes_namespace=\"cryptopay\", slave=\"prodgnr\"}[${__range}]))",
+		  "definition": "query_result(max_over_time(process_start_time_seconds{kubernetes_namespace=\"cryptopay\"}[${__range}]))",
 		  "hide": 0,
 		  "includeAll": true,
 		  "label": "Service",
 		  "multi": true,
 		  "name": "service",
 		  "options": [],
-		  "query": "query_result(max_over_time(process_start_time_seconds{kubernetes_namespace=\"cryptopay\", slave=\"prodgnr\"}[${__range}]))",
+		  "query": "query_result(max_over_time(process_start_time_seconds{kubernetes_namespace=\"cryptopay\"}[${__range}]))",
 		  "refresh": 2,
 		  "regex": "/.*kubernetes_name=\\\"([^\\\"]*)\\\".*/",
 		  "skipUrlSync": false,
@@ -1622,21 +2158,19 @@
 		{
 		  "allValue": null,
 		  "current": {
-			"selected": true,
+			"selected": false,
 			"text": "All",
-			"value": [
-			  "$__all"
-			]
+			"value": "$__all"
 		  },
 		  "datasource": "Prometheus",
-		  "definition": "query_result(max_over_time(process_start_time_seconds{kubernetes_name=~\"${service}\", kubernetes_namespace=\"cryptopay\", slave=\"prodgnr\"}[${__range}]))",
+		  "definition": "query_result(max_over_time(process_start_time_seconds{kubernetes_name=~\"${service}\", kubernetes_namespace=\"cryptopay\"}[${__range}]))",
 		  "hide": 0,
 		  "includeAll": true,
 		  "label": "Instance",
 		  "multi": true,
 		  "name": "instance",
 		  "options": [],
-		  "query": "query_result(max_over_time(process_start_time_seconds{kubernetes_name=~\"${service}\", kubernetes_namespace=\"cryptopay\", slave=\"prodgnr\"}[${__range}]))",
+		  "query": "query_result(max_over_time(process_start_time_seconds{kubernetes_name=~\"${service}\", kubernetes_namespace=\"cryptopay\"}[${__range}]))",
 		  "refresh": 2,
 		  "regex": "/.*pod=\\\"([^\\\"]*)\\\".*/",
 		  "skipUrlSync": false,
