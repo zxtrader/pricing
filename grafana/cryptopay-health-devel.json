@@ -16,11 +16,11 @@
 	"gnetId": null,
 	"graphTooltip": 0,
 	"id": 129,
-	"iteration": 1599043847006,
+	"iteration": 1599052192271,
 	"links": [],
 	"panels": [
 	  {
-		"collapsed": true,
+		"collapsed": false,
 		"gridPos": {
 		  "h": 1,
 		  "w": 24,
@@ -28,1051 +28,586 @@
 		  "y": 0
 		},
 		"id": 42,
-		"panels": [
-		  {
-			"cacheTimeout": null,
-			"colorBackground": false,
-			"colorValue": false,
-			"colors": [
-			  "#299c46",
-			  "rgba(237, 129, 40, 0.89)",
-			  "#d44a3a"
-			],
-			"datasource": "Prometheus",
-			"description": "Total requests",
-			"format": "none",
-			"gauge": {
-			  "maxValue": 100,
-			  "minValue": 0,
-			  "show": false,
-			  "thresholdLabels": false,
-			  "thresholdMarkers": true
-			},
-			"gridPos": {
-			  "h": 5,
-			  "w": 3,
-			  "x": 0,
-			  "y": 2
-			},
-			"id": 6,
-			"interval": null,
-			"links": [],
-			"mappingType": 1,
-			"mappingTypes": [
-			  {
-				"name": "value to text",
-				"value": 1
-			  },
-			  {
-				"name": "range to text",
-				"value": 2
-			  }
-			],
-			"maxDataPoints": 100,
-			"nullPointMode": "connected",
-			"nullText": null,
-			"postfix": "",
-			"postfixFontSize": "50%",
-			"prefix": "",
-			"prefixFontSize": "50%",
-			"rangeMaps": [
-			  {
-				"from": "null",
-				"text": "N/A",
-				"to": "null"
-			  }
-			],
-			"sparkline": {
-			  "fillColor": "rgba(31, 118, 189, 0.18)",
-			  "full": false,
-			  "lineColor": "rgb(31, 120, 193)",
-			  "show": false
-			},
-			"tableColumn": "",
-			"targets": [
-			  {
-				"expr": "sum(increase(http_request_duration_seconds_count{kubernetes_namespace=\"cryptopay-$env\", kubernetes_name=~\"$service\", pod=~\"$instance\"}[$__range]))",
-				"format": "time_series",
-				"instant": false,
-				"intervalFactor": 1,
-				"refId": "A"
-			  }
-			],
-			"thresholds": "",
-			"title": "Requests",
-			"type": "singlestat",
-			"valueFontSize": "80%",
-			"valueMaps": [
-			  {
-				"op": "=",
-				"text": "N/A",
-				"value": "null"
-			  }
-			],
-			"valueName": "current"
-		  },
-		  {
-			"cacheTimeout": null,
-			"colorBackground": false,
-			"colorValue": true,
-			"colors": [
-			  "#299c46",
-			  "rgba(237, 129, 40, 0.89)",
-			  "#d44a3a"
-			],
-			"description": "Total count of successful request",
-			"format": "none",
-			"gauge": {
-			  "maxValue": 100,
-			  "minValue": 0,
-			  "show": false,
-			  "thresholdLabels": false,
-			  "thresholdMarkers": true
-			},
-			"gridPos": {
-			  "h": 5,
-			  "w": 3,
-			  "x": 3,
-			  "y": 2
-			},
-			"hideTimeOverride": false,
-			"id": 8,
-			"interval": null,
-			"links": [],
-			"mappingType": 1,
-			"mappingTypes": [
-			  {
-				"name": "value to text",
-				"value": 1
-			  },
-			  {
-				"name": "range to text",
-				"value": 2
-			  }
-			],
-			"maxDataPoints": 100,
-			"nullPointMode": "connected",
-			"nullText": null,
-			"postfix": "",
-			"postfixFontSize": "50%",
-			"prefix": "",
-			"prefixFontSize": "50%",
-			"rangeMaps": [
-			  {
-				"from": "null",
-				"text": "N/A",
-				"to": "null"
-			  }
-			],
-			"sparkline": {
-			  "fillColor": "rgba(31, 118, 189, 0.18)",
-			  "full": false,
-			  "lineColor": "rgb(31, 120, 193)",
-			  "show": false
-			},
-			"tableColumn": "",
-			"targets": [
-			  {
-				"expr": "sum(increase(http_request_duration_seconds_count{kubernetes_namespace=\"cryptopay-$env\", kubernetes_name=~\"$service\", pod=~\"$instance\", status_code=~\"[23].*\"}[$__range]))",
-				"format": "time_series",
-				"instant": false,
-				"intervalFactor": 1,
-				"refId": "A"
-			  }
-			],
-			"thresholds": "9999999999,99999999",
-			"timeFrom": null,
-			"title": "Successful Requests",
-			"type": "singlestat",
-			"valueFontSize": "80%",
-			"valueMaps": [
-			  {
-				"op": "=",
-				"text": "N/A",
-				"value": "null"
-			  }
-			],
-			"valueName": "current"
-		  },
-		  {
-			"cacheTimeout": null,
-			"colorBackground": false,
-			"colorValue": false,
-			"colors": [
-			  "#d44a3a",
-			  "rgba(237, 129, 40, 0.89)",
-			  "#299c46"
-			],
-			"format": "percentunit",
-			"gauge": {
-			  "maxValue": 1,
-			  "minValue": 0,
-			  "show": true,
-			  "thresholdLabels": false,
-			  "thresholdMarkers": true
-			},
-			"gridPos": {
-			  "h": 5,
-			  "w": 4,
-			  "x": 6,
-			  "y": 2
-			},
-			"id": 14,
-			"interval": null,
-			"links": [],
-			"mappingType": 1,
-			"mappingTypes": [
-			  {
-				"name": "value to text",
-				"value": 1
-			  },
-			  {
-				"name": "range to text",
-				"value": 2
-			  }
-			],
-			"maxDataPoints": 100,
-			"nullPointMode": "connected",
-			"nullText": null,
-			"postfix": "",
-			"postfixFontSize": "50%",
-			"prefix": "",
-			"prefixFontSize": "50%",
-			"rangeMaps": [
-			  {
-				"from": "null",
-				"text": "N/A",
-				"to": "null"
-			  }
-			],
-			"sparkline": {
-			  "fillColor": "rgba(31, 118, 189, 0.18)",
-			  "full": false,
-			  "lineColor": "rgb(31, 120, 193)",
-			  "show": false
-			},
-			"tableColumn": "",
-			"targets": [
-			  {
-				"expr": "(sum(increase(http_request_duration_seconds_count{kubernetes_namespace=\"cryptopay-$env\", kubernetes_name=~\"$service\", pod=~\"$instance\", status_code=~\"[23].*\"}[$__range]))) / (sum(increase(http_request_duration_seconds_count{kubernetes_namespace=\"cryptopay-$env\", kubernetes_name=~\"$service\", pod=~\"$instance\"}[$__range])))",
-				"format": "time_series",
-				"instant": true,
-				"intervalFactor": 1,
-				"refId": "A"
-			  }
-			],
-			"thresholds": "0,0",
-			"title": "2xx, 3xx %",
-			"type": "singlestat",
-			"valueFontSize": "80%",
-			"valueMaps": [
-			  {
-				"op": "=",
-				"text": "N/A",
-				"value": "null"
-			  }
-			],
-			"valueName": "current"
-		  },
-		  {
-			"cacheTimeout": null,
-			"colorBackground": false,
-			"colorValue": false,
-			"colors": [
-			  "#299c46",
-			  "rgba(237, 129, 40, 0.89)",
-			  "#d44a3a"
-			],
-			"datasource": "Prometheus",
-			"description": "Percentage of 4xx responses",
-			"format": "percentunit",
-			"gauge": {
-			  "maxValue": 1,
-			  "minValue": 0,
-			  "show": true,
-			  "thresholdLabels": false,
-			  "thresholdMarkers": true
-			},
-			"gridPos": {
-			  "h": 5,
-			  "w": 4,
-			  "x": 10,
-			  "y": 2
-			},
-			"id": 12,
-			"interval": null,
-			"links": [],
-			"mappingType": 1,
-			"mappingTypes": [
-			  {
-				"name": "value to text",
-				"value": 1
-			  },
-			  {
-				"name": "range to text",
-				"value": 2
-			  }
-			],
-			"maxDataPoints": 100,
-			"nullPointMode": "connected",
-			"nullText": null,
-			"postfix": "",
-			"postfixFontSize": "50%",
-			"prefix": "",
-			"prefixFontSize": "50%",
-			"rangeMaps": [
-			  {
-				"from": "null",
-				"text": "N/A",
-				"to": "null"
-			  }
-			],
-			"sparkline": {
-			  "fillColor": "rgba(31, 118, 189, 0.18)",
-			  "full": false,
-			  "lineColor": "rgb(31, 120, 193)",
-			  "show": false
-			},
-			"tableColumn": "",
-			"targets": [
-			  {
-				"expr": "(sum(increase(http_request_duration_seconds_count{kubernetes_namespace=\"cryptopay-$env\", kubernetes_name=~\"$service\", pod=~\"$instance\", status_code=~\"[4].*\"}[$__range]))) / (sum(increase(http_request_duration_seconds_count{kubernetes_namespace=\"cryptopay-$env\", kubernetes_name=~\"$service\", pod=~\"$instance\"}[$__range])))",
-				"format": "time_series",
-				"instant": true,
-				"interval": "",
-				"intervalFactor": 1,
-				"refId": "A"
-			  }
-			],
-			"thresholds": "0.25, 0.50",
-			"title": "4xx %",
-			"type": "singlestat",
-			"valueFontSize": "80%",
-			"valueMaps": [
-			  {
-				"op": "=",
-				"text": "N/A",
-				"value": "null"
-			  }
-			],
-			"valueName": "current"
-		  },
-		  {
-			"cacheTimeout": null,
-			"colorBackground": false,
-			"colorValue": false,
-			"colors": [
-			  "#299c46",
-			  "rgba(237, 129, 40, 0.89)",
-			  "#d44a3a"
-			],
-			"datasource": "Prometheus",
-			"description": "Percentage of 5xx responses",
-			"format": "percentunit",
-			"gauge": {
-			  "maxValue": 1,
-			  "minValue": 0,
-			  "show": true,
-			  "thresholdLabels": false,
-			  "thresholdMarkers": true
-			},
-			"gridPos": {
-			  "h": 5,
-			  "w": 4,
-			  "x": 14,
-			  "y": 2
-			},
-			"id": 10,
-			"interval": null,
-			"links": [],
-			"mappingType": 1,
-			"mappingTypes": [
-			  {
-				"name": "value to text",
-				"value": 1
-			  },
-			  {
-				"name": "range to text",
-				"value": 2
-			  }
-			],
-			"maxDataPoints": 100,
-			"nullPointMode": "connected",
-			"nullText": null,
-			"postfix": "",
-			"postfixFontSize": "50%",
-			"prefix": "",
-			"prefixFontSize": "50%",
-			"rangeMaps": [
-			  {
-				"from": "null",
-				"text": "N/A",
-				"to": "null"
-			  }
-			],
-			"sparkline": {
-			  "fillColor": "rgba(31, 118, 189, 0.18)",
-			  "full": false,
-			  "lineColor": "rgb(31, 120, 193)",
-			  "show": false
-			},
-			"tableColumn": "",
-			"targets": [
-			  {
-				"expr": "(sum(increase(http_request_duration_seconds_count{kubernetes_namespace=\"cryptopay-$env\", kubernetes_name=~\"$service\", pod=~\"$instance\", status_code=~\"[5].*\"}[$__range]))) / (sum(increase(http_request_duration_seconds_count{kubernetes_namespace=\"cryptopay-$env\", kubernetes_name=~\"$service\", pod=~\"$instance\"}[$__range])))",
-				"format": "time_series",
-				"hide": false,
-				"instant": true,
-				"intervalFactor": 1,
-				"refId": "A"
-			  }
-			],
-			"thresholds": "0.01,0.1",
-			"title": "5xx %",
-			"type": "singlestat",
-			"valueFontSize": "80%",
-			"valueMaps": [
-			  {
-				"op": "=",
-				"text": "N/A",
-				"value": "null"
-			  }
-			],
-			"valueName": "current"
-		  },
-		  {
-			"cacheTimeout": null,
-			"colorBackground": false,
-			"colorPostfix": false,
-			"colorPrefix": false,
-			"colorValue": true,
-			"colors": [
-			  "#299c46",
-			  "rgba(237, 129, 40, 0.89)",
-			  "#d44a3a"
-			],
-			"datasource": "Prometheus",
-			"description": "Total count of general errors",
-			"format": "none",
-			"gauge": {
-			  "maxValue": 100,
-			  "minValue": 0,
-			  "show": false,
-			  "thresholdLabels": false,
-			  "thresholdMarkers": true
-			},
-			"gridPos": {
-			  "h": 5,
-			  "w": 3,
-			  "x": 18,
-			  "y": 2
-			},
-			"id": 2,
-			"interval": null,
-			"links": [],
-			"mappingType": 1,
-			"mappingTypes": [
-			  {
-				"name": "value to text",
-				"value": 1
-			  },
-			  {
-				"name": "range to text",
-				"value": 2
-			  }
-			],
-			"maxDataPoints": 100,
-			"nullPointMode": "connected",
-			"nullText": null,
-			"postfix": "",
-			"postfixFontSize": "50%",
-			"prefix": "",
-			"prefixFontSize": "50%",
-			"rangeMaps": [
-			  {
-				"from": "null",
-				"text": "N/A",
-				"to": "null"
-			  }
-			],
-			"sparkline": {
-			  "fillColor": "rgba(31, 118, 189, 0.18)",
-			  "full": false,
-			  "lineColor": "rgb(31, 120, 193)",
-			  "show": false
-			},
-			"tableColumn": "__name__",
-			"targets": [
-			  {
-				"expr": "sum(increase(general_errors{kubernetes_namespace=\"cryptopay-$env\", kubernetes_name=~\"$service\", pod=~\"$instance\"}[$__range]))",
-				"format": "time_series",
-				"interval": "",
-				"intervalFactor": 1,
-				"legendFormat": "",
-				"refId": "A"
-			  }
-			],
-			"thresholds": "1,100",
-			"title": "General Errors",
-			"type": "singlestat",
-			"valueFontSize": "80%",
-			"valueMaps": [
-			  {
-				"op": "=",
-				"text": "N/A",
-				"value": "null"
-			  }
-			],
-			"valueName": "current"
-		  },
-		  {
-			"cacheTimeout": null,
-			"colorBackground": true,
-			"colorValue": false,
-			"colors": [
-			  "#299c46",
-			  "rgba(237, 129, 40, 0.89)",
-			  "#d44a3a"
-			],
-			"datasource": "Prometheus",
-			"description": "Total count of critical errors",
-			"format": "none",
-			"gauge": {
-			  "maxValue": 100,
-			  "minValue": 0,
-			  "show": false,
-			  "thresholdLabels": false,
-			  "thresholdMarkers": true
-			},
-			"gridPos": {
-			  "h": 5,
-			  "w": 3,
-			  "x": 21,
-			  "y": 2
-			},
-			"id": 4,
-			"interval": null,
-			"links": [],
-			"mappingType": 1,
-			"mappingTypes": [
-			  {
-				"name": "value to text",
-				"value": 1
-			  },
-			  {
-				"name": "range to text",
-				"value": 2
-			  }
-			],
-			"maxDataPoints": 100,
-			"nullPointMode": "connected",
-			"nullText": null,
-			"postfix": "",
-			"postfixFontSize": "50%",
-			"prefix": "",
-			"prefixFontSize": "50%",
-			"rangeMaps": [
-			  {
-				"from": "null",
-				"text": "N/A",
-				"to": "null"
-			  }
-			],
-			"sparkline": {
-			  "fillColor": "rgba(31, 118, 189, 0.18)",
-			  "full": false,
-			  "lineColor": "rgb(31, 120, 193)",
-			  "show": false
-			},
-			"tableColumn": "",
-			"targets": [
-			  {
-				"expr": "sum(increase(critical_errors{kubernetes_namespace=\"cryptopay-$env\", kubernetes_name=~\"$service\", pod=~\"$instance\"}[$__range]))",
-				"format": "time_series",
-				"intervalFactor": 1,
-				"refId": "A"
-			  }
-			],
-			"thresholds": "1,1",
-			"title": "Critical Errors",
-			"type": "singlestat",
-			"valueFontSize": "80%",
-			"valueMaps": [
-			  {
-				"op": "=",
-				"text": "N/A",
-				"value": "null"
-			  }
-			],
-			"valueName": "current"
-		  }
-		],
+		"panels": [],
 		"title": "Summary",
 		"type": "row"
 	  },
 	  {
-		"collapsed": true,
+		"cacheTimeout": null,
+		"colorBackground": false,
+		"colorValue": false,
+		"colors": [
+		  "#299c46",
+		  "rgba(237, 129, 40, 0.89)",
+		  "#d44a3a"
+		],
+		"datasource": "Prometheus",
+		"description": "Total requests",
+		"format": "none",
+		"gauge": {
+		  "maxValue": 100,
+		  "minValue": 0,
+		  "show": false,
+		  "thresholdLabels": false,
+		  "thresholdMarkers": true
+		},
 		"gridPos": {
-		  "h": 1,
-		  "w": 24,
+		  "h": 5,
+		  "w": 3,
 		  "x": 0,
 		  "y": 1
 		},
-		"id": 36,
-		"panels": [
+		"id": 6,
+		"interval": null,
+		"links": [],
+		"mappingType": 1,
+		"mappingTypes": [
 		  {
-			"columns": [],
-			"datasource": "Prometheus",
-			"fontSize": "100%",
-			"gridPos": {
-			  "h": 5,
-			  "w": 24,
-			  "x": 0,
-			  "y": 3
-			},
-			"id": 22,
-			"links": [],
-			"pageSize": null,
-			"scroll": true,
-			"showHeader": true,
-			"sort": {
-			  "col": 6,
-			  "desc": true
-			},
-			"styles": [
-			  {
-				"alias": "Time",
-				"dateFormat": "YYYY-MM-DD HH:mm:ss",
-				"pattern": "Time",
-				"type": "hidden"
-			  },
-			  {
-				"alias": "Started-up",
-				"colorMode": null,
-				"colors": [
-				  "rgba(245, 54, 54, 0.9)",
-				  "rgba(237, 129, 40, 0.89)",
-				  "rgba(50, 172, 45, 0.97)"
-				],
-				"dateFormat": "YYYY-MM-DD HH:mm:ss",
-				"decimals": 2,
-				"mappingType": 1,
-				"pattern": "Value",
-				"thresholds": [],
-				"type": "number",
-				"unit": "dateTimeAsIso"
-			  },
-			  {
-				"alias": "Instance",
-				"colorMode": null,
-				"colors": [
-				  "rgba(245, 54, 54, 0.9)",
-				  "rgba(237, 129, 40, 0.89)",
-				  "rgba(50, 172, 45, 0.97)"
-				],
-				"dateFormat": "YYYY-MM-DD HH:mm:ss",
-				"decimals": 2,
-				"mappingType": 1,
-				"pattern": "pod",
-				"thresholds": [],
-				"type": "number",
-				"unit": "short"
-			  },
-			  {
-				"alias": "Version",
-				"colorMode": null,
-				"colors": [
-				  "rgba(245, 54, 54, 0.9)",
-				  "rgba(237, 129, 40, 0.89)",
-				  "rgba(50, 172, 45, 0.97)"
-				],
-				"dateFormat": "YYYY-MM-DD HH:mm:ss",
-				"decimals": 2,
-				"mappingType": 1,
-				"pattern": "app_version",
-				"thresholds": [],
-				"type": "number",
-				"unit": "short"
-			  },
-			  {
-				"alias": "Node",
-				"colorMode": null,
-				"colors": [
-				  "rgba(245, 54, 54, 0.9)",
-				  "rgba(237, 129, 40, 0.89)",
-				  "rgba(50, 172, 45, 0.97)"
-				],
-				"dateFormat": "YYYY-MM-DD HH:mm:ss",
-				"decimals": 2,
-				"mappingType": 1,
-				"pattern": "kubernetes_node",
-				"thresholds": [],
-				"type": "number",
-				"unit": "short"
-			  },
-			  {
-				"alias": "",
-				"colorMode": null,
-				"colors": [
-				  "rgba(245, 54, 54, 0.9)",
-				  "rgba(237, 129, 40, 0.89)",
-				  "rgba(50, 172, 45, 0.97)"
-				],
-				"decimals": 2,
-				"pattern": "/.*/",
-				"thresholds": [],
-				"type": "hidden",
-				"unit": "short"
-			  }
-			],
-			"targets": [
-			  {
-				"expr": "max_over_time(process_start_time_seconds{kubernetes_namespace=\"cryptopay-$env\", kubernetes_name=~\"$service\"}[${__range}]) * 1000",
-				"format": "table",
-				"instant": true,
-				"intervalFactor": 1,
-				"refId": "A"
-			  }
-			],
-			"title": "Instances",
-			"transform": "table",
-			"type": "table"
+			"name": "value to text",
+			"value": 1
+		  },
+		  {
+			"name": "range to text",
+			"value": 2
 		  }
 		],
-		"title": "Instances",
-		"type": "row"
+		"maxDataPoints": 100,
+		"nullPointMode": "connected",
+		"nullText": null,
+		"postfix": "",
+		"postfixFontSize": "50%",
+		"prefix": "",
+		"prefixFontSize": "50%",
+		"rangeMaps": [
+		  {
+			"from": "null",
+			"text": "N/A",
+			"to": "null"
+		  }
+		],
+		"sparkline": {
+		  "fillColor": "rgba(31, 118, 189, 0.18)",
+		  "full": false,
+		  "lineColor": "rgb(31, 120, 193)",
+		  "show": false
+		},
+		"tableColumn": "",
+		"targets": [
+		  {
+			"expr": "sum(increase(http_request_duration_seconds_count{kubernetes_namespace=\"cryptopay-$env\", kubernetes_name=~\"$service\", pod=~\"$instance\"}[$__range]))",
+			"format": "time_series",
+			"instant": false,
+			"intervalFactor": 1,
+			"refId": "A"
+		  }
+		],
+		"thresholds": "",
+		"title": "Requests",
+		"type": "singlestat",
+		"valueFontSize": "80%",
+		"valueMaps": [
+		  {
+			"op": "=",
+			"text": "N/A",
+			"value": "null"
+		  }
+		],
+		"valueName": "current"
 	  },
 	  {
-		"collapsed": true,
-		"gridPos": {
-		  "h": 1,
-		  "w": 24,
-		  "x": 0,
-		  "y": 2
+		"cacheTimeout": null,
+		"colorBackground": false,
+		"colorValue": true,
+		"colors": [
+		  "#299c46",
+		  "rgba(237, 129, 40, 0.89)",
+		  "#d44a3a"
+		],
+		"description": "Total count of successful request",
+		"format": "none",
+		"gauge": {
+		  "maxValue": 100,
+		  "minValue": 0,
+		  "show": false,
+		  "thresholdLabels": false,
+		  "thresholdMarkers": true
 		},
-		"id": 40,
-		"panels": [
+		"gridPos": {
+		  "h": 5,
+		  "w": 3,
+		  "x": 3,
+		  "y": 1
+		},
+		"hideTimeOverride": false,
+		"id": 8,
+		"interval": null,
+		"links": [],
+		"mappingType": 1,
+		"mappingTypes": [
 		  {
-			"aliasColors": {},
-			"bars": false,
-			"dashLength": 10,
-			"dashes": false,
-			"datasource": "Prometheus",
-			"description": "Average response time",
-			"fill": 3,
-			"gridPos": {
-			  "h": 7,
-			  "w": 12,
-			  "x": 0,
-			  "y": 4
-			},
-			"id": 24,
-			"legend": {
-			  "alignAsTable": false,
-			  "avg": false,
-			  "current": false,
-			  "hideEmpty": false,
-			  "hideZero": false,
-			  "max": false,
-			  "min": false,
-			  "rightSide": false,
-			  "show": true,
-			  "total": false,
-			  "values": false
-			},
-			"lines": true,
-			"linewidth": 2,
-			"links": [],
-			"nullPointMode": "null",
-			"percentage": false,
-			"pointradius": 5,
-			"points": false,
-			"renderer": "flot",
-			"seriesOverrides": [],
-			"spaceLength": 10,
-			"stack": false,
-			"steppedLine": false,
-			"targets": [
-			  {
-				"expr": "sum(increase(http_request_duration_seconds_sum{kubernetes_namespace=\"cryptopay-$env\", kubernetes_name=~\"$service\", pod=~\"$instance\"}[$__range])) / sum(increase(http_request_duration_seconds_count{kubernetes_namespace=\"cryptopay-$env\", kubernetes_name=~\"$service\", pod=~\"$instance\"}[$__range]))",
-				"format": "time_series",
-				"interval": "30s",
-				"intervalFactor": 1,
-				"legendFormat": "Average response time",
-				"refId": "A"
-			  }
-			],
-			"thresholds": [],
-			"timeFrom": null,
-			"timeRegions": [],
-			"timeShift": null,
-			"title": "Average Response Time",
-			"tooltip": {
-			  "shared": true,
-			  "sort": 0,
-			  "value_type": "individual"
-			},
-			"type": "graph",
-			"xaxis": {
-			  "buckets": null,
-			  "mode": "time",
-			  "name": null,
-			  "show": true,
-			  "values": []
-			},
-			"yaxes": [
-			  {
-				"format": "s",
-				"label": null,
-				"logBase": 1,
-				"max": null,
-				"min": null,
-				"show": true
-			  },
-			  {
-				"format": "short",
-				"label": null,
-				"logBase": 1,
-				"max": null,
-				"min": null,
-				"show": true
-			  }
-			],
-			"yaxis": {
-			  "align": false,
-			  "alignLevel": null
-			}
+			"name": "value to text",
+			"value": 1
 		  },
 		  {
-			"columns": [],
-			"datasource": "Prometheus",
-			"description": "Top-20 Failed Requests",
-			"fontSize": "100%",
-			"gridPos": {
-			  "h": 16,
-			  "w": 12,
-			  "x": 12,
-			  "y": 4
-			},
-			"id": 18,
-			"links": [],
-			"pageSize": null,
-			"scroll": true,
-			"showHeader": true,
-			"sort": {
-			  "col": null,
-			  "desc": false
-			},
-			"styles": [
-			  {
-				"alias": "",
-				"colorMode": null,
-				"colors": [
-				  "rgba(245, 54, 54, 0.9)",
-				  "rgba(237, 129, 40, 0.89)",
-				  "rgba(50, 172, 45, 0.97)"
-				],
-				"dateFormat": "YYYY-MM-DD HH:mm:ss",
-				"decimals": 2,
-				"mappingType": 1,
-				"pattern": "Time",
-				"thresholds": [],
-				"type": "hidden",
-				"unit": "short"
-			  },
-			  {
-				"alias": "Count",
-				"colorMode": null,
-				"colors": [
-				  "rgba(245, 54, 54, 0.9)",
-				  "rgba(237, 129, 40, 0.89)",
-				  "rgba(50, 172, 45, 0.97)"
-				],
-				"dateFormat": "YYYY-MM-DD HH:mm:ss",
-				"decimals": 0,
-				"mappingType": 1,
-				"pattern": "Value",
-				"thresholds": [],
-				"type": "number",
-				"unit": "short"
-			  },
-			  {
-				"alias": "Version",
-				"colorMode": null,
-				"colors": [
-				  "rgba(245, 54, 54, 0.9)",
-				  "rgba(237, 129, 40, 0.89)",
-				  "rgba(50, 172, 45, 0.97)"
-				],
-				"dateFormat": "YYYY-MM-DD HH:mm:ss",
-				"decimals": 2,
-				"mappingType": 1,
-				"pattern": "app_version",
-				"thresholds": [],
-				"type": "string",
-				"unit": "short"
-			  },
-			  {
-				"alias": "Service",
-				"colorMode": null,
-				"colors": [
-				  "rgba(245, 54, 54, 0.9)",
-				  "rgba(237, 129, 40, 0.89)",
-				  "rgba(50, 172, 45, 0.97)"
-				],
-				"dateFormat": "YYYY-MM-DD HH:mm:ss",
-				"decimals": 2,
-				"mappingType": 1,
-				"pattern": "kubernetes_name",
-				"thresholds": [],
-				"type": "number",
-				"unit": "short"
-			  },
-			  {
-				"alias": "Method",
-				"colorMode": null,
-				"colors": [
-				  "rgba(245, 54, 54, 0.9)",
-				  "rgba(237, 129, 40, 0.89)",
-				  "rgba(50, 172, 45, 0.97)"
-				],
-				"dateFormat": "YYYY-MM-DD HH:mm:ss",
-				"decimals": 2,
-				"mappingType": 1,
-				"pattern": "method",
-				"thresholds": [],
-				"type": "number",
-				"unit": "short"
-			  },
-			  {
-				"alias": "Path",
-				"colorMode": null,
-				"colors": [
-				  "rgba(245, 54, 54, 0.9)",
-				  "rgba(237, 129, 40, 0.89)",
-				  "rgba(50, 172, 45, 0.97)"
-				],
-				"dateFormat": "YYYY-MM-DD HH:mm:ss",
-				"decimals": 2,
-				"mappingType": 1,
-				"pattern": "path",
-				"thresholds": [],
-				"type": "number",
-				"unit": "short"
-			  },
-			  {
-				"alias": "Pod",
-				"colorMode": null,
-				"colors": [
-				  "rgba(245, 54, 54, 0.9)",
-				  "rgba(237, 129, 40, 0.89)",
-				  "rgba(50, 172, 45, 0.97)"
-				],
-				"dateFormat": "YYYY-MM-DD HH:mm:ss",
-				"decimals": 2,
-				"mappingType": 1,
-				"pattern": "pod",
-				"thresholds": [],
-				"type": "number",
-				"unit": "short"
-			  },
-			  {
-				"alias": "Status Code",
-				"colorMode": null,
-				"colors": [
-				  "rgba(245, 54, 54, 0.9)",
-				  "rgba(237, 129, 40, 0.89)",
-				  "rgba(50, 172, 45, 0.97)"
-				],
-				"dateFormat": "YYYY-MM-DD HH:mm:ss",
-				"decimals": 2,
-				"mappingType": 1,
-				"pattern": "status_code",
-				"thresholds": [],
-				"type": "number",
-				"unit": "short"
-			  }
-			],
-			"targets": [
-			  {
-				"expr": "topk(20, sort_desc(sum(increase(http_request_duration_seconds_count{kubernetes_namespace=\"cryptopay-$env\", kubernetes_name=~\"$service\", pod=~\"$instance\", status_code=~\"[45].*\"}[$__range]) > 0) by (method, path, status_code, pod, app_version, kubernetes_name)))",
-				"format": "table",
-				"instant": true,
-				"interval": "",
-				"intervalFactor": 1,
-				"legendFormat": "",
-				"refId": "A"
-			  }
-			],
-			"title": "Top-20 Failed Requests",
-			"transform": "table",
-			"type": "table"
-		  },
-		  {
-			"cards": {
-			  "cardPadding": null,
-			  "cardRound": 2
-			},
-			"color": {
-			  "cardColor": "#b4ff00",
-			  "colorScale": "sqrt",
-			  "colorScheme": "interpolateMagma",
-			  "exponent": 0.5,
-			  "mode": "spectrum"
-			},
-			"dataFormat": "tsbuckets",
-			"datasource": "Prometheus",
-			"description": "Response time distribution",
-			"gridPos": {
-			  "h": 9,
-			  "w": 12,
-			  "x": 0,
-			  "y": 11
-			},
-			"heatmap": {},
-			"highlightCards": true,
-			"id": 20,
-			"legend": {
-			  "show": true
-			},
-			"links": [],
-			"targets": [
-			  {
-				"expr": "sum(increase(http_request_duration_seconds_bucket{kubernetes_namespace=\"cryptopay-$env\", kubernetes_name=~\"$service\", pod=~\"$instance\"}[$__interval])) by (le)",
-				"format": "heatmap",
-				"interval": "5m",
-				"intervalFactor": 1,
-				"legendFormat": "{{le}}",
-				"refId": "A"
-			  }
-			],
-			"title": "Response Time Distribution",
-			"tooltip": {
-			  "show": true,
-			  "showHistogram": true
-			},
-			"type": "heatmap",
-			"xAxis": {
-			  "show": true
-			},
-			"xBucketNumber": null,
-			"xBucketSize": null,
-			"yAxis": {
-			  "decimals": null,
-			  "format": "s",
-			  "logBase": 1,
-			  "max": null,
-			  "min": null,
-			  "show": true,
-			  "splitFactor": null
-			},
-			"yBucketBound": "auto",
-			"yBucketNumber": null,
-			"yBucketSize": null
+			"name": "range to text",
+			"value": 2
 		  }
 		],
-		"title": "Requests",
-		"type": "row"
+		"maxDataPoints": 100,
+		"nullPointMode": "connected",
+		"nullText": null,
+		"postfix": "",
+		"postfixFontSize": "50%",
+		"prefix": "",
+		"prefixFontSize": "50%",
+		"rangeMaps": [
+		  {
+			"from": "null",
+			"text": "N/A",
+			"to": "null"
+		  }
+		],
+		"sparkline": {
+		  "fillColor": "rgba(31, 118, 189, 0.18)",
+		  "full": false,
+		  "lineColor": "rgb(31, 120, 193)",
+		  "show": false
+		},
+		"tableColumn": "",
+		"targets": [
+		  {
+			"expr": "sum(increase(http_request_duration_seconds_count{kubernetes_namespace=\"cryptopay-$env\", kubernetes_name=~\"$service\", pod=~\"$instance\", status_code=~\"[23].*\"}[$__range]))",
+			"format": "time_series",
+			"instant": false,
+			"intervalFactor": 1,
+			"refId": "A"
+		  }
+		],
+		"thresholds": "9999999999,99999999",
+		"timeFrom": null,
+		"title": "Successful Requests",
+		"type": "singlestat",
+		"valueFontSize": "80%",
+		"valueMaps": [
+		  {
+			"op": "=",
+			"text": "N/A",
+			"value": "null"
+		  }
+		],
+		"valueName": "current"
+	  },
+	  {
+		"cacheTimeout": null,
+		"colorBackground": false,
+		"colorValue": false,
+		"colors": [
+		  "#d44a3a",
+		  "rgba(237, 129, 40, 0.89)",
+		  "#299c46"
+		],
+		"format": "percentunit",
+		"gauge": {
+		  "maxValue": 1,
+		  "minValue": 0,
+		  "show": true,
+		  "thresholdLabels": false,
+		  "thresholdMarkers": true
+		},
+		"gridPos": {
+		  "h": 5,
+		  "w": 4,
+		  "x": 6,
+		  "y": 1
+		},
+		"id": 14,
+		"interval": null,
+		"links": [],
+		"mappingType": 1,
+		"mappingTypes": [
+		  {
+			"name": "value to text",
+			"value": 1
+		  },
+		  {
+			"name": "range to text",
+			"value": 2
+		  }
+		],
+		"maxDataPoints": 100,
+		"nullPointMode": "connected",
+		"nullText": null,
+		"postfix": "",
+		"postfixFontSize": "50%",
+		"prefix": "",
+		"prefixFontSize": "50%",
+		"rangeMaps": [
+		  {
+			"from": "null",
+			"text": "N/A",
+			"to": "null"
+		  }
+		],
+		"sparkline": {
+		  "fillColor": "rgba(31, 118, 189, 0.18)",
+		  "full": false,
+		  "lineColor": "rgb(31, 120, 193)",
+		  "show": false
+		},
+		"tableColumn": "",
+		"targets": [
+		  {
+			"expr": "(sum(increase(http_request_duration_seconds_count{kubernetes_namespace=\"cryptopay-$env\", kubernetes_name=~\"$service\", pod=~\"$instance\", status_code=~\"[23].*\"}[$__range]))) / (sum(increase(http_request_duration_seconds_count{kubernetes_namespace=\"cryptopay-$env\", kubernetes_name=~\"$service\", pod=~\"$instance\"}[$__range])))",
+			"format": "time_series",
+			"instant": true,
+			"intervalFactor": 1,
+			"refId": "A"
+		  }
+		],
+		"thresholds": "0,0",
+		"title": "2xx, 3xx %",
+		"type": "singlestat",
+		"valueFontSize": "80%",
+		"valueMaps": [
+		  {
+			"op": "=",
+			"text": "N/A",
+			"value": "null"
+		  }
+		],
+		"valueName": "current"
+	  },
+	  {
+		"cacheTimeout": null,
+		"colorBackground": false,
+		"colorValue": false,
+		"colors": [
+		  "#299c46",
+		  "rgba(237, 129, 40, 0.89)",
+		  "#d44a3a"
+		],
+		"datasource": "Prometheus",
+		"description": "Percentage of 4xx responses",
+		"format": "percentunit",
+		"gauge": {
+		  "maxValue": 1,
+		  "minValue": 0,
+		  "show": true,
+		  "thresholdLabels": false,
+		  "thresholdMarkers": true
+		},
+		"gridPos": {
+		  "h": 5,
+		  "w": 4,
+		  "x": 10,
+		  "y": 1
+		},
+		"id": 12,
+		"interval": null,
+		"links": [],
+		"mappingType": 1,
+		"mappingTypes": [
+		  {
+			"name": "value to text",
+			"value": 1
+		  },
+		  {
+			"name": "range to text",
+			"value": 2
+		  }
+		],
+		"maxDataPoints": 100,
+		"nullPointMode": "connected",
+		"nullText": null,
+		"postfix": "",
+		"postfixFontSize": "50%",
+		"prefix": "",
+		"prefixFontSize": "50%",
+		"rangeMaps": [
+		  {
+			"from": "null",
+			"text": "N/A",
+			"to": "null"
+		  }
+		],
+		"sparkline": {
+		  "fillColor": "rgba(31, 118, 189, 0.18)",
+		  "full": false,
+		  "lineColor": "rgb(31, 120, 193)",
+		  "show": false
+		},
+		"tableColumn": "",
+		"targets": [
+		  {
+			"expr": "(sum(increase(http_request_duration_seconds_count{kubernetes_namespace=\"cryptopay-$env\", kubernetes_name=~\"$service\", pod=~\"$instance\", status_code=~\"[4].*\"}[$__range]))) / (sum(increase(http_request_duration_seconds_count{kubernetes_namespace=\"cryptopay-$env\", kubernetes_name=~\"$service\", pod=~\"$instance\"}[$__range])))",
+			"format": "time_series",
+			"instant": true,
+			"interval": "",
+			"intervalFactor": 1,
+			"refId": "A"
+		  }
+		],
+		"thresholds": "0.25, 0.50",
+		"title": "4xx %",
+		"type": "singlestat",
+		"valueFontSize": "80%",
+		"valueMaps": [
+		  {
+			"op": "=",
+			"text": "N/A",
+			"value": "null"
+		  }
+		],
+		"valueName": "current"
+	  },
+	  {
+		"cacheTimeout": null,
+		"colorBackground": false,
+		"colorValue": false,
+		"colors": [
+		  "#299c46",
+		  "rgba(237, 129, 40, 0.89)",
+		  "#d44a3a"
+		],
+		"datasource": "Prometheus",
+		"description": "Percentage of 5xx responses",
+		"format": "percentunit",
+		"gauge": {
+		  "maxValue": 1,
+		  "minValue": 0,
+		  "show": true,
+		  "thresholdLabels": false,
+		  "thresholdMarkers": true
+		},
+		"gridPos": {
+		  "h": 5,
+		  "w": 4,
+		  "x": 14,
+		  "y": 1
+		},
+		"id": 10,
+		"interval": null,
+		"links": [],
+		"mappingType": 1,
+		"mappingTypes": [
+		  {
+			"name": "value to text",
+			"value": 1
+		  },
+		  {
+			"name": "range to text",
+			"value": 2
+		  }
+		],
+		"maxDataPoints": 100,
+		"nullPointMode": "connected",
+		"nullText": null,
+		"postfix": "",
+		"postfixFontSize": "50%",
+		"prefix": "",
+		"prefixFontSize": "50%",
+		"rangeMaps": [
+		  {
+			"from": "null",
+			"text": "N/A",
+			"to": "null"
+		  }
+		],
+		"sparkline": {
+		  "fillColor": "rgba(31, 118, 189, 0.18)",
+		  "full": false,
+		  "lineColor": "rgb(31, 120, 193)",
+		  "show": false
+		},
+		"tableColumn": "",
+		"targets": [
+		  {
+			"expr": "(sum(increase(http_request_duration_seconds_count{kubernetes_namespace=\"cryptopay-$env\", kubernetes_name=~\"$service\", pod=~\"$instance\", status_code=~\"[5].*\"}[$__range]))) / (sum(increase(http_request_duration_seconds_count{kubernetes_namespace=\"cryptopay-$env\", kubernetes_name=~\"$service\", pod=~\"$instance\"}[$__range])))",
+			"format": "time_series",
+			"hide": false,
+			"instant": true,
+			"intervalFactor": 1,
+			"refId": "A"
+		  }
+		],
+		"thresholds": "0.01,0.1",
+		"title": "5xx %",
+		"type": "singlestat",
+		"valueFontSize": "80%",
+		"valueMaps": [
+		  {
+			"op": "=",
+			"text": "N/A",
+			"value": "null"
+		  }
+		],
+		"valueName": "current"
+	  },
+	  {
+		"cacheTimeout": null,
+		"colorBackground": false,
+		"colorPostfix": false,
+		"colorPrefix": false,
+		"colorValue": true,
+		"colors": [
+		  "#299c46",
+		  "rgba(237, 129, 40, 0.89)",
+		  "#d44a3a"
+		],
+		"datasource": "Prometheus",
+		"description": "Total count of general errors",
+		"format": "none",
+		"gauge": {
+		  "maxValue": 100,
+		  "minValue": 0,
+		  "show": false,
+		  "thresholdLabels": false,
+		  "thresholdMarkers": true
+		},
+		"gridPos": {
+		  "h": 5,
+		  "w": 3,
+		  "x": 18,
+		  "y": 1
+		},
+		"id": 2,
+		"interval": null,
+		"links": [],
+		"mappingType": 1,
+		"mappingTypes": [
+		  {
+			"name": "value to text",
+			"value": 1
+		  },
+		  {
+			"name": "range to text",
+			"value": 2
+		  }
+		],
+		"maxDataPoints": 100,
+		"nullPointMode": "connected",
+		"nullText": null,
+		"postfix": "",
+		"postfixFontSize": "50%",
+		"prefix": "",
+		"prefixFontSize": "50%",
+		"rangeMaps": [
+		  {
+			"from": "null",
+			"text": "N/A",
+			"to": "null"
+		  }
+		],
+		"sparkline": {
+		  "fillColor": "rgba(31, 118, 189, 0.18)",
+		  "full": false,
+		  "lineColor": "rgb(31, 120, 193)",
+		  "show": false
+		},
+		"tableColumn": "__name__",
+		"targets": [
+		  {
+			"expr": "sum(increase(general_errors{kubernetes_namespace=\"cryptopay-$env\", kubernetes_name=~\"$service\", pod=~\"$instance\"}[$__range]))",
+			"format": "time_series",
+			"interval": "",
+			"intervalFactor": 1,
+			"legendFormat": "",
+			"refId": "A"
+		  }
+		],
+		"thresholds": "1,100",
+		"title": "General Errors",
+		"type": "singlestat",
+		"valueFontSize": "80%",
+		"valueMaps": [
+		  {
+			"op": "=",
+			"text": "N/A",
+			"value": "null"
+		  }
+		],
+		"valueName": "current"
+	  },
+	  {
+		"cacheTimeout": null,
+		"colorBackground": true,
+		"colorValue": false,
+		"colors": [
+		  "#299c46",
+		  "rgba(237, 129, 40, 0.89)",
+		  "#d44a3a"
+		],
+		"datasource": "Prometheus",
+		"description": "Total count of critical errors",
+		"format": "none",
+		"gauge": {
+		  "maxValue": 100,
+		  "minValue": 0,
+		  "show": false,
+		  "thresholdLabels": false,
+		  "thresholdMarkers": true
+		},
+		"gridPos": {
+		  "h": 5,
+		  "w": 3,
+		  "x": 21,
+		  "y": 1
+		},
+		"id": 4,
+		"interval": null,
+		"links": [],
+		"mappingType": 1,
+		"mappingTypes": [
+		  {
+			"name": "value to text",
+			"value": 1
+		  },
+		  {
+			"name": "range to text",
+			"value": 2
+		  }
+		],
+		"maxDataPoints": 100,
+		"nullPointMode": "connected",
+		"nullText": null,
+		"postfix": "",
+		"postfixFontSize": "50%",
+		"prefix": "",
+		"prefixFontSize": "50%",
+		"rangeMaps": [
+		  {
+			"from": "null",
+			"text": "N/A",
+			"to": "null"
+		  }
+		],
+		"sparkline": {
+		  "fillColor": "rgba(31, 118, 189, 0.18)",
+		  "full": false,
+		  "lineColor": "rgb(31, 120, 193)",
+		  "show": false
+		},
+		"tableColumn": "",
+		"targets": [
+		  {
+			"expr": "sum(increase(critical_errors{kubernetes_namespace=\"cryptopay-$env\", kubernetes_name=~\"$service\", pod=~\"$instance\"}[$__range]))",
+			"format": "time_series",
+			"intervalFactor": 1,
+			"refId": "A"
+		  }
+		],
+		"thresholds": "1,1",
+		"title": "Critical Errors",
+		"type": "singlestat",
+		"valueFontSize": "80%",
+		"valueMaps": [
+		  {
+			"op": "=",
+			"text": "N/A",
+			"value": "null"
+		  }
+		],
+		"valueName": "current"
 	  },
 	  {
 		"collapsed": false,
@@ -1080,7 +615,469 @@
 		  "h": 1,
 		  "w": 24,
 		  "x": 0,
-		  "y": 3
+		  "y": 6
+		},
+		"id": 36,
+		"panels": [],
+		"title": "Instances",
+		"type": "row"
+	  },
+	  {
+		"columns": [],
+		"datasource": "Prometheus",
+		"fontSize": "100%",
+		"gridPos": {
+		  "h": 5,
+		  "w": 24,
+		  "x": 0,
+		  "y": 7
+		},
+		"id": 22,
+		"links": [],
+		"pageSize": null,
+		"scroll": true,
+		"showHeader": true,
+		"sort": {
+		  "col": 6,
+		  "desc": true
+		},
+		"styles": [
+		  {
+			"alias": "Time",
+			"dateFormat": "YYYY-MM-DD HH:mm:ss",
+			"pattern": "Time",
+			"type": "hidden"
+		  },
+		  {
+			"alias": "Started-up",
+			"colorMode": null,
+			"colors": [
+			  "rgba(245, 54, 54, 0.9)",
+			  "rgba(237, 129, 40, 0.89)",
+			  "rgba(50, 172, 45, 0.97)"
+			],
+			"dateFormat": "YYYY-MM-DD HH:mm:ss",
+			"decimals": 2,
+			"mappingType": 1,
+			"pattern": "Value",
+			"thresholds": [],
+			"type": "number",
+			"unit": "dateTimeAsIso"
+		  },
+		  {
+			"alias": "Instance",
+			"colorMode": null,
+			"colors": [
+			  "rgba(245, 54, 54, 0.9)",
+			  "rgba(237, 129, 40, 0.89)",
+			  "rgba(50, 172, 45, 0.97)"
+			],
+			"dateFormat": "YYYY-MM-DD HH:mm:ss",
+			"decimals": 2,
+			"mappingType": 1,
+			"pattern": "pod",
+			"thresholds": [],
+			"type": "number",
+			"unit": "short"
+		  },
+		  {
+			"alias": "Version",
+			"colorMode": null,
+			"colors": [
+			  "rgba(245, 54, 54, 0.9)",
+			  "rgba(237, 129, 40, 0.89)",
+			  "rgba(50, 172, 45, 0.97)"
+			],
+			"dateFormat": "YYYY-MM-DD HH:mm:ss",
+			"decimals": 2,
+			"mappingType": 1,
+			"pattern": "app_version",
+			"thresholds": [],
+			"type": "number",
+			"unit": "short"
+		  },
+		  {
+			"alias": "Node",
+			"colorMode": null,
+			"colors": [
+			  "rgba(245, 54, 54, 0.9)",
+			  "rgba(237, 129, 40, 0.89)",
+			  "rgba(50, 172, 45, 0.97)"
+			],
+			"dateFormat": "YYYY-MM-DD HH:mm:ss",
+			"decimals": 2,
+			"mappingType": 1,
+			"pattern": "kubernetes_node",
+			"thresholds": [],
+			"type": "number",
+			"unit": "short"
+		  },
+		  {
+			"alias": "",
+			"colorMode": null,
+			"colors": [
+			  "rgba(245, 54, 54, 0.9)",
+			  "rgba(237, 129, 40, 0.89)",
+			  "rgba(50, 172, 45, 0.97)"
+			],
+			"decimals": 2,
+			"pattern": "/.*/",
+			"thresholds": [],
+			"type": "hidden",
+			"unit": "short"
+		  }
+		],
+		"targets": [
+		  {
+			"expr": "max_over_time(process_start_time_seconds{kubernetes_namespace=\"cryptopay-$env\", kubernetes_name=~\"$service\"}[${__range}]) * 1000",
+			"format": "table",
+			"instant": true,
+			"intervalFactor": 1,
+			"refId": "A"
+		  }
+		],
+		"title": "Instances",
+		"transform": "table",
+		"type": "table"
+	  },
+	  {
+		"collapsed": false,
+		"gridPos": {
+		  "h": 1,
+		  "w": 24,
+		  "x": 0,
+		  "y": 12
+		},
+		"id": 40,
+		"panels": [],
+		"title": "Requests",
+		"type": "row"
+	  },
+	  {
+		"aliasColors": {},
+		"bars": false,
+		"dashLength": 10,
+		"dashes": false,
+		"datasource": "Prometheus",
+		"description": "Average response time",
+		"fill": 3,
+		"gridPos": {
+		  "h": 7,
+		  "w": 12,
+		  "x": 0,
+		  "y": 13
+		},
+		"id": 24,
+		"legend": {
+		  "alignAsTable": false,
+		  "avg": false,
+		  "current": false,
+		  "hideEmpty": false,
+		  "hideZero": false,
+		  "max": false,
+		  "min": false,
+		  "rightSide": false,
+		  "show": true,
+		  "total": false,
+		  "values": false
+		},
+		"lines": true,
+		"linewidth": 2,
+		"links": [],
+		"nullPointMode": "null",
+		"percentage": false,
+		"pointradius": 5,
+		"points": false,
+		"renderer": "flot",
+		"seriesOverrides": [],
+		"spaceLength": 10,
+		"stack": false,
+		"steppedLine": false,
+		"targets": [
+		  {
+			"expr": "sum(increase(http_request_duration_seconds_sum{kubernetes_namespace=\"cryptopay-$env\", kubernetes_name=~\"$service\", pod=~\"$instance\"}[$__range])) / sum(increase(http_request_duration_seconds_count{kubernetes_namespace=\"cryptopay-$env\", kubernetes_name=~\"$service\", pod=~\"$instance\"}[$__range]))",
+			"format": "time_series",
+			"interval": "30s",
+			"intervalFactor": 1,
+			"legendFormat": "Average response time",
+			"refId": "A"
+		  }
+		],
+		"thresholds": [],
+		"timeFrom": null,
+		"timeRegions": [],
+		"timeShift": null,
+		"title": "Average Response Time",
+		"tooltip": {
+		  "shared": true,
+		  "sort": 0,
+		  "value_type": "individual"
+		},
+		"type": "graph",
+		"xaxis": {
+		  "buckets": null,
+		  "mode": "time",
+		  "name": null,
+		  "show": true,
+		  "values": []
+		},
+		"yaxes": [
+		  {
+			"format": "s",
+			"label": null,
+			"logBase": 1,
+			"max": null,
+			"min": null,
+			"show": true
+		  },
+		  {
+			"format": "short",
+			"label": null,
+			"logBase": 1,
+			"max": null,
+			"min": null,
+			"show": true
+		  }
+		],
+		"yaxis": {
+		  "align": false,
+		  "alignLevel": null
+		}
+	  },
+	  {
+		"columns": [],
+		"datasource": "Prometheus",
+		"description": "Top-20 Failed Requests",
+		"fontSize": "100%",
+		"gridPos": {
+		  "h": 16,
+		  "w": 12,
+		  "x": 12,
+		  "y": 13
+		},
+		"id": 18,
+		"links": [],
+		"pageSize": null,
+		"scroll": true,
+		"showHeader": true,
+		"sort": {
+		  "col": null,
+		  "desc": false
+		},
+		"styles": [
+		  {
+			"alias": "",
+			"colorMode": null,
+			"colors": [
+			  "rgba(245, 54, 54, 0.9)",
+			  "rgba(237, 129, 40, 0.89)",
+			  "rgba(50, 172, 45, 0.97)"
+			],
+			"dateFormat": "YYYY-MM-DD HH:mm:ss",
+			"decimals": 2,
+			"mappingType": 1,
+			"pattern": "Time",
+			"thresholds": [],
+			"type": "hidden",
+			"unit": "short"
+		  },
+		  {
+			"alias": "Count",
+			"colorMode": null,
+			"colors": [
+			  "rgba(245, 54, 54, 0.9)",
+			  "rgba(237, 129, 40, 0.89)",
+			  "rgba(50, 172, 45, 0.97)"
+			],
+			"dateFormat": "YYYY-MM-DD HH:mm:ss",
+			"decimals": 0,
+			"mappingType": 1,
+			"pattern": "Value",
+			"thresholds": [],
+			"type": "number",
+			"unit": "short"
+		  },
+		  {
+			"alias": "Version",
+			"colorMode": null,
+			"colors": [
+			  "rgba(245, 54, 54, 0.9)",
+			  "rgba(237, 129, 40, 0.89)",
+			  "rgba(50, 172, 45, 0.97)"
+			],
+			"dateFormat": "YYYY-MM-DD HH:mm:ss",
+			"decimals": 2,
+			"mappingType": 1,
+			"pattern": "app_version",
+			"thresholds": [],
+			"type": "string",
+			"unit": "short"
+		  },
+		  {
+			"alias": "Service",
+			"colorMode": null,
+			"colors": [
+			  "rgba(245, 54, 54, 0.9)",
+			  "rgba(237, 129, 40, 0.89)",
+			  "rgba(50, 172, 45, 0.97)"
+			],
+			"dateFormat": "YYYY-MM-DD HH:mm:ss",
+			"decimals": 2,
+			"mappingType": 1,
+			"pattern": "kubernetes_name",
+			"thresholds": [],
+			"type": "number",
+			"unit": "short"
+		  },
+		  {
+			"alias": "Method",
+			"colorMode": null,
+			"colors": [
+			  "rgba(245, 54, 54, 0.9)",
+			  "rgba(237, 129, 40, 0.89)",
+			  "rgba(50, 172, 45, 0.97)"
+			],
+			"dateFormat": "YYYY-MM-DD HH:mm:ss",
+			"decimals": 2,
+			"mappingType": 1,
+			"pattern": "method",
+			"thresholds": [],
+			"type": "number",
+			"unit": "short"
+		  },
+		  {
+			"alias": "Path",
+			"colorMode": null,
+			"colors": [
+			  "rgba(245, 54, 54, 0.9)",
+			  "rgba(237, 129, 40, 0.89)",
+			  "rgba(50, 172, 45, 0.97)"
+			],
+			"dateFormat": "YYYY-MM-DD HH:mm:ss",
+			"decimals": 2,
+			"mappingType": 1,
+			"pattern": "path",
+			"thresholds": [],
+			"type": "number",
+			"unit": "short"
+		  },
+		  {
+			"alias": "Pod",
+			"colorMode": null,
+			"colors": [
+			  "rgba(245, 54, 54, 0.9)",
+			  "rgba(237, 129, 40, 0.89)",
+			  "rgba(50, 172, 45, 0.97)"
+			],
+			"dateFormat": "YYYY-MM-DD HH:mm:ss",
+			"decimals": 2,
+			"mappingType": 1,
+			"pattern": "pod",
+			"thresholds": [],
+			"type": "number",
+			"unit": "short"
+		  },
+		  {
+			"alias": "Status Code",
+			"colorMode": null,
+			"colors": [
+			  "rgba(245, 54, 54, 0.9)",
+			  "rgba(237, 129, 40, 0.89)",
+			  "rgba(50, 172, 45, 0.97)"
+			],
+			"dateFormat": "YYYY-MM-DD HH:mm:ss",
+			"decimals": 2,
+			"mappingType": 1,
+			"pattern": "status_code",
+			"thresholds": [],
+			"type": "number",
+			"unit": "short"
+		  }
+		],
+		"targets": [
+		  {
+			"expr": "topk(20, sort_desc(sum(increase(http_request_duration_seconds_count{kubernetes_namespace=\"cryptopay-$env\", kubernetes_name=~\"$service\", pod=~\"$instance\", status_code=~\"[45].*\"}[$__range]) > 0) by (method, path, status_code, pod, app_version, kubernetes_name)))",
+			"format": "table",
+			"instant": true,
+			"interval": "",
+			"intervalFactor": 1,
+			"legendFormat": "",
+			"refId": "A"
+		  }
+		],
+		"title": "Top-20 Failed Requests",
+		"transform": "table",
+		"type": "table"
+	  },
+	  {
+		"cards": {
+		  "cardPadding": null,
+		  "cardRound": 2
+		},
+		"color": {
+		  "cardColor": "#b4ff00",
+		  "colorScale": "sqrt",
+		  "colorScheme": "interpolateMagma",
+		  "exponent": 0.5,
+		  "mode": "spectrum"
+		},
+		"dataFormat": "tsbuckets",
+		"datasource": "Prometheus",
+		"description": "Response time distribution",
+		"gridPos": {
+		  "h": 9,
+		  "w": 12,
+		  "x": 0,
+		  "y": 20
+		},
+		"heatmap": {},
+		"highlightCards": true,
+		"id": 20,
+		"legend": {
+		  "show": true
+		},
+		"links": [],
+		"targets": [
+		  {
+			"expr": "sum(increase(http_request_duration_seconds_bucket{kubernetes_namespace=\"cryptopay-$env\", kubernetes_name=~\"$service\", pod=~\"$instance\"}[$__interval])) by (le)",
+			"format": "heatmap",
+			"interval": "5m",
+			"intervalFactor": 1,
+			"legendFormat": "{{le}}",
+			"refId": "A"
+		  }
+		],
+		"title": "Response Time Distribution",
+		"tooltip": {
+		  "show": true,
+		  "showHistogram": true
+		},
+		"type": "heatmap",
+		"xAxis": {
+		  "show": true
+		},
+		"xBucketNumber": null,
+		"xBucketSize": null,
+		"yAxis": {
+		  "decimals": null,
+		  "format": "s",
+		  "logBase": 1,
+		  "max": null,
+		  "min": null,
+		  "show": true,
+		  "splitFactor": null
+		},
+		"yBucketBound": "auto",
+		"yBucketNumber": null,
+		"yBucketSize": null
+	  },
+	  {
+		"collapsed": false,
+		"gridPos": {
+		  "h": 1,
+		  "w": 24,
+		  "x": 0,
+		  "y": 29
 		},
 		"id": 38,
 		"panels": [],
@@ -1099,7 +1096,7 @@
 		  "h": 9,
 		  "w": 12,
 		  "x": 0,
-		  "y": 4
+		  "y": 30
 		},
 		"id": 26,
 		"legend": {
@@ -1185,7 +1182,7 @@
 		  "h": 9,
 		  "w": 12,
 		  "x": 12,
-		  "y": 4
+		  "y": 30
 		},
 		"id": 28,
 		"legend": {
@@ -1271,7 +1268,7 @@
 		  "h": 9,
 		  "w": 12,
 		  "x": 0,
-		  "y": 13
+		  "y": 39
 		},
 		"id": 32,
 		"legend": {
@@ -1356,7 +1353,7 @@
 		  "h": 9,
 		  "w": 12,
 		  "x": 12,
-		  "y": 13
+		  "y": 39
 		},
 		"id": 30,
 		"legend": {
@@ -1436,7 +1433,7 @@
 		  "h": 1,
 		  "w": 24,
 		  "x": 0,
-		  "y": 22
+		  "y": 48
 		},
 		"id": 60,
 		"panels": [],
@@ -1461,7 +1458,7 @@
 		  "h": 9,
 		  "w": 14,
 		  "x": 0,
-		  "y": 23
+		  "y": 49
 		},
 		"heatmap": {},
 		"highlightCards": true,
@@ -1514,7 +1511,7 @@
 		  "h": 9,
 		  "w": 5,
 		  "x": 14,
-		  "y": 23
+		  "y": 49
 		},
 		"id": 64,
 		"links": [],
@@ -1600,7 +1597,7 @@
 		  "h": 9,
 		  "w": 5,
 		  "x": 19,
-		  "y": 23
+		  "y": 49
 		},
 		"id": 66,
 		"links": [],
@@ -1679,492 +1676,490 @@
 		"type": "table"
 	  },
 	  {
-		"collapsed": true,
+		"collapsed": false,
 		"gridPos": {
 		  "h": 1,
 		  "w": 24,
 		  "x": 0,
-		  "y": 32
+		  "y": 58
 		},
 		"id": 52,
-		"panels": [
-		  {
-			"aliasColors": {},
-			"bars": false,
-			"dashLength": 10,
-			"dashes": false,
-			"fill": 1,
-			"gridPos": {
-			  "h": 9,
-			  "w": 8,
-			  "x": 0,
-			  "y": 6
-			},
-			"id": 54,
-			"legend": {
-			  "avg": false,
-			  "current": false,
-			  "max": false,
-			  "min": false,
-			  "show": true,
-			  "total": false,
-			  "values": false
-			},
-			"lines": true,
-			"linewidth": 1,
-			"links": [],
-			"nullPointMode": "null",
-			"percentage": false,
-			"pointradius": 5,
-			"points": false,
-			"renderer": "flot",
-			"seriesOverrides": [],
-			"spaceLength": 10,
-			"stack": false,
-			"steppedLine": false,
-			"targets": [
-			  {
-				"expr": "sum by (pod) (rate(wtf_request_duration_seconds_count{kubernetes_namespace=\"cryptopay-$env\", kubernetes_name=~\"$service\", pod=~\"$instance\"}[1h])) * 3600",
-				"format": "time_series",
-				"intervalFactor": 1,
-				"legendFormat": "{{pod}}",
-				"refId": "A"
-			  }
-			],
-			"thresholds": [],
-			"timeFrom": null,
-			"timeRegions": [],
-			"timeShift": null,
-			"title": "Wtf Requests Count / Hour",
-			"tooltip": {
-			  "shared": true,
-			  "sort": 0,
-			  "value_type": "individual"
-			},
-			"type": "graph",
-			"xaxis": {
-			  "buckets": null,
-			  "mode": "time",
-			  "name": null,
-			  "show": true,
-			  "values": []
-			},
-			"yaxes": [
-			  {
-				"format": "short",
-				"label": null,
-				"logBase": 1,
-				"max": null,
-				"min": null,
-				"show": true
-			  },
-			  {
-				"format": "short",
-				"label": null,
-				"logBase": 1,
-				"max": null,
-				"min": null,
-				"show": true
-			  }
-			],
-			"yaxis": {
-			  "align": false,
-			  "alignLevel": null
-			}
-		  },
-		  {
-			"aliasColors": {},
-			"bars": false,
-			"dashLength": 10,
-			"dashes": false,
-			"fill": 1,
-			"gridPos": {
-			  "h": 9,
-			  "w": 8,
-			  "x": 8,
-			  "y": 6
-			},
-			"id": 56,
-			"legend": {
-			  "avg": false,
-			  "current": false,
-			  "max": false,
-			  "min": false,
-			  "show": true,
-			  "total": false,
-			  "values": false
-			},
-			"lines": true,
-			"linewidth": 1,
-			"links": [],
-			"nullPointMode": "null",
-			"percentage": false,
-			"pointradius": 5,
-			"points": false,
-			"renderer": "flot",
-			"seriesOverrides": [],
-			"spaceLength": 10,
-			"stack": false,
-			"steppedLine": false,
-			"targets": [
-			  {
-				"expr": "(sum by (pod) (wtf_request_duration_seconds_count{kubernetes_namespace=\"cryptopay-$env\", kubernetes_name=~\"$service\", pod=~\"$instance\", status!~\"[2,3].*\"})) / (sum by (pod) (wtf_request_duration_seconds_count{kubernetes_namespace=\"cryptopay-$env\", kubernetes_name=~\"$service\", pod=~\"$instance\"}))",
-				"format": "time_series",
-				"intervalFactor": 1,
-				"refId": "A"
-			  }
-			],
-			"thresholds": [],
-			"timeFrom": null,
-			"timeRegions": [],
-			"timeShift": null,
-			"title": "Wtf Failed Requests %",
-			"tooltip": {
-			  "shared": true,
-			  "sort": 0,
-			  "value_type": "individual"
-			},
-			"type": "graph",
-			"xaxis": {
-			  "buckets": null,
-			  "mode": "time",
-			  "name": null,
-			  "show": true,
-			  "values": []
-			},
-			"yaxes": [
-			  {
-				"format": "short",
-				"label": null,
-				"logBase": 1,
-				"max": null,
-				"min": null,
-				"show": true
-			  },
-			  {
-				"format": "short",
-				"label": null,
-				"logBase": 1,
-				"max": null,
-				"min": null,
-				"show": true
-			  }
-			],
-			"yaxis": {
-			  "align": false,
-			  "alignLevel": null
-			}
-		  },
-		  {
-			"cards": {
-			  "cardPadding": null,
-			  "cardRound": null
-			},
-			"color": {
-			  "cardColor": "#b4ff00",
-			  "colorScale": "sqrt",
-			  "colorScheme": "interpolateMagma",
-			  "exponent": 0.5,
-			  "mode": "spectrum"
-			},
-			"dataFormat": "tsbuckets",
-			"gridPos": {
-			  "h": 9,
-			  "w": 8,
-			  "x": 16,
-			  "y": 6
-			},
-			"heatmap": {},
-			"highlightCards": true,
-			"id": 58,
-			"legend": {
-			  "show": true
-			},
-			"links": [],
-			"targets": [
-			  {
-				"expr": "sum(increase(wtf_request_duration_seconds_bucket{kubernetes_namespace=\"cryptopay-$env\", kubernetes_name=~\"$service\", pod=~\"$instance\"}[$__interval])) by (le)",
-				"format": "heatmap",
-				"interval": "5m",
-				"intervalFactor": 1,
-				"legendFormat": "{{le}}",
-				"refId": "A"
-			  }
-			],
-			"title": "Wtf Response Time Distribution",
-			"tooltip": {
-			  "show": true,
-			  "showHistogram": true
-			},
-			"tooltipDecimals": 2,
-			"type": "heatmap",
-			"xAxis": {
-			  "show": true
-			},
-			"xBucketNumber": null,
-			"xBucketSize": null,
-			"yAxis": {
-			  "decimals": null,
-			  "format": "s",
-			  "logBase": 1,
-			  "max": null,
-			  "min": null,
-			  "show": true,
-			  "splitFactor": null
-			},
-			"yBucketBound": "auto",
-			"yBucketNumber": null,
-			"yBucketSize": null
-		  }
-		],
+		"panels": [],
 		"title": "Wtf Status",
 		"type": "row"
 	  },
 	  {
-		"collapsed": true,
+		"aliasColors": {},
+		"bars": false,
+		"dashLength": 10,
+		"dashes": false,
+		"fill": 1,
+		"gridPos": {
+		  "h": 9,
+		  "w": 8,
+		  "x": 0,
+		  "y": 59
+		},
+		"id": 54,
+		"legend": {
+		  "avg": false,
+		  "current": false,
+		  "max": false,
+		  "min": false,
+		  "show": true,
+		  "total": false,
+		  "values": false
+		},
+		"lines": true,
+		"linewidth": 1,
+		"links": [],
+		"nullPointMode": "null",
+		"percentage": false,
+		"pointradius": 5,
+		"points": false,
+		"renderer": "flot",
+		"seriesOverrides": [],
+		"spaceLength": 10,
+		"stack": false,
+		"steppedLine": false,
+		"targets": [
+		  {
+			"expr": "sum by (pod) (rate(wtf_request_duration_seconds_count{kubernetes_namespace=\"cryptopay-$env\", kubernetes_name=~\"$service\", pod=~\"$instance\"}[1h])) * 3600",
+			"format": "time_series",
+			"intervalFactor": 1,
+			"legendFormat": "{{pod}}",
+			"refId": "A"
+		  }
+		],
+		"thresholds": [],
+		"timeFrom": null,
+		"timeRegions": [],
+		"timeShift": null,
+		"title": "Wtf Requests Count / Hour",
+		"tooltip": {
+		  "shared": true,
+		  "sort": 0,
+		  "value_type": "individual"
+		},
+		"type": "graph",
+		"xaxis": {
+		  "buckets": null,
+		  "mode": "time",
+		  "name": null,
+		  "show": true,
+		  "values": []
+		},
+		"yaxes": [
+		  {
+			"format": "short",
+			"label": null,
+			"logBase": 1,
+			"max": null,
+			"min": null,
+			"show": true
+		  },
+		  {
+			"format": "short",
+			"label": null,
+			"logBase": 1,
+			"max": null,
+			"min": null,
+			"show": true
+		  }
+		],
+		"yaxis": {
+		  "align": false,
+		  "alignLevel": null
+		}
+	  },
+	  {
+		"aliasColors": {},
+		"bars": false,
+		"dashLength": 10,
+		"dashes": false,
+		"fill": 1,
+		"gridPos": {
+		  "h": 9,
+		  "w": 8,
+		  "x": 8,
+		  "y": 59
+		},
+		"id": 56,
+		"legend": {
+		  "avg": false,
+		  "current": false,
+		  "max": false,
+		  "min": false,
+		  "show": true,
+		  "total": false,
+		  "values": false
+		},
+		"lines": true,
+		"linewidth": 1,
+		"links": [],
+		"nullPointMode": "null",
+		"percentage": false,
+		"pointradius": 5,
+		"points": false,
+		"renderer": "flot",
+		"seriesOverrides": [],
+		"spaceLength": 10,
+		"stack": false,
+		"steppedLine": false,
+		"targets": [
+		  {
+			"expr": "(sum by (pod) (wtf_request_duration_seconds_count{kubernetes_namespace=\"cryptopay-$env\", kubernetes_name=~\"$service\", pod=~\"$instance\", status!~\"[2,3].*\"})) / (sum by (pod) (wtf_request_duration_seconds_count{kubernetes_namespace=\"cryptopay-$env\", kubernetes_name=~\"$service\", pod=~\"$instance\"}))",
+			"format": "time_series",
+			"intervalFactor": 1,
+			"refId": "A"
+		  }
+		],
+		"thresholds": [],
+		"timeFrom": null,
+		"timeRegions": [],
+		"timeShift": null,
+		"title": "Wtf Failed Requests %",
+		"tooltip": {
+		  "shared": true,
+		  "sort": 0,
+		  "value_type": "individual"
+		},
+		"type": "graph",
+		"xaxis": {
+		  "buckets": null,
+		  "mode": "time",
+		  "name": null,
+		  "show": true,
+		  "values": []
+		},
+		"yaxes": [
+		  {
+			"format": "short",
+			"label": null,
+			"logBase": 1,
+			"max": null,
+			"min": null,
+			"show": true
+		  },
+		  {
+			"format": "short",
+			"label": null,
+			"logBase": 1,
+			"max": null,
+			"min": null,
+			"show": true
+		  }
+		],
+		"yaxis": {
+		  "align": false,
+		  "alignLevel": null
+		}
+	  },
+	  {
+		"cards": {
+		  "cardPadding": null,
+		  "cardRound": null
+		},
+		"color": {
+		  "cardColor": "#b4ff00",
+		  "colorScale": "sqrt",
+		  "colorScheme": "interpolateMagma",
+		  "exponent": 0.5,
+		  "mode": "spectrum"
+		},
+		"dataFormat": "tsbuckets",
+		"gridPos": {
+		  "h": 9,
+		  "w": 8,
+		  "x": 16,
+		  "y": 59
+		},
+		"heatmap": {},
+		"highlightCards": true,
+		"id": 58,
+		"legend": {
+		  "show": true
+		},
+		"links": [],
+		"targets": [
+		  {
+			"expr": "sum(increase(wtf_request_duration_seconds_bucket{kubernetes_namespace=\"cryptopay-$env\", kubernetes_name=~\"$service\", pod=~\"$instance\"}[$__interval])) by (le)",
+			"format": "heatmap",
+			"interval": "5m",
+			"intervalFactor": 1,
+			"legendFormat": "{{le}}",
+			"refId": "A"
+		  }
+		],
+		"title": "Wtf Response Time Distribution",
+		"tooltip": {
+		  "show": true,
+		  "showHistogram": true
+		},
+		"tooltipDecimals": 2,
+		"type": "heatmap",
+		"xAxis": {
+		  "show": true
+		},
+		"xBucketNumber": null,
+		"xBucketSize": null,
+		"yAxis": {
+		  "decimals": null,
+		  "format": "s",
+		  "logBase": 1,
+		  "max": null,
+		  "min": null,
+		  "show": true,
+		  "splitFactor": null
+		},
+		"yBucketBound": "auto",
+		"yBucketNumber": null,
+		"yBucketSize": null
+	  },
+	  {
+		"collapsed": false,
 		"gridPos": {
 		  "h": 1,
 		  "w": 24,
 		  "x": 0,
-		  "y": 33
+		  "y": 68
 		},
 		"id": 44,
-		"panels": [
-		  {
-			"aliasColors": {},
-			"bars": false,
-			"dashLength": 10,
-			"dashes": false,
-			"description": "Aggregator requests count per hour",
-			"fill": 1,
-			"gridPos": {
-			  "h": 9,
-			  "w": 8,
-			  "x": 0,
-			  "y": 7
-			},
-			"id": 46,
-			"legend": {
-			  "avg": false,
-			  "current": false,
-			  "max": false,
-			  "min": false,
-			  "show": true,
-			  "total": false,
-			  "values": false
-			},
-			"lines": true,
-			"linewidth": 1,
-			"links": [],
-			"nullPointMode": "null",
-			"percentage": false,
-			"pointradius": 5,
-			"points": false,
-			"renderer": "flot",
-			"seriesOverrides": [],
-			"spaceLength": 10,
-			"stack": false,
-			"steppedLine": false,
-			"targets": [
-			  {
-				"expr": "sum by (pod) (rate(aggregator_request_duration_seconds_count{kubernetes_namespace=\"cryptopay-$env\", kubernetes_name=~\"$service\", pod=~\"$instance\"}[1h])) * 3600",
-				"format": "time_series",
-				"intervalFactor": 1,
-				"legendFormat": "{{pod}}",
-				"refId": "A"
-			  }
-			],
-			"thresholds": [],
-			"timeFrom": null,
-			"timeRegions": [],
-			"timeShift": null,
-			"title": "Aggregator Requests Count / Hour",
-			"tooltip": {
-			  "shared": true,
-			  "sort": 0,
-			  "value_type": "individual"
-			},
-			"type": "graph",
-			"xaxis": {
-			  "buckets": null,
-			  "mode": "time",
-			  "name": null,
-			  "show": true,
-			  "values": []
-			},
-			"yaxes": [
-			  {
-				"format": "short",
-				"label": null,
-				"logBase": 1,
-				"max": null,
-				"min": null,
-				"show": true
-			  },
-			  {
-				"format": "short",
-				"label": null,
-				"logBase": 1,
-				"max": null,
-				"min": null,
-				"show": true
-			  }
-			],
-			"yaxis": {
-			  "align": false,
-			  "alignLevel": null
-			}
-		  },
-		  {
-			"aliasColors": {},
-			"bars": false,
-			"dashLength": 10,
-			"dashes": false,
-			"description": "Percent of failed requests to Aggregator",
-			"fill": 1,
-			"gridPos": {
-			  "h": 9,
-			  "w": 8,
-			  "x": 8,
-			  "y": 7
-			},
-			"id": 48,
-			"legend": {
-			  "avg": false,
-			  "current": false,
-			  "max": false,
-			  "min": false,
-			  "show": true,
-			  "total": false,
-			  "values": false
-			},
-			"lines": true,
-			"linewidth": 1,
-			"links": [],
-			"nullPointMode": "null",
-			"percentage": false,
-			"pointradius": 5,
-			"points": false,
-			"renderer": "flot",
-			"seriesOverrides": [],
-			"spaceLength": 10,
-			"stack": false,
-			"steppedLine": false,
-			"targets": [
-			  {
-				"expr": "(sum by (pod) (aggregator_request_duration_seconds_count{kubernetes_namespace=\"cryptopay-$env\", kubernetes_name=~\"$service\", pod=~\"$instance\", status!=\"OK\"})) / (sum by (pod) (aggregator_request_duration_seconds_count{kubernetes_namespace=\"cryptopay-$env\", kubernetes_name=~\"$service\", pod=~\"$instance\"}))",
-				"format": "time_series",
-				"intervalFactor": 1,
-				"refId": "A"
-			  }
-			],
-			"thresholds": [],
-			"timeFrom": null,
-			"timeRegions": [],
-			"timeShift": null,
-			"title": "Aggregator Failed Requests %",
-			"tooltip": {
-			  "shared": true,
-			  "sort": 0,
-			  "value_type": "individual"
-			},
-			"type": "graph",
-			"xaxis": {
-			  "buckets": null,
-			  "mode": "time",
-			  "name": null,
-			  "show": true,
-			  "values": []
-			},
-			"yaxes": [
-			  {
-				"format": "percentunit",
-				"label": null,
-				"logBase": 1,
-				"max": null,
-				"min": null,
-				"show": true
-			  },
-			  {
-				"format": "short",
-				"label": null,
-				"logBase": 1,
-				"max": null,
-				"min": null,
-				"show": true
-			  }
-			],
-			"yaxis": {
-			  "align": false,
-			  "alignLevel": null
-			}
-		  },
-		  {
-			"cards": {
-			  "cardPadding": null,
-			  "cardRound": null
-			},
-			"color": {
-			  "cardColor": "#b4ff00",
-			  "colorScale": "sqrt",
-			  "colorScheme": "interpolateMagma",
-			  "exponent": 0.5,
-			  "mode": "spectrum"
-			},
-			"dataFormat": "tsbuckets",
-			"description": "Aggregator response time distribution",
-			"gridPos": {
-			  "h": 9,
-			  "w": 8,
-			  "x": 16,
-			  "y": 7
-			},
-			"heatmap": {},
-			"highlightCards": true,
-			"id": 50,
-			"legend": {
-			  "show": true
-			},
-			"links": [],
-			"targets": [
-			  {
-				"expr": "sum(increase(aggregator_request_duration_seconds_bucket{kubernetes_namespace=\"cryptopay-$env\", kubernetes_name=~\"$service\", pod=~\"$instance\"}[$__interval])) by (le)",
-				"format": "heatmap",
-				"instant": false,
-				"interval": "5m",
-				"intervalFactor": 1,
-				"legendFormat": "{{le}}",
-				"refId": "A"
-			  }
-			],
-			"title": "Aggregator Response Time Distrbution",
-			"tooltip": {
-			  "show": true,
-			  "showHistogram": true
-			},
-			"tooltipDecimals": 2,
-			"type": "heatmap",
-			"xAxis": {
-			  "show": true
-			},
-			"xBucketNumber": null,
-			"xBucketSize": null,
-			"yAxis": {
-			  "decimals": null,
-			  "format": "s",
-			  "logBase": 1,
-			  "max": null,
-			  "min": null,
-			  "show": true,
-			  "splitFactor": null
-			},
-			"yBucketBound": "auto",
-			"yBucketNumber": null,
-			"yBucketSize": null
-		  }
-		],
+		"panels": [],
 		"title": "Aggregator Status",
 		"type": "row"
+	  },
+	  {
+		"aliasColors": {},
+		"bars": false,
+		"dashLength": 10,
+		"dashes": false,
+		"description": "Aggregator requests count per hour",
+		"fill": 1,
+		"gridPos": {
+		  "h": 9,
+		  "w": 8,
+		  "x": 0,
+		  "y": 69
+		},
+		"id": 46,
+		"legend": {
+		  "avg": false,
+		  "current": false,
+		  "max": false,
+		  "min": false,
+		  "show": true,
+		  "total": false,
+		  "values": false
+		},
+		"lines": true,
+		"linewidth": 1,
+		"links": [],
+		"nullPointMode": "null",
+		"percentage": false,
+		"pointradius": 5,
+		"points": false,
+		"renderer": "flot",
+		"seriesOverrides": [],
+		"spaceLength": 10,
+		"stack": false,
+		"steppedLine": false,
+		"targets": [
+		  {
+			"expr": "sum by (pod) (rate(aggregator_request_duration_seconds_count{kubernetes_namespace=\"cryptopay-$env\", kubernetes_name=~\"$service\", pod=~\"$instance\"}[1h])) * 3600",
+			"format": "time_series",
+			"intervalFactor": 1,
+			"legendFormat": "{{pod}}",
+			"refId": "A"
+		  }
+		],
+		"thresholds": [],
+		"timeFrom": null,
+		"timeRegions": [],
+		"timeShift": null,
+		"title": "Aggregator Requests Count / Hour",
+		"tooltip": {
+		  "shared": true,
+		  "sort": 0,
+		  "value_type": "individual"
+		},
+		"type": "graph",
+		"xaxis": {
+		  "buckets": null,
+		  "mode": "time",
+		  "name": null,
+		  "show": true,
+		  "values": []
+		},
+		"yaxes": [
+		  {
+			"format": "short",
+			"label": null,
+			"logBase": 1,
+			"max": null,
+			"min": null,
+			"show": true
+		  },
+		  {
+			"format": "short",
+			"label": null,
+			"logBase": 1,
+			"max": null,
+			"min": null,
+			"show": true
+		  }
+		],
+		"yaxis": {
+		  "align": false,
+		  "alignLevel": null
+		}
+	  },
+	  {
+		"aliasColors": {},
+		"bars": false,
+		"dashLength": 10,
+		"dashes": false,
+		"description": "Percent of failed requests to Aggregator",
+		"fill": 1,
+		"gridPos": {
+		  "h": 9,
+		  "w": 8,
+		  "x": 8,
+		  "y": 69
+		},
+		"id": 48,
+		"legend": {
+		  "avg": false,
+		  "current": false,
+		  "max": false,
+		  "min": false,
+		  "show": true,
+		  "total": false,
+		  "values": false
+		},
+		"lines": true,
+		"linewidth": 1,
+		"links": [],
+		"nullPointMode": "null",
+		"percentage": false,
+		"pointradius": 5,
+		"points": false,
+		"renderer": "flot",
+		"seriesOverrides": [],
+		"spaceLength": 10,
+		"stack": false,
+		"steppedLine": false,
+		"targets": [
+		  {
+			"expr": "(sum by (pod) (aggregator_request_duration_seconds_count{kubernetes_namespace=\"cryptopay-$env\", kubernetes_name=~\"$service\", pod=~\"$instance\", status!=\"OK\"})) / (sum by (pod) (aggregator_request_duration_seconds_count{kubernetes_namespace=\"cryptopay-$env\", kubernetes_name=~\"$service\", pod=~\"$instance\"}))",
+			"format": "time_series",
+			"intervalFactor": 1,
+			"refId": "A"
+		  }
+		],
+		"thresholds": [],
+		"timeFrom": null,
+		"timeRegions": [],
+		"timeShift": null,
+		"title": "Aggregator Failed Requests %",
+		"tooltip": {
+		  "shared": true,
+		  "sort": 0,
+		  "value_type": "individual"
+		},
+		"type": "graph",
+		"xaxis": {
+		  "buckets": null,
+		  "mode": "time",
+		  "name": null,
+		  "show": true,
+		  "values": []
+		},
+		"yaxes": [
+		  {
+			"format": "percentunit",
+			"label": null,
+			"logBase": 1,
+			"max": null,
+			"min": null,
+			"show": true
+		  },
+		  {
+			"format": "short",
+			"label": null,
+			"logBase": 1,
+			"max": null,
+			"min": null,
+			"show": true
+		  }
+		],
+		"yaxis": {
+		  "align": false,
+		  "alignLevel": null
+		}
+	  },
+	  {
+		"cards": {
+		  "cardPadding": null,
+		  "cardRound": null
+		},
+		"color": {
+		  "cardColor": "#b4ff00",
+		  "colorScale": "sqrt",
+		  "colorScheme": "interpolateMagma",
+		  "exponent": 0.5,
+		  "mode": "spectrum"
+		},
+		"dataFormat": "tsbuckets",
+		"description": "Aggregator response time distribution",
+		"gridPos": {
+		  "h": 9,
+		  "w": 8,
+		  "x": 16,
+		  "y": 69
+		},
+		"heatmap": {},
+		"highlightCards": true,
+		"id": 50,
+		"legend": {
+		  "show": true
+		},
+		"links": [],
+		"targets": [
+		  {
+			"expr": "sum(increase(aggregator_request_duration_seconds_bucket{kubernetes_namespace=\"cryptopay-$env\", kubernetes_name=~\"$service\", pod=~\"$instance\"}[$__interval])) by (le)",
+			"format": "heatmap",
+			"instant": false,
+			"interval": "5m",
+			"intervalFactor": 1,
+			"legendFormat": "{{le}}",
+			"refId": "A"
+		  }
+		],
+		"title": "Aggregator Response Time Distrbution",
+		"tooltip": {
+		  "show": true,
+		  "showHistogram": true
+		},
+		"tooltipDecimals": 2,
+		"type": "heatmap",
+		"xAxis": {
+		  "show": true
+		},
+		"xBucketNumber": null,
+		"xBucketSize": null,
+		"yAxis": {
+		  "decimals": null,
+		  "format": "s",
+		  "logBase": 1,
+		  "max": null,
+		  "min": null,
+		  "show": true,
+		  "splitFactor": null
+		},
+		"yBucketBound": "auto",
+		"yBucketNumber": null,
+		"yBucketSize": null
 	  }
 	],
 	"refresh": false,
@@ -2204,6 +2199,7 @@
 		{
 		  "allValue": null,
 		  "current": {
+			"selected": true,
 			"text": "All",
 			"value": "$__all"
 		  },
@@ -2229,6 +2225,7 @@
 		{
 		  "allValue": null,
 		  "current": {
+			"selected": true,
 			"text": "All",
 			"value": "$__all"
 		  },
@@ -2254,7 +2251,7 @@
 	  ]
 	},
 	"time": {
-	  "from": "now-30m",
+	  "from": "now-15m",
 	  "to": "now"
 	},
 	"timepicker": {
@@ -2285,5 +2282,5 @@
 	"timezone": "",
 	"title": "Cryptopay-Health",
 	"uid": "_0mRvmSGk",
-	"version": 39
+	"version": 40
   }
