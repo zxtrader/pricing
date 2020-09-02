@@ -16,7 +16,7 @@
 	"gnetId": null,
 	"graphTooltip": 0,
 	"id": 129,
-	"iteration": 1597672151477,
+	"iteration": 1599043847006,
 	"links": [],
 	"panels": [
 	  {
@@ -52,7 +52,7 @@
 			  "h": 5,
 			  "w": 3,
 			  "x": 0,
-			  "y": 3
+			  "y": 2
 			},
 			"id": 6,
 			"interval": null,
@@ -133,7 +133,7 @@
 			  "h": 5,
 			  "w": 3,
 			  "x": 3,
-			  "y": 3
+			  "y": 2
 			},
 			"hideTimeOverride": false,
 			"id": 8,
@@ -215,7 +215,7 @@
 			  "h": 5,
 			  "w": 4,
 			  "x": 6,
-			  "y": 3
+			  "y": 2
 			},
 			"id": 14,
 			"interval": null,
@@ -297,7 +297,7 @@
 			  "h": 5,
 			  "w": 4,
 			  "x": 10,
-			  "y": 3
+			  "y": 2
 			},
 			"id": 12,
 			"interval": null,
@@ -380,7 +380,7 @@
 			  "h": 5,
 			  "w": 4,
 			  "x": 14,
-			  "y": 3
+			  "y": 2
 			},
 			"id": 10,
 			"interval": null,
@@ -465,7 +465,7 @@
 			  "h": 5,
 			  "w": 3,
 			  "x": 18,
-			  "y": 3
+			  "y": 2
 			},
 			"id": 2,
 			"interval": null,
@@ -548,7 +548,7 @@
 			  "h": 5,
 			  "w": 3,
 			  "x": 21,
-			  "y": 3
+			  "y": 2
 			},
 			"id": 4,
 			"interval": null,
@@ -628,7 +628,7 @@
 			  "h": 5,
 			  "w": 24,
 			  "x": 0,
-			  "y": 4
+			  "y": 3
 			},
 			"id": 22,
 			"links": [],
@@ -764,7 +764,7 @@
 			  "h": 7,
 			  "w": 12,
 			  "x": 0,
-			  "y": 5
+			  "y": 4
 			},
 			"id": 24,
 			"legend": {
@@ -852,7 +852,7 @@
 			  "h": 16,
 			  "w": 12,
 			  "x": 12,
-			  "y": 5
+			  "y": 4
 			},
 			"id": 18,
 			"links": [],
@@ -1027,7 +1027,7 @@
 			  "h": 9,
 			  "w": 12,
 			  "x": 0,
-			  "y": 12
+			  "y": 11
 			},
 			"heatmap": {},
 			"highlightCards": true,
@@ -1075,7 +1075,7 @@
 		"type": "row"
 	  },
 	  {
-		"collapsed": true,
+		"collapsed": false,
 		"gridPos": {
 		  "h": 1,
 		  "w": 24,
@@ -1083,353 +1083,600 @@
 		  "y": 3
 		},
 		"id": 38,
-		"panels": [
-		  {
-			"aliasColors": {},
-			"bars": false,
-			"dashLength": 10,
-			"dashes": false,
-			"datasource": "Prometheus",
-			"description": "Process CPU usage",
-			"fill": 1,
-			"gridPos": {
-			  "h": 9,
-			  "w": 12,
-			  "x": 0,
-			  "y": 6
-			},
-			"id": 26,
-			"legend": {
-			  "avg": false,
-			  "current": false,
-			  "max": false,
-			  "min": false,
-			  "show": true,
-			  "total": false,
-			  "values": false
-			},
-			"lines": true,
-			"linewidth": 1,
-			"links": [],
-			"nullPointMode": "null",
-			"percentage": false,
-			"pointradius": 5,
-			"points": false,
-			"renderer": "flot",
-			"seriesOverrides": [],
-			"spaceLength": 10,
-			"stack": false,
-			"steppedLine": false,
-			"targets": [
-			  {
-				"expr": "sum (irate(process_cpu_seconds_total{kubernetes_namespace=\"cryptopay-$env\", kubernetes_name=~\"$service\", pod=~\"$instance\"}[5m])) by (pod)",
-				"format": "time_series",
-				"interval": "30s",
-				"intervalFactor": 1,
-				"legendFormat": "{{pod}}",
-				"refId": "A"
-			  }
-			],
-			"thresholds": [],
-			"timeFrom": null,
-			"timeRegions": [],
-			"timeShift": null,
-			"title": "CPU Usage",
-			"tooltip": {
-			  "shared": true,
-			  "sort": 0,
-			  "value_type": "individual"
-			},
-			"type": "graph",
-			"xaxis": {
-			  "buckets": null,
-			  "mode": "time",
-			  "name": null,
-			  "show": true,
-			  "values": []
-			},
-			"yaxes": [
-			  {
-				"format": "percentunit",
-				"label": null,
-				"logBase": 1,
-				"max": null,
-				"min": null,
-				"show": true
-			  },
-			  {
-				"format": "short",
-				"label": null,
-				"logBase": 1,
-				"max": null,
-				"min": null,
-				"show": true
-			  }
-			],
-			"yaxis": {
-			  "align": false,
-			  "alignLevel": null
-			}
-		  },
-		  {
-			"aliasColors": {},
-			"bars": false,
-			"dashLength": 10,
-			"dashes": false,
-			"description": "Process RAM usage",
-			"fill": 1,
-			"gridPos": {
-			  "h": 9,
-			  "w": 12,
-			  "x": 12,
-			  "y": 6
-			},
-			"id": 28,
-			"legend": {
-			  "avg": false,
-			  "current": false,
-			  "max": false,
-			  "min": false,
-			  "show": true,
-			  "total": false,
-			  "values": false
-			},
-			"lines": true,
-			"linewidth": 1,
-			"links": [],
-			"nullPointMode": "null",
-			"percentage": false,
-			"pointradius": 5,
-			"points": false,
-			"renderer": "flot",
-			"seriesOverrides": [],
-			"spaceLength": 10,
-			"stack": false,
-			"steppedLine": false,
-			"targets": [
-			  {
-				"expr": "sum(process_resident_memory_bytes{kubernetes_namespace=\"cryptopay-$env\", kubernetes_name=~\"$service\", pod=~\"$instance\"}) by (pod)",
-				"format": "time_series",
-				"intervalFactor": 1,
-				"legendFormat": "{{pod}}",
-				"refId": "A"
-			  }
-			],
-			"thresholds": [],
-			"timeFrom": null,
-			"timeRegions": [],
-			"timeShift": null,
-			"title": "RAM Usage",
-			"tooltip": {
-			  "shared": true,
-			  "sort": 0,
-			  "value_type": "individual"
-			},
-			"type": "graph",
-			"xaxis": {
-			  "buckets": null,
-			  "mode": "time",
-			  "name": null,
-			  "show": true,
-			  "values": []
-			},
-			"yaxes": [
-			  {
-				"format": "bytes",
-				"label": null,
-				"logBase": 1,
-				"max": null,
-				"min": null,
-				"show": true
-			  },
-			  {
-				"format": "short",
-				"label": null,
-				"logBase": 1,
-				"max": null,
-				"min": null,
-				"show": true
-			  }
-			],
-			"yaxis": {
-			  "align": false,
-			  "alignLevel": null
-			}
-		  },
-		  {
-			"aliasColors": {},
-			"bars": false,
-			"dashLength": 10,
-			"dashes": false,
-			"datasource": "Prometheus",
-			"description": "NodeJS Event Loop Lag",
-			"fill": 1,
-			"gridPos": {
-			  "h": 9,
-			  "w": 12,
-			  "x": 0,
-			  "y": 15
-			},
-			"id": 32,
-			"legend": {
-			  "avg": false,
-			  "current": false,
-			  "max": false,
-			  "min": false,
-			  "show": true,
-			  "total": false,
-			  "values": false
-			},
-			"lines": true,
-			"linewidth": 1,
-			"links": [],
-			"nullPointMode": "null",
-			"percentage": false,
-			"pointradius": 5,
-			"points": false,
-			"renderer": "flot",
-			"seriesOverrides": [],
-			"spaceLength": 10,
-			"stack": false,
-			"steppedLine": false,
-			"targets": [
-			  {
-				"expr": "sum(nodejs_eventloop_lag_seconds{kubernetes_namespace=\"cryptopay-$env\", kubernetes_name=~\"$service\", pod=~\"$instance\"}) by (pod)",
-				"format": "time_series",
-				"intervalFactor": 1,
-				"legendFormat": "{{pod}}",
-				"refId": "A"
-			  }
-			],
-			"thresholds": [],
-			"timeFrom": null,
-			"timeRegions": [],
-			"timeShift": null,
-			"title": "Event Loop Lag",
-			"tooltip": {
-			  "shared": true,
-			  "sort": 0,
-			  "value_type": "individual"
-			},
-			"type": "graph",
-			"xaxis": {
-			  "buckets": null,
-			  "mode": "time",
-			  "name": null,
-			  "show": true,
-			  "values": []
-			},
-			"yaxes": [
-			  {
-				"format": "s",
-				"label": null,
-				"logBase": 1,
-				"max": null,
-				"min": null,
-				"show": true
-			  },
-			  {
-				"format": "short",
-				"label": null,
-				"logBase": 1,
-				"max": null,
-				"min": null,
-				"show": true
-			  }
-			],
-			"yaxis": {
-			  "align": false,
-			  "alignLevel": null
-			}
-		  },
-		  {
-			"aliasColors": {},
-			"bars": false,
-			"dashLength": 10,
-			"dashes": false,
-			"description": "Process virtual memory usage",
-			"fill": 1,
-			"gridPos": {
-			  "h": 9,
-			  "w": 12,
-			  "x": 12,
-			  "y": 15
-			},
-			"id": 30,
-			"legend": {
-			  "avg": false,
-			  "current": false,
-			  "max": false,
-			  "min": false,
-			  "show": true,
-			  "total": false,
-			  "values": false
-			},
-			"lines": true,
-			"linewidth": 1,
-			"links": [],
-			"nullPointMode": "null",
-			"percentage": false,
-			"pointradius": 5,
-			"points": false,
-			"renderer": "flot",
-			"seriesOverrides": [],
-			"spaceLength": 10,
-			"stack": false,
-			"steppedLine": false,
-			"targets": [
-			  {
-				"expr": "sum(process_virtual_memory_bytes{kubernetes_namespace=\"cryptopay-$env\", kubernetes_name=~\"$service\", pod=~\"$instance\"}) by (pod)",
-				"format": "time_series",
-				"intervalFactor": 1,
-				"legendFormat": "{{pod}}",
-				"refId": "A"
-			  }
-			],
-			"thresholds": [],
-			"timeFrom": null,
-			"timeRegions": [],
-			"timeShift": null,
-			"title": "Virtual Memory Usage",
-			"tooltip": {
-			  "shared": true,
-			  "sort": 0,
-			  "value_type": "individual"
-			},
-			"type": "graph",
-			"xaxis": {
-			  "buckets": null,
-			  "mode": "time",
-			  "name": null,
-			  "show": true,
-			  "values": []
-			},
-			"yaxes": [
-			  {
-				"format": "bytes",
-				"label": null,
-				"logBase": 1,
-				"max": null,
-				"min": null,
-				"show": true
-			  },
-			  {
-				"format": "short",
-				"label": null,
-				"logBase": 1,
-				"max": null,
-				"min": null,
-				"show": true
-			  }
-			],
-			"yaxis": {
-			  "align": false,
-			  "alignLevel": null
-			}
-		  }
-		],
+		"panels": [],
 		"title": "Process",
 		"type": "row"
+	  },
+	  {
+		"aliasColors": {},
+		"bars": false,
+		"dashLength": 10,
+		"dashes": false,
+		"datasource": "Prometheus",
+		"description": "Process CPU usage",
+		"fill": 1,
+		"gridPos": {
+		  "h": 9,
+		  "w": 12,
+		  "x": 0,
+		  "y": 4
+		},
+		"id": 26,
+		"legend": {
+		  "avg": false,
+		  "current": false,
+		  "max": false,
+		  "min": false,
+		  "show": true,
+		  "total": false,
+		  "values": false
+		},
+		"lines": true,
+		"linewidth": 1,
+		"links": [],
+		"nullPointMode": "null",
+		"percentage": false,
+		"pointradius": 5,
+		"points": false,
+		"renderer": "flot",
+		"seriesOverrides": [],
+		"spaceLength": 10,
+		"stack": false,
+		"steppedLine": false,
+		"targets": [
+		  {
+			"expr": "sum (irate(process_cpu_seconds_total{kubernetes_namespace=\"cryptopay-$env\", kubernetes_name=~\"$service\", pod=~\"$instance\"}[5m])) by (pod)",
+			"format": "time_series",
+			"interval": "30s",
+			"intervalFactor": 1,
+			"legendFormat": "{{pod}}",
+			"refId": "A"
+		  }
+		],
+		"thresholds": [],
+		"timeFrom": null,
+		"timeRegions": [],
+		"timeShift": null,
+		"title": "CPU Usage",
+		"tooltip": {
+		  "shared": true,
+		  "sort": 0,
+		  "value_type": "individual"
+		},
+		"type": "graph",
+		"xaxis": {
+		  "buckets": null,
+		  "mode": "time",
+		  "name": null,
+		  "show": true,
+		  "values": []
+		},
+		"yaxes": [
+		  {
+			"format": "percentunit",
+			"label": null,
+			"logBase": 1,
+			"max": null,
+			"min": null,
+			"show": true
+		  },
+		  {
+			"format": "short",
+			"label": null,
+			"logBase": 1,
+			"max": null,
+			"min": null,
+			"show": true
+		  }
+		],
+		"yaxis": {
+		  "align": false,
+		  "alignLevel": null
+		}
+	  },
+	  {
+		"aliasColors": {},
+		"bars": false,
+		"dashLength": 10,
+		"dashes": false,
+		"description": "Process RAM usage",
+		"fill": 1,
+		"gridPos": {
+		  "h": 9,
+		  "w": 12,
+		  "x": 12,
+		  "y": 4
+		},
+		"id": 28,
+		"legend": {
+		  "avg": false,
+		  "current": false,
+		  "max": false,
+		  "min": false,
+		  "show": true,
+		  "total": false,
+		  "values": false
+		},
+		"lines": true,
+		"linewidth": 1,
+		"links": [],
+		"nullPointMode": "null",
+		"percentage": false,
+		"pointradius": 5,
+		"points": false,
+		"renderer": "flot",
+		"seriesOverrides": [],
+		"spaceLength": 10,
+		"stack": false,
+		"steppedLine": false,
+		"targets": [
+		  {
+			"expr": "sum(process_resident_memory_bytes{kubernetes_namespace=\"cryptopay-$env\", kubernetes_name=~\"$service\", pod=~\"$instance\"}) by (pod)",
+			"format": "time_series",
+			"intervalFactor": 1,
+			"legendFormat": "{{pod}}",
+			"refId": "A"
+		  }
+		],
+		"thresholds": [],
+		"timeFrom": null,
+		"timeRegions": [],
+		"timeShift": null,
+		"title": "RAM Usage",
+		"tooltip": {
+		  "shared": true,
+		  "sort": 0,
+		  "value_type": "individual"
+		},
+		"type": "graph",
+		"xaxis": {
+		  "buckets": null,
+		  "mode": "time",
+		  "name": null,
+		  "show": true,
+		  "values": []
+		},
+		"yaxes": [
+		  {
+			"format": "bytes",
+			"label": null,
+			"logBase": 1,
+			"max": null,
+			"min": null,
+			"show": true
+		  },
+		  {
+			"format": "short",
+			"label": null,
+			"logBase": 1,
+			"max": null,
+			"min": null,
+			"show": true
+		  }
+		],
+		"yaxis": {
+		  "align": false,
+		  "alignLevel": null
+		}
+	  },
+	  {
+		"aliasColors": {},
+		"bars": false,
+		"dashLength": 10,
+		"dashes": false,
+		"datasource": "Prometheus",
+		"description": "NodeJS Event Loop Lag",
+		"fill": 1,
+		"gridPos": {
+		  "h": 9,
+		  "w": 12,
+		  "x": 0,
+		  "y": 13
+		},
+		"id": 32,
+		"legend": {
+		  "avg": false,
+		  "current": false,
+		  "max": false,
+		  "min": false,
+		  "show": true,
+		  "total": false,
+		  "values": false
+		},
+		"lines": true,
+		"linewidth": 1,
+		"links": [],
+		"nullPointMode": "null",
+		"percentage": false,
+		"pointradius": 5,
+		"points": false,
+		"renderer": "flot",
+		"seriesOverrides": [],
+		"spaceLength": 10,
+		"stack": false,
+		"steppedLine": false,
+		"targets": [
+		  {
+			"expr": "sum(nodejs_eventloop_lag_seconds{kubernetes_namespace=\"cryptopay-$env\", kubernetes_name=~\"$service\", pod=~\"$instance\"}) by (pod)",
+			"format": "time_series",
+			"intervalFactor": 1,
+			"legendFormat": "{{pod}}",
+			"refId": "A"
+		  }
+		],
+		"thresholds": [],
+		"timeFrom": null,
+		"timeRegions": [],
+		"timeShift": null,
+		"title": "Event Loop Lag",
+		"tooltip": {
+		  "shared": true,
+		  "sort": 0,
+		  "value_type": "individual"
+		},
+		"type": "graph",
+		"xaxis": {
+		  "buckets": null,
+		  "mode": "time",
+		  "name": null,
+		  "show": true,
+		  "values": []
+		},
+		"yaxes": [
+		  {
+			"format": "s",
+			"label": null,
+			"logBase": 1,
+			"max": null,
+			"min": null,
+			"show": true
+		  },
+		  {
+			"format": "short",
+			"label": null,
+			"logBase": 1,
+			"max": null,
+			"min": null,
+			"show": true
+		  }
+		],
+		"yaxis": {
+		  "align": false,
+		  "alignLevel": null
+		}
+	  },
+	  {
+		"aliasColors": {},
+		"bars": false,
+		"dashLength": 10,
+		"dashes": false,
+		"description": "Process virtual memory usage",
+		"fill": 1,
+		"gridPos": {
+		  "h": 9,
+		  "w": 12,
+		  "x": 12,
+		  "y": 13
+		},
+		"id": 30,
+		"legend": {
+		  "avg": false,
+		  "current": false,
+		  "max": false,
+		  "min": false,
+		  "show": true,
+		  "total": false,
+		  "values": false
+		},
+		"lines": true,
+		"linewidth": 1,
+		"links": [],
+		"nullPointMode": "null",
+		"percentage": false,
+		"pointradius": 5,
+		"points": false,
+		"renderer": "flot",
+		"seriesOverrides": [],
+		"spaceLength": 10,
+		"stack": false,
+		"steppedLine": false,
+		"targets": [
+		  {
+			"expr": "sum(process_virtual_memory_bytes{kubernetes_namespace=\"cryptopay-$env\", kubernetes_name=~\"$service\", pod=~\"$instance\"}) by (pod)",
+			"format": "time_series",
+			"intervalFactor": 1,
+			"legendFormat": "{{pod}}",
+			"refId": "A"
+		  }
+		],
+		"thresholds": [],
+		"timeFrom": null,
+		"timeRegions": [],
+		"timeShift": null,
+		"title": "Virtual Memory Usage",
+		"tooltip": {
+		  "shared": true,
+		  "sort": 0,
+		  "value_type": "individual"
+		},
+		"type": "graph",
+		"xaxis": {
+		  "buckets": null,
+		  "mode": "time",
+		  "name": null,
+		  "show": true,
+		  "values": []
+		},
+		"yaxes": [
+		  {
+			"format": "bytes",
+			"label": null,
+			"logBase": 1,
+			"max": null,
+			"min": null,
+			"show": true
+		  },
+		  {
+			"format": "short",
+			"label": null,
+			"logBase": 1,
+			"max": null,
+			"min": null,
+			"show": true
+		  }
+		],
+		"yaxis": {
+		  "align": false,
+		  "alignLevel": null
+		}
+	  },
+	  {
+		"collapsed": false,
+		"gridPos": {
+		  "h": 1,
+		  "w": 24,
+		  "x": 0,
+		  "y": 22
+		},
+		"id": 60,
+		"panels": [],
+		"title": "Database Status",
+		"type": "row"
+	  },
+	  {
+		"cards": {
+		  "cardPadding": null,
+		  "cardRound": null
+		},
+		"color": {
+		  "cardColor": "#b4ff00",
+		  "colorScale": "sqrt",
+		  "colorScheme": "interpolateMagma",
+		  "exponent": 0.5,
+		  "mode": "spectrum"
+		},
+		"dataFormat": "tsbuckets",
+		"description": "Postgres query time distribution",
+		"gridPos": {
+		  "h": 9,
+		  "w": 14,
+		  "x": 0,
+		  "y": 23
+		},
+		"heatmap": {},
+		"highlightCards": true,
+		"id": 62,
+		"legend": {
+		  "show": true
+		},
+		"links": [],
+		"targets": [
+		  {
+			"expr": "sum(increase(pgsql_query_duration_seconds_bucket{kubernetes_namespace=\"cryptopay-$env\", kubernetes_name=~\"$service\", pod=~\"$instance\"}[$__interval])) by (le)",
+			"format": "heatmap",
+			"instant": false,
+			"interval": "5m",
+			"intervalFactor": 1,
+			"legendFormat": "{{le}}",
+			"refId": "A"
+		  }
+		],
+		"title": "Postgres Query Time Distrbution",
+		"tooltip": {
+		  "show": true,
+		  "showHistogram": true
+		},
+		"tooltipDecimals": 2,
+		"type": "heatmap",
+		"xAxis": {
+		  "show": true
+		},
+		"xBucketNumber": null,
+		"xBucketSize": null,
+		"yAxis": {
+		  "decimals": null,
+		  "format": "s",
+		  "logBase": 1,
+		  "max": null,
+		  "min": null,
+		  "show": true,
+		  "splitFactor": null
+		},
+		"yBucketBound": "auto",
+		"yBucketNumber": null,
+		"yBucketSize": null
+	  },
+	  {
+		"columns": [],
+		"description": "Hashes of Top 20 frequently used queries",
+		"fontSize": "100%",
+		"gridPos": {
+		  "h": 9,
+		  "w": 5,
+		  "x": 14,
+		  "y": 23
+		},
+		"id": 64,
+		"links": [],
+		"pageSize": null,
+		"scroll": true,
+		"showHeader": true,
+		"sort": {
+		  "col": null,
+		  "desc": false
+		},
+		"styles": [
+		  {
+			"alias": "Time",
+			"dateFormat": "YYYY-MM-DD HH:mm:ss",
+			"pattern": "Time",
+			"type": "hidden"
+		  },
+		  {
+			"alias": "Hash",
+			"colorMode": null,
+			"colors": [
+			  "rgba(245, 54, 54, 0.9)",
+			  "rgba(237, 129, 40, 0.89)",
+			  "rgba(50, 172, 45, 0.97)"
+			],
+			"dateFormat": "YYYY-MM-DD HH:mm:ss",
+			"decimals": 2,
+			"mappingType": 1,
+			"pattern": "hash",
+			"thresholds": [],
+			"type": "number",
+			"unit": "short"
+		  },
+		  {
+			"alias": "Count",
+			"colorMode": null,
+			"colors": [
+			  "rgba(245, 54, 54, 0.9)",
+			  "rgba(237, 129, 40, 0.89)",
+			  "rgba(50, 172, 45, 0.97)"
+			],
+			"dateFormat": "YYYY-MM-DD HH:mm:ss",
+			"decimals": 2,
+			"mappingType": 1,
+			"pattern": "Value",
+			"thresholds": [],
+			"type": "number",
+			"unit": "short"
+		  },
+		  {
+			"alias": "",
+			"colorMode": null,
+			"colors": [
+			  "rgba(245, 54, 54, 0.9)",
+			  "rgba(237, 129, 40, 0.89)",
+			  "rgba(50, 172, 45, 0.97)"
+			],
+			"decimals": 2,
+			"pattern": "/.*/",
+			"thresholds": [],
+			"type": "number",
+			"unit": "short"
+		  }
+		],
+		"targets": [
+		  {
+			"expr": "sort_desc(topk(20, sort_desc(sum(increase(pgsql_query_duration_seconds_count{kubernetes_namespace=\"cryptopay-$env\", kubernetes_name=~\"$service\", pod=~\"$instance\"}[$__range]) > 0) by (hash))))",
+			"format": "table",
+			"instant": true,
+			"intervalFactor": 1,
+			"refId": "A"
+		  }
+		],
+		"title": "Top 20 Frequently Used Queries",
+		"transform": "table",
+		"type": "table"
+	  },
+	  {
+		"columns": [],
+		"description": "Hashes of Top 20 long running queries",
+		"fontSize": "100%",
+		"gridPos": {
+		  "h": 9,
+		  "w": 5,
+		  "x": 19,
+		  "y": 23
+		},
+		"id": 66,
+		"links": [],
+		"pageSize": null,
+		"scroll": true,
+		"showHeader": true,
+		"sort": {
+		  "col": null,
+		  "desc": false
+		},
+		"styles": [
+		  {
+			"alias": "Time",
+			"dateFormat": "YYYY-MM-DD HH:mm:ss",
+			"pattern": "Time",
+			"type": "hidden"
+		  },
+		  {
+			"alias": "Hash",
+			"colorMode": null,
+			"colors": [
+			  "rgba(245, 54, 54, 0.9)",
+			  "rgba(237, 129, 40, 0.89)",
+			  "rgba(50, 172, 45, 0.97)"
+			],
+			"dateFormat": "YYYY-MM-DD HH:mm:ss",
+			"decimals": 2,
+			"mappingType": 1,
+			"pattern": "hash",
+			"thresholds": [],
+			"type": "number",
+			"unit": "short"
+		  },
+		  {
+			"alias": "Avg. Time",
+			"colorMode": null,
+			"colors": [
+			  "rgba(245, 54, 54, 0.9)",
+			  "rgba(237, 129, 40, 0.89)",
+			  "rgba(50, 172, 45, 0.97)"
+			],
+			"dateFormat": "YYYY-MM-DD HH:mm:ss",
+			"decimals": 2,
+			"mappingType": 1,
+			"pattern": "Value",
+			"thresholds": [],
+			"type": "number",
+			"unit": "short"
+		  },
+		  {
+			"alias": "",
+			"colorMode": null,
+			"colors": [
+			  "rgba(245, 54, 54, 0.9)",
+			  "rgba(237, 129, 40, 0.89)",
+			  "rgba(50, 172, 45, 0.97)"
+			],
+			"decimals": 2,
+			"pattern": "/.*/",
+			"thresholds": [],
+			"type": "number",
+			"unit": "short"
+		  }
+		],
+		"targets": [
+		  {
+			"expr": "sort_desc(topk(20,sort_desc(topk(20, sort_desc(sum(increase(pgsql_query_duration_seconds_sum{kubernetes_namespace=\"cryptopay-$env\", kubernetes_name=~\"$service\", pod=~\"$instance\"}[$__range]) > 0) by (hash) / sum(increase(pgsql_query_duration_seconds_count{kubernetes_namespace=\"cryptopay-$env\", kubernetes_name=~\"$service\", pod=~\"$instance\"}[$__range]) > 0) by (hash))))))",
+			"format": "table",
+			"instant": true,
+			"intervalFactor": 1,
+			"refId": "A"
+		  }
+		],
+		"title": "Top 20 Long Running Queries",
+		"transform": "table",
+		"type": "table"
 	  },
 	  {
 		"collapsed": true,
@@ -1437,7 +1684,7 @@
 		  "h": 1,
 		  "w": 24,
 		  "x": 0,
-		  "y": 4
+		  "y": 32
 		},
 		"id": 52,
 		"panels": [
@@ -1451,7 +1698,7 @@
 			  "h": 9,
 			  "w": 8,
 			  "x": 0,
-			  "y": 1
+			  "y": 6
 			},
 			"id": 54,
 			"legend": {
@@ -1535,7 +1782,7 @@
 			  "h": 9,
 			  "w": 8,
 			  "x": 8,
-			  "y": 1
+			  "y": 6
 			},
 			"id": 56,
 			"legend": {
@@ -1625,7 +1872,7 @@
 			  "h": 9,
 			  "w": 8,
 			  "x": 16,
-			  "y": 1
+			  "y": 6
 			},
 			"heatmap": {},
 			"highlightCards": true,
@@ -1679,7 +1926,7 @@
 		  "h": 1,
 		  "w": 24,
 		  "x": 0,
-		  "y": 5
+		  "y": 33
 		},
 		"id": 44,
 		"panels": [
@@ -1694,7 +1941,7 @@
 			  "h": 9,
 			  "w": 8,
 			  "x": 0,
-			  "y": 2
+			  "y": 7
 			},
 			"id": 46,
 			"legend": {
@@ -1779,7 +2026,7 @@
 			  "h": 9,
 			  "w": 8,
 			  "x": 8,
-			  "y": 2
+			  "y": 7
 			},
 			"id": 48,
 			"legend": {
@@ -1870,7 +2117,7 @@
 			  "h": 9,
 			  "w": 8,
 			  "x": 16,
-			  "y": 2
+			  "y": 7
 			},
 			"heatmap": {},
 			"highlightCards": true,
@@ -1929,9 +2176,9 @@
 		{
 		  "allValue": null,
 		  "current": {
-			"selected": false,
-			"text": "presentation",
-			"value": "presentation"
+			"selected": true,
+			"text": "evolution",
+			"value": "evolution"
 		  },
 		  "hide": 0,
 		  "includeAll": false,
@@ -1940,12 +2187,12 @@
 		  "name": "env",
 		  "options": [
 			{
-			  "selected": false,
+			  "selected": true,
 			  "text": "evolution",
 			  "value": "evolution"
 			},
 			{
-			  "selected": true,
+			  "selected": false,
 			  "text": "presentation",
 			  "value": "presentation"
 			}
@@ -1957,10 +2204,8 @@
 		{
 		  "allValue": null,
 		  "current": {
-			"text": "cryptopay-processing",
-			"value": [
-			  "cryptopay-processing"
-			]
+			"text": "All",
+			"value": "$__all"
 		  },
 		  "datasource": "Prometheus",
 		  "definition": "query_result(max_over_time(process_start_time_seconds{kubernetes_namespace=\"cryptopay-$env\"}[${__range}]))",
@@ -1984,10 +2229,8 @@
 		{
 		  "allValue": null,
 		  "current": {
-			"text": "cryptopay-processing-7c8bb7f895-fjtgd",
-			"value": [
-			  "cryptopay-processing-7c8bb7f895-fjtgd"
-			]
+			"text": "All",
+			"value": "$__all"
 		  },
 		  "datasource": "Prometheus",
 		  "definition": "query_result(max_over_time(process_start_time_seconds{kubernetes_name=~\"${service}\", kubernetes_namespace=\"cryptopay-$env\"}[${__range}]))",
@@ -2011,7 +2254,7 @@
 	  ]
 	},
 	"time": {
-	  "from": "now-1h",
+	  "from": "now-30m",
 	  "to": "now"
 	},
 	"timepicker": {
@@ -2042,5 +2285,5 @@
 	"timezone": "",
 	"title": "Cryptopay-Health",
 	"uid": "_0mRvmSGk",
-	"version": 30
+	"version": 39
   }
