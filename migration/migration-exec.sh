@@ -106,9 +106,9 @@ echo "# Cleanuping oldest jobs..."
 
 if [ "$(uname)" == "Darwin" ]; then
 	#  Mac OS X platform
-	OBSOLEBE_TIMESTAMP=$(date -u -v-1H '+%Y%m%d%H%M%S')
+	OBSOLEBE_TIMESTAMP=$(date -u -v-6m '+%Y%m%d%H%M%S')
 else
-	OBSOLEBE_TIMESTAMP=$(date -d "1 hour ago" '+%Y%m%d%H%M%S')
+	OBSOLEBE_TIMESTAMP=$(date -d "6 month ago" '+%Y%m%d%H%M%S')
 fi
 
 for EXIST_JOB in $(kubectl get jobs -o go-template --template='{{range .items}}{{.metadata.name}} {{end}}'); do
