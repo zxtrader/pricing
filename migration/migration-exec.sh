@@ -98,13 +98,37 @@ IS_EXIST_PREV_JOB=$(kubectl ${KUBE_OPTS} get --ignore-not-found jobs "${JOB_NAME
 if [ -n "${IS_EXIST_PREV_JOB}" ]; then
 
 	echo
-	echo "Job already exists. Wait 10 seconds and remove it."
-	sleep 10
-	kubectl ${KUBE_OPTS} delete jobs "${JOB_NAME}"
-
-	echo "Job was deleted. Wait 5 seconds to continue."
-	sleep 5
+	echo "Job '${JOB_NAME}' already exists. Cannot continue." >&2
+	exit 77
 fi
+
+echo "# Cleanuping oldest jobs..."
+
+if [ "$(uname)" == "Darwin" ]; then
+	#  Mac OS X platform
+	OBSOLEBE_TIMESTAMP=$(date -u -v-1H '+%Y%m%d%H%M%S')
+else
+	OBSOLEBE_TIMESTAMP=$(date -d "1 hour ago" '+%Y%m%d%H%M%S')
+fi
+
+for EXIST_JOB in $(kubectl get jobs -o go-template --template='{{range .items}}{{.metadata.name}} {{end}}'); do
+	EXIST_JOB_PREFIX=$(echo "${EXIST_JOB}" | cut -d- -f1)
+	EXIST_JOB_TIMESTAMP=$(echo "${EXIST_JOB}" | cut -d- -f2)
+	EXIST_JOB_ACTION=$(echo "${EXIST_JOB}" | cut -d- -f3)
+	if [ "${EXIST_JOB_PREFIX}" == "migration" ]; then
+		if [ "${EXIST_JOB_ACTION}" == "install" -o "${EXIST_JOB_ACTION}" == "rollback" ]; then
+			if [ ${EXIST_JOB_TIMESTAMP} -le ${OBSOLEBE_TIMESTAMP} ]; then
+				echo "	Deleting obsolete job '${EXIST_JOB}' ..."
+				kubectl ${KUBE_OPTS} delete jobs "${EXIST_JOB}"
+				sleep 1
+			fi
+		fi
+	fi
+	unset EXIST_JOB_PREFIX
+	unset EXIST_JOB_TIMESTAMP
+	unset EXIST_JOB_ACTION
+done
+unset EXIST_JOB
 
 echo
 echo "# Apply the Job"
