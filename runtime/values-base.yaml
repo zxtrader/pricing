@@ -5,7 +5,7 @@ application:
     replicas: 2
   dashboarduiserve:
     serviceImage: harbor.infra.kube/cryptopay/dashboard-ui
-    tag: 0.1.21
+    tag: 0.1.22
     replicas: 2
   gateuiserve:
     serviceImage: harbor.infra.kube/cryptopay/gate-ui
