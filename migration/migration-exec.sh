@@ -111,7 +111,7 @@ else
 	OBSOLEBE_TIMESTAMP=$(date -d "6 month ago" '+%Y%m%d%H%M%S')
 fi
 
-for EXIST_JOB in $(kubectl get jobs -o go-template --template='{{range .items}}{{.metadata.name}} {{end}}'); do
+for EXIST_JOB in $(kubectl ${KUBE_OPTS} get jobs -o go-template --template='{{range .items}}{{.metadata.name}} {{end}}'); do
 	EXIST_JOB_PREFIX=$(echo "${EXIST_JOB}" | cut -d- -f1)
 	EXIST_JOB_TIMESTAMP=$(echo "${EXIST_JOB}" | cut -d- -f2)
 	EXIST_JOB_ACTION=$(echo "${EXIST_JOB}" | cut -d- -f3)
