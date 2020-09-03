@@ -37,14 +37,10 @@ spec:
       protocol: TCP
       targetPort: 8084
 {{ end }}
-      - port: 8085
+    - port: 8085
       name: gateway-api
       protocol: TCP
       targetPort: 8085
-    - port: 8086
-      name: gateway-ui
-      protocol: TCP
-      targetPort: 8086
   type: ClusterIP
   selector:
     app: {{ .Chart.Name }}-processing{{ template "suffix" . }}

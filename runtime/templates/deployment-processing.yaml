@@ -29,13 +29,15 @@ spec:
 {{ end }}
 {{- end }}
         ports:
+        # Main Web server
         - containerPort: 8080
           protocol: TCP
 {{- if ne .Values.environment "production" }}
-        # Sysadmin should not exposed outside productoin container
+        # Sysadmin should not exposed outside production container
         - containerPort: 8081
           protocol: TCP
 {{- end }}
+        # Dashboard API Web server
         - containerPort: 8082
           protocol: TCP
 {{ if or (eq .Values.environment "evolution") (eq .Values.environment "presentation") }}
@@ -49,8 +51,10 @@ spec:
         - containerPort: 8084
           protocol: TCP
 {{ end }}
-        - containerPort: 8086
+        # Gateway API Web server
+        - containerPort: 8085
           protocol: TCP
+        # Monitoring Web server
         - containerPort: 9090
           protocol: TCP
         volumeMounts:
