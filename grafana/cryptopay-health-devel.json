@@ -16,7 +16,7 @@
 	"gnetId": null,
 	"graphTooltip": 0,
 	"id": 129,
-	"iteration": 1599052192271,
+	"iteration": 1599560335241,
 	"links": [],
 	"panels": [
 	  {
@@ -2171,7 +2171,7 @@
 		{
 		  "allValue": null,
 		  "current": {
-			"selected": true,
+			"tags": [],
 			"text": "evolution",
 			"value": "evolution"
 		  },
@@ -2199,9 +2199,10 @@
 		{
 		  "allValue": null,
 		  "current": {
-			"selected": true,
 			"text": "All",
-			"value": "$__all"
+			"value": [
+			  "$__all"
+			]
 		  },
 		  "datasource": "Prometheus",
 		  "definition": "query_result(max_over_time(process_start_time_seconds{kubernetes_namespace=\"cryptopay-$env\"}[${__range}]))",
@@ -2225,9 +2226,10 @@
 		{
 		  "allValue": null,
 		  "current": {
-			"selected": true,
 			"text": "All",
-			"value": "$__all"
+			"value": [
+			  "$__all"
+			]
 		  },
 		  "datasource": "Prometheus",
 		  "definition": "query_result(max_over_time(process_start_time_seconds{kubernetes_name=~\"${service}\", kubernetes_namespace=\"cryptopay-$env\"}[${__range}]))",
@@ -2251,7 +2253,7 @@
 	  ]
 	},
 	"time": {
-	  "from": "now-15m",
+	  "from": "now-1h",
 	  "to": "now"
 	},
 	"timepicker": {

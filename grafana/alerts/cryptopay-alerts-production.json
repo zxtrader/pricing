@@ -15,7 +15,7 @@
 	"editable": true,
 	"gnetId": null,
 	"graphTooltip": 0,
-	"id": 325,
+	"id": 39,
 	"links": [],
 	"panels": [
 	  {
@@ -55,10 +55,10 @@
 		  "noDataState": "no_data",
 		  "notifications": [
 			{
-			  "id": 1
+			  "uid": "R67O3VIGk"
 			},
 			{
-			  "uid": "R67O3VIGk"
+			  "uid": "ur6ckwDMk"
 			}
 		  ]
 		},
@@ -111,7 +111,7 @@
 		"steppedLine": false,
 		"targets": [
 		  {
-			"expr": "sum by (container,pod)(rate(container_cpu_usage_seconds_total{namespace=\"cryptopay\", slave=\"prodgnr\",container!=\"\",container!=\"POD\"}[5m])) / sum by (container,pod)(kube_pod_container_resource_requests_cpu_cores{namespace=\"cryptopay\", slave=\"prodgnr\"})",
+			"expr": "sum by (container,pod)(rate(container_cpu_usage_seconds_total{namespace=\"cryptopay\",container!=\"\",container!=\"POD\"}[5m])) / sum by (container,pod)(kube_pod_container_resource_requests_cpu_cores{namespace=\"cryptopay\"})",
 			"format": "time_series",
 			"interval": "",
 			"intervalFactor": 1,
@@ -205,10 +205,10 @@
 		  "noDataState": "no_data",
 		  "notifications": [
 			{
-			  "id": 1
+			  "uid": "R67O3VIGk"
 			},
 			{
-			  "uid": "R67O3VIGk"
+			  "uid": "ur6ckwDMk"
 			}
 		  ]
 		},
@@ -261,7 +261,7 @@
 		"steppedLine": false,
 		"targets": [
 		  {
-			"expr": "sum by (container,pod)(container_memory_working_set_bytes{namespace=\"cryptopay\", slave=\"prodgnr\",container!=\"\",container!=\"POD\"}) / sum by (container,pod)(kube_pod_container_resource_limits_memory_bytes{namespace=\"cryptopay\", slave=\"prodgnr\"})",
+			"expr": "sum by (container,pod)(container_memory_working_set_bytes{namespace=\"cryptopay\",container!=\"\",container!=\"POD\"}) / sum by (container,pod)(kube_pod_container_resource_limits_memory_bytes{namespace=\"cryptopay\"})",
 			"format": "time_series",
 			"intervalFactor": 1,
 			"legendFormat": "{{pod}}",
@@ -353,10 +353,10 @@
 		  "noDataState": "no_data",
 		  "notifications": [
 			{
-			  "id": 1
+			  "uid": "R67O3VIGk"
 			},
 			{
-			  "uid": "R67O3VIGk"
+			  "uid": "ur6ckwDMk"
 			}
 		  ]
 		},
@@ -409,7 +409,7 @@
 		"steppedLine": false,
 		"targets": [
 		  {
-			"expr": "(1 - (sum by (pod)(http_request_duration_seconds_count{kubernetes_namespace=\"cryptopay\", slave=\"prodgnr\", kubernetes_name=\"cryptopay-processing\", status_code=~\"[23].*\"})) / (sum by (pod)(http_request_duration_seconds_count{kubernetes_namespace=\"cryptopay\", slave=\"prodgnr\", kubernetes_name=\"cryptopay-processing\"})))",
+			"expr": "(1 - (sum by (pod)(http_request_duration_seconds_count{kubernetes_namespace=\"cryptopay\", kubernetes_name=\"cryptopay-processing\", status_code=~\"[23].*\"})) / (sum by (pod)(http_request_duration_seconds_count{kubernetes_namespace=\"cryptopay\", kubernetes_name=\"cryptopay-processing\"})))",
 			"format": "time_series",
 			"intervalFactor": 1,
 			"legendFormat": "{{pod}}",
@@ -501,10 +501,10 @@
 		  "noDataState": "no_data",
 		  "notifications": [
 			{
-			  "id": 1
+			  "uid": "R67O3VIGk"
 			},
 			{
-			  "uid": "R67O3VIGk"
+			  "uid": "ur6ckwDMk"
 			}
 		  ]
 		},
@@ -557,7 +557,7 @@
 		"steppedLine": false,
 		"targets": [
 		  {
-			"expr": "sum by (pod) (critical_errors{kubernetes_namespace=\"cryptopay\", slave=\"prodgnr\", kubernetes_name=\"cryptopay-processing\"})",
+			"expr": "sum by (pod) (critical_errors{kubernetes_namespace=\"cryptopay\", kubernetes_name=\"cryptopay-processing\"})",
 			"format": "time_series",
 			"intervalFactor": 1,
 			"legendFormat": "{{pod}}",
@@ -649,10 +649,10 @@
 		  "noDataState": "no_data",
 		  "notifications": [
 			{
-			  "id": 1
+			  "uid": "R67O3VIGk"
 			},
 			{
-			  "uid": "R67O3VIGk"
+			  "uid": "ur6ckwDMk"
 			}
 		  ]
 		},
@@ -705,7 +705,7 @@
 		"steppedLine": false,
 		"targets": [
 		  {
-			"expr": "sum by (pod) (rate(general_errors{kubernetes_namespace=\"cryptopay\", slave=\"prodgnr\", kubernetes_name=\"cryptopay-processing\", pod!=\"\"}[1h])) * 3600",
+			"expr": "sum by (pod) (rate(general_errors{kubernetes_namespace=\"cryptopay\", kubernetes_name=\"cryptopay-processing\", pod!=\"\"}[1h])) * 3600",
 			"format": "time_series",
 			"intervalFactor": 1,
 			"legendFormat": "{{pod}}",
@@ -763,7 +763,7 @@
 	  }
 	],
 	"refresh": false,
-	"schemaVersion": 25,
+	"schemaVersion": 20,
 	"style": "dark",
 	"tags": [],
 	"templating": {
@@ -801,5 +801,5 @@
 	"timezone": "",
 	"title": "Cryptopay-Alerts",
 	"uid": "pQ7YZSSGk",
-	"version": 12
+	"version": 6
   }

@@ -15,8 +15,8 @@
 	"editable": true,
 	"gnetId": null,
 	"graphTooltip": 0,
-	"id": 329,
-	"iteration": 1598367205826,
+	"id": 37,
+	"iteration": 1599560983621,
 	"links": [],
 	"panels": [
 	  {
@@ -44,12 +44,6 @@
 		],
 		"datasource": "Prometheus",
 		"description": "Total requests",
-		"fieldConfig": {
-		  "defaults": {
-			"custom": {}
-		  },
-		  "overrides": []
-		},
 		"format": "none",
 		"gauge": {
 		  "maxValue": 100,
@@ -81,6 +75,7 @@
 		"maxDataPoints": 100,
 		"nullPointMode": "connected",
 		"nullText": null,
+		"options": {},
 		"postfix": "",
 		"postfixFontSize": "50%",
 		"prefix": "",
@@ -132,12 +127,6 @@
 		],
 		"datasource": null,
 		"description": "Total count of successful request",
-		"fieldConfig": {
-		  "defaults": {
-			"custom": {}
-		  },
-		  "overrides": []
-		},
 		"format": "none",
 		"gauge": {
 		  "maxValue": 100,
@@ -170,6 +159,7 @@
 		"maxDataPoints": 100,
 		"nullPointMode": "connected",
 		"nullText": null,
+		"options": {},
 		"postfix": "",
 		"postfixFontSize": "50%",
 		"prefix": "",
@@ -221,12 +211,6 @@
 		  "#299c46"
 		],
 		"datasource": null,
-		"fieldConfig": {
-		  "defaults": {
-			"custom": {}
-		  },
-		  "overrides": []
-		},
 		"format": "percentunit",
 		"gauge": {
 		  "maxValue": 1,
@@ -258,6 +242,7 @@
 		"maxDataPoints": 100,
 		"nullPointMode": "connected",
 		"nullText": null,
+		"options": {},
 		"postfix": "",
 		"postfixFontSize": "50%",
 		"prefix": "",
@@ -309,12 +294,6 @@
 		],
 		"datasource": "Prometheus",
 		"description": "Percentage of 4xx responses",
-		"fieldConfig": {
-		  "defaults": {
-			"custom": {}
-		  },
-		  "overrides": []
-		},
 		"format": "percentunit",
 		"gauge": {
 		  "maxValue": 1,
@@ -346,6 +325,7 @@
 		"maxDataPoints": 100,
 		"nullPointMode": "connected",
 		"nullText": null,
+		"options": {},
 		"postfix": "",
 		"postfixFontSize": "50%",
 		"prefix": "",
@@ -398,12 +378,6 @@
 		],
 		"datasource": "Prometheus",
 		"description": "Percentage of 5xx responses",
-		"fieldConfig": {
-		  "defaults": {
-			"custom": {}
-		  },
-		  "overrides": []
-		},
 		"format": "percentunit",
 		"gauge": {
 		  "maxValue": 1,
@@ -435,6 +409,7 @@
 		"maxDataPoints": 100,
 		"nullPointMode": "connected",
 		"nullText": null,
+		"options": {},
 		"postfix": "",
 		"postfixFontSize": "50%",
 		"prefix": "",
@@ -489,12 +464,6 @@
 		],
 		"datasource": "Prometheus",
 		"description": "Total count of general errors",
-		"fieldConfig": {
-		  "defaults": {
-			"custom": {}
-		  },
-		  "overrides": []
-		},
 		"format": "none",
 		"gauge": {
 		  "maxValue": 100,
@@ -526,6 +495,7 @@
 		"maxDataPoints": 100,
 		"nullPointMode": "connected",
 		"nullText": null,
+		"options": {},
 		"postfix": "",
 		"postfixFontSize": "50%",
 		"prefix": "",
@@ -543,7 +513,7 @@
 		  "lineColor": "rgb(31, 120, 193)",
 		  "show": false
 		},
-		"tableColumn": "",
+		"tableColumn": "__name__",
 		"targets": [
 		  {
 			"expr": "sum(increase(general_errors{kubernetes_namespace=\"cryptopay\", kubernetes_name=~\"$service\", pod=~\"$instance\"}[$__range]))",
@@ -578,12 +548,6 @@
 		],
 		"datasource": "Prometheus",
 		"description": "Total count of critical errors",
-		"fieldConfig": {
-		  "defaults": {
-			"custom": {}
-		  },
-		  "overrides": []
-		},
 		"format": "none",
 		"gauge": {
 		  "maxValue": 100,
@@ -615,6 +579,7 @@
 		"maxDataPoints": 100,
 		"nullPointMode": "connected",
 		"nullText": null,
+		"options": {},
 		"postfix": "",
 		"postfixFontSize": "50%",
 		"prefix": "",
@@ -671,12 +636,6 @@
 	  {
 		"columns": [],
 		"datasource": "Prometheus",
-		"fieldConfig": {
-		  "defaults": {
-			"custom": {}
-		  },
-		  "overrides": []
-		},
 		"fontSize": "100%",
 		"gridPos": {
 		  "h": 5,
@@ -686,6 +645,7 @@
 		},
 		"id": 22,
 		"links": [],
+		"options": {},
 		"pageSize": null,
 		"scroll": true,
 		"showHeader": true,
@@ -696,14 +656,12 @@
 		"styles": [
 		  {
 			"alias": "Time",
-			"align": "auto",
 			"dateFormat": "YYYY-MM-DD HH:mm:ss",
 			"pattern": "Time",
 			"type": "hidden"
 		  },
 		  {
 			"alias": "Started-up",
-			"align": "auto",
 			"colorMode": null,
 			"colors": [
 			  "rgba(245, 54, 54, 0.9)",
@@ -720,7 +678,6 @@
 		  },
 		  {
 			"alias": "Instance",
-			"align": "auto",
 			"colorMode": null,
 			"colors": [
 			  "rgba(245, 54, 54, 0.9)",
@@ -737,7 +694,6 @@
 		  },
 		  {
 			"alias": "Version",
-			"align": "auto",
 			"colorMode": null,
 			"colors": [
 			  "rgba(245, 54, 54, 0.9)",
@@ -754,7 +710,6 @@
 		  },
 		  {
 			"alias": "Node",
-			"align": "auto",
 			"colorMode": null,
 			"colors": [
 			  "rgba(245, 54, 54, 0.9)",
@@ -771,7 +726,6 @@
 		  },
 		  {
 			"alias": "",
-			"align": "auto",
 			"colorMode": null,
 			"colors": [
 			  "rgba(245, 54, 54, 0.9)",
@@ -796,7 +750,7 @@
 		],
 		"title": "Instances",
 		"transform": "table",
-		"type": "table-old"
+		"type": "table"
 	  },
 	  {
 		"collapsed": false,
@@ -819,12 +773,6 @@
 		"dashes": false,
 		"datasource": "Prometheus",
 		"description": "Average response time",
-		"fieldConfig": {
-		  "defaults": {
-			"custom": {}
-		  },
-		  "overrides": []
-		},
 		"fill": 3,
 		"fillGradient": 0,
 		"gridPos": {
@@ -833,7 +781,6 @@
 		  "x": 0,
 		  "y": 13
 		},
-		"hiddenSeries": false,
 		"id": 24,
 		"legend": {
 		  "alignAsTable": false,
@@ -918,12 +865,6 @@
 		"columns": [],
 		"datasource": "Prometheus",
 		"description": "Top-20 Failed Requests",
-		"fieldConfig": {
-		  "defaults": {
-			"custom": {}
-		  },
-		  "overrides": []
-		},
 		"fontSize": "100%",
 		"gridPos": {
 		  "h": 16,
@@ -933,6 +874,7 @@
 		},
 		"id": 18,
 		"links": [],
+		"options": {},
 		"pageSize": null,
 		"scroll": true,
 		"showHeader": true,
@@ -943,7 +885,6 @@
 		"styles": [
 		  {
 			"alias": "",
-			"align": "auto",
 			"colorMode": null,
 			"colors": [
 			  "rgba(245, 54, 54, 0.9)",
@@ -960,7 +901,6 @@
 		  },
 		  {
 			"alias": "Count",
-			"align": "auto",
 			"colorMode": null,
 			"colors": [
 			  "rgba(245, 54, 54, 0.9)",
@@ -977,7 +917,6 @@
 		  },
 		  {
 			"alias": "Version",
-			"align": "auto",
 			"colorMode": null,
 			"colors": [
 			  "rgba(245, 54, 54, 0.9)",
@@ -994,7 +933,6 @@
 		  },
 		  {
 			"alias": "Service",
-			"align": "auto",
 			"colorMode": null,
 			"colors": [
 			  "rgba(245, 54, 54, 0.9)",
@@ -1011,7 +949,6 @@
 		  },
 		  {
 			"alias": "Method",
-			"align": "auto",
 			"colorMode": null,
 			"colors": [
 			  "rgba(245, 54, 54, 0.9)",
@@ -1028,7 +965,6 @@
 		  },
 		  {
 			"alias": "Path",
-			"align": "auto",
 			"colorMode": null,
 			"colors": [
 			  "rgba(245, 54, 54, 0.9)",
@@ -1045,7 +981,6 @@
 		  },
 		  {
 			"alias": "Pod",
-			"align": "auto",
 			"colorMode": null,
 			"colors": [
 			  "rgba(245, 54, 54, 0.9)",
@@ -1062,7 +997,6 @@
 		  },
 		  {
 			"alias": "Status Code",
-			"align": "auto",
 			"colorMode": null,
 			"colors": [
 			  "rgba(245, 54, 54, 0.9)",
@@ -1091,7 +1025,7 @@
 		],
 		"title": "Top-20 Failed Requests",
 		"transform": "table",
-		"type": "table-old"
+		"type": "table"
 	  },
 	  {
 		"cards": {
@@ -1108,12 +1042,6 @@
 		"dataFormat": "tsbuckets",
 		"datasource": "Prometheus",
 		"description": "Response time distribution",
-		"fieldConfig": {
-		  "defaults": {
-			"custom": {}
-		  },
-		  "overrides": []
-		},
 		"gridPos": {
 		  "h": 9,
 		  "w": 12,
@@ -1128,6 +1056,7 @@
 		  "show": true
 		},
 		"links": [],
+		"options": {},
 		"reverseYBuckets": false,
 		"targets": [
 		  {
@@ -1184,12 +1113,6 @@
 		"dashes": false,
 		"datasource": "Prometheus",
 		"description": "Process CPU usage",
-		"fieldConfig": {
-		  "defaults": {
-			"custom": {}
-		  },
-		  "overrides": []
-		},
 		"fill": 1,
 		"fillGradient": 0,
 		"gridPos": {
@@ -1198,7 +1121,6 @@
 		  "x": 0,
 		  "y": 30
 		},
-		"hiddenSeries": false,
 		"id": 26,
 		"legend": {
 		  "avg": false,
@@ -1282,12 +1204,6 @@
 		"dashes": false,
 		"datasource": null,
 		"description": "Process RAM usage",
-		"fieldConfig": {
-		  "defaults": {
-			"custom": {}
-		  },
-		  "overrides": []
-		},
 		"fill": 1,
 		"fillGradient": 0,
 		"gridPos": {
@@ -1296,7 +1212,6 @@
 		  "x": 12,
 		  "y": 30
 		},
-		"hiddenSeries": false,
 		"id": 28,
 		"legend": {
 		  "avg": false,
@@ -1379,12 +1294,6 @@
 		"dashes": false,
 		"datasource": "Prometheus",
 		"description": "NodeJS Event Loop Lag",
-		"fieldConfig": {
-		  "defaults": {
-			"custom": {}
-		  },
-		  "overrides": []
-		},
 		"fill": 1,
 		"fillGradient": 0,
 		"gridPos": {
@@ -1393,7 +1302,6 @@
 		  "x": 0,
 		  "y": 39
 		},
-		"hiddenSeries": false,
 		"id": 32,
 		"legend": {
 		  "avg": false,
@@ -1476,12 +1384,6 @@
 		"dashes": false,
 		"datasource": null,
 		"description": "Process virtual memory usage",
-		"fieldConfig": {
-		  "defaults": {
-			"custom": {}
-		  },
-		  "overrides": []
-		},
 		"fill": 1,
 		"fillGradient": 0,
 		"gridPos": {
@@ -1490,7 +1392,6 @@
 		  "x": 12,
 		  "y": 39
 		},
-		"hiddenSeries": false,
 		"id": 30,
 		"legend": {
 		  "avg": false,
@@ -1575,6 +1476,263 @@
 		  "x": 0,
 		  "y": 48
 		},
+		"id": 60,
+		"panels": [],
+		"title": "Database Status",
+		"type": "row"
+	  },
+	  {
+		"cards": {
+		  "cardPadding": null,
+		  "cardRound": null
+		},
+		"color": {
+		  "cardColor": "#b4ff00",
+		  "colorScale": "sqrt",
+		  "colorScheme": "interpolateMagma",
+		  "exponent": 0.5,
+		  "mode": "spectrum"
+		},
+		"dataFormat": "tsbuckets",
+		"datasource": null,
+		"description": "Postgres query time distribution",
+		"gridPos": {
+		  "h": 9,
+		  "w": 14,
+		  "x": 0,
+		  "y": 49
+		},
+		"heatmap": {},
+		"hideZeroBuckets": false,
+		"highlightCards": true,
+		"id": 62,
+		"legend": {
+		  "show": true
+		},
+		"links": [],
+		"options": {},
+		"reverseYBuckets": false,
+		"targets": [
+		  {
+			"expr": "sum(increase(pgsql_query_duration_seconds_bucket{kubernetes_namespace=\"cryptopay\", kubernetes_name=~\"$service\", pod=~\"$instance\"}[$__interval])) by (le)",
+			"format": "heatmap",
+			"instant": false,
+			"interval": "5m",
+			"intervalFactor": 1,
+			"legendFormat": "{{le}}",
+			"refId": "A"
+		  }
+		],
+		"title": "Postgres Query Time Distrbution",
+		"tooltip": {
+		  "show": true,
+		  "showHistogram": true
+		},
+		"tooltipDecimals": 2,
+		"type": "heatmap",
+		"xAxis": {
+		  "show": true
+		},
+		"xBucketNumber": null,
+		"xBucketSize": null,
+		"yAxis": {
+		  "decimals": null,
+		  "format": "s",
+		  "logBase": 1,
+		  "max": null,
+		  "min": null,
+		  "show": true,
+		  "splitFactor": null
+		},
+		"yBucketBound": "auto",
+		"yBucketNumber": null,
+		"yBucketSize": null
+	  },
+	  {
+		"columns": [],
+		"datasource": null,
+		"description": "Hashes of Top 20 frequently used queries",
+		"fontSize": "100%",
+		"gridPos": {
+		  "h": 9,
+		  "w": 5,
+		  "x": 14,
+		  "y": 49
+		},
+		"id": 64,
+		"links": [],
+		"options": {},
+		"pageSize": null,
+		"scroll": true,
+		"showHeader": true,
+		"sort": {
+		  "col": null,
+		  "desc": false
+		},
+		"styles": [
+		  {
+			"alias": "Time",
+			"dateFormat": "YYYY-MM-DD HH:mm:ss",
+			"pattern": "Time",
+			"type": "hidden"
+		  },
+		  {
+			"alias": "Hash",
+			"colorMode": null,
+			"colors": [
+			  "rgba(245, 54, 54, 0.9)",
+			  "rgba(237, 129, 40, 0.89)",
+			  "rgba(50, 172, 45, 0.97)"
+			],
+			"dateFormat": "YYYY-MM-DD HH:mm:ss",
+			"decimals": 2,
+			"mappingType": 1,
+			"pattern": "hash",
+			"thresholds": [],
+			"type": "number",
+			"unit": "short"
+		  },
+		  {
+			"alias": "Count",
+			"colorMode": null,
+			"colors": [
+			  "rgba(245, 54, 54, 0.9)",
+			  "rgba(237, 129, 40, 0.89)",
+			  "rgba(50, 172, 45, 0.97)"
+			],
+			"dateFormat": "YYYY-MM-DD HH:mm:ss",
+			"decimals": 2,
+			"mappingType": 1,
+			"pattern": "Value",
+			"thresholds": [],
+			"type": "number",
+			"unit": "short"
+		  },
+		  {
+			"alias": "",
+			"colorMode": null,
+			"colors": [
+			  "rgba(245, 54, 54, 0.9)",
+			  "rgba(237, 129, 40, 0.89)",
+			  "rgba(50, 172, 45, 0.97)"
+			],
+			"decimals": 2,
+			"pattern": "/.*/",
+			"thresholds": [],
+			"type": "number",
+			"unit": "short"
+		  }
+		],
+		"targets": [
+		  {
+			"expr": "sort_desc(topk(20, sort_desc(sum(increase(pgsql_query_duration_seconds_count{kubernetes_namespace=\"cryptopay\", kubernetes_name=~\"$service\", pod=~\"$instance\"}[$__range]) > 0) by (hash))))",
+			"format": "table",
+			"instant": true,
+			"intervalFactor": 1,
+			"refId": "A"
+		  }
+		],
+		"title": "Top 20 Frequently Used Queries",
+		"transform": "table",
+		"type": "table"
+	  },
+	  {
+		"columns": [],
+		"datasource": null,
+		"description": "Hashes of Top 20 long running queries",
+		"fontSize": "100%",
+		"gridPos": {
+		  "h": 9,
+		  "w": 5,
+		  "x": 19,
+		  "y": 49
+		},
+		"id": 66,
+		"links": [],
+		"options": {},
+		"pageSize": null,
+		"scroll": true,
+		"showHeader": true,
+		"sort": {
+		  "col": null,
+		  "desc": false
+		},
+		"styles": [
+		  {
+			"alias": "Time",
+			"dateFormat": "YYYY-MM-DD HH:mm:ss",
+			"pattern": "Time",
+			"type": "hidden"
+		  },
+		  {
+			"alias": "Hash",
+			"colorMode": null,
+			"colors": [
+			  "rgba(245, 54, 54, 0.9)",
+			  "rgba(237, 129, 40, 0.89)",
+			  "rgba(50, 172, 45, 0.97)"
+			],
+			"dateFormat": "YYYY-MM-DD HH:mm:ss",
+			"decimals": 2,
+			"mappingType": 1,
+			"pattern": "hash",
+			"thresholds": [],
+			"type": "number",
+			"unit": "short"
+		  },
+		  {
+			"alias": "Avg. Time",
+			"colorMode": null,
+			"colors": [
+			  "rgba(245, 54, 54, 0.9)",
+			  "rgba(237, 129, 40, 0.89)",
+			  "rgba(50, 172, 45, 0.97)"
+			],
+			"dateFormat": "YYYY-MM-DD HH:mm:ss",
+			"decimals": 2,
+			"mappingType": 1,
+			"pattern": "Value",
+			"thresholds": [],
+			"type": "number",
+			"unit": "short"
+		  },
+		  {
+			"alias": "",
+			"colorMode": null,
+			"colors": [
+			  "rgba(245, 54, 54, 0.9)",
+			  "rgba(237, 129, 40, 0.89)",
+			  "rgba(50, 172, 45, 0.97)"
+			],
+			"decimals": 2,
+			"pattern": "/.*/",
+			"thresholds": [],
+			"type": "number",
+			"unit": "short"
+		  }
+		],
+		"targets": [
+		  {
+			"expr": "sort_desc(topk(20,sort_desc(topk(20, sort_desc(sum(increase(pgsql_query_duration_seconds_sum{kubernetes_namespace=\"cryptopay\", kubernetes_name=~\"$service\", pod=~\"$instance\"}[$__range]) > 0) by (hash) / sum(increase(pgsql_query_duration_seconds_count{kubernetes_namespace=\"cryptopay\", kubernetes_name=~\"$service\", pod=~\"$instance\"}[$__range]) > 0) by (hash))))))",
+			"format": "table",
+			"instant": true,
+			"intervalFactor": 1,
+			"refId": "A"
+		  }
+		],
+		"title": "Top 20 Long Running Queries",
+		"transform": "table",
+		"type": "table"
+	  },
+	  {
+		"collapsed": false,
+		"datasource": null,
+		"gridPos": {
+		  "h": 1,
+		  "w": 24,
+		  "x": 0,
+		  "y": 58
+		},
 		"id": 52,
 		"panels": [],
 		"title": "Wtf Status",
@@ -1586,21 +1744,14 @@
 		"dashLength": 10,
 		"dashes": false,
 		"datasource": null,
-		"fieldConfig": {
-		  "defaults": {
-			"custom": {}
-		  },
-		  "overrides": []
-		},
 		"fill": 1,
 		"fillGradient": 0,
 		"gridPos": {
 		  "h": 9,
 		  "w": 8,
 		  "x": 0,
-		  "y": 49
+		  "y": 59
 		},
-		"hiddenSeries": false,
 		"id": 54,
 		"legend": {
 		  "avg": false,
@@ -1682,21 +1833,14 @@
 		"dashLength": 10,
 		"dashes": false,
 		"datasource": null,
-		"fieldConfig": {
-		  "defaults": {
-			"custom": {}
-		  },
-		  "overrides": []
-		},
 		"fill": 1,
 		"fillGradient": 0,
 		"gridPos": {
 		  "h": 9,
 		  "w": 8,
 		  "x": 8,
-		  "y": 49
+		  "y": 59
 		},
-		"hiddenSeries": false,
 		"id": 56,
 		"legend": {
 		  "avg": false,
@@ -1785,17 +1929,11 @@
 		},
 		"dataFormat": "tsbuckets",
 		"datasource": null,
-		"fieldConfig": {
-		  "defaults": {
-			"custom": {}
-		  },
-		  "overrides": []
-		},
 		"gridPos": {
 		  "h": 9,
 		  "w": 8,
 		  "x": 16,
-		  "y": 49
+		  "y": 59
 		},
 		"heatmap": {},
 		"hideZeroBuckets": false,
@@ -1805,6 +1943,7 @@
 		  "show": true
 		},
 		"links": [],
+		"options": {},
 		"reverseYBuckets": false,
 		"targets": [
 		  {
@@ -1848,7 +1987,7 @@
 		  "h": 1,
 		  "w": 24,
 		  "x": 0,
-		  "y": 58
+		  "y": 68
 		},
 		"id": 44,
 		"panels": [],
@@ -1862,21 +2001,14 @@
 		"dashes": false,
 		"datasource": null,
 		"description": "Aggregator requests count per hour",
-		"fieldConfig": {
-		  "defaults": {
-			"custom": {}
-		  },
-		  "overrides": []
-		},
 		"fill": 1,
 		"fillGradient": 0,
 		"gridPos": {
 		  "h": 9,
 		  "w": 8,
 		  "x": 0,
-		  "y": 59
+		  "y": 69
 		},
-		"hiddenSeries": false,
 		"id": 46,
 		"legend": {
 		  "avg": false,
@@ -1959,21 +2091,14 @@
 		"dashes": false,
 		"datasource": null,
 		"description": "Percent of failed requests to Aggregator",
-		"fieldConfig": {
-		  "defaults": {
-			"custom": {}
-		  },
-		  "overrides": []
-		},
 		"fill": 1,
 		"fillGradient": 0,
 		"gridPos": {
 		  "h": 9,
 		  "w": 8,
 		  "x": 8,
-		  "y": 59
+		  "y": 69
 		},
-		"hiddenSeries": false,
 		"id": 48,
 		"legend": {
 		  "avg": false,
@@ -2063,17 +2188,11 @@
 		"dataFormat": "tsbuckets",
 		"datasource": null,
 		"description": "Aggregator response time distribution",
-		"fieldConfig": {
-		  "defaults": {
-			"custom": {}
-		  },
-		  "overrides": []
-		},
 		"gridPos": {
 		  "h": 9,
 		  "w": 8,
 		  "x": 16,
-		  "y": 59
+		  "y": 69
 		},
 		"heatmap": {},
 		"hideZeroBuckets": false,
@@ -2083,6 +2202,7 @@
 		  "show": true
 		},
 		"links": [],
+		"options": {},
 		"reverseYBuckets": false,
 		"targets": [
 		  {
@@ -2122,7 +2242,7 @@
 	  }
 	],
 	"refresh": false,
-	"schemaVersion": 25,
+	"schemaVersion": 20,
 	"style": "dark",
 	"tags": [],
 	"templating": {
@@ -2130,10 +2250,9 @@
 		{
 		  "allValue": null,
 		  "current": {
-			"selected": true,
-			"text": "cryptopay-processing",
+			"text": "All",
 			"value": [
-			  "cryptopay-processing"
+			  "$__all"
 			]
 		  },
 		  "datasource": "Prometheus",
@@ -2158,9 +2277,10 @@
 		{
 		  "allValue": null,
 		  "current": {
-			"selected": false,
 			"text": "All",
-			"value": "$__all"
+			"value": [
+			  "$__all"
+			]
 		  },
 		  "datasource": "Prometheus",
 		  "definition": "query_result(max_over_time(process_start_time_seconds{kubernetes_name=~\"${service}\", kubernetes_namespace=\"cryptopay\"}[${__range}]))",
@@ -2189,6 +2309,7 @@
 	},
 	"timepicker": {
 	  "refresh_intervals": [
+		"5s",
 		"10s",
 		"30s",
 		"1m",
@@ -2214,5 +2335,5 @@
 	"timezone": "",
 	"title": "Cryptopay-Health",
 	"uid": "_0mRvmSGk",
-	"version": 2
+	"version": 41
   }
