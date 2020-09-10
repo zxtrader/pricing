@@ -80,6 +80,8 @@ spec:
         env:
         - name: RUNTIME
           value: {{ .Values.environment }}
+        - name: LOG_LEVEL
+          value: {{ .Values.environment }}
 {{- if .Values.application.processing.env }}
 {{ range $key, $value := .Values.application.processing.env }}
         - name: "{{ $key }}"
