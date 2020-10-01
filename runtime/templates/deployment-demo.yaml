@@ -1,0 +1,51 @@
+{{- if ne .Values.environment "production" }}
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: {{ .Chart.Name }}-demo{{ template "suffix" . }}
+  name: {{ .Chart.Name }}-demo{{ template "suffix" . }}
+spec:
+  replicas: {{ .Values.application.demo.replicas | default 2 }}
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: {{ .Chart.Name }}-demo{{ template "suffix" . }}
+    spec:
+      containers:
+      - name: demo
+        image: {{ .Values.application.demo.serviceImage }}:{{ .Values.application.demo.tag }}
+{{- if .Values.application.demo.command }}
+        command:
+{{ range .Values.application.demo.command }}
+        - {{ . }}
+{{ end }}
+{{- end }}
+{{- if .Values.application.demo.args }}
+        args:
+{{ range .Values.application.demo.args }}
+        - {{ . }}
+{{ end }}
+{{- end }}
+        env:
+        - name: RUNTIME
+          value: {{ .Values.environment }}
+{{- if .Values.application.demo.env }}
+{{ range $key, $value := .Values.application.demo.env }}
+        - name: "{{ $key }}"
+          value: "{{ $value }}"
+{{ end }}
+{{- end }}
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+        resources:
+          limits:
+            cpu: 100m
+            memory: 128Mi
+          requests:
+            cpu: 20m
+            memory: 32Mi
+{{- end }}

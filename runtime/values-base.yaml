@@ -7,6 +7,10 @@ application:
     serviceImage: harbor.infra.kube/cryptopay/dashboard-ui
     tag: 0.1.22
     replicas: 2
+  demo:
+    serviceImage: cexiolabs/cryptopay.demo
+    tag: latest
+    replicas: 1
   gateuiserve:
     serviceImage: harbor.infra.kube/cryptopay/gate-ui
     tag: latest

@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: {{ .Chart.Name }}-demo{{ template "suffix" . }}
+  name: {{ .Chart.Name }}-demo{{ template "suffix" . }}
+spec:
+  ports:
+    - port: 8080
+      name: demo
+      protocol: TCP
+      targetPort: 8080
+  type: ClusterIP
+  selector:
+    app: {{ .Chart.Name }}-demo{{ template "suffix" . }}

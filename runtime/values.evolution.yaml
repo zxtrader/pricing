@@ -3,6 +3,7 @@ environment: evolution
 application:
   processing:
     serviceImage: devdocker.infra.kube/cryptopay/cpservice-devel
+    tag: dev
     args:
       [
         "--config-file=/etc/cexiolabs/cryptopay.processing/service.config",
@@ -12,15 +13,25 @@ application:
         "--config-secrets-dir=/etc/cexiolabs/cryptopay/secrets",
         "--config-secrets-dir=/etc/cexiolabs/cryptopay/secrets-setup",
         "--config-env",
+        "--runtime-gate-email-sender=nodemailer",
         "--runtime-use-notifier-service",
       ]
     env:
       CMDBIN: "devel"
       DEBUG_PORT: 9229
       DEBUG_WAIT: "no"
+      LOG_LEVEL: "debug"
     replicas: 1
   dashboarduiserve:
     serviceImage: devdocker.infra.kube/cryptopay/dashboard-ui
+    tag: master
+  demo:
+    env:
+      BASE_PATH: /widget-demo/
+      GATE_API_URL: https://gate-evolution-cryptopay.dev.kube/v2/gate/??????-????-????-????-??????????
+      GATE_WIDGET_URL: https://gate-evolution-cryptopay.dev.kube/??????-????-????-????-??????????
+      GATE_API_PASSPHRASE: ?????
+      GATE_API_SECRET: ?????
   gateuiserve:
     serviceImage: devdocker.infra.kube/cryptopay/gate-ui
     tag: master
@@ -76,8 +87,12 @@ ingress:
   Specs:
     type: internal
     domain: evolution-cryptopay.dev.kube
+    backendInsecure: true
     certSecretName: dev
     paths:
       "/":
         backendServiceName: processing
         backendServicePort: 8083
+      "/widget-demo/":
+        backendServiceName: demo
+        backendServicePort: 8080
