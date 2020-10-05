@@ -30,8 +30,6 @@ application:
       BASE_PATH: /widget-demo/
       GATE_API_URL: https://gate-testnet.cryptopay.band/v2/gate/51c15da2-a79b-456d-8300-7d289bc97bc9
       GATE_WIDGET_URL: https://gate-testnet.cryptopay.band/51c15da2-a79b-456d-8300-7d289bc97bc9
-      GATE_API_PASSPHRASE: d0d1ff7262d36b55704c7985e47d7aa0
-      GATE_API_SECRET: 9wUo+LRIukjefUUVs641O9DOzCl9sjnnPMa3sUGj+NMSTEzhcrUnB3fp2X5G49sCfV9eMAoyzR8fCoRU5nmUag==
   gateuiserve:
     serviceImage: devdocker.infra.kube/cryptopay/gate-ui
     tag: master

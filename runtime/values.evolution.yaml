@@ -28,10 +28,8 @@ application:
   demo:
     env:
       BASE_PATH: /widget-demo/
-      GATE_API_URL: https://gate-evolution-cryptopay.dev.kube/v2/gate/09635610-6109-4179-833b-8675fa709d9b
+      GATE_API_URL: http://cryptopay-processing:7999/v2/gate/09635610-6109-4179-833b-8675fa709d9b
       GATE_WIDGET_URL: https://gate-evolution-cryptopay.dev.kube/09635610-6109-4179-833b-8675fa709d9b
-      GATE_API_PASSPHRASE: d0d1ff7262d36b55704c7985e47d7aa0
-      GATE_API_SECRET: 9wUo+LRIukjefUUVs641O9DOzCl9sjnnPMa3sUGj+NMSTEzhcrUnB3fp2X5G49sCfV9eMAoyzR8fCoRU5nmUag==
   gateuiserve:
     serviceImage: devdocker.infra.kube/cryptopay/gate-ui
     tag: master

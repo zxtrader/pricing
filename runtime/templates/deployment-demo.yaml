@@ -38,6 +38,16 @@ spec:
           value: "{{ $value }}"
 {{ end }}
 {{- end }}
+        - name: GATE_API_PASSPHRASE
+          valueFrom:
+            secretKeyRef:
+              name: processing
+              key: setup.createGateway.demo-gateway.passphrase
+        - name: GATE_API_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: processing
+              key: setup.createGateway.demo-gateway.secret
         ports:
         - containerPort: 8080
           protocol: TCP
