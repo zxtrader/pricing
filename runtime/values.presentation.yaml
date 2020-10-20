@@ -128,6 +128,14 @@ ingress:
       "/v2/gate-callback/":
         backendServiceName: processing
         backendServicePort: 8085
+  Callbacks-Internal:
+    type: internal
+    domain: callback-presentation-cryptopay.dev.kube
+    certSecretName: dev
+    paths:
+      "/ws/":
+        backendServiceName: processing
+        backendServicePort: 8086
   Specs-External:
     type: external
     domain: testnet.cryptopay.band

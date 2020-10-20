@@ -41,6 +41,10 @@ spec:
       name: gateway-api
       protocol: TCP
       targetPort: 8085
+    - port: 8086
+      name: ws
+      protocol: TCP
+      targetPort: 8086
   type: ClusterIP
   selector:
     app: {{ .Chart.Name }}-processing{{ template "suffix" . }}

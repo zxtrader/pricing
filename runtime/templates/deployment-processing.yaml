@@ -54,6 +54,9 @@ spec:
         # Gateway API Web server
         - containerPort: 8085
           protocol: TCP
+        # WS server
+        - containerPort: 8086
+          protocol: TCP
         # Monitoring Web server
         - containerPort: 9090
           protocol: TCP
