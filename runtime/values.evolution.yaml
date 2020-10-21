@@ -21,6 +21,7 @@ application:
       DEBUG_PORT: 9229
       DEBUG_WAIT: "no"
       LOG_LEVEL: "debug"
+      WIDGET_SCRIPT_ORIGIN: https://gate-evolution-cryptopay.dev.kube
     replicas: 1
   dashboarduiserve:
     serviceImage: devdocker.infra.kube/cryptopay/dashboard-ui
@@ -31,10 +32,7 @@ application:
       GATE_API_URL: http://cryptopay-processing:7999/v2/gate
       GATE_API_GATEWAY_ID: 09635610-6109-4179-833b-8675fa709d9b
       GATE_WIDGET_URL: https://gate-evolution-cryptopay.dev.kube
-  gateuiserve:
-    serviceImage: devdocker.infra.kube/cryptopay/gate-ui
-    tag: master
-
+      
 ingress:
   API:
     type: internal
