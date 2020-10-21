@@ -103,6 +103,3 @@ ingress:
       "/widget-demo/":
         backendServiceName: demo
         backendServicePort: 8080
-      "/api":
-        backendServiceName: demo
-        backendServicePort: 8080
