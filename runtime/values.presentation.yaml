@@ -28,8 +28,9 @@ application:
   demo:
     env:
       BASE_PATH: /widget-demo/
-      GATE_API_URL: https://gate-testnet.cryptopay.band/v2/gate/51c15da2-a79b-456d-8300-7d289bc97bc9
-      GATE_WIDGET_URL: https://gate-testnet.cryptopay.band/51c15da2-a79b-456d-8300-7d289bc97bc9
+      GATE_API_URL: https://gate-testnet.cryptopay.band/
+      GATE_API_GATEWAY_ID: 51c15da2-a79b-456d-8300-7d289bc97bc9
+      GATE_WIDGET_URL: https://gate-testnet.cryptopay.band
   gateuiserve:
     serviceImage: devdocker.infra.kube/cryptopay/gate-ui
     tag: master

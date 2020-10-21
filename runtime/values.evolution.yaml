@@ -28,8 +28,9 @@ application:
   demo:
     env:
       BASE_PATH: /widget-demo/
-      GATE_API_URL: http://cryptopay-processing:7999/v2/gate/09635610-6109-4179-833b-8675fa709d9b
-      GATE_WIDGET_URL: https://gate-evolution-cryptopay.dev.kube/09635610-6109-4179-833b-8675fa709d9b
+      GATE_API_URL: http://cryptopay-processing:7999/v2/gate
+      GATE_API_GATEWAY_ID: 09635610-6109-4179-833b-8675fa709d9b
+      GATE_WIDGET_URL: https://gate-evolution-cryptopay.dev.kube
   gateuiserve:
     serviceImage: devdocker.infra.kube/cryptopay/gate-ui
     tag: master
@@ -74,8 +75,8 @@ ingress:
       etag off;
     paths:
       "/":
-        backendServiceName: gateuiserve
-        backendServicePort: 8080
+        backendServiceName: processing
+        backendServicePort: 8085
       "/v2/gate/":
         backendServiceName: processing
         backendServicePort: 8085
@@ -100,5 +101,8 @@ ingress:
         backendServiceName: processing
         backendServicePort: 8083
       "/widget-demo/":
+        backendServiceName: demo
+        backendServicePort: 8080
+      "/api":
         backendServiceName: demo
         backendServicePort: 8080
