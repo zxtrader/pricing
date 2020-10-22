@@ -4,6 +4,8 @@
 # Exit on first fail
 set -e
 
+int() { printf '%d' ${1:-} 2>/dev/null || :; }
+
 if [ $# -eq 0 ]; then
 	echo
 	echo "	Usage example:"
@@ -113,7 +115,7 @@ fi
 
 for EXIST_JOB in $(kubectl ${KUBE_OPTS} get jobs -o go-template --template='{{range .items}}{{.metadata.name}} {{end}}'); do
 	EXIST_JOB_PREFIX=$(echo "${EXIST_JOB}" | cut -d- -f1)
-	EXIST_JOB_TIMESTAMP=$(echo "${EXIST_JOB}" | cut -d- -f2)
+	EXIST_JOB_TIMESTAMP=$(int $(echo "${EXIST_JOB}" | cut -d- -f2))
 	EXIST_JOB_ACTION=$(echo "${EXIST_JOB}" | cut -d- -f3)
 	if [ "${EXIST_JOB_PREFIX}" = "migration" ]; then
 		if [ "${EXIST_JOB_ACTION}" = "install" -o "${EXIST_JOB_ACTION}" = "rollback" ]; then
