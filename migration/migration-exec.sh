@@ -104,7 +104,7 @@ fi
 
 echo "# Cleanuping oldest jobs..."
 
-if [ "$(uname)" == "Darwin" ]; then
+if [ "$(uname)" = "Darwin" ]; then
 	#  Mac OS X platform
 	OBSOLEBE_TIMESTAMP=$(date -u -v-6m '+%Y%m%d%H%M%S')
 else
@@ -115,8 +115,8 @@ for EXIST_JOB in $(kubectl ${KUBE_OPTS} get jobs -o go-template --template='{{ra
 	EXIST_JOB_PREFIX=$(echo "${EXIST_JOB}" | cut -d- -f1)
 	EXIST_JOB_TIMESTAMP=$(echo "${EXIST_JOB}" | cut -d- -f2)
 	EXIST_JOB_ACTION=$(echo "${EXIST_JOB}" | cut -d- -f3)
-	if [ "${EXIST_JOB_PREFIX}" == "migration" ]; then
-		if [ "${EXIST_JOB_ACTION}" == "install" -o "${EXIST_JOB_ACTION}" == "rollback" ]; then
+	if [ "${EXIST_JOB_PREFIX}" = "migration" ]; then
+		if [ "${EXIST_JOB_ACTION}" = "install" -o "${EXIST_JOB_ACTION}" = "rollback" ]; then
 			if [ ${EXIST_JOB_TIMESTAMP} -le ${OBSOLEBE_TIMESTAMP} ]; then
 				echo "	Deleting obsolete job '${EXIST_JOB}' ..."
 				kubectl ${KUBE_OPTS} delete jobs "${EXIST_JOB}"
