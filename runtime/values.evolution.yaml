@@ -3,7 +3,7 @@ environment: evolution
 application:
   processing:
     serviceImage: devdocker.infra.kube/cryptopay/cpservice-devel
-    tag: dev
+    tag: master
     args:
       [
         "--config-file=/etc/cexiolabs/cryptopay.processing/service.config",
