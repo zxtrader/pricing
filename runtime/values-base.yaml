@@ -5,7 +5,7 @@ application:
     replicas: 2
   dashboarduiserve:
     serviceImage: harbor.infra.kube/cryptopay/dashboard-ui
-    tag: 0.1.23
+    tag: 0.1.27
     replicas: 2
   demo:
     serviceImage: cexiolabs/cryptopay.demo
