@@ -110,7 +110,8 @@ if [ "$(uname)" = "Darwin" ]; then
 	#  Mac OS X platform
 	OBSOLEBE_TIMESTAMP=$(date -u -v-6m '+%Y%m%d%H%M%S')
 else
-	OBSOLEBE_TIMESTAMP=$(date -d "6 month ago" '+%Y%m%d%H%M%S')
+	# 60 seconds * 60 minutes * 24 hours * 180 days
+	OBSOLEBE_TIMESTAMP=$(busybox date -d "$(( `busybox date +%s`-60*60*24*180 ))" '+%Y%m%d%H%M%S')
 fi
 
 for EXIST_JOB in $(kubectl ${KUBE_OPTS} get jobs -o go-template --template='{{range .items}}{{.metadata.name}} {{end}}'); do
