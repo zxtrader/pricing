@@ -267,7 +267,7 @@ devel-2PRSN:install:runtime:
 #
 devel-1EVO:install:db:
   image:
-    name: harbor.infra.kube/infra/helm
+    name: bitnami/kubectl
     entrypoint: [""]
   stage: deploy
   script:
