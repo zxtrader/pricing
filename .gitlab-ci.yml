@@ -340,7 +340,7 @@ devel-2PRSN:rollback:db:
 #
 1EVO:install:db:
   image:
-    name: harbor.infra.kube/infra/helm
+    name: bitnami/kubectl
     entrypoint: [""]
   stage: deploy
   script:

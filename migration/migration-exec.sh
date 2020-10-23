@@ -104,16 +104,21 @@ if [ -n "${IS_EXIST_PREV_JOB}" ]; then
 	exit 77
 fi
 
+echo
+echo "# Apply the Job"
+exec kubectl ${KUBE_OPTS} apply -f "${TEMP_FILE}"
+echo
+
 echo "# Cleanuping oldest jobs..."
 
 if [ "$(uname)" = "Darwin" ]; then
 	#  Mac OS X platform
-	OBSOLEBE_TIMESTAMP=$(date -u -v-6m '+%Y%m%d%H%M%S')
+	OBSOLEBE_TIMESTAMP=$(date -u -v-3m '+%Y%m%d%H%M%S')
 elif [ "$(readlink /bin/date)" = "/bin/busybox" ]; then
-	# 60 seconds * 60 minutes * 24 hours * 180 days
-	OBSOLEBE_TIMESTAMP=$(date -d "$(( `date +%s`-60*60*24*180 ))" '+%Y%m%d%H%M%S')
+	# 60 seconds * 60 minutes * 24 hours * 90 days
+	OBSOLEBE_TIMESTAMP=$(date -d "$(( `date +%s`-60*60*24*90 ))" '+%Y%m%d%H%M%S')
 else
-	OBSOLEBE_TIMESTAMP=$(date -d "6 month ago" '+%Y%m%d%H%M%S')
+	OBSOLEBE_TIMESTAMP=$(date -d "3 month ago" '+%Y%m%d%H%M%S')
 fi
 
 for EXIST_JOB in $(kubectl ${KUBE_OPTS} get jobs -o go-template --template='{{range .items}}{{.metadata.name}} {{end}}'); do
@@ -134,8 +139,3 @@ for EXIST_JOB in $(kubectl ${KUBE_OPTS} get jobs -o go-template --template='{{ra
 	unset EXIST_JOB_ACTION
 done
 unset EXIST_JOB
-
-echo
-echo "# Apply the Job"
-exec kubectl ${KUBE_OPTS} apply -f "${TEMP_FILE}"
-echo
