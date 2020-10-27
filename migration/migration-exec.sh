@@ -106,7 +106,7 @@ fi
 
 echo
 echo "# Apply the Job"
-exec kubectl ${KUBE_OPTS} apply -f "${TEMP_FILE}"
+kubectl ${KUBE_OPTS} apply -f "${TEMP_FILE}"
 echo
 
 echo "# Cleanuping oldest jobs..."
@@ -139,3 +139,4 @@ for EXIST_JOB in $(kubectl ${KUBE_OPTS} get jobs -o go-template --template='{{ra
 	unset EXIST_JOB_ACTION
 done
 unset EXIST_JOB
+unset OBSOLEBE_TIMESTAMP
