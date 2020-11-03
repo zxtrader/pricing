@@ -1,0 +1,88 @@
+{{ if or (eq .Values.environment "production") (eq .Values.environment "presentation") }}
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: {{ .Chart.Name }}-messengerbridge{{ template "suffix" . }}
+  name: {{ .Chart.Name }}-messengerbridge{{ template "suffix" . }}
+spec:
+  replicas: {{ .Values.application.messengerbridge.replicas | default 1 }}
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: {{ .Chart.Name }}-messengerbridge{{ template "suffix" . }}
+    spec:
+      containers:
+      - name: messengerbridge
+        image: {{ .Values.application.messengerbridge.serviceImage }}:{{ .Values.application.messengerbridge.tag }}
+{{- if .Values.application.messengerbridge.command }}
+        command:
+{{ range .Values.application.messengerbridge.command }}
+        - {{ . }}
+{{ end }}
+{{- end }}
+{{- if .Values.application.messengerbridge.args }}
+        args:
+{{ range .Values.application.messengerbridge.args }}
+        - {{ . }}
+{{ end }}
+{{- end }}
+        ports:
+        - containerPort: 8443
+          protocol: TCP
+        volumeMounts:
+        - name: messengerbridge-files
+          mountPath: /etc/cexiolabs/cryptopay
+          readOnly: true
+        - name: secret-certificate
+          mountPath: /etc/cexiolabs/cryptopay/ssl
+          readOnly: true
+        - name: secret-files
+          mountPath: /etc/cexiolabs/cryptopay/secrets
+          # The service will delete all files after read its. So need write access.
+          readOnly: false
+        env:
+        - name: RUNTIME
+          value: {{ .Values.environment }}
+        - name: LOG_LEVEL
+          value: info
+{{- if .Values.application.messengerbridge.env }}
+{{ range $key, $value := .Values.application.messengerbridge.env }}
+        - name: "{{ $key }}"
+          value: "{{ $value }}"
+{{ end }}
+{{- end }}
+        # livenessProbe:
+        #   httpGet:
+        #     path: /livenessProbe
+        #     port: 9090
+        #     scheme: HTTP
+        #   initialDelaySeconds: 10
+        #   periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8443
+            scheme: HTTPS
+          initialDelaySeconds: 10
+          periodSeconds: 10
+        resources:
+          limits:
+            cpu: 500m
+            memory: 1024Mi
+          requests:
+            cpu: 125m
+            memory: 256Mi
+      volumes:
+      - name: messengerbridge-files
+        configMap:
+          name: messengerbridge-files
+      - name: secret-certificate
+        secret:
+          secretName: {{ .Chart.Name }}-messengerbridge{{ template "suffix" . }}-certificate
+      - name: secret-files
+        secret:
+          secretName: messengerbridge
+{{ end }}

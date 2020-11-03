@@ -1,4 +1,8 @@
 .backup/
 .release*/
 .DS_Store
+*-secret.yaml
 *-Secrets.yaml
+
+.fake
+.ionide

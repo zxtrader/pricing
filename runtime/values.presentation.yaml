@@ -27,9 +27,10 @@ application:
   demo:
     env:
       BASE_PATH: /widget-demo/
-      GATE_API_URL: https://gate-testnet.cryptopay.band/v2/gate
-      GATE_API_GATEWAY_ID: 51c15da2-a79b-456d-8300-7d289bc97bc9
-      GATE_WIDGET_URL: https://gate-testnet.cryptopay.band
+      GATE_API_ORIGIN: https://cryptopay-processing:8080/
+      GATE_ID: 51c15da2-a79b-456d-8300-7d289bc97bc9
+      GATE_URL: https://gate-testnet.cryptopay.band/widget
+      NODE_TLS_REJECT_UNAUTHORIZED: 0
 
 ingress:
   API-Internal:
@@ -114,7 +115,7 @@ ingress:
       expires off;
       etag off;
     paths:
-      "/":
+      "/widget/":
         backendServiceName: processing
         backendServicePort: 8085
       "/v2/gate/":
@@ -131,6 +132,15 @@ ingress:
       "/ws/":
         backendServiceName: processing
         backendServicePort: 8086
+  MessengerBridge-Internal:
+    # THIS endpoint just for development purposes
+    type: internal
+    domain: messengerbridge-presentation-cryptopay.dev.kube
+    certSecretName: dev
+    paths:
+      "/":
+        backendServiceName: messengerbridge
+        backendServicePort: 8443
   Specs-External:
     type: external
     domain: testnet.cryptopay.band

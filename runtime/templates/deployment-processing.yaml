@@ -5,7 +5,7 @@ metadata:
     app: {{ .Chart.Name }}-processing{{ template "suffix" . }}
   name: {{ .Chart.Name }}-processing{{ template "suffix" . }}
 spec:
-  replicas: {{ .Values.application.processing.replicas | default 2 }}
+  replicas: {{ .Values.application.processing.replicas | default 1 }}
   strategy:
     type: RollingUpdate
   template:

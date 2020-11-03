@@ -1,0 +1,110 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: cryptopay
+  name: messengerbridge-files
+data:
+  messenger-bridge.toml: |-
+    # File format: https://github.com/toml-lang/toml
+
+
+    # Select Web servers to be used (splitted by space)
+    server_indexer = "apiSrv"
+
+    # Select endpoints to be used (splitted by space)
+    endpoint_indexer = "rest welcome"
+
+    # Select messengers to be used
+    messenger_indexer = "cryptopay_support_bot"
+
+    [[server]]
+      # Declare an API HTTP server
+      index = "apiSrv"
+      type = "https"
+      listenHost = "0.0.0.0"
+      listenPort = 8443
+      trustProxy = true
+      clientCertificateMode = "none"
+      serverCertificate = "/etc/cexiolabs/cryptopay/ssl/tls.crt"
+      serverKey = "/etc/cexiolabs/cryptopay/ssl/tls.key"
+
+    [[endpoint]]
+      # Declare REST endpoint and bound to the API HTTP server on path /v1
+      index = "rest"
+      type = "rest"
+      servers = "apiSrv"
+      bindPath = "/v1"
+
+    [[endpoint]]
+      # Declare Welcome Page endpoint and bound to the API HTTP server on path /
+      index = "welcome"
+      type = "welcome-page"
+      servers = "apiSrv"
+      bindPath = "/" 
+
+
+    [approvement]
+      # Select topics to be enabled
+      topic_indexer = "AcceptDepositApprove ZeroConfirmationApprove LegacyReturnCryptoApprove"
+
+      [[approvement.topic]]
+        index = "ZeroConfirmationApprove"
+        description = "Manual approve of zero confirmation."
+        requireVotes = 2
+        expireTimeout = 600
+
+      [[approvement.topic]]
+        index = "AcceptDepositApprove"
+        description = "Manual approve of number of confirmations (blockchain specific)."
+        requireVotes = 2
+        expireTimeout = 300
+
+      [[approvement.topic]]
+        index = "LegacyReturnCryptoApprove"
+        description = "Manual approve of return crypto on legacy service."
+        requireVotes = 3
+        expireTimeout = 4800
+
+    [[messenger]]
+      index = "cryptopay_support_bot"
+      type = "telegram"
+      #apiToken =
+      approvementTopicBinding_indexer = "AcceptDepositApproveBinding LegacyReturnCryptoApproveBinding ZeroConfirmationApproveBinding"
+
+      [[messenger.approvementTopicBinding]]
+        index = "ZeroConfirmationApproveBinding"
+        bindTopic = "ZeroConfirmationApprove"
+        #chatId = <Telegram's Unique identifier for the target chat or username of the target channel (in the format @channelusername)>
+        renderTemplate = """
+    <b>Запрос на ручное подтверждение 0-confirmation (нет колбека от pss-provider-wtf2)</b>
+    <i>Order: </i><a href="https://dashboard.cryptopay.band/order//{{cpoOrderId}}">{{cpoOrderId}}</a>
+    <i>Сумма: </i><b>{{amount}} {{currency}}</b>
+    <i>Депозитный адрес: </i><a href="https://blockstream.info/address/{{depositAddress}}/">{{depositAddress}}</a>. See also <a href="https://live.blockcypher.com/btc/address/{{depositAddress}}/">BlockCypher</a>, <a href="https://www.blockchain.com/btc/address/{{depositAddress}}">BlockchainInfo</a>.
+    <i>Хеш входящей транзакции: </i><a href="https://live.blockcypher.com/btc/tx/{{txHash}}/">{{txHash}}</a>. See also <a href="https://blockstream.info/tx/{{txHash}}">BlockCypher</a>, <a href="https://www.blockchain.com/btc/tx/{{txHash}}">BlockchainInfo</a>.
+    """
+
+      [[messenger.approvementTopicBinding]]
+        index = "AcceptDepositApproveBinding"
+        bindTopic = "AcceptDepositApprove"
+        #chatId = <Telegram's Unique identifier for the target chat or username of the target channel (in the format @channelusername)>
+        renderTemplate = """
+    <b>Запрос на ручное подтверждение депозита по достижению {{confirmations}}-confirmations (нет колбеков от pss-provider-wtf2)</b>
+    <i>Order: </i><a href="https://dashboard.cryptopay.band/order//{{cpoOrderId}}">{{cpoOrderId}}</a>
+    <i>Сумма: </i><b>{{amount}} {{currency}}</b>
+    <i>Текущее кол-во confirmations: </i><a href="https://live.blockcypher.com/btc/tx/{{txHash}}/">{{confirmations}}</a>
+    <i>Депозитный адрес: </i><a href="https://blockstream.info/address/{{depositAddress}}/">{{depositAddress}}</a>. See also <a href="https://live.blockcypher.com/btc/address/{{depositAddress}}/">BlockCypher</a>, <a href="https://www.blockchain.com/btc/address/{{depositAddress}}">BlockchainInfo</a>.
+    <i>Хеш входящей транзакции: </i><a href="https://live.blockcypher.com/btc/tx/{{txHash}}/">{{txHash}}</a>. See also <a href="https://blockstream.info/tx/{{txHash}}">BlockCypher</a>, <a href="https://www.blockchain.com/btc/tx/{{txHash}}">BlockchainInfo</a>.
+    """
+
+      [[messenger.approvementTopicBinding]]
+        index = "LegacyReturnCryptoApproveBinding"
+        bindTopic = "LegacyReturnCryptoApprove"
+        #chatId = <Telegram's Unique identifier for the target chat or username of the target channel (in the format @channelusername)>
+        renderTemplate = """
+    <b>Запрос на возврат средств</b>
+    <i>CPS Order: </i><a href="https://ui-icoo7oophu.bitpsp.net:8443/client/#/invoiceDetails/{{cpsOrderId}}">{{cpsOrderId}}</a>
+    <i>Депозитный адрес: </i><a href="https://blockstream.info/address/{{depositAddress}}/">{{depositAddress}}</a>. See also <a href="https://live.blockcypher.com/btc/address/{{depositAddress}}/">BlockCypher</a>, <a href="https://www.blockchain.com/btc/address/{{depositAddress}}">BlockchainInfo</a>.
+    <i>Сумма: </i><b>{{amount}} {{currency}}</b>
+    <i>Хеш входящей транзакции: </i><a href="https://blockstream.info/tx/{{inputTxHash}}">{{inputTxHash}}</a>. See also <a href="https://live.blockcypher.com/btc/tx/{{inputTxHash}}/">BlockCypher</a>, <a href="https://www.blockchain.com/btc/tx/{{inputTxHash}}">BlockchainInfo</a>.
+    <i>Адрес для возврата: </i><a href="https://blockstream.info/address/{{returnAddress}}">{{returnAddress}}</a>. See also <a href="https://live.blockcypher.com/btc/address/{{returnAddress}}/">BlockCypher</a>, <a href="https://www.blockchain.com/btc/address/{{returnAddress}}">BlockchainInfo</a>.
+    """

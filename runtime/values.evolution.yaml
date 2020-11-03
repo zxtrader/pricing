@@ -3,7 +3,6 @@ environment: evolution
 application:
   processing:
     serviceImage: devdocker.infra.kube/cryptopay/cpservice-devel
-    tag: master
     args:
       [
         "--config-file=/etc/cexiolabs/cryptopay.processing/service.config",
@@ -25,14 +24,13 @@ application:
     replicas: 1
   dashboarduiserve:
     serviceImage: devdocker.infra.kube/cryptopay/dashboard-ui
-    tag: master
   demo:
     env:
       BASE_PATH: /widget-demo/
       GATE_API_URL: http://cryptopay-processing:7999/v2/gate
       GATE_API_GATEWAY_ID: 09635610-6109-4179-833b-8675fa709d9b
       GATE_WIDGET_URL: https://gate-evolution-cryptopay.dev.kube
-      
+
 ingress:
   API:
     type: internal

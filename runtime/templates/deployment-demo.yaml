@@ -38,12 +38,12 @@ spec:
           value: "{{ $value }}"
 {{ end }}
 {{- end }}
-        - name: GATE_API_PASSPHRASE
+        - name: GATE_PASSPHRASE
           valueFrom:
             secretKeyRef:
               name: processing
               key: setup.createGateway.demo-gateway.passphrase
-        - name: GATE_API_SECRET
+        - name: GATE_SECRET
           valueFrom:
             secretKeyRef:
               name: processing

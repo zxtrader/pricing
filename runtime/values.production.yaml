@@ -13,8 +13,7 @@ application:
         "--config-env"
 #        "--runtime-gate-email-sender=nodemailer"
       ]
-    replicas: 1
-  gateuiserve:
+  echo:
     serviceImage: cexiolabs/http-https-echo
     tag: latest
     env:
@@ -78,3 +77,12 @@ ingress:
       "/ws/":
         backendServiceName: processing
         backendServicePort: 8086
+  MessengerBridge-Internal:
+    # THIS temporary endpoint just for testing purposes
+    type: internal
+    domain: messengerbridge-cryptopay.prodcryptopay.kube
+    certSecretName: callback
+    paths:
+      "/":
+        backendServiceName: messengerbridge
+        backendServicePort: 8443

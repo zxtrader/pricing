@@ -1,0 +1,17 @@
+{{ if or (eq .Values.environment "production") (eq .Values.environment "presentation") }}
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: {{ .Chart.Name }}-messengerbridge{{ template "suffix" . }}
+  name: {{ .Chart.Name }}-messengerbridge{{ template "suffix" . }}
+spec:
+  ports:
+    - port: 8443
+      name: messengerbridge
+      protocol: TCP
+      targetPort: 8443
+  type: ClusterIP
+  selector:
+    app: {{ .Chart.Name }}-messengerbridge{{ template "suffix" . }}
+{{ end }}

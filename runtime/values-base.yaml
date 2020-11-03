@@ -1,17 +1,23 @@
 application:
   processing:
     serviceImage: harbor.infra.kube/cryptopay/cpservice
-    tag: 2.1.5
-    replicas: 2
+    tag: 2.1.6
+    replicas: 1
   dashboarduiserve:
     serviceImage: harbor.infra.kube/cryptopay/dashboard-ui
-    tag: 0.1.27
-    replicas: 2
+    tag: 0.1.29
+    replicas: 1
   demo:
     serviceImage: cexiolabs/cryptopay.demo
     tag: latest
     replicas: 1
-  gateuiserve:
-    serviceImage: harbor.infra.kube/cryptopay/gate-ui
-    tag: latest
-    replicas: 2
+  messengerbridge:
+    serviceImage: zxteamorg/messenger-bridge
+    tag: 0.0.4
+    args:
+      [
+        "--config-toml-file=/etc/cexiolabs/cryptopay/messenger-bridge.toml",
+        "--config-secrets-dir=/etc/cexiolabs/cryptopay/secrets",
+        "--config-env",
+      ]
+    replicas: 1
