@@ -20,7 +20,7 @@ application:
       DEBUG_PORT: 9229
       DEBUG_WAIT: "no"
       LOG_LEVEL: "debug"
-      WIDGET_SCRIPT_ORIGIN: https://gate-testnet.cryptopay.band
+      GATE_URL: https://gate-testnet.cryptopay.band/widget
     replicas: 1
   dashboarduiserve:
     serviceImage: devdocker.infra.kube/cryptopay/dashboard-ui
