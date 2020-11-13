@@ -22,8 +22,8 @@ application:
       LOG_LEVEL: "debug"
       GATE_URL: https://gate-testnet.cryptopay.band/widget
     replicas: 1
-  dashboarduiserve:
-    serviceImage: devdocker.infra.kube/cryptopay/dashboard-ui
+  dashboard:
+    serviceImage: devdocker.infra.kube/cryptopay/dashboard-backend-presentation
   demo:
     env:
       BASE_PATH: /widget-demo/
@@ -52,23 +52,6 @@ ingress:
       "/":
         backendServiceName: processing
         backendServicePort: 8080
-  Dashboard-Internal:
-    type: internal
-    domain: dashboard-presentation-cryptopay.dev.kube
-    certSecretName: dev
-    nginxConfigurationSnippet: |
-      add_header Last-Modified $date_gmt;
-      add_header Cache-Control 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0';
-      if_modified_since off;
-      expires off;
-      etag off;
-    paths:
-      "/":
-        backendServiceName: dashboarduiserve
-        backendServicePort: 8080
-      "/v2/dashboard/":
-        backendServiceName: processing
-        backendServicePort: 8082
   Dashboard-External:
     type: external
     domain: dashboard-testnet.cryptopay.band
@@ -80,8 +63,8 @@ ingress:
       etag off;
     paths:
       "/":
-        backendServiceName: dashboarduiserve
-        backendServicePort: 8080
+        backendServiceName: dashboard
+        backendServicePort: 8445
       "/v2/dashboard/":
         backendServiceName: processing
         backendServicePort: 8082

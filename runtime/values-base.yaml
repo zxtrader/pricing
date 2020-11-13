@@ -1,11 +1,11 @@
 application:
   processing:
     serviceImage: harbor.infra.kube/cryptopay/cpservice
-    tag: 2.1.13
+    tag: 2.1.14
     replicas: 1
-  dashboarduiserve:
-    serviceImage: harbor.infra.kube/cryptopay/dashboard-ui
-    tag: 0.1.29
+  dashboard:
+    serviceImage: harbor.infra.kube/cryptopay/dashboard-backend
+    tag: 2.1.14
     replicas: 1
   demo:
     serviceImage: cexiolabs/cryptopay.demo

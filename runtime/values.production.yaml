@@ -43,8 +43,8 @@ ingress:
     #backendCaSecretName:
     paths:
       "/":
-        backendServiceName: dashboarduiserve
-        backendServicePort: 8080
+        backendServiceName: dashboard
+        backendServicePort: 8445
       "/v2/dashboard/":
         backendServiceName: processing
         backendServicePort: 8082

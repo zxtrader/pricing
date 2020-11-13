@@ -2,47 +2,50 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   labels:
-    app: {{ .Chart.Name }}-dashboarduiserve{{ template "suffix" . }}
-  name: {{ .Chart.Name }}-dashboarduiserve{{ template "suffix" . }}
+    app: {{ .Chart.Name }}-dashboard{{ template "suffix" . }}
+  name: {{ .Chart.Name }}-dashboard{{ template "suffix" . }}
 spec:
-  replicas: {{ .Values.application.dashboarduiserve.replicas | default 2 }}
+  replicas: {{ .Values.application.dashboard.replicas | default 2 }}
   strategy:
     type: RollingUpdate
   template:
     metadata:
       labels:
-        app: {{ .Chart.Name }}-dashboarduiserve{{ template "suffix" . }}
+        app: {{ .Chart.Name }}-dashboard{{ template "suffix" . }}
     spec:
       containers:
-      - name: dashboarduiserve
-        image: {{ .Values.application.dashboarduiserve.serviceImage }}:{{ .Values.application.dashboarduiserve.tag }}
-{{- if .Values.application.dashboarduiserve.command }}
+      - name: dashboard
+        image: {{ .Values.application.dashboard.serviceImage }}:{{ .Values.application.dashboard.tag }}
+{{- if .Values.application.dashboard.command }}
         command:
-{{ range .Values.application.dashboarduiserve.command }}
+{{ range .Values.application.dashboard.command }}
         - {{ . }}
 {{ end }}
 {{- end }}
-{{- if .Values.application.dashboarduiserve.args }}
+{{- if .Values.application.dashboard.args }}
         args:
-{{ range .Values.application.dashboarduiserve.args }}
+{{ range .Values.application.dashboard.args }}
         - {{ . }}
 {{ end }}
 {{- end }}
         volumeMounts:
         - name: secret-certificate
-          mountPath: /etc/cexiolabs/cryptopay/ssl
+          mountPath: /etc/cexiolabs/cryptopay.dashboard/ssl/
           readOnly: true
+        envFrom:
+        - secretRef:
+            name: dashboard
         env:
         - name: RUNTIME
           value: {{ .Values.environment }}
-{{- if .Values.application.dashboarduiserve.env }}
-{{ range $key, $value := .Values.application.dashboarduiserve.env }}
+{{- if .Values.application.dashboard.env }}
+{{ range $key, $value := .Values.application.dashboard.env }}
         - name: "{{ $key }}"
           value: "{{ $value }}"
 {{ end }}
 {{- end }}
         ports:
-        - containerPort: 8080
+        - containerPort: 8445
           protocol: TCP
         # livenessProbe:
         #   httpGet:
@@ -66,6 +69,12 @@ spec:
             cpu: 100m
             memory: 128Mi
       volumes:
+      # - name: dashboard-files
+      #   configMap:
+      #     name: dashboard-files
+      - name: secret-files
+        secret:
+          secretName: dashboard
       - name: secret-certificate
         secret:
-          secretName: {{ .Chart.Name }}-dashboarduiserve{{ template "suffix" . }}-certificate
+          secretName: {{ .Chart.Name }}-dashboard{{ template "suffix" . }}-certificate
