@@ -47,5 +47,9 @@ $ helm --tiller-namespace "cryptopay-${ENV}" upgrade --install --namespace "cryp
 ```
 
 ```bash
-$ helm --tiller-namespace "cryptopay-${ENV}" upgrade --install --namespace "cryptopay-${ENV}" --values "values-base.yaml" --values "values.${ENV}.yaml" --set "application.processing.tag=dev.f08e1c0b" --set "application.dashboard.tag=master.76ccdc35" tag .
+$ helm --tiller-namespace "cryptopay-${ENV}" upgrade --install --namespace "cryptopay-${ENV}" --values "values-base.yaml" --values "values.${ENV}.yaml" --set "application.dashboard.tag=master" tag .
+```
+
+```bash
+$ helm --tiller-namespace "cryptopay-${ENV}" upgrade --install --namespace "cryptopay-${ENV}" --values "values-base.yaml" --values "values.${ENV}.yaml" --set "application.processing.tag=master" --set "application.dashboard.tag=master" tag .
 ```

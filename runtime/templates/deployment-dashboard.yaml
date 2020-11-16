@@ -32,6 +32,9 @@ spec:
         - name: secret-certificate
           mountPath: /etc/cexiolabs/cryptopay.dashboard/ssl/
           readOnly: true
+        - name: legacy-cpservice-config
+          mountPath: /etc/cexiolabs/cryptopay.dashboard/legacy-cpservice-config/
+          readOnly: true
         envFrom:
         - secretRef:
             name: dashboard
@@ -69,6 +72,11 @@ spec:
             cpu: 100m
             memory: 128Mi
       volumes:
+      - name: legacy-cpservice-config
+        configMap:
+          defaultMode: 420
+          name: cpservice
+        
       # - name: dashboard-files
       #   configMap:
       #     name: dashboard-files

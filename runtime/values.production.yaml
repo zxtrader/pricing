@@ -1,6 +1,9 @@
 environment: production
 
 application:
+  dashboard:
+    env:
+      WTFProviderConfigurationFile: /etc/cexiolabs/cryptopay.dashboard/legacy-cpservice-config/WTF-prod.json
   processing:
     args:
       [

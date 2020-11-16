@@ -1,6 +1,10 @@
 environment: evolution
 
 application:
+  dashboard:
+    serviceImage: devdocker.infra.kube/cryptopay/dashboard-backend-evolution
+    env:
+      WTFProviderConfigurationFile: /etc/cexiolabs/cryptopay.dashboard/legacy-cpservice-config/WTF-dev.json
   processing:
     serviceImage: devdocker.infra.kube/cryptopay/cpservice-devel
     args:
@@ -22,8 +26,6 @@ application:
       LOG_LEVEL: "debug"
       GATE_URL: https://gate-evolution-cryptopay.dev.kube/widget
     replicas: 1
-  dashboard:
-    serviceImage: devdocker.infra.kube/cryptopay/dashboard-backend-evolution
   demo:
     env:
       BASE_PATH: /widget-demo/
