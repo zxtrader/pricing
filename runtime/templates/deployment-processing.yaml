@@ -78,8 +78,8 @@ spec:
         envFrom:
         - configMapRef:
             name: processing-envvars
-        - configMapRef:
-            name: processing-envvars-setup
+        # - configMapRef:
+        #     name: processing-envvars-setup
         env:
         - name: RUNTIME
           value: {{ .Values.environment }}
