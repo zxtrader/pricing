@@ -9,6 +9,7 @@ spec:
   replicas: {{ .Values.application.demo.replicas | default 2 }}
   strategy:
     type: RollingUpdate
+  revisionHistoryLimit: 3
   template:
     metadata:
       labels:

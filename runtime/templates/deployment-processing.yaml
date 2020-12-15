@@ -8,6 +8,7 @@ spec:
   replicas: {{ .Values.application.processing.replicas | default 1 }}
   strategy:
     type: RollingUpdate
+  revisionHistoryLimit: 3
   template:
     metadata:
       labels:
