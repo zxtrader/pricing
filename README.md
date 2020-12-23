@@ -1,29 +1,19 @@
 # ZXTrader's Price Service
 ZXTrader's Price Service - Service of historical prices. Service is a caching aggregator of prices from a lot of sources.
 
-## Ping
-Check status service.
-### REST
-```bash
-$ curl --verbose https://service.zxtrader.com/price/v0/api/ping?echo=hello
-> GET /ping?echo=hello HTTP/1.1
-> Host: service.zxtrader.com
-> Accept: */*
->
-< HTTP/1.1 200 OK
-```
-```json
-{"echo":"hello","time":"2019-06-11T16:08:07.713Z","version":"1.0.0"}
-```
-### JSON-RPC
-```bash
-wscat --connect wss://service.zxtrader.com/price/v0/ws
-```
-```json
-connected (press CTRL+C to quit)
-> {"jsonrpc":"2.0","id":42,"method":"ping","params":{"echo":"hello"}}
-< {"jsonrpc":"2.0","id":42,"result":{"echo":"hello","time":"2019-06-25T17:24:32.660Z","version":"0.31.3"}}
-```
+## Quick Start
+* Create virtual network
+    ```bash
+    docker network create priceservice
+    ```
+* Start a Redis server. Thee Redis is used as memory database for store historical prices
+    ```bash
+    docker run --rm --interactive --tty --network=priceservice redis:4
+    ```
+* Start *Price Service* itself
+    ```bash
+    docker run --rm --interactive --tty --network=priceservice --publish 28080:8080 --entrypoint /usr/local/bin/node docker.registry.zxteam.net/zxtrader/price.service:0.0.30 /usr/local/org.zxteam.price/bin/price-service.js --config-file=/etc/org.zxteam.price/price-service.config
+    ```
 
 ## API
 Find [API](docs/API.md) notes in separate document
