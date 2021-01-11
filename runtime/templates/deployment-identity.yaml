@@ -1,0 +1,60 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: {{ .Chart.Name }}-identity{{ template "suffix" . }}
+  name: {{ .Chart.Name }}-identity{{ template "suffix" . }}
+spec:
+  replicas: {{ .Values.application.identity.replicas | default 2 }}
+  strategy:
+    type: RollingUpdate
+  revisionHistoryLimit: 3
+  template:
+    metadata:
+      labels:
+        app: {{ .Chart.Name }}-identity{{ template "suffix" . }}
+    spec:
+      containers:
+      - name: identity
+        image: {{ .Values.application.identity.serviceImage }}:{{ .Values.application.identity.tag }}
+{{- if .Values.application.identity.command }}
+        command:
+{{ range .Values.application.identity.command }}
+        - {{ . }}
+{{ end }}
+{{- end }}
+{{- if .Values.application.identity.args }}
+        args:
+{{ range .Values.application.identity.args }}
+        - {{ . }}
+{{ end }}
+{{- end }}
+        env:
+        - name: RUNTIME
+          value: "{{ .Values.environment }}"
+        - name: LOG_LEVEL
+          value: "info"
+{{- if .Values.application.identity.env }}
+{{ range $key, $value := .Values.application.identity.env }}
+        - name: "{{ $key }}"
+          value: "{{ $value }}"
+{{ end }}
+{{- end }}
+        ports:
+        - containerPort: 8443
+          protocol: TCP
+        volumeMounts:
+        - name: secret-certificate
+          mountPath: /etc/cexiolabs/cryptopay/ssl
+          readOnly: true
+        resources:
+          limits:
+            cpu: 20m
+            memory: 128Mi
+          requests:
+            cpu: 10m
+            memory: 16Mi
+      volumes:
+      - name: secret-certificate
+        secret:
+          secretName: {{ .Chart.Name }}-identity{{ template "suffix" . }}-certificate

@@ -1,0 +1,66 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: {{ .Chart.Name }}-echo{{ template "suffix" . }}
+  name: {{ .Chart.Name }}-echo{{ template "suffix" . }}
+spec:
+  replicas: {{ .Values.application.echo.replicas | default 2 }}
+  strategy:
+    type: RollingUpdate
+  revisionHistoryLimit: 3
+  template:
+    metadata:
+      labels:
+        app: {{ .Chart.Name }}-echo{{ template "suffix" . }}
+    spec:
+      containers:
+      - name: echo
+        image: {{ .Values.application.echo.serviceImage }}:{{ .Values.application.echo.tag }}
+{{- if .Values.application.echo.command }}
+        command:
+{{ range .Values.application.echo.command }}
+        - {{ . }}
+{{ end }}
+{{- end }}
+{{- if .Values.application.echo.args }}
+        args:
+{{ range .Values.application.echo.args }}
+        - {{ . }}
+{{ end }}
+{{- end }}
+        env:
+        - name: RUNTIME
+          value: "{{ .Values.environment }}"
+        - name: HTTPS_PORT
+          value: "8443"
+        - name: LOG_LEVEL
+          value: "info"
+        - name: SSL_CERT_FILE
+          value: "/etc/cexiolabs/cryptopay/ssl/tls.crt"
+        - name: SSL_KEY_FILE
+          value: "/etc/cexiolabs/cryptopay/ssl/tls.key"
+{{- if .Values.application.echo.env }}
+{{ range $key, $value := .Values.application.echo.env }}
+        - name: "{{ $key }}"
+          value: "{{ $value }}"
+{{ end }}
+{{- end }}
+        ports:
+        - containerPort: 8443
+          protocol: TCP
+        volumeMounts:
+        - name: secret-certificate
+          mountPath: /etc/cexiolabs/cryptopay/ssl
+          readOnly: true
+        resources:
+          limits:
+            cpu: 20m
+            memory: 128Mi
+          requests:
+            cpu: 10m
+            memory: 16Mi
+      volumes:
+      - name: secret-certificate
+        secret:
+          secretName: {{ .Chart.Name }}-echo{{ template "suffix" . }}-certificate

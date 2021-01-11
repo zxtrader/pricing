@@ -5,6 +5,14 @@ application:
     serviceImage: devdocker.infra.kube/cryptopay/dashboard-backend-presentation
     env:
       WTFProviderConfigurationFile: /etc/cexiolabs/cryptopay.dashboard/legacy-cpservice-config/WTF-dev.json
+  identity:
+    serviceImage: cexiolabs/http-https-echo
+    tag: latest
+    env:
+      HTTPS_PORT: 8443
+      LOG_LEVEL: "info"
+      SSL_CERT_FILE: /etc/cexiolabs/cryptopay/ssl/tls.crt
+      SSL_KEY_FILE: /etc/cexiolabs/cryptopay/ssl/tls.key
   processing:
     serviceImage: devdocker.infra.kube/cryptopay/cpservice-devel
     args:
@@ -54,6 +62,14 @@ ingress:
       "/":
         backendServiceName: processing
         backendServicePort: 8080
+  Callbacks-Internal:
+    type: internal
+    domain: callback-presentation-cryptopay.dev.kube
+    certSecretName: dev
+    paths:
+      "/ws/":
+        backendServiceName: processing
+        backendServicePort: 8086
   Dashboard-External:
     type: external
     domain: dashboard-testnet.cryptopay.band
@@ -70,6 +86,21 @@ ingress:
       "/v2/dashboard/":
         backendServiceName: processing
         backendServicePort: 8082
+  Echo:
+    type: external
+    domain: echo-testnet.cryptopay.band
+    paths:
+      "/":
+        backendServiceName: echo
+        backendServicePort: 8443
+  Echo-Internal:
+    type: internal
+    domain: echo-presentation-cryptopay.dev.kube
+    certSecretName: dev
+    paths:
+      "/":
+        backendServiceName: echo
+        backendServicePort: 8443
   Gateway-Internal:
     type: internal
     domain: gate-presentation-cryptopay.dev.kube
@@ -109,14 +140,21 @@ ingress:
       "/v2/gate-callback/":
         backendServiceName: processing
         backendServicePort: 8085
-  Callbacks-Internal:
+  Identity:
+    type: external
+    domain: id-testnet.cryptopay.band
+    paths:
+      "/":
+        backendServiceName: identity
+        backendServicePort: 8443
+  Identity-Internal:
     type: internal
-    domain: callback-presentation-cryptopay.dev.kube
+    domain: id-presentation-cryptopay.dev.kube
     certSecretName: dev
     paths:
-      "/ws/":
-        backendServiceName: processing
-        backendServicePort: 8086
+      "/":
+        backendServiceName: identity
+        backendServicePort: 8443
   MessengerBridge-Internal:
     # THIS endpoint just for development purposes
     type: internal

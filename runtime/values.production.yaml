@@ -4,6 +4,14 @@ application:
   dashboard:
     env:
       WTFProviderConfigurationFile: /etc/cexiolabs/cryptopay.dashboard/legacy-cpservice-config/WTF-prod.json
+  identity:
+    serviceImage: cexiolabs/http-https-echo
+    tag: latest
+    env:
+      HTTPS_PORT: 8443
+      LOG_LEVEL: "info"
+      SSL_CERT_FILE: /etc/cexiolabs/cryptopay/ssl/tls.crt
+      SSL_KEY_FILE: /etc/cexiolabs/cryptopay/ssl/tls.key
   processing:
     args:
       [
@@ -16,14 +24,6 @@ application:
         "--config-env"
 #        "--runtime-gate-email-sender=nodemailer"
       ]
-  echo:
-    serviceImage: cexiolabs/http-https-echo
-    tag: latest
-    env:
-      HTTPS_PORT: 8080
-      LOG_LEVEL: "info"
-      SSL_CERT_FILE: /etc/cexiolabs/cryptopay/ssl/tls.crt
-      SSL_KEY_FILE: /etc/cexiolabs/cryptopay/ssl/tls.key
 
 ingress:
   API:
@@ -38,6 +38,19 @@ ingress:
       "/":
         backendServiceName: processing
         backendServicePort: 8080
+  Callbacks-Internal:
+    type: internal
+    domain: callback.prodcryptopay.kube
+    certSecretName: callback
+    # Callbacks does not require client's certificate
+    #backendCaSecretName:
+    paths:
+      "/v2/callback/cryptoproviders/pss-provider-wtf2/":
+        backendServiceName: processing
+        backendServicePort: 8084
+      "/ws/":
+        backendServiceName: processing
+        backendServicePort: 8086
   Dashboard:
     type: external
     domain: dashboard.cryptopay.band
@@ -73,19 +86,23 @@ ingress:
       "/v2/gate-callback/":
         backendServiceName: processing
         backendServicePort: 8085
-  Callbacks:
-    type: internal
-    domain: callback.prodcryptopay.kube
-    certSecretName: callback
-    # Gateway does not require client's certificate
-    #backendCaSecretName:
+  Identity:
+    type: external
+    domain: id.cryptopay.band
+    certSecretName: ingress-gate-api-dashboard
     paths:
-      "/v2/callback/cryptoproviders/pss-provider-wtf2/":
-        backendServiceName: processing
-        backendServicePort: 8084
-      "/ws/":
-        backendServiceName: processing
-        backendServicePort: 8086
+      "/":
+        backendServiceName: identity
+        backendServicePort: 8443
+  Identity-Internal:
+    # THIS temporary endpoint just for testing purposes
+    type: internal
+    domain: id-cryptopay.prodcryptopay.kube
+    certSecretName: callback
+    paths:
+      "/":
+        backendServiceName: identity
+        backendServicePort: 8443
   MessengerBridge-Internal:
     # THIS temporary endpoint just for testing purposes
     type: internal

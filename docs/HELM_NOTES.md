@@ -5,7 +5,7 @@
 1. Detect Tiller version (find `tiller-deploy` deployment inside your cluster's namespace and get version from container, something like: harbor.infra.kube/rancherdefaultimg/tiller:v2.14.2)
 1. Set alias to HELM version (very same as tiller)
 	```bash
-	$ cd ~/work/cryptopay/devopts/kubernetes-deployment/runtime/
+	$ cd ~/work/cryptopay/devopts.kubernetes-deployment/runtime/
 	$ alias helm="docker run --interactive --tty --rm --volume \"${HOME}/.kube/config:/root/.kube/config\" --volume \"$(pwd):/apps\" alpine/helm:2.14.0"
 	```
 1. Set environment

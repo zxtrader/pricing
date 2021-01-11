@@ -11,6 +11,14 @@ application:
     serviceImage: cexiolabs/cryptopay.demo
     tag: latest
     replicas: 1
+  echo:
+    serviceImage: cexiolabs/http-https-echo
+    tag: latest
+    replicas: 2
+  identity:
+    serviceImage: harbor.infra.kube/cryptopay/identity-backend
+    tag: 0.0.1
+    replicas: 1
   messengerbridge:
     serviceImage: zxteamorg/messenger-bridge
     tag: 0.0.4
