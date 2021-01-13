@@ -77,13 +77,9 @@ spec:
         configMap:
           defaultMode: 420
           name: cpservice
-        
       # - name: dashboard-files
       #   configMap:
       #     name: dashboard-files
-      - name: secret-files
-        secret:
-          secretName: dashboard
       - name: secret-certificate
         secret:
           secretName: {{ .Chart.Name }}-dashboard{{ template "suffix" . }}-certificate

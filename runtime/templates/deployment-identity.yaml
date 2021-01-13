@@ -29,11 +29,16 @@ spec:
         - {{ . }}
 {{ end }}
 {{- end }}
+        volumeMounts:
+        - name: secret-certificate
+          mountPath: /etc/cexiolabs/cryptopay.identity/ssl/
+          readOnly: true
+        envFrom:
+        - secretRef:
+            name: identity
         env:
         - name: RUNTIME
-          value: "{{ .Values.environment }}"
-        - name: LOG_LEVEL
-          value: "info"
+          value: {{ .Values.environment }}
 {{- if .Values.application.identity.env }}
 {{ range $key, $value := .Values.application.identity.env }}
         - name: "{{ $key }}"
@@ -45,16 +50,19 @@ spec:
           protocol: TCP
         volumeMounts:
         - name: secret-certificate
-          mountPath: /etc/cexiolabs/cryptopay/ssl
+          mountPath: /etc/cexiolabs/cryptopay.identity/ssl/
           readOnly: true
         resources:
           limits:
-            cpu: 20m
-            memory: 128Mi
+            cpu: 512m
+            memory: 512Mi
           requests:
-            cpu: 10m
-            memory: 16Mi
+            cpu: 128m
+            memory: 64Mi
       volumes:
+      # - name: identity-files
+      #   configMap:
+      #     name: identity-files
       - name: secret-certificate
         secret:
           secretName: {{ .Chart.Name }}-identity{{ template "suffix" . }}-certificate
