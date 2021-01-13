@@ -4,9 +4,6 @@ application:
   dashboard:
     env:
       WTFProviderConfigurationFile: /etc/cexiolabs/cryptopay.dashboard/legacy-cpservice-config/WTF-prod.json
-  identity:
-    serviceImage: devdocker.infra.kube/cryptopay/identity
-    tag: latest
   processing:
     args:
       [
