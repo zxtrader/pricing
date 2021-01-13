@@ -16,7 +16,7 @@ application:
     tag: latest
     replicas: 2
   identity:
-    serviceImage: harbor.infra.kube/cryptopay/identity-backend
+    serviceImage: harbor.infra.kube/cryptopay/identity
     tag: 0.0.1
     replicas: 1
   messengerbridge:

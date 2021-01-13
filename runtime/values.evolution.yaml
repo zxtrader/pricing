@@ -3,12 +3,15 @@ environment: evolution
 application:
   dashboard:
     serviceImage: devdocker.infra.kube/cryptopay/dashboard-backend-evolution
+    # tag: master
     env:
       WTFProviderConfigurationFile: /etc/cexiolabs/cryptopay.dashboard/legacy-cpservice-config/WTF-dev.json
   identity:
     serviceImage: devdocker.infra.kube/cryptopay/identity
+    # tag: master
   processing:
     serviceImage: devdocker.infra.kube/cryptopay/cpservice-devel
+    # tag: master
     args:
       [
         "--config-file=/etc/cexiolabs/cryptopay.processing/service.config",
@@ -29,6 +32,7 @@ application:
       GATE_URL: https://gate-evolution-cryptopay.dev.kube/widget
     replicas: 1
   demo:
+    # tag: master
     env:
       BASE_PATH: /widget-demo/
       GATE_API_ORIGIN: https://cryptopay-processing:8080
