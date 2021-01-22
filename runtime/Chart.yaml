@@ -13,13 +13,13 @@ name: cryptopay
 version: 2.0.0
 
 # The version of the app that this contains (optional). This needn't be SemVer.
-appVersion: 2.2.4
+appVersion: 2.2.5
 
 # The URL of this project's home page (optional)
 home: https://www.cryptopay.band/
 
 # A single-sentence description of this project (optional)
-description: CryptoPay Service
+description: CryptoPay
 
 # A list of keywords about this project (optional)
 keywords:
@@ -33,7 +33,3 @@ sources:
 maintainers:
   - name: Maksym Anurin
     email: m.anurin@wnb.com.ua
-  - name: Serhii Kozlov
-    email: s.kozlov@wnb.com.ua
-  - name: Volodymyr Syniakin
-    email: v.syniakin@wnb.com.ua
