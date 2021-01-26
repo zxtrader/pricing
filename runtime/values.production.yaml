@@ -10,6 +10,8 @@ application:
         "--config-file=/etc/cexiolabs/cryptopay.processing/service.config",
         "--config-toml-file=/etc/cexiolabs/cryptopay.processing/service.toml",
         "--config-toml-file=/etc/cexiolabs/cryptopay.processing/service-setup.toml",
+        "--config-toml-file=/etc/cexiolabs/cryptopay.processing/service-setup-dach.toml",
+        "--config-toml-file=/etc/cexiolabs/cryptopay.processing/service-setup-goldenpay.toml",
         "--config-toml-file=/etc/cexiolabs/cryptopay.processing/service-production.toml",
         "--config-secrets-dir=/etc/cexiolabs/cryptopay/secrets",
         "--config-secrets-dir=/etc/cexiolabs/cryptopay/secrets-setup",
