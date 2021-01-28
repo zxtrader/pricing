@@ -38,12 +38,14 @@ REVISION	UPDATED                 	STATUS    	CHART           	DESCRIPTION
 ### Delete the release from Kubernetes
 Full delete `cpservice` for example
 ```bash
-$ helm --tiller-namespace "cryptopay-${ENV}" delete --purge cpservice
+#helm3###$ helm uninstall --namespace "cryptopay-${ENV}" tag
+#helm2###$ helm --tiller-namespace "cryptopay-${ENV}" delete --purge tag
 ```
 
 ### Deploy the service into cluster
 ```bash
-$ helm --tiller-namespace "cryptopay-${ENV}" upgrade --install --namespace "cryptopay-${ENV}" --values "values-base.yaml" --values "values.${ENV}.yaml" tag .
+#helm3###$ helm upgrade --install --namespace "cryptopay-${ENV}" --history-max 3 --values "values-base.yaml" --values "values.${ENV}.yaml" tag .
+#helm2###$ helm --tiller-namespace "cryptopay-${ENV}" upgrade --install --namespace "cryptopay-${ENV}" --values "values-base.yaml" --values "values.${ENV}.yaml" tag .
 ```
 
 ```bash
