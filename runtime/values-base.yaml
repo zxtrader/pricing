@@ -3,6 +3,12 @@ application:
     serviceImage: harbor.infra.kube/cryptopay/cpservice
     tag: 2.1.34
     replicas: 1
+    env:
+      "setup.instrumentModel_indexer": "CRYPTO_SELL_INTERMEDIATE_DEFAULT CRYPTO_SELL_DACH_DEFAULT CRYPTO_SELL_ALISAVOR_DEFAULT
+            CRYPTO_SELL_CIRCUMVENIO_DEFAULT CRYPTO_SELL_GENESIS_DEFAULT CRYPTO_SELL_KEYWAY_DEFAULT
+            CRYPTO_SELL_MODULEBLADE_DEFAULT CRYPTO_SELL_TESHI_DEFAULT CRYPTO_SELL_NMFSL_DEFAULT
+            CRYPTO_SELL_GOLDENPAYDMCCROOT_DEFAULT CRYPTO_SELL_GOLDENPAYDMCC_DEFAULT
+            CRYPTO_SELL_NEOTECH_DEFAULT"
   dashboard:
     serviceImage: harbor.infra.kube/cryptopay/dashboard-backend
     tag: 2.1.26
@@ -17,7 +23,7 @@ application:
     replicas: 2
   identity:
     serviceImage: harbor.infra.kube/cryptopay/identity
-    tag: 0.0.3
+    tag: 0.0.4
     replicas: 1
   messengerbridge:
     serviceImage: zxteamorg/messenger-bridge

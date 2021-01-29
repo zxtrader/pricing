@@ -6,8 +6,9 @@
 1. Set alias to HELM version (very same as tiller)
 	```bash
 	$ cd ~/work/cryptopay/devopts.kubernetes-deployment/runtime/
-	$ alias helm="docker run --interactive --tty --rm --volume \"${HOME}/.kube/config:/root/.kube/config\" --volume \"$(pwd):/apps\" alpine/helm:2.14.0"
+	$ alias helm="docker run --interactive --tty --rm --volume \"${HOME}/.kube:/root/.kube\" --volume \"$(pwd):/apps\" alpine/helm:2.14.0"
 	```
+	Note: On Linux host you may need `sudo iptables -t nat -I POSTROUTING 1 -o eth0 -s 172.17.0.1/16 -j SNAT --to-source 10.77.2.147`
 1. Set environment
 	```bash
 	$ export ENV=evolution

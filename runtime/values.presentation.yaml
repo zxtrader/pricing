@@ -62,6 +62,9 @@ ingress:
       "/":
         backendServiceName: processing
         backendServicePort: 8080
+      "/v3/dashboard":
+        backendServiceName: dashboard
+        backendServicePort: 8445
   Callbacks-Internal:
     type: internal
     domain: callback-presentation-cryptopay.dev.kube
