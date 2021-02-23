@@ -23,7 +23,7 @@ application:
     replicas: 2
   identity:
     serviceImage: harbor.infra.kube/cryptopay/identity
-    tag: 0.0.7
+    tag: 0.0.8
     replicas: 1
   messengerbridge:
     serviceImage: zxteamorg/messenger-bridge
