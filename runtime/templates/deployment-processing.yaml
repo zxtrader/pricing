@@ -2,17 +2,17 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   labels:
-    app: {{ .Chart.Name }}-processing{{ template "suffix" . }}
-  name: {{ .Chart.Name }}-processing{{ template "suffix" . }}
+    app: processing{{ template "suffix" . }}
+  name: processing{{ template "suffix" . }}
 spec:
-  replicas: {{ .Values.application.processing.replicas | default 1 }}
+  replicas: {{ .Values.application.processing.replicas | default 0 }}
   strategy:
     type: RollingUpdate
   revisionHistoryLimit: 3
   template:
     metadata:
       labels:
-        app: {{ .Chart.Name }}-processing{{ template "suffix" . }}
+        app: processing{{ template "suffix" . }}
     spec:
       containers:
       - name: processing
@@ -62,18 +62,18 @@ spec:
         - containerPort: 9090
           protocol: TCP
         volumeMounts:
-        - name: processing-files
-          mountPath: /etc/cexiolabs/cryptopay
+        - name: config-files
+          mountPath: /etc/cexiolabs/cryptopay/
           readOnly: true
         - name: secret-certificate
-          mountPath: /etc/cexiolabs/cryptopay/ssl
+          mountPath: /etc/cexiolabs/cryptopay/ssl/
           readOnly: true
         - name: secret-files
-          mountPath: /etc/cexiolabs/cryptopay/secrets
+          mountPath: /etc/cexiolabs/cryptopay/secrets/
           # The service will delete all files after read its. So need write access.
           readOnly: false
         - name: secret-setup-files
-          mountPath: /etc/cexiolabs/cryptopay/secrets-setup
+          mountPath: /etc/cexiolabs/cryptopay/secrets-setup/
           # The service will delete all files after read its. So need write access.
           readOnly: false
         envFrom:
@@ -114,7 +114,7 @@ spec:
             cpu: 125m
             memory: 256Mi
       volumes:
-      - name: processing-files
+      - name: config-files
         configMap:
           name: processing-files
       - name: secret-files
@@ -125,4 +125,4 @@ spec:
           secretName: processing-setup
       - name: secret-certificate
         secret:
-          secretName: {{ .Chart.Name }}-processing{{ template "suffix" . }}-certificate
+          secretName: processing{{ template "suffix" . }}-certificate

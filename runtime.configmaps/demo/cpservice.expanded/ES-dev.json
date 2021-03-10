@@ -1,0 +1,27 @@
+{
+	"user": {
+		"username": "",
+		"password": ""
+	},
+	"external": {
+		"rejectUnauthorized": false,
+		"url": "https://pss-rpc.dev.kube/cryptopay",
+		"instrumentId": "cpcrypto",
+		"encryption_key": "",
+		"signFields": {},
+		"actions": {
+			"HASH": "runDepositFlow",
+			"ADDRESS": "runRefundFlow"
+		}
+	},
+	"client": {
+		"rejectUnauthorized": false,
+		"url": "",
+		"description": "ES provider",
+		"client_id": "",
+		"client_secret": "",
+		"encryption_key": "",
+		"endpoints": {},
+		"signFields": {}
+	}
+}

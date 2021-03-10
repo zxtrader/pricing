@@ -2,17 +2,17 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   labels:
-    app: identity{{ template "suffix" . }}
-  name: identity{{ template "suffix" . }}
+    app: api{{ template "suffix" . }}
+  name: api{{ template "suffix" . }}
 spec:
-  replicas: {{ .Values.application.identity.replicas | default 0 }}
+  replicas: {{ .Values.application.api.replicas | default 2 }}
   strategy:
     type: RollingUpdate
   revisionHistoryLimit: 3
   template:
     metadata:
       labels:
-        app: identity{{ template "suffix" . }}
+        app: api{{ template "suffix" . }}
     spec:
       # initContainers:
       # - name: secret-copier
@@ -23,43 +23,43 @@ spec:
       #   - -c
       #   args:
       #   - 'echo "Copying ssl and secrets files into temporary emptyDir-based volume (to be able to erase sensetive data after read it)."
-      #     && cp /etc/cexiolabs/cryptopay.identity/ssl/* /tmp/cexiolabs/cryptopay.identity/ssl/
-      #     && cp /etc/cexiolabs/cryptopay.identity/secrets/* /tmp/cexiolabs/cryptopay.identity/secrets/'
+      #     && cp /etc/cexiolabs/cryptopay.api/ssl/* /tmp/cexiolabs/cryptopay.api/ssl/
+      #     && cp /etc/cexiolabs/cryptopay.api/secrets/* /tmp/cexiolabs/cryptopay.api/secrets/'
       #   volumeMounts:
       #   - name: secret-certificate
-      #     mountPath: /etc/cexiolabs/cryptopay.identity/ssl/
+      #     mountPath: /etc/cexiolabs/cryptopay.api/ssl/
       #   - name: secret-files
-      #     mountPath: /etc/cexiolabs/cryptopay.identity/secrets/
+      #     mountPath: /etc/cexiolabs/cryptopay.api/secrets/
       #   - name: secret-certificate-copy
-      #     mountPath: /tmp/cexiolabs/cryptopay.identity/ssl/
+      #     mountPath: /tmp/cexiolabs/cryptopay.api/ssl/
       #   - name: secret-files-copy
-      #     mountPath: /tmp/cexiolabs/cryptopay.identity/secrets/
+      #     mountPath: /tmp/cexiolabs/cryptopay.api/secrets/
       containers:
-      - name: identity
-        image: {{ .Values.application.identity.serviceImage }}:{{ .Values.application.identity.tag }}
-{{- if .Values.application.identity.command }}
+      - name: api
+        image: {{ .Values.application.api.serviceImage }}:{{ .Values.application.api.tag }}
+{{- if .Values.application.api.command }}
         command:
-{{ range .Values.application.identity.command }}
+{{ range .Values.application.api.command }}
         - {{ . }}
 {{ end }}
 {{- end }}
-{{- if .Values.application.identity.args }}
+{{- if .Values.application.api.args }}
         args:
-{{ range .Values.application.identity.args }}
+{{ range .Values.application.api.args }}
         - {{ . }}
 {{ end }}
 {{- end }}
         # envFrom:
         # - configMapRef:
-        #     name: identity
+        #     name: api
         # envFrom:
         # - secretRef:
-        #     name: identity
+        #     name: api
         env:
         - name: CRYPTOPAY_ENVIRONMENT
           value: {{ .Values.environment }}
-{{- if .Values.application.identity.env }}
-{{ range $key, $value := .Values.application.identity.env }}
+{{- if .Values.application.api.env }}
+{{ range $key, $value := .Values.application.api.env }}
         - name: "{{ $key }}"
           value: "{{ $value }}"
 {{ end }}
@@ -67,7 +67,7 @@ spec:
         # lifecycle:
         #   postStart:
         #     exec:
-        #       command: ["rm", "/etc/cexiolabs/cryptopay.identity/ssl/tls.key"]
+        #       command: ["rm", "/etc/cexiolabs/cryptopay.api/ssl/tls.key"]
         livenessProbe:
           httpGet:
             path: /info
@@ -101,27 +101,34 @@ spec:
         #   periodSeconds: 5
         volumeMounts:
         # - name: config-files
-        #   mountPath: /etc/cexiolabs/cryptopay.identity/
+        #   mountPath: /etc/cexiolabs/cryptopay.api/
         #   readOnly: true
+        - name: legacy-cpservice-config
+          mountPath: /etc/cexiolabs/cryptopay.api/legacy-cpservice-config/
+          readOnly: true
         - name: secret-certificate
-          mountPath: /etc/cexiolabs/cryptopay.identity/ssl/
+          mountPath: /etc/cexiolabs/cryptopay.api/ssl/
       #   - name: secret-certificate-copy
-      #     mountPath: /tmp/cexiolabs/cryptopay.identity/ssl/
+      #     mountPath: /tmp/cexiolabs/cryptopay.api/ssl/
         - name: secret-files
-          mountPath: /etc/cexiolabs/cryptopay.identity/secrets/
+          mountPath: /etc/cexiolabs/cryptopay.api/secrets/
       #   - name: secret-files-copy
-      #     mountPath: /tmp/cexiolabs/cryptopay.identity/secrets/
+      #     mountPath: /tmp/cexiolabs/cryptopay.api/secrets/
       volumes:
+      - name: legacy-cpservice-config
+        configMap:
+          defaultMode: 420
+          name: cpservice
       # - name: config-files
       #   configMap:
-      #     name: identity-files
+      #     name: api-files
       - name: secret-certificate
         secret:
-          secretName: identity{{ template "suffix" . }}-certificate
+          secretName: api{{ template "suffix" . }}-certificate
       - name: secret-files
         secret:
-          secretName: identity
-      # - name: secret-certificate-copy
-      #   emptyDir: {}
-      # - name: secret-files-copy
-      #   emptyDir: {}
+          secretName: api
+      - name: secret-certificate-copy
+        emptyDir: {}
+      - name: secret-files-copy
+        emptyDir: {}

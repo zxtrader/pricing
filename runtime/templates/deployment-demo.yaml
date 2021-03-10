@@ -3,17 +3,17 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   labels:
-    app: {{ .Chart.Name }}-demo{{ template "suffix" . }}
-  name: {{ .Chart.Name }}-demo{{ template "suffix" . }}
+    app: demo{{ template "suffix" . }}
+  name: demo{{ template "suffix" . }}
 spec:
-  replicas: {{ .Values.application.demo.replicas | default 2 }}
+  replicas: {{ .Values.application.demo.replicas | default 0 }}
   strategy:
     type: RollingUpdate
   revisionHistoryLimit: 3
   template:
     metadata:
       labels:
-        app: {{ .Chart.Name }}-demo{{ template "suffix" . }}
+        app: demo{{ template "suffix" . }}
     spec:
       containers:
       - name: demo

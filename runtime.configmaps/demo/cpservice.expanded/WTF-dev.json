@@ -1,0 +1,47 @@
+{
+	"user": {
+		"username": "Processing-Service_2",
+		"password": "PS_VCJ112c=b3hr7WBh*R"
+	},
+	"client": {
+		"rejectUnauthorized": false,
+		"url": "https://wtfcryptoprovider:55060",
+		"description": "Dev application DACH",
+		"client_id": "CP-PROC-eea4f2ef-b29c-4b78-8f62-87e58c389265",
+		"client_secret": "CP-PROC-1550494940424-0fe70109-e4d0-45cf-bca3-fa727890ab48",
+		"encryption_key": "cpWtf_Goof23-dF122",
+		"endpoints": {
+			"oauth": "/v1/oauth/token",
+			"address": "/v1/addresses",
+			"create": "/v1/operations",
+			"validate": "/v1/addresses/validator",
+			"getOperationByInvoice": "/v1/operations"
+		},
+		"signFields": {
+			"oauth": {
+				"password": [
+					"password",
+					"client_secret",
+					"timestamp"
+				],
+				"refresh_token": [
+					"refresh_token",
+					"client_secret",
+					"timestamp"
+				]
+			},
+			"address": [
+				"invoiceId",
+				"currency",
+				"timestamp"
+			],
+			"create": [
+				"invoiceId",
+				"currency",
+				"address",
+				"amount",
+				"timestamp"
+			]
+		}
+	}
+}

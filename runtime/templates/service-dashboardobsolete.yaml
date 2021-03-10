@@ -1,0 +1,18 @@
+#
+#  FOR REMOVAL (after Anular Dashboard will be staged and tested)
+#
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: dashboardobsolete{{ template "suffix" . }}
+  name: dashboardobsolete{{ template "suffix" . }}
+spec:
+  ports:
+    - port: 8445
+      name: dashboardobsolete
+      protocol: TCP
+      targetPort: 8445
+  type: ClusterIP
+  selector:
+    app: dashboardobsolete{{ template "suffix" . }}

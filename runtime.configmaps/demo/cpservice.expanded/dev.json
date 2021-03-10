@@ -1,0 +1,405 @@
+{
+	"appConfig": {
+		"cors": {
+			"methods": [
+				"POST",
+				"PUT",
+				"GET"
+			],
+			"whiteList": [
+				"https://nplus.ecommpay.com/dach/callbacks/invoice"
+			],
+			"allowedHeaders": [
+				"Content-Type",
+				"Authorization"
+			]
+		},
+		"ssl": {
+			"enable": true,
+			"sslKey": "/app/config/ssl/tls.key",
+			"sslCert": "/app/config/ssl/tls.crt"
+		},
+		"port": 55020
+	},
+	"mqConfig": {
+		"url": "RMQ_URL"
+	},
+	"reqConfig": {
+		"aggr": {
+			"url": "https://aggr.cps.cex.io/",
+			"ssl": {
+				"enable": false,
+				"clientKey": "<<PATH TO CLIENT KEY>>",
+				"clientCert": "<<PATH TO CLIENT CERTIFICATE>>"
+			}
+		},
+		"wtf": {
+			"url": "https://wtf.cps.cex.io/",
+			"ssl": {
+				"enable": false,
+				"clientKey": "<<PATH TO CLIENT KEY>>",
+				"clientCert": "<<PATH TO CLIENT CERTIFICATE>>"
+			}
+		}
+	},
+	"postgresConfig": {
+		"url": "POSTGRES_URL",
+		"dialect": "postgres",
+		"logging": false,
+		"define": {
+			"underscored": true,
+			"freezeTableName": true
+		}
+	},
+	"redisConfig": {
+		"url": "REDIS_URL"
+	},
+	"dbConfig": {
+		"authorization": {
+			"users": [
+				{
+					"id": "3f4159fd-0163-4a78-9385-ce8725f58fa0",
+					"username": "Back_CEX_Dev1",
+					"merchant_id": 1,
+					"password": "@NMJ8+pVZYM!x4Ty",
+					"name": "Full dev data tester",
+					"scope": [
+						"add_commission",
+						"get_commission",
+						"update_commission",
+						"add_currency",
+						"update_currency",
+						"get_currency",
+						"get_invoice",
+						"get_invoice_by_id",
+						"get_invoice_by_id_full",
+						"add_invoice",
+						"update_invoice_merchant",
+						"get_instrument",
+						"add_instrument",
+						"update_instrument",
+						"get_instrument_by_id",
+						"get_invoice_state",
+						"get_invoice_status",
+						"get_merchant_site",
+						"add_invoice_state",
+						"add_invoice_status",
+						"add_merchant_site",
+						"update_invoice_state",
+						"update_invoice_status",
+						"update_merchant_site",
+						"get_merchant_site_by_id",
+						"get_merchant",
+						"get_merchant_by_id",
+						"add_merchant",
+						"update_merchant",
+						"get_limit",
+						"get_limit_by_id",
+						"add_limit",
+						"update_limit",
+						"get_provider",
+						"get_provider_by_id",
+						"add_provider",
+						"update_provider",
+						"get_aggregator",
+						"get_aggregator_by_id",
+						"add_aggregator",
+						"update_aggregator",
+						"get_limit_type",
+						"add_limit_type",
+						"update_limit_type",
+						"get_limit_dimension_type",
+						"add_limit_dimension_type",
+						"update_limit_dimension_type",
+						"invoice_data_merchant",
+						"invoice_data_full_developer",
+						"all_invoices_back_office_full"
+					],
+					"status": "enable",
+					"client_id": "CPS-944699f8-f780-41eb-afa8-1047e2663e08"
+				},
+				{
+					"id": "25e0c2e6-7918-478d-ba38-2559f9612fa8",
+					"merchant_id": 1,
+					"username": "B2B_DACH_User1",
+					"password": "WJs&GKJ?p8-9GAXQ",
+					"name": "App B2B Dach user",
+					"scope": [
+						"add_invoice",
+						"get_invoice",
+						"get_invoice_by_id",
+						"get_instrument",
+						"update_invoice_merchant",
+						"invoice_data_merchant",
+						"all_invoices_merchant"
+					],
+					"status": "enable",
+					"client_id": "CPS-944699f8-f780-41eb-afa8-1047e2663e08"
+				},
+				{
+					"id": "f6c78ba7-0345-4de3-8de7-42c225b4b709",
+					"merchant_id": 1,
+					"username": "B2B_DACH_User2_Finance",
+					"password": "cMu8ti2V4Omf0udB",
+					"name": "App B2B Dach user finance",
+					"scope": [
+						"get_invoice",
+						"get_invoice_by_id",
+						"invoice_data_merchant",
+						"all_invoices_merchant"
+					],
+					"status": "enable",
+					"client_id": "CPS-944699f8-f780-41eb-afa8-1047e2663e08"
+				},
+				{
+					"id": "8fa7f83e-6599-4fc7-9e36-8bfa62d93552",
+					"merchant_id": 1,
+					"username": "Back_DACH_Comp1",
+					"password": "36Q*3CXV$A_pCXu+",
+					"name": "App Back Office Dach compliance 1",
+					"scope": [
+						"get_invoice",
+						"get_invoice_by_id",
+						"get_invoice_by_id_full",
+						"get_instrument",
+						"get_invoice_state",
+						"get_invoice_status",
+						"get_merchant_site",
+						"invoice_data_full_external",
+						"all_invoices_back_office_external",
+						"get_currency"
+					],
+					"status": "enable",
+					"client_id": "CPS-c3921aec-4fc4-463c-b874-765dc8e2e5ae"
+				},
+				{
+					"id": "2394ec7d-030c-401e-a3fc-8716ec9a4121",
+					"merchant_id_": "*",
+					"username": "Back_CEX_Dev3",
+					"password": "TIUbjMp80yLl0FGs",
+					"name": "App Back Office Cex Developer",
+					"scope": [
+						"get_invoice",
+						"get_invoice_by_id",
+						"get_invoice_by_id_full",
+						"get_instrument",
+						"get_invoice_state",
+						"get_invoice_status",
+						"get_merchant_site",
+						"invoice_data_full_developer",
+						"all_invoices_back_office_full",
+						"invoice_data_merchant",
+						"get_currency",
+						"add_currency",
+						"update_instrument",
+						"add_instrument",
+						"add_merchant_site",
+						"update_merchant_site",
+						"add_commission",
+						"get_commission",
+						"add_limit",
+						"get_limit",
+						"get_limit_by_id"
+					],
+					"status": "enable",
+					"client_id": "CPS-c3921aec-4fc4-463c-b874-765dc8e2e5ae"
+				},
+				{
+					"id": "8fa7f83e-6599-4fc7-9e36-8bfa62d977ba",
+					"merchant_id": 2,
+					"username": "Back_TRANSFER_Comp1",
+					"password": "36Q*3CXV$A_Ab12",
+					"name": "App Back Office Dach compliance 1",
+					"scope": [
+						"get_invoice",
+						"get_invoice_by_id",
+						"get_invoice_by_id_full",
+						"get_instrument",
+						"get_invoice_state",
+						"get_invoice_status",
+						"get_merchant_site",
+						"invoice_data_full_external",
+						"all_invoices_back_office",
+						"get_currency"
+					],
+					"status": "enable",
+					"client_id": "CPS-c3921aec-4fc4-463c-b874-765dc8e2e5ae"
+				},
+				{
+					"id": "f3a7bae9-fdbf-4475-8416-e34666a50b52",
+					"merchant_id": 1,
+					"username": "Back_DACH_Comp2",
+					"password": "f3b$*U34xqdhRDTX",
+					"name": "App Back Office Dach compliance 2",
+					"scope": [
+						"get_invoice",
+						"get_invoice_by_id",
+						"get_invoice_by_id_full",
+						"get_instrument",
+						"get_invoice_state",
+						"get_invoice_status",
+						"get_merchant_site",
+						"invoice_data_full_external",
+						"all_invoices_back_office",
+						"get_currency"
+					],
+					"status": "enable",
+					"client_id": "CPS-c3921aec-4fc4-463c-b874-765dc8e2e5ae"
+				},
+				{
+					"id": "ec0a6b19-146c-4284-b7de-d9b1f44846d2",
+					"aggregator_id": 1,
+					"username": "C2C_Callback_Aggr1",
+					"password": "mCWePZ2$7s+v88*r",
+					"name": "App aggregator",
+					"scope": [
+						"callback_aggregator"
+					],
+					"status": "enable",
+					"client_id": "CPS-43977f4e-7e91-4951-b7a8-4d6be605b475"
+				},
+				{
+					"id": "d503de44-3a4e-4f05-8f40-2b5a8c528cb4",
+					"provider_id": 1,
+					"username": "C2C_Callback_Provider1",
+					"password": "7qNzQ9#$5f7WsAz2",
+					"name": "App provider",
+					"scope": [
+						"callback_provider"
+					],
+					"status": "enable",
+					"client_id": "CPS-f1093ab5-0fa5-4cbf-9a4c-ffdb83274963"
+				}
+			],
+			"apps": [
+				{
+					"provider_id": 1,
+					"description": "Dev application provider",
+					"client_id": "CPS-f1093ab5-0fa5-4cbf-9a4c-ffdb83274963",
+					"client_secret": "CPS-1550508666000-d85eccf7-19c4-4d1c-87ae-ba1fcb0f7e10",
+					"encryption_key": "CPS5e21375dcf17612a4d073d625bd7ca249a4735675978a0d1d204bf07af989143",
+					"callbacks": [
+						{
+							"rejectUnauthorized": false,
+							"url": "https://127.0.0.1:9090/livenessProbe",
+							"ssl": {
+								"enable": false,
+								"clientKey": "<<PATH TO CLIENT KEY>>",
+								"clientCert": "<<PATH TO CLIENT CERTIFICATE>>"
+							}
+						}
+					]
+				},
+				{
+					"merchant_id": 1,
+					"description": "Dev application DACH",
+					"client_id": "CPS-944699f8-f780-41eb-afa8-1047e2663e08",
+					"client_secret": "CPS-1549542233505-187f5017-43d5-4597-943f-d7bfe63b2491",
+					"encryption_key": "CPS35626fda8094405f090b371ae0556f0ca9a7eacf8946c789c5c9e545c9f9402f",
+					"callbacks": [
+						{
+							"rejectUnauthorized": false,
+							"url_": "https://127.0.0.1:9090/livenessProbe",
+							"url": "https://nplus.ecommpay.com/dach/callbacks/invoice",
+							"url__": "http://tls-listener-demo.dev.kube/callbacks/invoice",
+							"ssl": {
+								"enable": false,
+								"clientKey": "<<PATH TO CLIENT KEY>>",
+								"clientCert": "<<PATH TO CLIENT CERTIFICATE>>"
+							}
+						}
+					]
+				},
+				{
+					"backoffice_id": 1,
+					"description": "Dev application back-office",
+					"client_id": "CPS-c3921aec-4fc4-463c-b874-765dc8e2e5ae",
+					"client_secret": "CPS-1549542631330-4bf96569-55b9-4c6a-b984-007e0f4228c2",
+					"encryption_key": "CPSc7782de7765b0929642ef2e2ceffbf0edb46e0e7839a7983d0fae53fe7430581",
+					"callbacks": [
+						{
+							"rejectUnauthorized": false,
+							"url": "https://127.0.0.1:9090/livenessProbe",
+							"ssl": {
+								"enable": false,
+								"clientKey": "<<PATH TO CLIENT KEY>>",
+								"clientCert": "<<PATH TO CLIENT CERTIFICATE>>"
+							}
+						}
+					]
+				},
+				{
+					"aggregator_id": 1,
+					"description": "Dev application aggregator",
+					"client_id": "CPS-43977f4e-7e91-4951-b7a8-4d6be605b475",
+					"client_secret": "CPS-1549542779103-9623d9c1-567e-4d9d-8ff6-16069c9dd412",
+					"encryption_key": "CPS12b711b16bd96d4d7ab8a6bdd5ef4a7a20df4a7073c1567f9f93e205eb415518",
+					"callbacks": [
+						{
+							"rejectUnauthorized": false,
+							"url": "https://127.0.0.1:9090/livenessProbe",
+							"ssl": {
+								"enable": false,
+								"clientKey": "<<PATH TO CLIENT KEY>>",
+								"clientCert": "<<PATH TO CLIENT CERTIFICATE>>"
+							}
+						}
+					]
+				},
+				{
+					"merchant_id": 2,
+					"description": "Dev application TRANSFER",
+					"client_id": "CPS-9e474f6f-7ad1-4f17-a745-45a076d73f4b",
+					"client_secret": "CPS-1549542233505-46c9e250-4427-46c9-a1fb-2bea9ee0f0de",
+					"encryption_key": "CPS35626fda8094405f090b371aeaad471ca9a7eacf8946c789c5c9e545c9f9402f",
+					"return_wallet": "2N5HVr9K3hmctaXrHxHufHuimsvef2cVUDz",
+					"return_wallets": {
+						"BTC": "2N5HVr9K3hmctaXrHxHufHuimsvef2cVUDz",
+						"BCH": "2N8uHpJPHpFAyDr9rpvkbBU7dBWmibkn8E7"
+					},
+					"callbacks": [
+						{
+							"rejectUnauthorized": false,
+							"url": "https://127.0.0.1:9090/livenessProbe",
+							"ssl": {
+								"enable": false,
+								"clientKey": "<<PATH TO CLIENT KEY>>",
+								"clientCert": "<<PATH TO CLIENT CERTIFICATE>>"
+							}
+						}
+					]
+				}
+			]
+		}
+	},
+	"log4jsConfig": {
+		"appenders": {
+			"out": {
+				"type": "stdout",
+				"layout": {
+					"type": "json"
+				}
+			},
+			"json": {
+				"type": "stdout",
+				"layout": {
+					"type": "json",
+					"context": [
+						"rid",
+						"iid",
+						"oid",
+						"eoid"
+					]
+				}
+			}
+		},
+		"categories": {
+			"default": {
+				"appenders": [
+					"json"
+				],
+				"level": "all"
+			}
+		}
+	}
+}

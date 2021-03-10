@@ -1,14 +1,29 @@
 environment: presentation
 
 application:
+  api:
+    tag: snapshot
+    env:
+      WTFProviderConfigurationFile: /etc/cexiolabs/cryptopay.api/legacy-cpservice-config/WTF-dev.json
+    replicas: 1
   dashboard:
-    serviceImage: devdocker.infra.kube/cryptopay/dashboard-backend-presentation
+    tag: snapshot
+    replicas: 0
+  dashboardobsolete:
+    serviceImage: devdocker.infra.kube/cryptopay/dashboard-backup-presentation
+    tag: 2-1-26-hotfixf16edc3d
+  demo:
     # tag: master
     env:
-      WTFProviderConfigurationFile: /etc/cexiolabs/cryptopay.dashboard/legacy-cpservice-config/WTF-dev.json
+      BASE_PATH: /widget-demo/
+      GATE_API_ORIGIN: https://cryptopay-processing:8080/
+      GATE_ID: 51c15da2-a79b-456d-8300-7d289bc97bc9
+      GATE_URL: https://gate-testnet.cryptopay.band/widget
+      NODE_TLS_REJECT_UNAUTHORIZED: 0
+    replicas: 1
   identity:
-    serviceImage: devdocker.infra.kube/cryptopay/identity
-    # tag: master
+    tag: snapshot
+    replicas: 1
   processing:
     serviceImage: devdocker.infra.kube/cryptopay/cpservice-devel
     # tag: master
@@ -31,51 +46,32 @@ application:
       DEBUG_PORT: 9229
       DEBUG_WAIT: "no"
       LOG_LEVEL: "debug"
-      GATE_URL: https://gate-testnet.cryptopay.band/widget
-    replicas: 1
-  demo:
-    # tag: master
-    env:
-      BASE_PATH: /widget-demo/
-      GATE_API_ORIGIN: https://cryptopay-processing:8080/
-      GATE_ID: 51c15da2-a79b-456d-8300-7d289bc97bc9
-      GATE_URL: https://gate-testnet.cryptopay.band/widget
-      NODE_TLS_REJECT_UNAUTHORIZED: 0
+      GATE_URL: https://gate-presentation-cryptopay.dev.kube/widget
+    replicas: 0
 
 ingress:
-  API-Internal:
-    type: internal
+  API:
     domain: api-presentation-cryptopay.dev.kube
     certSecretName: dev
     nginxConfigurationSnippet: |
-      rewrite ^/$ /v2/time redirect;
+      rewrite ^/$ /v3/time redirect;
     paths:
-      "/":
+      "/v2/":
         backendServiceName: processing
         backendServicePort: 8080
-  API-External:
-    type: external
-    domain: api-testnet.cryptopay.band
-    nginxConfigurationSnippet: |
-      rewrite ^/$ /v2/time redirect;
-    paths:
-      "/":
-        backendServiceName: processing
-        backendServicePort: 8080
-      "/v3/dashboard":
-        backendServiceName: dashboard
-        backendServicePort: 8445
-  Callbacks-Internal:
-    type: internal
+      "/v3/":
+        backendServiceName: api
+        backendServicePort: 8443
+  Callbacks:
     domain: callback-presentation-cryptopay.dev.kube
     certSecretName: dev
     paths:
       "/ws/":
         backendServiceName: processing
         backendServicePort: 8086
-  Dashboard-External:
-    type: external
-    domain: dashboard-testnet.cryptopay.band
+  Dashboard:
+    domain: dashboard-presentation-cryptopay.dev.kube
+    backendInsecure: true
     nginxConfigurationSnippet: |
       add_header Last-Modified $date_gmt;
       add_header Cache-Control 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0';
@@ -85,27 +81,31 @@ ingress:
     paths:
       "/":
         backendServiceName: dashboard
+        backendServicePort: 8080
+  DashboardObsolete:
+    domain: dashboard-testnet.cryptopay.band
+    certSecretName: dev
+    nginxConfigurationSnippet: |
+      add_header Last-Modified $date_gmt;
+      add_header Cache-Control 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0';
+      if_modified_since off;
+      expires off;
+      etag off;
+    paths:
+      "/":
+        backendServiceName: dashboardobsolete
         backendServicePort: 8445
       "/v2/dashboard/":
         backendServiceName: processing
         backendServicePort: 8082
   Echo:
-    type: external
-    domain: echo-testnet.cryptopay.band
-    paths:
-      "/":
-        backendServiceName: echo
-        backendServicePort: 8443
-  Echo-Internal:
-    type: internal
     domain: echo-presentation-cryptopay.dev.kube
     certSecretName: dev
     paths:
       "/":
         backendServiceName: echo
         backendServicePort: 8443
-  Gateway-Internal:
-    type: internal
+  Gate:
     domain: gate-presentation-cryptopay.dev.kube
     certSecretName: dev
     nginxConfigurationSnippet: |
@@ -124,68 +124,22 @@ ingress:
       "/v2/gate-callback/":
         backendServiceName: processing
         backendServicePort: 8085
-  Gateway-External:
-    type: external
-    domain: gate-testnet.cryptopay.band
-    nginxConfigurationSnippet: |
-      add_header Last-Modified $date_gmt;
-      add_header Cache-Control 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0';
-      if_modified_since off;
-      expires off;
-      etag off;
-    paths:
-      "/widget/":
-        backendServiceName: processing
-        backendServicePort: 8085
-      "/v2/gate/":
-        backendServiceName: processing
-        backendServicePort: 8085
-      "/v2/gate-callback/":
-        backendServiceName: processing
-        backendServicePort: 8085
   Identity:
-    type: external
-    domain: id-testnet.cryptopay.band
-    paths:
-      "/":
-        backendServiceName: identity
-        backendServicePort: 8443
-  Identity-Internal:
-    type: internal
     domain: id-presentation-cryptopay.dev.kube
     certSecretName: dev
     paths:
       "/":
         backendServiceName: identity
         backendServicePort: 8443
-  MessengerBridge-Internal:
+  MessengerBridge:
     # THIS endpoint just for development purposes
-    type: internal
     domain: messengerbridge-presentation-cryptopay.dev.kube
     certSecretName: dev
     paths:
       "/":
         backendServiceName: messengerbridge
         backendServicePort: 8443
-  Specs-External:
-    type: external
-    domain: testnet.cryptopay.band
-    backendInsecure: true
-    nginxConfigurationSnippet: |
-      add_header Last-Modified $date_gmt;
-      add_header Cache-Control 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0';
-      if_modified_since off;
-      expires off;
-      etag off;
-    paths:
-      "/":
-        backendServiceName: processing
-        backendServicePort: 8083
-      "/widget-demo/":
-        backendServiceName: demo
-        backendServicePort: 8080
-  Specs-Internal:
-    type: internal
+  Welcome:
     domain: presentation-cryptopay.dev.kube
     backendInsecure: true
     certSecretName: dev

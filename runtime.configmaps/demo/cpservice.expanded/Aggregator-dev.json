@@ -1,0 +1,65 @@
+{
+	"user": {
+		"username": "Processing-Service_1",
+		"password": "PS_VCJ13hr7WBh*R"
+	},
+	"external": {
+		"rejectUnauthorized": false,
+		"url": "https://pss-rpc.dev.kube/aggregator",
+		"instrumentId": "aggregatorcex",
+		"provider": "aggregator",
+		"ipAddress": "172.16.50.251",
+		"mid": "cex",
+		"accountId": "",
+		"encryption_key": "31sFfA3SsZgRsfGJ23ggDsdG43ag2f5fds",
+		"merchant_user": {
+			"DACH:d092d750": "ud200659094",
+			"DACH:c69ae511": "ud200659094"
+		},
+		"signFields": {
+			"basesign": [
+				"mid",
+				"userId",
+				"action",
+				"timestamp"
+			]
+		},
+		"actions": {
+			"WITHDRAWAL": "withdrawal",
+			"DEPOSIT": "deposit"
+		}
+	},
+	"client": {
+		"rejectUnauthorized": false,
+		"url": "https://aggregatorprovider:55040",
+		"description": "Dev application aggregator",
+		"client_id": "CP-PROC-2366f30b-b8f1-46ac-a4dd-3070ac28034a",
+		"client_secret": "CP-PROC-1577296977000-5721904a-6003-402e-bbd0-27c890856998",
+		"encryption_key": "testAggr_Goo23-dF22",
+		"endpoints": {
+			"oauth": "/v1/oauth/token",
+			"getRate": "/v1/rates",
+			"getOrderByInvoice": "/v1/orders",
+			"createOrderByInvoice": "/v1/orders"
+		},
+		"signFields": {
+			"oauth": {
+				"password": [
+					"password",
+					"client_secret",
+					"timestamp"
+				],
+				"refresh_token": [
+					"refresh_token",
+					"client_secret",
+					"timestamp"
+				]
+			},
+			"create_order": [
+				"invoiceId",
+				"amountFrom",
+				"timestamp"
+			]
+		}
+	}
+}

@@ -1,18 +1,22 @@
+{{ if or (eq .Values.environment "evolution") (eq .Values.environment "presentation") }}
+# In prodution "dashboard" is hosted on GitHub Pages:
+# - https://github.com/cexiolabs/cryptopay.dashboard
+# - https://github.com/cexiolabs/cryptopay.dashboard-next
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   labels:
-    app: {{ .Chart.Name }}-dashboard{{ template "suffix" . }}
-  name: {{ .Chart.Name }}-dashboard{{ template "suffix" . }}
+    app: dashboard{{ template "suffix" . }}
+  name: dashboard{{ template "suffix" . }}
 spec:
-  replicas: {{ .Values.application.dashboard.replicas | default 2 }}
+  replicas: {{ .Values.application.dashboard.replicas | default 0 }}
   strategy:
     type: RollingUpdate
   revisionHistoryLimit: 3
   template:
     metadata:
       labels:
-        app: {{ .Chart.Name }}-dashboard{{ template "suffix" . }}
+        app: dashboard{{ template "suffix" . }}
     spec:
       containers:
       - name: dashboard
@@ -29,18 +33,8 @@ spec:
         - {{ . }}
 {{ end }}
 {{- end }}
-        volumeMounts:
-        - name: secret-certificate
-          mountPath: /etc/cexiolabs/cryptopay.dashboard/ssl/
-          readOnly: true
-        - name: legacy-cpservice-config
-          mountPath: /etc/cexiolabs/cryptopay.dashboard/legacy-cpservice-config/
-          readOnly: true
-        envFrom:
-        - secretRef:
-            name: dashboard
         env:
-        - name: RUNTIME
+        - name: CRYPTOPAY_ENVIRONMENT
           value: {{ .Values.environment }}
 {{- if .Values.application.dashboard.env }}
 {{ range $key, $value := .Values.application.dashboard.env }}
@@ -48,38 +42,28 @@ spec:
           value: "{{ $value }}"
 {{ end }}
 {{- end }}
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 8080
+            scheme: HTTP
+          initialDelaySeconds: 180
+          periodSeconds: 60
         ports:
-        - containerPort: 8445
+        - containerPort: 8080
           protocol: TCP
-        # livenessProbe:
-        #   httpGet:
-        #     path: /livenessProbe
-        #     port: 9090
-        #     scheme: HTTP
-        #   initialDelaySeconds: 10
-        #   periodSeconds: 10
         # readinessProbe:
         #   httpGet:
-        #     path: /readinessProbe
-        #     port: 9090
+        #     path: /
+        #     port: 8080
         #     scheme: HTTP
         #   initialDelaySeconds: 10
-        #   periodSeconds: 10
+        #   periodSeconds: 60
         resources:
           limits:
-            cpu: 400m
+            cpu: 512m
             memory: 512Mi
           requests:
-            cpu: 100m
-            memory: 128Mi
-      volumes:
-      - name: legacy-cpservice-config
-        configMap:
-          defaultMode: 420
-          name: cpservice
-      # - name: dashboard-files
-      #   configMap:
-      #     name: dashboard-files
-      - name: secret-certificate
-        secret:
-          secretName: {{ .Chart.Name }}-dashboard{{ template "suffix" . }}-certificate
+            cpu: 128m
+            memory: 64Mi
+{{ end }}

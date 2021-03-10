@@ -1,0 +1,81 @@
+#
+#  FOR REMOVAL (after Anular Dashboard will be staged and tested)
+#
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: dashboardobsolete{{ template "suffix" . }}
+  name: dashboardobsolete{{ template "suffix" . }}
+spec:
+  replicas: {{ .Values.application.dashboardobsolete.replicas | default 2 }}
+  strategy:
+    type: RollingUpdate
+  revisionHistoryLimit: 3
+  template:
+    metadata:
+      labels:
+        app: dashboardobsolete{{ template "suffix" . }}
+    spec:
+      containers:
+      - name: dashboardobsolete
+        image: {{ .Values.application.dashboardobsolete.serviceImage }}:{{ .Values.application.dashboardobsolete.tag }}
+{{- if .Values.application.dashboardobsolete.command }}
+        command:
+{{ range .Values.application.dashboardobsolete.command }}
+        - {{ . }}
+{{ end }}
+{{- end }}
+{{- if .Values.application.dashboardobsolete.args }}
+        args:
+{{ range .Values.application.dashboardobsolete.args }}
+        - {{ . }}
+{{ end }}
+{{- end }}
+        volumeMounts:
+        - name: secret-certificate
+          mountPath: /etc/cexiolabs/cryptopay.dashboard/ssl/
+          readOnly: true
+        envFrom:
+        - secretRef:
+            name: dashboard
+        env:
+        - name: RUNTIME
+          value: {{ .Values.environment }}
+{{- if .Values.application.dashboardobsolete.env }}
+{{ range $key, $value := .Values.application.dashboardobsolete.env }}
+        - name: "{{ $key }}"
+          value: "{{ $value }}"
+{{ end }}
+{{- end }}
+        ports:
+        - containerPort: 8445
+          protocol: TCP
+        # livenessProbe:
+        #   httpGet:
+        #     path: /livenessProbe
+        #     port: 9090
+        #     scheme: HTTP
+        #   initialDelaySeconds: 10
+        #   periodSeconds: 10
+        # readinessProbe:
+        #   httpGet:
+        #     path: /readinessProbe
+        #     port: 9090
+        #     scheme: HTTP
+        #   initialDelaySeconds: 10
+        #   periodSeconds: 10
+        resources:
+          limits:
+            cpu: 400m
+            memory: 512Mi
+          requests:
+            cpu: 100m
+            memory: 128Mi
+      volumes:
+      # - name: dashboardobsolete-files
+      #   configMap:
+      #     name: dashboardobsolete-files
+      - name: secret-certificate
+        secret:
+          secretName: dashboardobsolete{{ template "suffix" . }}-certificate

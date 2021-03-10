@@ -1,9 +1,14 @@
 environment: production
 
 application:
-  dashboard:
+  api:
     env:
-      WTFProviderConfigurationFile: /etc/cexiolabs/cryptopay.dashboard/legacy-cpservice-config/WTF-prod.json
+      WTFProviderConfigurationFile: /etc/cexiolabs/cryptopay.api/legacy-cpservice-config/WTF-prod.json
+    replicas: 1
+  dashboardobsolete:
+    replicas: 1
+  identity:
+    replicas: 1
   processing:
     args:
       [
@@ -16,28 +21,25 @@ application:
         "--config-secrets-dir=/etc/cexiolabs/cryptopay/secrets",
         "--config-secrets-dir=/etc/cexiolabs/cryptopay/secrets-setup",
         "--config-env"
-#        "--runtime-gate-email-sender=nodemailer"
       ]
+    replicas: 1
 
 ingress:
   API:
-    type: external
     domain: api.cryptopay.band
     certSecretName: ingress-gate-api-dashboard
-    # API does not require client's certificate
-    #backendCaSecretName:
     nginxConfigurationSnippet: |
-      rewrite ^/$ /v2/time redirect;
+      rewrite ^/$ /v3/time redirect;
     paths:
-      "/":
+      "/v2/":
         backendServiceName: processing
         backendServicePort: 8080
-  Callbacks-Internal:
-    type: internal
+      "/v3/":
+        backendServiceName: api
+        backendServicePort: 8443
+  Callbacks:
     domain: callback.prodcryptopay.kube
     certSecretName: callback
-    # Callbacks does not require client's certificate
-    #backendCaSecretName:
     paths:
       "/v2/callback/cryptoproviders/pss-provider-wtf2/":
         backendServiceName: processing
@@ -45,8 +47,7 @@ ingress:
       "/ws/":
         backendServiceName: processing
         backendServicePort: 8086
-  Dashboard:
-    type: external
+  DashboardObsolete:
     domain: dashboard.cryptopay.band
     certSecretName: ingress-gate-api-dashboard
     nginxConfigurationSnippet: |
@@ -55,51 +56,41 @@ ingress:
       if_modified_since off;
       expires off;
       etag off;
-    # Dashboard does not require client's certificate
-    #backendCaSecretName:
     paths:
       "/":
-        backendServiceName: dashboard
+        backendServiceName: dashboardobsolete
         backendServicePort: 8445
       "/v2/dashboard/":
         backendServiceName: processing
         backendServicePort: 8082
-  Gateway:
-    type: external
-    domain: gate.cryptopay.band
-    certSecretName: ingress-gate-api-dashboard
-    # Gateway does not require client's certificate
-    #backendCaSecretName:
-    paths:
-      "/":
-        backendServiceName: gateuiserve
-        backendServicePort: 8080
-      "/v2/gate/":
-        backendServiceName: processing
-        backendServicePort: 8085
-      "/v2/gate-callback/":
-        backendServiceName: processing
-        backendServicePort: 8085
+  # Gate:
+  #   domain: gate.cryptopay.band
+  #   certSecretName: ingress-gate-api-dashboard
+  #   nginxConfigurationSnippet: |
+  #     add_header Last-Modified $date_gmt;
+  #     add_header Cache-Control 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0';
+  #     if_modified_since off;
+  #     expires off;
+  #     etag off;
+  #   paths:
+  #     "/":
+  #       backendServiceName: gateuiserve
+  #       backendServicePort: 8080
+  #     "/v2/gate/":
+  #       backendServiceName: processing
+  #       backendServicePort: 8085
+  #     "/v2/gate-callback/":
+  #       backendServiceName: processing
+  #       backendServicePort: 8085
   Identity:
-    type: external
     domain: id.cryptopay.band
     certSecretName: ingress-gate-api-dashboard
     paths:
       "/":
         backendServiceName: identity
         backendServicePort: 8443
-  Identity-Internal:
+  MessengerBridge:
     # THIS temporary endpoint just for testing purposes
-    type: internal
-    domain: id-cryptopay.prodcryptopay.kube
-    certSecretName: callback
-    paths:
-      "/":
-        backendServiceName: identity
-        backendServicePort: 8443
-  MessengerBridge-Internal:
-    # THIS temporary endpoint just for testing purposes
-    type: internal
     domain: messengerbridge-cryptopay.prodcryptopay.kube
     certSecretName: callback
     paths:

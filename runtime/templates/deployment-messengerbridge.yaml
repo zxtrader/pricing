@@ -1,19 +1,18 @@
-{{ if or (eq .Values.environment "production") (eq .Values.environment "presentation") }}
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   labels:
-    app: {{ .Chart.Name }}-messengerbridge{{ template "suffix" . }}
-  name: {{ .Chart.Name }}-messengerbridge{{ template "suffix" . }}
+    app: messengerbridge{{ template "suffix" . }}
+  name: messengerbridge{{ template "suffix" . }}
 spec:
-  replicas: {{ .Values.application.messengerbridge.replicas | default 1 }}
+  replicas: {{ .Values.application.messengerbridge.replicas | default 0 }}
   strategy:
     type: RollingUpdate
   revisionHistoryLimit: 3
   template:
     metadata:
       labels:
-        app: {{ .Chart.Name }}-messengerbridge{{ template "suffix" . }}
+        app: messengerbridge{{ template "suffix" . }}
     spec:
       containers:
       - name: messengerbridge
@@ -55,20 +54,20 @@ spec:
           value: "{{ $value }}"
 {{ end }}
 {{- end }}
-        # livenessProbe:
-        #   httpGet:
-        #     path: /livenessProbe
-        #     port: 9090
-        #     scheme: HTTP
-        #   initialDelaySeconds: 10
-        #   periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 8443
+            scheme: HTTPS
+          initialDelaySeconds: 60
+          periodSeconds: 30
         readinessProbe:
           httpGet:
             path: /
             port: 8443
             scheme: HTTPS
           initialDelaySeconds: 10
-          periodSeconds: 10
+          periodSeconds: 30
         resources:
           limits:
             cpu: 500m
@@ -82,8 +81,7 @@ spec:
           name: messengerbridge-files
       - name: secret-certificate
         secret:
-          secretName: {{ .Chart.Name }}-messengerbridge{{ template "suffix" . }}-certificate
+          secretName: messengerbridge{{ template "suffix" . }}-certificate
       - name: secret-files
         secret:
           secretName: messengerbridge
-{{ end }}

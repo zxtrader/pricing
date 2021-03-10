@@ -1,12 +1,15 @@
+#
+#  FOR REMOVAL (after Anular Dashboard will be staged and tested)
+#
 apiVersion: certmanager.k8s.io/v1alpha1
 kind: Certificate
 metadata:
-  name: processing{{ template "suffix" . }}-certificate
+  name: dashboardobsolete{{ template "suffix" . }}-certificate
 spec:
-  secretName: processing{{ template "suffix" . }}-certificate
+  secretName: dashboardobsolete{{ template "suffix" . }}-certificate
   issuerRef:
     name: ca-issuer
     # We can reference ClusterIssuers by changing the kind here.
     # The default value is Issuer (i.e. a locally namespaced Issuer)
     kind: ClusterIssuer
-  commonName: processing{{ template "suffix" . }}
+  commonName: dashboardobsolete{{ template "suffix" . }}

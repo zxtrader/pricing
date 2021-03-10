@@ -1,4 +1,4 @@
-# kubectl --context cpevo get --output=yaml ConfigMap/processing-envvars-setup
+# kubectl--namespace cryptopay-evolution get --output=yaml ConfigMap/processing-envvars-setup | tee ~/w-cex/cryptopay/devops.kubernetes-deployment/runtime.configmaps/evolution/processing-envvars-setup.yaml
 
 apiVersion: v1
 kind: ConfigMap

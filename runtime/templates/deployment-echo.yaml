@@ -2,17 +2,17 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   labels:
-    app: {{ .Chart.Name }}-echo{{ template "suffix" . }}
-  name: {{ .Chart.Name }}-echo{{ template "suffix" . }}
+    app: echo{{ template "suffix" . }}
+  name: echo{{ template "suffix" . }}
 spec:
-  replicas: {{ .Values.application.echo.replicas | default 2 }}
+  replicas: {{ .Values.application.echo.replicas | default 0 }}
   strategy:
     type: RollingUpdate
   revisionHistoryLimit: 3
   template:
     metadata:
       labels:
-        app: {{ .Chart.Name }}-echo{{ template "suffix" . }}
+        app: echo{{ template "suffix" . }}
     spec:
       containers:
       - name: echo
@@ -63,4 +63,4 @@ spec:
       volumes:
       - name: secret-certificate
         secret:
-          secretName: {{ .Chart.Name }}-echo{{ template "suffix" . }}-certificate
+          secretName: echo{{ template "suffix" . }}-certificate

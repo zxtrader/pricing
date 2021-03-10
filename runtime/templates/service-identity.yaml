@@ -2,8 +2,8 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    app: {{ .Chart.Name }}-identity{{ template "suffix" . }}
-  name: {{ .Chart.Name }}-identity{{ template "suffix" . }}
+    app: identity{{ template "suffix" . }}
+  name: identity{{ template "suffix" . }}
 spec:
   ports:
     - port: 8443
@@ -12,4 +12,4 @@ spec:
       targetPort: 8443
   type: ClusterIP
   selector:
-    app: {{ .Chart.Name }}-identity{{ template "suffix" . }}
+    app: identity{{ template "suffix" . }}

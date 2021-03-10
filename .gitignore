@@ -1,8 +1,3 @@
-.backup/
-.release*/
+runtime.secrets/
+runtime.secrets
 .DS_Store
-*-secret.yaml
-*-Secrets.yaml
-
-.fake
-.ionide

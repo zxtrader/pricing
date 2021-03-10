@@ -1,4 +1,4 @@
-# kubectl --context cpprs get --output=yaml ConfigMap/processing-envvars
+# kubectl --namespace cryptopay-presentation get --output=yaml ConfigMap/processing-envvars | tee ~/w-cex/cryptopay/devops.kubernetes-deployment/runtime.configmaps/presentation/processing-envvars.yaml
 
 apiVersion: v1
 kind: ConfigMap

@@ -1,0 +1,43 @@
+{
+	"user": {
+		"username": "",
+		"password": ""
+	},
+	"external": {
+		"rejectUnauthorized": false,
+		"url": "https://pss-rpc.dev.kube/cryptopay",
+		"instrumentId": "cpcrypto",
+		"merchant_user": {
+			"DACH:d092d750": "ud200659094",
+			"DACH:c69ae511": "ud200659094",
+			"TRANSFER:d092d750": "ud200659094",
+			"TRANSFER:c69ae511": "ud200659094"
+		},
+		"encryption_key": "$2b$10$X9LnrTf5bqARzd0BHdtlYe4cyf3.TSXDJcPHEqOuYCUtC14Q.rsFO",
+		"signFields": {
+			"basesign": [
+				"mid",
+				"userId",
+				"action",
+				"timestamp"
+			]
+		},
+		"actions": {
+			"DEPOSIT": "deposit",
+			"WITHDRAWAL": "withdrawal",
+			"WITHDRAWAL_TO_EXCHANGE": "withdrawalToExchange",
+			"DEPOSIT_FROM_EXCHANGE": "depositFromExchange",
+			"HOT_WALLET_TRANSFER": "hotWalletTransfer"
+		}
+	},
+	"client": {
+		"rejectUnauthorized": false,
+		"url": "",
+		"description": "ES provider",
+		"client_id": "",
+		"client_secret": "",
+		"encryption_key": "",
+		"endpoints": {},
+		"signFields": {}
+	}
+}

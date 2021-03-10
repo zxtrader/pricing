@@ -1,3 +1,7 @@
+variables:
+  IMAGE_HELM: harbor.infra.kube/infra/helm:3
+  IMAGE_KUBECTL: bitnami/kubectl:1.20.2
+
 .functions: &functions |
   function verify_runtime_version() {
     if [ -z "${CI_COMMIT_TAG}" ]; then
@@ -11,20 +15,6 @@
       exit 255
     fi
   }
-  function verify_imagetag_var() {
-    if [ -z "${IMAGE_TAG}" ]; then
-      echo "Variable IMAGE_TAG is not set." >&2
-      echo "Expected IMAGE_TAG: '<branch>.<commit_sha_head>'' or tag name (like 2.x.x)"
-      exit 127
-    fi
-  }
-  function verify_target_var() {
-    if [ -z "${TARGET}" ]; then
-      echo "Variable TARGET is not set." >&2
-      echo "Expected TARGET: "tag" or branch name" >&2
-      exit 127
-    fi
-  }
   function kube_config_setup() {
     if [ -z "${KUBECONF_BASE64}" ]; then
       echo "kube_deploy_dev_image() wrong arguments. Expected environment variable KUBECONF_BASE64" >&2
@@ -34,10 +24,6 @@
     echo "$KUBECONF_BASE64" | base64 -d > ~/.kube/config
   }
 
-image:
-  name: alpine/helm:2.14.0
-  entrypoint: [""]
-
 before_script:
   - *functions
 
@@ -46,49 +32,19 @@ stages:
   - rollback
   - delete
 
-# Runtime deployment master/dev
-devel-1EVO:install:runtime:
-  stage: deploy
-  script:
-    - kube_config_setup
-    - cd runtime
-    - helm --tiller-namespace "cryptopay-evolution" list
-    - helm --tiller-namespace "cryptopay-evolution" upgrade --install --namespace "cryptopay-evolution"  --values "values-base.yaml" --values "values.evolution.yaml" --set "docker.processing.tag=$DEVEL_RUNTIME" --set "docker.dashboard.tag=$DEVEL_RUNTIME" --set "docker.gateuiserve.tag=$DEVEL_RUNTIME" "$DEVEL_RUNTIME" .
-    - helm --tiller-namespace "cryptopay-evolution" history "$DEVEL_RUNTIME" --max=5
-  when: manual
-  environment:
-    name: evolution
-    url: https://$DEVEL_RUNTIME-evolution-cryptopay.dev.kube
-  only:
-    variables:
-      - $DEVEL_RUNTIME =~ /^master|dev|latest$/
-
-devel-2PRSN:install:runtime:
-  stage: deploy
-  script:
-    - kube_config_setup
-    - cd runtime
-    - helm --tiller-namespace "cryptopay-presentation" list
-    - helm --tiller-namespace "cryptopay-presentation" upgrade --install --namespace "cryptopay-presentation"  --values "values-base.yaml" --values "values.presentation.yaml" --set "docker.processing.tag=$DEVEL_RUNTIME" --set "docker.dashboard.tag=$DEVEL_RUNTIME" --set "docker.gateuiserve.tag=$DEVEL_RUNTIME" "$DEVEL_RUNTIME" .
-    - helm --tiller-namespace "cryptopay-presentation" history "$DEVEL_RUNTIME" --max=5
-  when: manual
-  environment:
-    name: presentation
-    url: https://$DEVEL_RUNTIME-presentation-cryptopay.dev.kube
-  only:
-    variables:
-      - $DEVEL_RUNTIME =~ /^master|dev|latest$/
-
 # Runtime deployment TAGs
 1EVO:install:runtime:
   stage: deploy
+  image:
+    name: ${IMAGE_HELM}
+    entrypoint: [""]
   script:
     - verify_runtime_version
     - kube_config_setup
     - cd runtime
-    - helm --tiller-namespace "cryptopay-evolution" list
-    - helm --tiller-namespace "cryptopay-evolution" upgrade --install --namespace "cryptopay-evolution"  --values "values-base.yaml" --values "values.evolution.yaml" tag .
-    - helm --tiller-namespace "cryptopay-evolution" history tag --max=5
+    - helm --namespace "cryptopay-evolution" list
+    - helm --namespace "cryptopay-evolution" upgrade --install --history-max 3 --values "values-base.yaml" --values "values.evolution.yaml" tag .
+    - helm --namespace "cryptopay-evolution" history tag --max=3
   when: manual
   environment:
     name: evolution
@@ -101,14 +57,17 @@ devel-2PRSN:install:runtime:
 
 1EVO:rollback:runtime:
   stage: rollback
+  image:
+    name: ${IMAGE_HELM}
+    entrypoint: [""]
   script:
     - verify_runtime_version
     - kube_config_setup
     - cd runtime
-    - helm --tiller-namespace "cryptopay-evolution" list
-    - helm --tiller-namespace "cryptopay-evolution" history tag --max=5
-    - helm --tiller-namespace "cryptopay-evolution" rollback --recreate-pods tag 0
-    - helm --tiller-namespace "cryptopay-evolution" history tag --max=5
+    - helm --namespace "cryptopay-evolution" list
+    - helm --namespace "cryptopay-evolution" history tag --max=3
+    - helm --namespace "cryptopay-evolution" rollback --recreate-pods tag 0
+    - helm --namespace "cryptopay-evolution" history tag --max=3
   when: manual
   environment:
     name: evolution
@@ -121,13 +80,16 @@ devel-2PRSN:install:runtime:
 
 1EVO:delete:runtime:
   stage: delete
+  image:
+    name: ${IMAGE_HELM}
+    entrypoint: [""]
   script:
     - verify_runtime_version
     - kube_config_setup
     - cd runtime
-    - helm --tiller-namespace "cryptopay-evolution" list
-    - helm --tiller-namespace "cryptopay-evolution" history tag --max=5
-    - helm --tiller-namespace "cryptopay-evolution" delete --purge tag
+    - helm --namespace "cryptopay-evolution" list
+    - helm --namespace "cryptopay-evolution" history tag --max=3
+    - helm --namespace "cryptopay-evolution" uninstall  tag
   when: manual
   environment:
     name: evolution
@@ -140,13 +102,16 @@ devel-2PRSN:install:runtime:
 
 2PRSN:install:runtime:
   stage: deploy
+  image:
+    name: ${IMAGE_HELM}
+    entrypoint: [""]
   script:
     - verify_runtime_version
     - kube_config_setup
     - cd runtime
-    - helm --tiller-namespace "cryptopay-presentation" list
-    - helm --tiller-namespace "cryptopay-presentation" upgrade --install --namespace "cryptopay-presentation"  --values "values-base.yaml" --values "values.presentation.yaml" tag .
-    - helm --tiller-namespace "cryptopay-presentation" history tag --max=5
+    - helm --namespace "cryptopay-presentation" list
+    - helm --namespace "cryptopay-presentation" upgrade --install --history-max 3 --values "values-base.yaml" --values "values.presentation.yaml" tag .
+    - helm --namespace "cryptopay-presentation" history tag --max=3
   when: manual
   environment:
     name: presentation
@@ -159,14 +124,17 @@ devel-2PRSN:install:runtime:
 
 2PRSN:rollback:runtime:
   stage: rollback
+  image:
+    name: ${IMAGE_HELM}
+    entrypoint: [""]
   script:
     - verify_runtime_version
     - kube_config_setup
     - cd runtime
-    - helm --tiller-namespace "cryptopay-presentation" list
-    - helm --tiller-namespace "cryptopay-presentation" history tag --max=5
-    - helm --tiller-namespace "cryptopay-presentation" rollback --recreate-pods tag 0
-    - helm --tiller-namespace "cryptopay-presentation" history tag --max=5
+    - helm --namespace "cryptopay-presentation" list
+    - helm --namespace "cryptopay-presentation" history tag --max=3
+    - helm --namespace "cryptopay-presentation" rollback --recreate-pods tag 0
+    - helm --namespace "cryptopay-presentation" history tag --max=3
   when: manual
   environment:
     name: presentation
@@ -179,13 +147,16 @@ devel-2PRSN:install:runtime:
 
 2PRSN:delete:runtime:
   stage: delete
+  image:
+    name: ${IMAGE_HELM}
+    entrypoint: [""]
   script:
     - verify_runtime_version
     - kube_config_setup
     - cd runtime
-    - helm --tiller-namespace "cryptopay-presentation" list
-    - helm --tiller-namespace "cryptopay-presentation" history tag --max=5
-    - helm --tiller-namespace "cryptopay-presentation" delete --purge tag
+    - helm --namespace "cryptopay-presentation" list
+    - helm --namespace "cryptopay-presentation" history tag --max=3
+    - helm --namespace "cryptopay-presentation" uninstall  tag
   when: manual
   environment:
     name: presentation
@@ -198,13 +169,16 @@ devel-2PRSN:install:runtime:
 
 4PROD:install:runtime:
   stage: deploy
+  image:
+    name: ${IMAGE_HELM}
+    entrypoint: [""]
   script:
     - verify_runtime_version
     - kube_config_setup
     - cd runtime
-    - helm --tiller-namespace "cryptopay" list
-    - helm --tiller-namespace "cryptopay" upgrade --install --namespace "cryptopay"  --values "values-base.yaml" --values "values.production.yaml" tag .
-    - helm --tiller-namespace "cryptopay" history tag --max=5
+    - helm --namespace "cryptopay" list
+    - helm --namespace "cryptopay" upgrade --install --history-max 3 --values "values-base.yaml" --values "values.production.yaml" tag .
+    - helm --namespace "cryptopay" history tag --max=3
   when: manual
   environment:
     name: production
@@ -219,14 +193,17 @@ devel-2PRSN:install:runtime:
 
 4PROD:rollback:runtime:
   stage: rollback
+  image:
+    name: ${IMAGE_HELM}
+    entrypoint: [""]
   script:
     - verify_runtime_version
     - kube_config_setup
     - cd runtime
-    - helm --tiller-namespace "cryptopay" list
-    - helm --tiller-namespace "cryptopay" history tag --max=5
-    - helm --tiller-namespace "cryptopay" rollback --recreate-pods tag 0
-    - helm --tiller-namespace "cryptopay" history tag --max=5
+    - helm --namespace "cryptopay" list
+    - helm --namespace "cryptopay" history tag --max=3
+    - helm --namespace "cryptopay" rollback --recreate-pods tag 0
+    - helm --namespace "cryptopay" history tag --max=3
   when: manual
   environment:
     name: production
@@ -241,13 +218,16 @@ devel-2PRSN:install:runtime:
 
 4PROD:delete:runtime:
   stage: delete
+  image:
+    name: ${IMAGE_HELM}
+    entrypoint: [""]
   script:
     - verify_runtime_version
     - kube_config_setup
     - cd runtime
-    - helm --tiller-namespace "cryptopay" list
-    - helm --tiller-namespace "cryptopay" history tag --max=5
-    - helm --tiller-namespace "cryptopay" delete --purge tag
+    - helm --namespace "cryptopay" list
+    - helm --namespace "cryptopay" history tag --max=3
+    - helm --namespace "cryptopay" uninstall  tag
   when: manual
   environment:
     name: production
