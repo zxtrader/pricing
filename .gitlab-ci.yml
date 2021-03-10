@@ -552,7 +552,7 @@ devel-2PRSN:rollback:db:
   script:
     - export KUBECONFIG=/tmp/.kube-config
     - echo "$KUBECONF_BASE64" | base64 -d > "${KUBECONFIG}"
-    - ./migration/migration-exec.sh --kube-context=evolution --image=devdocker.infra.kube/cryptopay/database-evolution --tag="$(echo $CI_COMMIT_TAG | sed 's/^DB-//g')" --install
+    - ./migration/migration-exec.sh --kube-context=evolution --image=devdocker.infra.kube/cryptopay/database-evolution --tag="$(echo $CI_COMMIT_TAG | cut -d- -f1)" --install
   when: manual
   environment:
     name: evolution
@@ -571,7 +571,7 @@ devel-2PRSN:rollback:db:
   script:
     - export KUBECONFIG=/tmp/.kube-config
     - echo "$KUBECONF_BASE64" | base64 -d > "${KUBECONFIG}"
-    - ./migration/migration-exec.sh --kube-context=evolution --image=devdocker.infra.kube/cryptopay/database-evolution --tag="$(echo $CI_COMMIT_TAG | sed 's/^DB-//g')" --rollback
+    - ./migration/migration-exec.sh --kube-context=evolution --image=devdocker.infra.kube/cryptopay/database-evolution --tag="$(echo $CI_COMMIT_TAG | cut -d- -f1)" --rollback
   when: manual
   environment:
     name: evolution
@@ -590,7 +590,7 @@ devel-2PRSN:rollback:db:
   script:
     - export KUBECONFIG=/tmp/.kube-config
     - echo "$KUBECONF_BASE64" | base64 -d > "${KUBECONFIG}"
-    - ./migration/migration-exec.sh --kube-context=presentation --image=devdocker.infra.kube/cryptopay/database-presentation --tag="$(echo $CI_COMMIT_TAG | sed 's/^DB-//g')" --install
+    - ./migration/migration-exec.sh --kube-context=presentation --image=devdocker.infra.kube/cryptopay/database-presentation --tag="$(echo $CI_COMMIT_TAG | cut -d- -f1)" --install
   when: manual
   environment:
     name: presentation
@@ -609,7 +609,7 @@ devel-2PRSN:rollback:db:
   script:
     - export KUBECONFIG=/tmp/.kube-config
     - echo "$KUBECONF_BASE64" | base64 -d > "${KUBECONFIG}"
-    - ./migration/migration-exec.sh --kube-context=presentation --image=devdocker.infra.kube/cryptopay/database-presentation --tag="$(echo $CI_COMMIT_TAG | sed 's/^DB-//g')" --rollback
+    - ./migration/migration-exec.sh --kube-context=presentation --image=devdocker.infra.kube/cryptopay/database-presentation --tag="$(echo $CI_COMMIT_TAG | cut -d- -f1)" --rollback
   when: manual
   environment:
     name: presentation
@@ -628,7 +628,7 @@ devel-2PRSN:rollback:db:
 #   script:
 #     - export KUBECONFIG=/tmp/.kube-config
 #     - echo "$KUBECONF_BASE64" | base64 -d > "${KUBECONFIG}"
-#     - ./migration/migration-exec.sh --kube-context=preproduction --image=devdocker.infra.kube/cryptopay/database-preproduction --tag="$(echo $CI_COMMIT_TAG | sed 's/^DB-//g')" --install
+#     - ./migration/migration-exec.sh --kube-context=preproduction --image=devdocker.infra.kube/cryptopay/database-preproduction --tag="$(echo $CI_COMMIT_TAG | cut -d- -f1)" --install
 #   when: manual
 #   environment:
 #     name: preproduction
@@ -647,7 +647,7 @@ devel-2PRSN:rollback:db:
 #   script:
 #     - export KUBECONFIG=/tmp/.kube-config
 #     - echo "$KUBECONF_BASE64" | base64 -d > "${KUBECONFIG}"
-#     - ./migration/migration-exec.sh --kube-context=preproduction --image=devdocker.infra.kube/cryptopay/database-preproduction --tag="$(echo $CI_COMMIT_TAG | sed 's/^DB-//g')" --rollback
+#     - ./migration/migration-exec.sh --kube-context=preproduction --image=devdocker.infra.kube/cryptopay/database-preproduction --tag="$(echo $CI_COMMIT_TAG | cut -d- -f1)" --rollback
 #   when: manual
 #   environment:
 #     name: preproduction
@@ -666,7 +666,7 @@ devel-2PRSN:rollback:db:
   script:
     - export KUBECONFIG=/tmp/.kube-config
     - echo "$KUBECONF_BASE64" | base64 -d > "${KUBECONFIG}"
-    - ./migration/migration-exec.sh --kube-context=prod --kube-namespace=cryptopay --image=harbor.infra.kube/cryptopay/database-production --tag="$(echo $CI_COMMIT_TAG | sed 's/^DB-//g')" --install
+    - ./migration/migration-exec.sh --kube-context=prod --kube-namespace=cryptopay --image=harbor.infra.kube/cryptopay/database-production --tag="$(echo $CI_COMMIT_TAG | cut -d- -f1)" --install
   when: manual
   environment:
     name: production
@@ -687,7 +687,7 @@ devel-2PRSN:rollback:db:
   script:
     - export KUBECONFIG=/tmp/.kube-config
     - echo "$KUBECONF_BASE64" | base64 -d > "${KUBECONFIG}"
-    - ./migration/migration-exec.sh --kube-context=prod --kube-namespace=cryptopay --image=harbor.infra.kube/cryptopay/database-production --tag="$(echo $CI_COMMIT_TAG | sed 's/^DB-//g')" --rollback
+    - ./migration/migration-exec.sh --kube-context=prod --kube-namespace=cryptopay --image=harbor.infra.kube/cryptopay/database-production --tag="$(echo $CI_COMMIT_TAG | cut -d- -f1)" --rollback
   when: manual
   environment:
     name: production

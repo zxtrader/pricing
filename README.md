@@ -19,8 +19,8 @@ Tag name format: `<APP_VERSION>-runtime`
 Создание тега в таком формате, создаст pipeline с набором задач для деплоймента сервисов. `APP_VERSION` это версия Chart.yaml `appVersion`.
 
 Например:
-* [2.0.0-alpha01-runtime](https://gitlab.wnb:28443/cryptopay/devops/kubernetes-deployment/-/tags/2.0.0-alpha01-runtime)
-* [runtime-2.0.1-runtime](https://gitlab.wnb:28443/cryptopay/devops/kubernetes-deployment/-/tags/2.0.1-runtime)
+* [2.3.2-runtime-helm2](https://gitlab.wnb:28443/cryptopay/devops/kubernetes-deployment/-/commits/2.3.2-runtime-helm2)
+* [2.3.2-runtime](https://gitlab.wnb:28443/cryptopay/devops/kubernetes-deployment/-/tags/2.3.2-runtime)
 * etc
 
 NOTE! Перед созданием тега, вы должны убедиться, что релизные контейнеры сервисов выложены в репозитории контейнеров.
@@ -57,8 +57,8 @@ Tag name format: `<DB_VERSION>-database`
 
 Создание тега в таком формате, создаст pipeline с набором задач для деплоймента базы версии `DB_VERSION`.
 Например:
-* [v02.00-database](https://gitlab.wnb:28443/cryptopay/devops/kubernetes-deployment/-/tags/v02.00-database)
-* [v02.01-database](https://gitlab.wnb:28443/cryptopay/devops/kubernetes-deployment/-/tags/v02.01-database)
+* [v02.32-database](https://gitlab.wnb:28443/cryptopay/devops/kubernetes-deployment/-/tags/v02.32-database)
+* [v02.33-database](https://gitlab.wnb:28443/cryptopay/devops/kubernetes-deployment/-/tags/v02.33-database)
 * etc
 
 NOTE! Перед созданием тега, вы должны убедиться, что [релизные контейнеры](https://gitlab.wnb:28443/cryptopay/database/pipelines) с версией [`DB_VERSION`](https://gitlab.wnb:28443/cryptopay/database/-/tags) выложены в репозитории контейнеров (прод контейнер в продовский репозиторий)
