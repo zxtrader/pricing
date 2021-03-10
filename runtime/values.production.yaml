@@ -4,8 +4,6 @@ application:
   api:
     env:
       WTFProviderConfigurationFile: /etc/cexiolabs/cryptopay.api/legacy-cpservice-config/WTF-prod.json
-  dashboardobsolete:
-  identity:
   processing:
     args:
       [
