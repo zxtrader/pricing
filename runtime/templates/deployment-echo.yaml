@@ -2,8 +2,8 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   labels:
-    app: echo{{ template "suffix" . }}
-  name: echo{{ template "suffix" . }}
+    app: {{ template "prefix" . }}echo
+  name: {{ template "prefix" . }}echo
 spec:
   replicas: {{ .Values.application.echo.replicas | default 0 }}
   strategy:
@@ -12,7 +12,7 @@ spec:
   template:
     metadata:
       labels:
-        app: echo{{ template "suffix" . }}
+        app: {{ template "prefix" . }}echo
     spec:
       containers:
       - name: echo
@@ -63,4 +63,4 @@ spec:
       volumes:
       - name: secret-certificate
         secret:
-          secretName: echo{{ template "suffix" . }}-certificate
+          secretName: {{ template "prefix" . }}echo-certificate

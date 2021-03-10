@@ -2,8 +2,8 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    app: identity{{ template "suffix" . }}
-  name: identity{{ template "suffix" . }}
+    app: {{ template "prefix" . }}identity
+  name: {{ template "prefix" . }}identity
 spec:
   ports:
     - port: 8443
@@ -12,4 +12,4 @@ spec:
       targetPort: 8443
   type: ClusterIP
   selector:
-    app: identity{{ template "suffix" . }}
+    app: {{ template "prefix" . }}identity

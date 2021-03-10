@@ -5,17 +5,17 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   labels:
-    app: dashboardobsolete{{ template "suffix" . }}
-  name: dashboardobsolete{{ template "suffix" . }}
+    app: {{ template "prefix" . }}dashboardobsolete
+  name: {{ template "prefix" . }}dashboardobsolete
 spec:
-  replicas: {{ .Values.application.dashboardobsolete.replicas | default 2 }}
+  replicas: {{ .Values.application.dashboardobsolete.replicas | default 0 }}
   strategy:
     type: RollingUpdate
   revisionHistoryLimit: 3
   template:
     metadata:
       labels:
-        app: dashboardobsolete{{ template "suffix" . }}
+        app: {{ template "prefix" . }}dashboardobsolete
     spec:
       containers:
       - name: dashboardobsolete
@@ -78,4 +78,4 @@ spec:
       #     name: dashboardobsolete-files
       - name: secret-certificate
         secret:
-          secretName: dashboardobsolete{{ template "suffix" . }}-certificate
+          secretName: {{ template "prefix" . }}dashboardobsolete-certificate

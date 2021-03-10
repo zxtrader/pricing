@@ -2,8 +2,8 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    app: demo{{ template "suffix" . }}
-  name: demo{{ template "suffix" . }}
+    app: {{ template "prefix" . }}demo
+  name: {{ template "prefix" . }}demo
 spec:
   ports:
     - port: 8080
@@ -12,4 +12,4 @@ spec:
       targetPort: 8080
   type: ClusterIP
   selector:
-    app: demo{{ template "suffix" . }}
+    app: {{ template "prefix" . }}demo

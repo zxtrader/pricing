@@ -13,17 +13,6 @@ Create chart name and version as used by the chart label.
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
-
 {{- define "prefix" -}}
-{{- if eq .Release.Name "tag" -}}
-{{- else -}}
 {{- printf "%s-" .Release.Name | lower -}}
-{{- end -}}
-{{- end -}}
-
-{{- define "suffix" -}}
-{{- if eq .Release.Name "tag" -}}
-{{- else -}}
-{{- printf "-%s" .Release.Name | lower -}}
-{{- end -}}
 {{- end -}}

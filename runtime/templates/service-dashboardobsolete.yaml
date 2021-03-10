@@ -5,8 +5,8 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    app: dashboardobsolete{{ template "suffix" . }}
-  name: dashboardobsolete{{ template "suffix" . }}
+    app: {{ template "prefix" . }}dashboardobsolete
+  name: {{ template "prefix" . }}dashboardobsolete
 spec:
   ports:
     - port: 8445
@@ -15,4 +15,4 @@ spec:
       targetPort: 8445
   type: ClusterIP
   selector:
-    app: dashboardobsolete{{ template "suffix" . }}
+    app: {{ template "prefix" . }}dashboardobsolete

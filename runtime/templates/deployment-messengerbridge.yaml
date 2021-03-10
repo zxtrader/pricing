@@ -2,8 +2,8 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   labels:
-    app: messengerbridge{{ template "suffix" . }}
-  name: messengerbridge{{ template "suffix" . }}
+    app: {{ template "prefix" . }}messengerbridge
+  name: {{ template "prefix" . }}messengerbridge
 spec:
   replicas: {{ .Values.application.messengerbridge.replicas | default 0 }}
   strategy:
@@ -12,7 +12,7 @@ spec:
   template:
     metadata:
       labels:
-        app: messengerbridge{{ template "suffix" . }}
+        app: {{ template "prefix" . }}messengerbridge
     spec:
       containers:
       - name: messengerbridge
@@ -81,7 +81,7 @@ spec:
           name: messengerbridge-files
       - name: secret-certificate
         secret:
-          secretName: messengerbridge{{ template "suffix" . }}-certificate
+          secretName: {{ template "prefix" . }}messengerbridge-certificate
       - name: secret-files
         secret:
           secretName: messengerbridge

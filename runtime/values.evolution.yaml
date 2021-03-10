@@ -7,7 +7,6 @@ application:
       WTFProviderConfigurationFile: /etc/cexiolabs/cryptopay.api/legacy-cpservice-config/WTF-dev.json
   dashboard:
     serviceImage: harbor.infra.kube/cryptopay/dashboard/snapshot
-    replicas: 0
   dashboardobsolete:
     serviceImage: devdocker.infra.kube/cryptopay/dashboard-backup-evolution
     tag: 2-1-26-hotfixf16edc3d
@@ -42,7 +41,6 @@ application:
       DEBUG_WAIT: "no"
       LOG_LEVEL: "debug"
       GATE_URL: https://gate-evolution-cryptopay.dev.kube/widget
-    replicas: 1
 
 ingress:
   API:

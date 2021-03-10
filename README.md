@@ -2,29 +2,63 @@
 
 ## Releases
 
-Pipelines для релизов формируются с помощью создания тега с соответствущим префиксом.
+Pipelines для релизов формируются с помощью создания тега с соответствущим суффиксом.
 
-### Runtime Releases
+Суффиксы для тегов:
 
-Tag name format: `runtime-<APP_VERSION>`
+* `-runtime` - Набор задач по деплойменту с использованием `Helm 3`
+* `-runtime-helm2` - Набор задач по деплойменту с использованием `Helm 2`
+* `-database` -  Набор задач по деплойменту миграций базы данных
+
+### Runtime Helm Releases
+
+**Runtime** - мы называем Helm Chart описывающий сборку всего набора сервисов с привязкой к 
+
+Tag name format: `<APP_VERSION>-runtime`
 
 Создание тега в таком формате, создаст pipeline с набором задач для деплоймента сервисов. `APP_VERSION` это версия Chart.yaml `appVersion`.
 
 Например:
-* [runtime-2.0.0-alpha01](https://gitlab.wnb:28443/cryptopay/devops/kubernetes-deployment/-/tags/runtime-2.0.0-alpha01)
-* [runtime-2.0.1](https://gitlab.wnb:28443/cryptopay/devops/kubernetes-deployment/-/tags/runtime-2.0.1)
+* [2.0.0-alpha01-runtime](https://gitlab.wnb:28443/cryptopay/devops/kubernetes-deployment/-/tags/2.0.0-alpha01-runtime)
+* [runtime-2.0.1-runtime](https://gitlab.wnb:28443/cryptopay/devops/kubernetes-deployment/-/tags/2.0.1-runtime)
 * etc
 
-NOTE! Перед созданием тега, вы должны убедиться, что релизные контейнеры сервисов выложены в репозитории контейнеров (прод контейнер в продовский репозиторий)
+NOTE! Перед созданием тега, вы должны убедиться, что релизные контейнеры сервисов выложены в репозитории контейнеров.
+
+NOTE! Во время переходной фазы на `Helm 3` остаются возможность создать наборы задач под `Helm 2`. Для этого используйте суффикс `<APP_VERSION>-runtime-helm2`.
+
+#### Zero downtime deployment (Blue/Green)
+
+Для обеспечения **zero downtime deployment** стратегии, мы используем подход приближенный к [Canary](https://martinfowler.com/bliki/CanaryRelease.html). Деплой `runtime` chart выполняется с именами Helm релизов `Blue` и `Green`.
+
+* `Blue` - это основной инстанс обрабатывающий нагрузку
+* `Green` - это дополнительный инстанс который создается во время нового релиза (живет короткое время)
+
+![zero-downtime-deployment-strategy.png](./README.files/zero-downtime-deployment-strategy.png)
+
+Условно, стратегия сводится к следующим шагам:
+
+1. Имеем работающую сборку `runtime vX.X.X` задеплоен под Helm релизом `Blue`. Helm релиза `Green` нет в кластере (имеем только `Blue`)
+1. Подготовили новую сборку `runtime vY.Y.Y` и выполняем деплой под Helm релизом `Green`. В этот доступно следующее:
+	* Продуктивный трафик продолжает направляться ТОЛЬКО на Helm релиз `Blue`
+	* К Helm релизу `Green` есть подключение через внутренний домен `***-green-cryptopay.prodcryptopay.kube`(PROD) для проведения [Smoke testing](https://en.wikipedia.org/wiki/Smoke_testing_(software)) по новой функциональности.
+	* Если в процессе тестирования обнаружены деффекты, Helm релиз `Green` удаляется и команда работает над исправлением деффектов. ТУТ КОНЕЦ (итого имеем состояние как на шаге 1).
+1. Переключаем продуктивный трафик (возможно постепенно 10%, 25%, 50%, 100%) на использование Helm релиза `Green`
+1. Ожидаем завершения всех фоновых задач процессинга на Helm релизе `Blue`
+1. Выполняем деплой сборки `runtime vY.Y.Y` под Helm релизом `Blue`
+1. Переключаем продуктивный трафик (возможно постепенно 10%, 25%, 50%, 100%) на использование Helm релиза `Blue`
+1. Ожидаем завершения всех фоновых задач процессинга на Helm релизе `Green`
+1. Удаляем Helm релиз `Green`. ТУТ КОНЕЦ (итого имеем состояние как на шаге 1).
+
 
 ### Database Releases
 
-Tag name format: `DB-<DB_VERSION>`
+Tag name format: `<DB_VERSION>-database`
 
 Создание тега в таком формате, создаст pipeline с набором задач для деплоймента базы версии `DB_VERSION`.
 Например:
-* [DB-v02.00](https://gitlab.wnb:28443/cryptopay/devops/kubernetes-deployment/-/tags/database-v02.00)
-* [DB-v02.01](https://gitlab.wnb:28443/cryptopay/devops/kubernetes-deployment/-/tags/database-v02.01)
+* [v02.00-database](https://gitlab.wnb:28443/cryptopay/devops/kubernetes-deployment/-/tags/v02.00-database)
+* [v02.01-database](https://gitlab.wnb:28443/cryptopay/devops/kubernetes-deployment/-/tags/v02.01-database)
 * etc
 
 NOTE! Перед созданием тега, вы должны убедиться, что [релизные контейнеры](https://gitlab.wnb:28443/cryptopay/database/pipelines) с версией [`DB_VERSION`](https://gitlab.wnb:28443/cryptopay/database/-/tags) выложены в репозитории контейнеров (прод контейнер в продовский репозиторий)
@@ -82,12 +116,12 @@ NAME             	REVISION	UPDATED                 	STATUS  	CHART              
 #### Delete the release from Kubernetes
 Full delete `tag` for example
 ```bash
-$ helm --namespace "cryptopay-${ENV}" uninstall tag
+$ helm --namespace "cryptopay-${ENV}" uninstall Blue
 ```
 
 #### Deploy the service into cluster
 ```bash
-$ helm --namespace "cryptopay-${ENV}" upgrade --install --history-max 3 --values "values-base.yaml" --values "values.${ENV}.yaml" tag .
+$ helm --namespace "cryptopay-${ENV}" upgrade --install --history-max 3 --values "values-base.yaml" --values "values.${ENV}.yaml" Blue .
 ```
 
 ```bash

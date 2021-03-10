@@ -2,8 +2,8 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   labels:
-    app: processing{{ template "suffix" . }}
-  name: processing{{ template "suffix" . }}
+    app: {{ template "prefix" . }}processing
+  name: {{ template "prefix" . }}processing
 spec:
   replicas: {{ .Values.application.processing.replicas | default 0 }}
   strategy:
@@ -12,7 +12,7 @@ spec:
   template:
     metadata:
       labels:
-        app: processing{{ template "suffix" . }}
+        app: {{ template "prefix" . }}processing
     spec:
       containers:
       - name: processing
@@ -125,4 +125,4 @@ spec:
           secretName: processing-setup
       - name: secret-certificate
         secret:
-          secretName: processing{{ template "suffix" . }}-certificate
+          secretName: {{ template "prefix" . }}processing-certificate

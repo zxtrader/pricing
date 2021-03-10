@@ -2,8 +2,8 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    app: echo{{ template "suffix" . }}
-  name: echo{{ template "suffix" . }}
+    app: {{ template "prefix" . }}echo
+  name: {{ template "prefix" . }}echo
 spec:
   ports:
     - port: 8443
@@ -12,4 +12,4 @@ spec:
       targetPort: 8443
   type: ClusterIP
   selector:
-    app: echo{{ template "suffix" . }}
+    app: {{ template "prefix" . }}echo

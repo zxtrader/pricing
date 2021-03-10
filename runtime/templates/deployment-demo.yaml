@@ -3,8 +3,8 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   labels:
-    app: demo{{ template "suffix" . }}
-  name: demo{{ template "suffix" . }}
+    app: {{ template "prefix" . }}demo
+  name: {{ template "prefix" . }}demo
 spec:
   replicas: {{ .Values.application.demo.replicas | default 0 }}
   strategy:
@@ -13,7 +13,7 @@ spec:
   template:
     metadata:
       labels:
-        app: demo{{ template "suffix" . }}
+        app: {{ template "prefix" . }}demo
     spec:
       containers:
       - name: demo

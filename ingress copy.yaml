@@ -1,4 +1,5 @@
-{{ if eq .Release.Name "blue" }}
+# {{ $prefix := template "prefix" . }}
+# {{ if eq $prefix "blue_" }}
 {{ $rootScope := . }}
 {{- range $key, $value := .Values.ingress -}}
 apiVersion: extensions/v1beta1
@@ -43,4 +44,4 @@ spec:
 {{ end }}
 ---
 {{- end -}}
-{{ end }}
+# {{ end }}

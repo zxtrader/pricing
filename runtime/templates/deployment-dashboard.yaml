@@ -6,8 +6,8 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   labels:
-    app: dashboard{{ template "suffix" . }}
-  name: dashboard{{ template "suffix" . }}
+    app: {{ template "prefix" . }}dashboard
+  name: {{ template "prefix" . }}dashboard
 spec:
   replicas: {{ .Values.application.dashboard.replicas | default 0 }}
   strategy:
@@ -16,7 +16,7 @@ spec:
   template:
     metadata:
       labels:
-        app: dashboard{{ template "suffix" . }}
+        app: {{ template "prefix" . }}dashboard
     spec:
       containers:
       - name: dashboard

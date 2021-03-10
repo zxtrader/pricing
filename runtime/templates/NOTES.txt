@@ -6,6 +6,6 @@ Application daemon should be up. Hopefully.
 
 {{ $rootScope := . }}
 {{- range $key, $value := .Values.ingress }}
-{{ $key }}: https://{{ template "prefix" $rootScope }}{{ $value.domain }}
+{{ $key }}: https://{{ $value.domain }}
 {{- end }}
 

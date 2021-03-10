@@ -2,17 +2,17 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   labels:
-    app: api{{ template "suffix" . }}
-  name: api{{ template "suffix" . }}
+    app: {{ template "prefix" . }}api
+  name: {{ template "prefix" . }}api
 spec:
-  replicas: {{ .Values.application.api.replicas | default 2 }}
+  replicas: {{ .Values.application.api.replicas | default 0 }}
   strategy:
     type: RollingUpdate
   revisionHistoryLimit: 3
   template:
     metadata:
       labels:
-        app: api{{ template "suffix" . }}
+        app: {{ template "prefix" . }}api
     spec:
       # initContainers:
       # - name: secret-copier
@@ -124,7 +124,7 @@ spec:
       #     name: api-files
       - name: secret-certificate
         secret:
-          secretName: api{{ template "suffix" . }}-certificate
+          secretName: {{ template "prefix" . }}api-certificate
       - name: secret-files
         secret:
           secretName: api

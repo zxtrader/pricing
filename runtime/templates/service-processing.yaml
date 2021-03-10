@@ -2,8 +2,8 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    app: processing{{ template "suffix" . }}
-  name: processing{{ template "suffix" . }}
+    app: {{ template "prefix" . }}processing
+  name: {{ template "prefix" . }}processing
   annotations:
     prometheus.io/scrape: "true"
     prometheus.io/path: /metrics
@@ -47,4 +47,4 @@ spec:
       targetPort: 8086
   type: ClusterIP
   selector:
-    app: processing{{ template "suffix" . }}
+    app: {{ template "prefix" . }}processing

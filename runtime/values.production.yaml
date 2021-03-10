@@ -4,11 +4,8 @@ application:
   api:
     env:
       WTFProviderConfigurationFile: /etc/cexiolabs/cryptopay.api/legacy-cpservice-config/WTF-prod.json
-    replicas: 1
   dashboardobsolete:
-    replicas: 1
   identity:
-    replicas: 1
   processing:
     args:
       [
@@ -22,7 +19,6 @@ application:
         "--config-secrets-dir=/etc/cexiolabs/cryptopay/secrets-setup",
         "--config-env"
       ]
-    replicas: 1
 
 ingress:
   API:

@@ -4,12 +4,12 @@
 apiVersion: certmanager.k8s.io/v1alpha1
 kind: Certificate
 metadata:
-  name: dashboardobsolete{{ template "suffix" . }}-certificate
+  name: {{ template "prefix" . }}dashboardobsolete-certificate
 spec:
-  secretName: dashboardobsolete{{ template "suffix" . }}-certificate
+  secretName: {{ template "prefix" . }}dashboardobsolete-certificate
   issuerRef:
     name: ca-issuer
     # We can reference ClusterIssuers by changing the kind here.
     # The default value is Issuer (i.e. a locally namespaced Issuer)
     kind: ClusterIssuer
-  commonName: dashboardobsolete{{ template "suffix" . }}
+  commonName: {{ template "prefix" . }}dashboardobsolete
