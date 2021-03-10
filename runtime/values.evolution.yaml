@@ -2,12 +2,12 @@ environment: evolution
 
 application:
   api:
-    tag: snapshot
+    tag: snapshot.0.0.5
     env:
       WTFProviderConfigurationFile: /etc/cexiolabs/cryptopay.api/legacy-cpservice-config/WTF-dev.json
     replicas: 1
   dashboard:
-    tag: snapshot
+    tag: snapshot.0.0.1
     replicas: 0
   dashboardobsolete:
     serviceImage: devdocker.infra.kube/cryptopay/dashboard-backup-evolution
@@ -23,7 +23,7 @@ application:
       NODE_TLS_REJECT_UNAUTHORIZED: 0
     replicas: 1
   identity:
-    tag: snapshot
+    tag: snapshot.0.0.27
     replicas: 1
   processing:
     serviceImage: devdocker.infra.kube/cryptopay/cpservice-devel
