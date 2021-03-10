@@ -29,9 +29,21 @@ ingress:
     domain: api.cryptopay.band
     certSecretName: ingress-gate-api-dashboard
     nginxConfigurationSnippet: |
-      rewrite ^/$ /v3/time redirect;
+      rewrite ^/$ /v2/time redirect;
     paths:
-      "/v2/":
+      "/":
+        backendServiceName: processing
+        backendServicePort: 8080
+      "/v3/":
+        backendServiceName: api
+        backendServicePort: 8443
+  API-Internal:
+    domain: api-cryptopay.prodcryptopay.kube
+    certSecretName: callback
+    nginxConfigurationSnippet: |
+      rewrite ^/$ /v2/time redirect;
+    paths:
+      "/":
         backendServiceName: processing
         backendServicePort: 8080
       "/v3/":

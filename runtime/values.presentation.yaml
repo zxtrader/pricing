@@ -5,7 +5,6 @@ application:
     serviceImage: harbor.infra.kube/cryptopay/api/snapshot
     env:
       WTFProviderConfigurationFile: /etc/cexiolabs/cryptopay.api/legacy-cpservice-config/WTF-dev.json
-    replicas: 1
   dashboard:
     serviceImage: harbor.infra.kube/cryptopay/dashboard/snapshot
     replicas: 0
@@ -13,20 +12,16 @@ application:
     serviceImage: devdocker.infra.kube/cryptopay/dashboard-backup-presentation
     tag: 2-1-26-hotfixf16edc3d
   demo:
-    # tag: master
     env:
       BASE_PATH: /widget-demo/
       GATE_API_ORIGIN: https://cryptopay-processing:8080/
       GATE_ID: 51c15da2-a79b-456d-8300-7d289bc97bc9
       GATE_URL: https://gate-testnet.cryptopay.band/widget
       NODE_TLS_REJECT_UNAUTHORIZED: 0
-    replicas: 1
   identity:
     serviceImage: harbor.infra.kube/cryptopay/identity/snapshot
-    replicas: 1
   processing:
-    serviceImage: devdocker.infra.kube/cryptopay/cpservice-devel
-    # tag: master
+    serviceImage: harbor.infra.kube/cryptopay/cpservice/snapshot
     args:
       [
         "--config-file=/etc/cexiolabs/cryptopay.processing/service.config",
@@ -47,16 +42,27 @@ application:
       DEBUG_WAIT: "no"
       LOG_LEVEL: "debug"
       GATE_URL: https://gate-presentation-cryptopay.dev.kube/widget
-    replicas: 0
 
 ingress:
   API:
     domain: api-presentation-cryptopay.dev.kube
     certSecretName: dev
     nginxConfigurationSnippet: |
-      rewrite ^/$ /v3/time redirect;
+      rewrite ^/$ /v2/time redirect;
     paths:
-      "/v2/":
+      "/":
+        backendServiceName: processing
+        backendServicePort: 8080
+      "/v3/":
+        backendServiceName: api
+        backendServicePort: 8443
+  API-External:
+    domain: api-testnet.cryptopay.band
+    certSecretName: cryptopay-band
+    nginxConfigurationSnippet: |
+      rewrite ^/$ /v2/time redirect;
+    paths:
+      "/":
         backendServiceName: processing
         backendServicePort: 8080
       "/v3/":
@@ -142,7 +148,16 @@ ingress:
   Welcome:
     domain: presentation-cryptopay.dev.kube
     backendInsecure: true
-    certSecretName: dev
+    paths:
+      "/":
+        backendServiceName: processing
+        backendServicePort: 8083
+      "/widget-demo/":
+        backendServiceName: demo
+        backendServicePort: 8080
+  Welcome-External:
+    domain: testnet.cryptopay.band
+    backendInsecure: true
     paths:
       "/":
         backendServiceName: processing

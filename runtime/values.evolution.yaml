@@ -5,29 +5,23 @@ application:
     serviceImage: harbor.infra.kube/cryptopay/api/snapshot
     env:
       WTFProviderConfigurationFile: /etc/cexiolabs/cryptopay.api/legacy-cpservice-config/WTF-dev.json
-    replicas: 1
   dashboard:
     serviceImage: harbor.infra.kube/cryptopay/dashboard/snapshot
     replicas: 0
   dashboardobsolete:
     serviceImage: devdocker.infra.kube/cryptopay/dashboard-backup-evolution
     tag: 2-1-26-hotfixf16edc3d
-    replicas: 1
   demo:
-    # tag: master
     env:
       BASE_PATH: /widget-demo/
       GATE_API_ORIGIN: https://cryptopay-processing:8080
       GATE_ID: 09635610-6109-4179-833b-8675fa709d9b
       GATE_URL: https://gate-evolution-cryptopay.dev.kube/widget
       NODE_TLS_REJECT_UNAUTHORIZED: 0
-    replicas: 1
   identity:
     serviceImage: harbor.infra.kube/cryptopay/identity/snapshot
-    replicas: 1
   processing:
-    serviceImage: devdocker.infra.kube/cryptopay/cpservice-devel
-    # tag: master
+    serviceImage: devdocker.infra.kube/cryptopay/cpservice/snapshot
     args:
       [
         "--config-file=/etc/cexiolabs/cryptopay.processing/service.config",
@@ -48,16 +42,16 @@ application:
       DEBUG_WAIT: "no"
       LOG_LEVEL: "debug"
       GATE_URL: https://gate-evolution-cryptopay.dev.kube/widget
-    replicas: 0
+    replicas: 1
 
 ingress:
   API:
     domain: api-evolution-cryptopay.dev.kube
     certSecretName: dev
     nginxConfigurationSnippet: |
-      rewrite ^/$ /v3/time redirect;
+      rewrite ^/$ /v2/time redirect;
     paths:
-      "/v2/":
+      "/":
         backendServiceName: processing
         backendServicePort: 8080
       "/v3/":
@@ -67,9 +61,6 @@ ingress:
     domain: callback-evolution-cryptopay.dev.kube
     certSecretName: dev
     paths:
-#
-#
-#
       "/ws/":
         backendServiceName: processing
         backendServicePort: 8086
@@ -146,7 +137,6 @@ ingress:
   Welcome:
     domain: evolution-cryptopay.dev.kube
     backendInsecure: true
-    certSecretName: dev
     paths:
       "/":
         backendServiceName: processing

@@ -91,7 +91,7 @@ $ helm --namespace "cryptopay-${ENV}" upgrade --install --history-max 3 --values
 ```
 
 ```bash
-$ helm --namespace "cryptopay-${ENV}" upgrade --install --history-max 3 --values "values-base.yaml" --values "values.${ENV}.yaml" --set "application.api.tag=master" tag .
+$ helm --namespace "cryptopay-${ENV}" upgrade --install --history-max 3 --values "values-base.yaml" --values "values.${ENV}.yaml" --set "application.processing.serviceImage=devdocker.infra.kube/cryptopay/cpservice/snapshot" --set "application.processing.tag=2-1-38-hotfix" tag .
 ```
 
 ```bash
