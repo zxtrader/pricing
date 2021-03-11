@@ -1,8 +1,8 @@
 application:
   api:
     serviceImage: harbor.infra.kube/cryptopay/api
-    tag: 0.0.6
-    replicas: 0
+    tag: 0.0.7
+    replicas: 1
   dashboard:
     serviceImage: harbor.infra.kube/cryptopay/dashboard
     tag: 0.0.1
