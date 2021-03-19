@@ -4,6 +4,10 @@ application:
   api:
     env:
       WTFProviderConfigurationFile: /etc/cexiolabs/cryptopay.api/legacy-cpservice-config/WTF-prod.json
+  identity:
+    env:
+      Emailer__SendGrid__senderEmail: "no-reply@cryptopay.band"
+
   processing:
     args:
       [

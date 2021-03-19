@@ -19,6 +19,8 @@ application:
       NODE_TLS_REJECT_UNAUTHORIZED: 0
   identity:
     serviceImage: harbor.infra.kube/cryptopay/identity/snapshot
+    env:
+      Emailer__SendGrid__senderEmail: "no-reply@evolution-cryptopay-dev.band"
   processing:
     serviceImage: devdocker.infra.kube/cryptopay/cpservice/snapshot
     args:
