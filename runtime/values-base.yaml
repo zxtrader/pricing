@@ -35,7 +35,7 @@ application:
     replicas: 1
   processing:
     serviceImage: harbor.infra.kube/cryptopay/cpservice
-    tag: 2.1.49
+    tag: 2.1.50
     replicas: 1
     env:
       "setup.instrumentModel_indexer": "CRYPTO_SELL_INTERMEDIATE_DEFAULT
