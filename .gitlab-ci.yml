@@ -114,215 +114,215 @@ Helm3:1EVO:delete:runtime:
     variables:
       - $CI_COMMIT_TAG =~ /-runtime$/
 
-Helm3:2PRSN:install:runtime:
-  stage: deploy
-  image:
-    name: ${IMAGE_HELM3}
-    entrypoint: [""]
-  script:
-    - verify_runtime_version_helm3
-    - kube_config_setup
-    - cd runtime
-    - helm --namespace "cryptopay-presentation" list
-    - helm --namespace "cryptopay-presentation" upgrade --install --history-max 3 --values "values-base.yaml" --values "values.presentation.yaml" "${RUNTIME_RELEASE}" .
-    - helm --namespace "cryptopay-presentation" history "${RUNTIME_RELEASE}" --max=3
-  when: manual
-  environment:
-    name: presentation
-    url: https://presentation-cryptopay.dev.kube
-  only:
-    refs:
-      - tags
-    variables:
-      - $CI_COMMIT_TAG =~ /-runtime$/
+# Helm3:2PRSN:install:runtime:
+#   stage: deploy
+#   image:
+#     name: ${IMAGE_HELM3}
+#     entrypoint: [""]
+#   script:
+#     - verify_runtime_version_helm3
+#     - kube_config_setup
+#     - cd runtime
+#     - helm --namespace "cryptopay-presentation" list
+#     - helm --namespace "cryptopay-presentation" upgrade --install --history-max 3 --values "values-base.yaml" --values "values.presentation.yaml" "${RUNTIME_RELEASE}" .
+#     - helm --namespace "cryptopay-presentation" history "${RUNTIME_RELEASE}" --max=3
+#   when: manual
+#   environment:
+#     name: presentation
+#     url: https://presentation-cryptopay.dev.kube
+#   only:
+#     refs:
+#       - tags
+#     variables:
+#       - $CI_COMMIT_TAG =~ /-runtime$/
 
-Helm3:2PRSN:rollback:runtime:
-  stage: rollback
-  image:
-    name: ${IMAGE_HELM3}
-    entrypoint: [""]
-  script:
-    - verify_runtime_version_helm3
-    - kube_config_setup
-    - cd runtime
-    - helm --namespace "cryptopay-presentation" list
-    - helm --namespace "cryptopay-presentation" history "${RUNTIME_RELEASE}" --max=3
-    - helm --namespace "cryptopay-presentation" rollback --recreate-pods "${RUNTIME_RELEASE}" 0
-    - helm --namespace "cryptopay-presentation" history "${RUNTIME_RELEASE}" --max=3
-  when: manual
-  environment:
-    name: presentation
-    url: https://presentation-cryptopay.dev.kube
-  only:
-    refs:
-      - tags
-    variables:
-      - $CI_COMMIT_TAG =~ /-runtime$/
+# Helm3:2PRSN:rollback:runtime:
+#   stage: rollback
+#   image:
+#     name: ${IMAGE_HELM3}
+#     entrypoint: [""]
+#   script:
+#     - verify_runtime_version_helm3
+#     - kube_config_setup
+#     - cd runtime
+#     - helm --namespace "cryptopay-presentation" list
+#     - helm --namespace "cryptopay-presentation" history "${RUNTIME_RELEASE}" --max=3
+#     - helm --namespace "cryptopay-presentation" rollback --recreate-pods "${RUNTIME_RELEASE}" 0
+#     - helm --namespace "cryptopay-presentation" history "${RUNTIME_RELEASE}" --max=3
+#   when: manual
+#   environment:
+#     name: presentation
+#     url: https://presentation-cryptopay.dev.kube
+#   only:
+#     refs:
+#       - tags
+#     variables:
+#       - $CI_COMMIT_TAG =~ /-runtime$/
 
-Helm3:2PRSN:delete:runtime:
-  stage: delete
-  image:
-    name: ${IMAGE_HELM3}
-    entrypoint: [""]
-  script:
-    - verify_runtime_version_helm3
-    - kube_config_setup
-    - cd runtime
-    - helm --namespace "cryptopay-presentation" list
-    - helm --namespace "cryptopay-presentation" history "${RUNTIME_RELEASE}" --max=3
-    - helm --namespace "cryptopay-presentation" uninstall  "${RUNTIME_RELEASE}"
-  when: manual
-  environment:
-    name: presentation
-    url: https://presentation-cryptopay.dev.kube
-  only:
-    refs:
-      - tags
-    variables:
-      - $CI_COMMIT_TAG =~ /-runtime$/
+# Helm3:2PRSN:delete:runtime:
+#   stage: delete
+#   image:
+#     name: ${IMAGE_HELM3}
+#     entrypoint: [""]
+#   script:
+#     - verify_runtime_version_helm3
+#     - kube_config_setup
+#     - cd runtime
+#     - helm --namespace "cryptopay-presentation" list
+#     - helm --namespace "cryptopay-presentation" history "${RUNTIME_RELEASE}" --max=3
+#     - helm --namespace "cryptopay-presentation" uninstall  "${RUNTIME_RELEASE}"
+#   when: manual
+#   environment:
+#     name: presentation
+#     url: https://presentation-cryptopay.dev.kube
+#   only:
+#     refs:
+#       - tags
+#     variables:
+#       - $CI_COMMIT_TAG =~ /-runtime$/
 
-Helm3:4PROD:install:runtime:
-  stage: deploy
-  image:
-    name: ${IMAGE_HELM3}
-    entrypoint: [""]
-  script:
-    - verify_runtime_version_helm3
-    - kube_config_setup
-    - cd runtime
-    - helm --namespace "cryptopay" list
-    - helm --namespace "cryptopay" upgrade --install --history-max 3 --values "values-base.yaml" --values "values.production.yaml" "${RUNTIME_RELEASE}" .
-    - helm --namespace "cryptopay" history "${RUNTIME_RELEASE}" --max=3
-  when: manual
-  environment:
-    name: production
-    url: https://cryptopay.band/
-  tags:
-    - crtpdpl
-  only:
-    refs:
-      - tags
-    variables:
-      - $CI_COMMIT_TAG =~ /-runtime$/
+# Helm3:4PROD:install:runtime:
+#   stage: deploy
+#   image:
+#     name: ${IMAGE_HELM3}
+#     entrypoint: [""]
+#   script:
+#     - verify_runtime_version_helm3
+#     - kube_config_setup
+#     - cd runtime
+#     - helm --namespace "cryptopay" list
+#     - helm --namespace "cryptopay" upgrade --install --history-max 3 --values "values-base.yaml" --values "values.production.yaml" "${RUNTIME_RELEASE}" .
+#     - helm --namespace "cryptopay" history "${RUNTIME_RELEASE}" --max=3
+#   when: manual
+#   environment:
+#     name: production
+#     url: https://cryptopay.band/
+#   tags:
+#     - crtpdpl
+#   only:
+#     refs:
+#       - tags
+#     variables:
+#       - $CI_COMMIT_TAG =~ /-runtime$/
 
-Helm3:4PROD:rollback:runtime:
-  stage: rollback
-  image:
-    name: ${IMAGE_HELM3}
-    entrypoint: [""]
-  script:
-    - verify_runtime_version_helm3
-    - kube_config_setup
-    - cd runtime
-    - helm --namespace "cryptopay" list
-    - helm --namespace "cryptopay" history "${RUNTIME_RELEASE}" --max=3
-    - helm --namespace "cryptopay" rollback --recreate-pods "${RUNTIME_RELEASE}" 0
-    - helm --namespace "cryptopay" history "${RUNTIME_RELEASE}" --max=3
-  when: manual
-  environment:
-    name: production
-    url: https://cryptopay.band/
-  tags:
-    - crtpdpl
-  only:
-    refs:
-      - tags
-    variables:
-      - $CI_COMMIT_TAG =~ /-runtime$/
+# Helm3:4PROD:rollback:runtime:
+#   stage: rollback
+#   image:
+#     name: ${IMAGE_HELM3}
+#     entrypoint: [""]
+#   script:
+#     - verify_runtime_version_helm3
+#     - kube_config_setup
+#     - cd runtime
+#     - helm --namespace "cryptopay" list
+#     - helm --namespace "cryptopay" history "${RUNTIME_RELEASE}" --max=3
+#     - helm --namespace "cryptopay" rollback --recreate-pods "${RUNTIME_RELEASE}" 0
+#     - helm --namespace "cryptopay" history "${RUNTIME_RELEASE}" --max=3
+#   when: manual
+#   environment:
+#     name: production
+#     url: https://cryptopay.band/
+#   tags:
+#     - crtpdpl
+#   only:
+#     refs:
+#       - tags
+#     variables:
+#       - $CI_COMMIT_TAG =~ /-runtime$/
 
-Helm3:4PROD:delete:runtime:
-  stage: delete
-  image:
-    name: ${IMAGE_HELM3}
-    entrypoint: [""]
-  script:
-    - verify_runtime_version_helm3
-    - kube_config_setup
-    - cd runtime
-    - helm --namespace "cryptopay" list
-    - helm --namespace "cryptopay" history "${RUNTIME_RELEASE}" --max=3
-    - helm --namespace "cryptopay" uninstall  "${RUNTIME_RELEASE}"
-  when: manual
-  environment:
-    name: production
-    url: https://cryptopay.band/
-  tags:
-    - crtpdpl
-  only:
-    refs:
-      - tags
-    variables:
-      - $CI_COMMIT_TAG =~ /-runtime$/
+# Helm3:4PROD:delete:runtime:
+#   stage: delete
+#   image:
+#     name: ${IMAGE_HELM3}
+#     entrypoint: [""]
+#   script:
+#     - verify_runtime_version_helm3
+#     - kube_config_setup
+#     - cd runtime
+#     - helm --namespace "cryptopay" list
+#     - helm --namespace "cryptopay" history "${RUNTIME_RELEASE}" --max=3
+#     - helm --namespace "cryptopay" uninstall  "${RUNTIME_RELEASE}"
+#   when: manual
+#   environment:
+#     name: production
+#     url: https://cryptopay.band/
+#   tags:
+#     - crtpdpl
+#   only:
+#     refs:
+#       - tags
+#     variables:
+#       - $CI_COMMIT_TAG =~ /-runtime$/
 
 
 
 # HELM 2 Runtime deployment TAGs
-Helm2:1EVO:install:runtime:
-  stage: deploy
-  image:
-    name: ${IMAGE_HELM2}
-    entrypoint: [""]
-  script:
-    - verify_runtime_version_helm2
-    - kube_config_setup
-    - cd runtime
-    - helm --tiller-namespace "cryptopay-evolution" list
-    - helm --tiller-namespace "cryptopay-evolution" upgrade --install --namespace "cryptopay-evolution"  --values "values-base.yaml" --values "values.evolution.yaml" "${RUNTIME_RELEASE}" .
-    - helm --tiller-namespace "cryptopay-evolution" history "${RUNTIME_RELEASE}" --max=3
-  when: manual
-  environment:
-    name: evolution
-    url: https://evolution-cryptopay.dev.kube
-  only:
-    refs:
-      - tags
-    variables:
-      - $CI_COMMIT_TAG =~ /-runtime-helm2$/
+# Helm2:1EVO:install:runtime:
+#   stage: deploy
+#   image:
+#     name: ${IMAGE_HELM2}
+#     entrypoint: [""]
+#   script:
+#     - verify_runtime_version_helm2
+#     - kube_config_setup
+#     - cd runtime
+#     - helm --tiller-namespace "cryptopay-evolution" list
+#     - helm --tiller-namespace "cryptopay-evolution" upgrade --install --namespace "cryptopay-evolution"  --values "values-base.yaml" --values "values.evolution.yaml" "${RUNTIME_RELEASE}" .
+#     - helm --tiller-namespace "cryptopay-evolution" history "${RUNTIME_RELEASE}" --max=3
+#   when: manual
+#   environment:
+#     name: evolution
+#     url: https://evolution-cryptopay.dev.kube
+#   only:
+#     refs:
+#       - tags
+#     variables:
+#       - $CI_COMMIT_TAG =~ /-runtime-helm2$/
 
-Helm2:1EVO:rollback:runtime:
-  stage: rollback
-  image:
-    name: ${IMAGE_HELM2}
-    entrypoint: [""]
-  script:
-    - verify_runtime_version_helm2
-    - kube_config_setup
-    - cd runtime
-    - helm --tiller-namespace "cryptopay-evolution" list
-    - helm --tiller-namespace "cryptopay-evolution" history "${RUNTIME_RELEASE}" --max=3
-    - helm --tiller-namespace "cryptopay-evolution" rollback --recreate-pods "${RUNTIME_RELEASE}" 0
-    - helm --tiller-namespace "cryptopay-evolution" history "${RUNTIME_RELEASE}" --max=3
-  when: manual
-  environment:
-    name: evolution
-    url: https://evolution-cryptopay.dev.kube
-  only:
-    refs:
-      - tags
-    variables:
-      - $CI_COMMIT_TAG =~ /-runtime-helm2$/
+# Helm2:1EVO:rollback:runtime:
+#   stage: rollback
+#   image:
+#     name: ${IMAGE_HELM2}
+#     entrypoint: [""]
+#   script:
+#     - verify_runtime_version_helm2
+#     - kube_config_setup
+#     - cd runtime
+#     - helm --tiller-namespace "cryptopay-evolution" list
+#     - helm --tiller-namespace "cryptopay-evolution" history "${RUNTIME_RELEASE}" --max=3
+#     - helm --tiller-namespace "cryptopay-evolution" rollback --recreate-pods "${RUNTIME_RELEASE}" 0
+#     - helm --tiller-namespace "cryptopay-evolution" history "${RUNTIME_RELEASE}" --max=3
+#   when: manual
+#   environment:
+#     name: evolution
+#     url: https://evolution-cryptopay.dev.kube
+#   only:
+#     refs:
+#       - tags
+#     variables:
+#       - $CI_COMMIT_TAG =~ /-runtime-helm2$/
 
-Helm2:1EVO:delete:runtime:
-  stage: delete
-  image:
-    name: ${IMAGE_HELM2}
-    entrypoint: [""]
-  script:
-    - verify_runtime_version_helm2
-    - kube_config_setup
-    - cd runtime
-    - helm --tiller-namespace "cryptopay-evolution" list
-    - helm --tiller-namespace "cryptopay-evolution" history "${RUNTIME_RELEASE}" --max=3
-    - helm --tiller-namespace "cryptopay-evolution" delete --purge "${RUNTIME_RELEASE}"
-  when: manual
-  environment:
-    name: evolution
-    url: https://evolution-cryptopay.dev.kube
-  only:
-    refs:
-      - tags
-    variables:
-      - $CI_COMMIT_TAG =~ /-runtime-helm2$/
+# Helm2:1EVO:delete:runtime:
+#   stage: delete
+#   image:
+#     name: ${IMAGE_HELM2}
+#     entrypoint: [""]
+#   script:
+#     - verify_runtime_version_helm2
+#     - kube_config_setup
+#     - cd runtime
+#     - helm --tiller-namespace "cryptopay-evolution" list
+#     - helm --tiller-namespace "cryptopay-evolution" history "${RUNTIME_RELEASE}" --max=3
+#     - helm --tiller-namespace "cryptopay-evolution" delete --purge "${RUNTIME_RELEASE}"
+#   when: manual
+#   environment:
+#     name: evolution
+#     url: https://evolution-cryptopay.dev.kube
+#   only:
+#     refs:
+#       - tags
+#     variables:
+#       - $CI_COMMIT_TAG =~ /-runtime-helm2$/
 
 Helm2:2PRSN:install:runtime:
   stage: deploy
