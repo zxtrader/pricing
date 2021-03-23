@@ -1,7 +1,7 @@
 application:
   api:
     serviceImage: harbor.infra.kube/cryptopay/api
-    tag: 0.0.9
+    tag: 0.0.11
     replicas: 1
   dashboard:
     serviceImage: harbor.infra.kube/cryptopay/dashboard
@@ -21,7 +21,7 @@ application:
     replicas: 2
   identity:
     serviceImage: harbor.infra.kube/cryptopay/identity
-    tag: 0.0.35
+    tag: 0.0.39
     replicas: 1
   messengerbridge:
     serviceImage: zxteamorg/messenger-bridge
