@@ -5,6 +5,8 @@ application:
     serviceImage: harbor.infra.kube/cryptopay/api/snapshot
     env:
       WTFProviderConfigurationFile: /etc/cexiolabs/cryptopay.api/legacy-cpservice-config/WTF-dev.json
+      IdentityServerAuthenticationBearerAuthority: https://id-testnet.cryptopay.band
+      CorsOrigins__0: https://cexiolabs.github.io
   dashboard:
     serviceImage: harbor.infra.kube/cryptopay/dashboard/snapshot
     replicas: 0
@@ -139,6 +141,13 @@ ingress:
       "/":
         backendServiceName: identity
         backendServicePort: 8443
+  Identity-External:
+    domain: id-testnet.cryptopay.band
+    certSecretName: cryptopay-band
+    paths:
+      "/":
+        backendServiceName: identity
+        backendServicePort: 8443
   MessengerBridge:
     # THIS endpoint just for development purposes
     domain: messengerbridge-presentation-cryptopay.dev.kube
@@ -147,23 +156,23 @@ ingress:
       "/":
         backendServiceName: messengerbridge
         backendServicePort: 8443
-  Welcome:
-    domain: presentation-cryptopay.dev.kube
-    backendInsecure: true
-    paths:
-      "/":
-        backendServiceName: processing
-        backendServicePort: 8083
-      "/widget-demo/":
-        backendServiceName: demo
-        backendServicePort: 8080
-  Welcome-External:
-    domain: testnet.cryptopay.band
-    backendInsecure: true
-    paths:
-      "/":
-        backendServiceName: processing
-        backendServicePort: 8083
-      "/widget-demo/":
-        backendServiceName: demo
-        backendServicePort: 8080
+  # Welcome:
+  #   domain: presentation-cryptopay.dev.kube
+  #   backendInsecure: true
+  #   paths:
+  #     "/":
+  #       backendServiceName: processing
+  #       backendServicePort: 8083
+  #     "/widget-demo/":
+  #       backendServiceName: demo
+  #       backendServicePort: 8080
+  # Welcome-External:
+  #   domain: testnet.cryptopay.band
+  #   backendInsecure: true
+  #   paths:
+  #     "/":
+  #       backendServiceName: processing
+  #       backendServicePort: 8083
+  #     "/widget-demo/":
+  #       backendServiceName: demo
+  #       backendServicePort: 8080

@@ -50,9 +50,9 @@ Full delete `cpservice` for example
 ```
 
 ```bash
-$ helm --tiller-namespace "cryptopay-${ENV}" upgrade --install --namespace "cryptopay-${ENV}" --values "values-base.yaml" --values "values.${ENV}.yaml" --set "application.dashboard.tag=master" tag .
+$ helm --tiller-namespace "cryptopay-${ENV}" upgrade --install --namespace "cryptopay-${ENV}" --values "values-base.yaml" --values "values.${ENV}.yaml" blue .
 ```
 
 ```bash
-$ helm --tiller-namespace "cryptopay-${ENV}" upgrade --install --namespace "cryptopay-${ENV}" --values "values-base.yaml" --values "values.${ENV}.yaml" --set "application.processing.tag=master" --set "application.dashboard.tag=master" tag .
+$ helm --tiller-namespace "cryptopay-${ENV}" upgrade --install --namespace "cryptopay-${ENV}" --values "values-base.yaml" --values "values.${ENV}.yaml" --set "application.processing.tag=master" --set "application.dashboard.tag=master" blue .
 ```

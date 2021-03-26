@@ -5,7 +5,7 @@ application:
     replicas: 1
   dashboard:
     serviceImage: harbor.infra.kube/cryptopay/dashboard
-    tag: 0.0.1
+    tag: 2.3.16
     replicas: 1
   dashboardobsolete:
     serviceImage: harbor.infra.kube/cryptopay/dashboard-backend
@@ -21,7 +21,7 @@ application:
     replicas: 2
   identity:
     serviceImage: harbor.infra.kube/cryptopay/identity
-    tag: 0.0.40
+    tag: 0.0.41
     replicas: 1
   messengerbridge:
     serviceImage: zxteamorg/messenger-bridge
@@ -35,7 +35,7 @@ application:
     replicas: 1
   processing:
     serviceImage: harbor.infra.kube/cryptopay/cpservice
-    tag: 2.1.51
+    tag: 2.1.52
     replicas: 1
     env:
       "setup.instrumentModel_indexer": "CRYPTO_SELL_INTERMEDIATE_DEFAULT
