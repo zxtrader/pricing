@@ -1,11 +1,11 @@
 application:
   api:
     serviceImage: harbor.infra.kube/cryptopay/api
-    tag: 0.0.13
+    tag: 0.0.14
     replicas: 1
   dashboard:
     serviceImage: harbor.infra.kube/cryptopay/dashboard
-    tag: 2.3.16
+    tag: 2.3.17
     replicas: 1
   dashboardobsolete:
     serviceImage: harbor.infra.kube/cryptopay/dashboard-backend
