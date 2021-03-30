@@ -9,7 +9,7 @@ application:
     replicas: 1
   dashboardobsolete:
     serviceImage: harbor.infra.kube/cryptopay/dashboard-backup
-    tag: 2.1.28
+    tag: 2.1.29
     replicas: 1
   demo:
     serviceImage: cexiolabs/cryptopay.demo
