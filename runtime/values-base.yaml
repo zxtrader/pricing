@@ -8,7 +8,7 @@ application:
     tag: 2.3.17
     replicas: 1
   dashboardobsolete:
-    serviceImage: harbor.infra.kube/cryptopay/dashboard-backend
+    serviceImage: harbor.infra.kube/cryptopay/dashboard-backup
     tag: 2.1.28
     replicas: 1
   demo:

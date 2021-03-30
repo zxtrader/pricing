@@ -11,7 +11,7 @@ application:
     serviceImage: harbor.infra.kube/cryptopay/dashboard/snapshot
     replicas: 0
   dashboardobsolete:
-    serviceImage: devdocker.infra.kube/cryptopay/dashboard-backup-presentation
+    replicas: 1
   demo:
     env:
       BASE_PATH: /widget-demo/
