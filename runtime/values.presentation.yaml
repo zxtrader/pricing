@@ -12,7 +12,6 @@ application:
     replicas: 0
   dashboardobsolete:
     serviceImage: devdocker.infra.kube/cryptopay/dashboard-backup-presentation
-    tag: 2-1-26-hotfixf16edc3d
   demo:
     env:
       BASE_PATH: /widget-demo/
@@ -25,8 +24,7 @@ application:
     env:
       Emailer__SendGrid__senderEmail: "no-reply@presentation-cryptopay-dev.band"
   processing:
-    serviceImage: devdocker.infra.kube/cryptopay/cpservice/snapshot
-    tag: commissions
+    serviceImage: harbor.infra.kube/cryptopay/cpservice/snapshot
     args:
       [
         "--config-file=/etc/cexiolabs/cryptopay.processing/service.config",
