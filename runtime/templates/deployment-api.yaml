@@ -108,6 +108,8 @@ spec:
           readOnly: true
         - name: secret-certificate
           mountPath: /etc/cexiolabs/cryptopay.api/ssl/
+        - name: ca-certificates-stub
+          mountPath: /etc/cexiolabs/cryptopay.api/ssl/ca-certificates
       #   - name: secret-certificate-copy
       #     mountPath: /tmp/cexiolabs/cryptopay.api/ssl/
         - name: secret-files
@@ -131,4 +133,6 @@ spec:
       - name: secret-certificate-copy
         emptyDir: {}
       - name: secret-files-copy
+        emptyDir: {}
+      - name: ca-certificates-stub
         emptyDir: {}

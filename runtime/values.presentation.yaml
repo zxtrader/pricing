@@ -25,7 +25,8 @@ application:
     env:
       Emailer__SendGrid__senderEmail: "no-reply@presentation-cryptopay-dev.band"
   processing:
-    serviceImage: harbor.infra.kube/cryptopay/cpservice/snapshot
+    serviceImage: devdocker.infra.kube/cryptopay/cpservice/snapshot
+    tag: commissions
     args:
       [
         "--config-file=/etc/cexiolabs/cryptopay.processing/service.config",
@@ -166,13 +167,13 @@ ingress:
   #     "/widget-demo/":
   #       backendServiceName: demo
   #       backendServicePort: 8080
-  # Welcome-External:
-  #   domain: testnet.cryptopay.band
-  #   backendInsecure: true
-  #   paths:
-  #     "/":
-  #       backendServiceName: processing
-  #       backendServicePort: 8083
-  #     "/widget-demo/":
-  #       backendServiceName: demo
-  #       backendServicePort: 8080
+  Welcome-External:
+    domain: testnet.cryptopay.band
+    backendInsecure: true
+    paths:
+      "/":
+        backendServiceName: processing
+        backendServicePort: 8083
+      "/widget-demo/":
+        backendServiceName: demo
+        backendServicePort: 8080
