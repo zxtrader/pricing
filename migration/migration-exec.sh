@@ -10,7 +10,7 @@ if [ $# -eq 0 ]; then
 	echo
 	echo "	Usage example:"
 	echo
-	echo "		$0 [--kube-context=evolution] --image=devdocker.infra.kube/cryptopay/database-evolution --tag=vXX.YY <--install|--rollback>"
+	echo "		$0 [--kube-context=evolution] --image=devdocker.infra.kube/cexiopay/database-evolution --tag=vXX.YY <--install|--rollback>"
 	echo
 	exit 1
 fi
@@ -62,9 +62,9 @@ validateArg "$ARG_ACTION" "--install|--rollback"
 ARG_TIMESTAMP="$(date '+%Y%m%d%H%M%S')"
 if [ -z "${ARG_KUBE_NAMESPACE}" ]; then
 	if [ -n "${ARG_KUBE_CONTEXT}" ]; then
-		ARG_KUBE_NAMESPACE="cryptopay-${ARG_KUBE_CONTEXT}"
+		ARG_KUBE_NAMESPACE="cexiopay-${ARG_KUBE_CONTEXT}"
 	else
-		ARG_KUBE_NAMESPACE="cryptopay"
+		ARG_KUBE_NAMESPACE="cexiopay"
 	fi
 fi
 

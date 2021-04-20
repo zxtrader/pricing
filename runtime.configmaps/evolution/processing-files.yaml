@@ -1,10 +1,11 @@
-# kubectl --namespace cryptopay-evolution get --output=yaml ConfigMap/processing-files | tee ~/w-cex/cryptopay/devops.kubernetes-deployment/runtime.configmaps/evolution/processing-files.yaml
+# kubectl --namespace cexiopay-evolution get --output=yaml ConfigMap/processing-files
+# kubectl --namespace cexiopay-evolution apply --filename=runtime.configmaps/evolution/processing-files.yaml
 
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: processing-files
-  namespace: cryptopay-evolution
+  namespace: cexiopay-evolution
 data:
   trusted-aggregator-ca.crt: |-
     -----BEGIN CERTIFICATE-----

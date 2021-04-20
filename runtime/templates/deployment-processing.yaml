@@ -63,17 +63,17 @@ spec:
           protocol: TCP
         volumeMounts:
         - name: config-files
-          mountPath: /etc/cexiolabs/cryptopay/
+          mountPath: /etc/cexiolabs/cexiopay/
           readOnly: true
         - name: secret-certificate
-          mountPath: /etc/cexiolabs/cryptopay/ssl/
+          mountPath: /etc/cexiolabs/cexiopay/ssl/
           readOnly: true
         - name: secret-files
-          mountPath: /etc/cexiolabs/cryptopay/secrets/
+          mountPath: /etc/cexiolabs/cexiopay/secrets/
           # The service will delete all files after read its. So need write access.
           readOnly: false
         - name: secret-setup-files
-          mountPath: /etc/cexiolabs/cryptopay/secrets-setup/
+          mountPath: /etc/cexiolabs/cexiopay/secrets-setup/
           # The service will delete all files after read its. So need write access.
           readOnly: false
         envFrom:

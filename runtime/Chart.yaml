@@ -7,7 +7,7 @@ apiVersion: v1
 engine: gotpl
 
 # The name of the chart (required)
-name: cryptopay
+name: cexiopay
 
 # A SemVer 2 version of the chart (required)
 version: 2.0.0
@@ -16,18 +16,18 @@ version: 2.0.0
 appVersion: 2.4.4
 
 # The URL of this project's home page (optional)
-home: https://www.cryptopay.band/
+home: https://www.pay-cex.io/
 
 # A single-sentence description of this project (optional)
-description: CryptoPay
+description: CEX.IO Pay
 
 # A list of keywords about this project (optional)
 keywords:
-  - cryptopay
+  - cexiopay
 
 # A list of URLs to source code for this project (optional)
 sources:
-  - https://gitlab.wnb:28443/cryptopay/
+  - https://gitlab.wnb:28443/cexiopay/
 
 # (optional)
 maintainers:

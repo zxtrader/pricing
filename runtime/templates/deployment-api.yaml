@@ -23,17 +23,17 @@ spec:
       #   - -c
       #   args:
       #   - 'echo "Copying ssl and secrets files into temporary emptyDir-based volume (to be able to erase sensetive data after read it)."
-      #     && cp /etc/cexiolabs/cryptopay.api/ssl/* /tmp/cexiolabs/cryptopay.api/ssl/
-      #     && cp /etc/cexiolabs/cryptopay.api/secrets/* /tmp/cexiolabs/cryptopay.api/secrets/'
+      #     && cp /etc/cexiolabs/cexiopay.api/ssl/* /tmp/cexiolabs/cexiopay.api/ssl/
+      #     && cp /etc/cexiolabs/cexiopay.api/secrets/* /tmp/cexiolabs/cexiopay.api/secrets/'
       #   volumeMounts:
       #   - name: secret-certificate
-      #     mountPath: /etc/cexiolabs/cryptopay.api/ssl/
+      #     mountPath: /etc/cexiolabs/cexiopay.api/ssl/
       #   - name: secret-files
-      #     mountPath: /etc/cexiolabs/cryptopay.api/secrets/
+      #     mountPath: /etc/cexiolabs/cexiopay.api/secrets/
       #   - name: secret-certificate-copy
-      #     mountPath: /tmp/cexiolabs/cryptopay.api/ssl/
+      #     mountPath: /tmp/cexiolabs/cexiopay.api/ssl/
       #   - name: secret-files-copy
-      #     mountPath: /tmp/cexiolabs/cryptopay.api/secrets/
+      #     mountPath: /tmp/cexiolabs/cexiopay.api/secrets/
       containers:
       - name: api
         image: {{ .Values.application.api.serviceImage }}:{{ .Values.application.api.tag }}
@@ -67,7 +67,7 @@ spec:
         # lifecycle:
         #   postStart:
         #     exec:
-        #       command: ["rm", "/etc/cexiolabs/cryptopay.api/ssl/tls.key"]
+        #       command: ["rm", "/etc/cexiolabs/cexiopay.api/ssl/tls.key"]
         livenessProbe:
           httpGet:
             path: /info
@@ -101,21 +101,21 @@ spec:
         #   periodSeconds: 5
         volumeMounts:
         # - name: config-files
-        #   mountPath: /etc/cexiolabs/cryptopay.api/
+        #   mountPath: /etc/cexiolabs/cexiopay.api/
         #   readOnly: true
         - name: legacy-cpservice-config
-          mountPath: /etc/cexiolabs/cryptopay.api/legacy-cpservice-config/
+          mountPath: /etc/cexiolabs/cexiopay.api/legacy-cpservice-config/
           readOnly: true
         - name: secret-certificate
-          mountPath: /etc/cexiolabs/cryptopay.api/ssl/
+          mountPath: /etc/cexiolabs/cexiopay.api/ssl/
         - name: ca-certificates-stub
-          mountPath: /etc/cexiolabs/cryptopay.api/ssl/ca-certificates
+          mountPath: /etc/cexiolabs/cexiopay.api/ssl/ca-certificates
       #   - name: secret-certificate-copy
-      #     mountPath: /tmp/cexiolabs/cryptopay.api/ssl/
+      #     mountPath: /tmp/cexiolabs/cexiopay.api/ssl/
         - name: secret-files
-          mountPath: /etc/cexiolabs/cryptopay.api/secrets/
+          mountPath: /etc/cexiolabs/cexiopay.api/secrets/
       #   - name: secret-files-copy
-      #     mountPath: /tmp/cexiolabs/cryptopay.api/secrets/
+      #     mountPath: /tmp/cexiolabs/cexiopay.api/secrets/
       volumes:
       - name: legacy-cpservice-config
         configMap:

@@ -108,7 +108,7 @@ See full doc https://v3.helm.sh/docs/helm
 
 #### List
 ```bash
-$ helm --namespace "cryptopay-${ENV}" list --all
+$ helm --namespace "cexiopay-${ENV}" list --all
 NAME             	REVISION	UPDATED                 	STATUS  	CHART                  	APP VERSION	NAMESPACE
 ???
 ```
@@ -116,20 +116,20 @@ NAME             	REVISION	UPDATED                 	STATUS  	CHART              
 #### Delete the release from Kubernetes
 Full delete `tag` for example
 ```bash
-$ helm --namespace "cryptopay-${ENV}" uninstall Blue
+$ helm --namespace "cexiopay-${ENV}" uninstall blue
 ```
 
 #### Deploy the service into cluster
 ```bash
-$ helm --namespace "cryptopay-${ENV}" upgrade --install --history-max 3 --values "values-base.yaml" --values "values.${ENV}.yaml" Blue .
+$ helm --namespace "cexiopay-${ENV}" upgrade --install --history-max 3 --values "values-base.yaml" --values "values.${ENV}.yaml" blue .
 ```
 
 ```bash
-$ helm --namespace "cryptopay-${ENV}" upgrade --install --history-max 3 --values "values-base.yaml" --values "values.${ENV}.yaml" --set "application.processing.serviceImage=devdocker.infra.kube/cryptopay/cpservice/snapshot" --set "application.processing.tag=2-1-38-hotfix" tag .
+$ helm --namespace "cexiopay-${ENV}" upgrade --install --history-max 3 --values "values-base.yaml" --values "values.${ENV}.yaml" --set "application.processing.serviceImage=devdocker.infra.kube/cexiopay/cpservice/snapshot" --set "application.processing.tag=2-1-38-hotfix" blue .
 ```
 
 ```bash
-$ helm --namespace "cryptopay-${ENV}" upgrade --install --history-max 3 --values "values-base.yaml" --values "values.${ENV}.yaml" --set "application.processing.tag=master" --set "application.api.tag=master" tag .
+$ helm --namespace "cexiopay-${ENV}" upgrade --install --history-max 3 --values "values-base.yaml" --values "values.${ENV}.yaml" --set "application.processing.tag=master" --set "application.api.tag=master" blue .
 ```
 
 
@@ -141,5 +141,17 @@ $ helm --namespace "cryptopay-${ENV}" upgrade --install --history-max 3 --values
 ### Backup all secrets
 
 ```bash
-kubectl --namespace=cryptopay-evolution get --output=yaml secrets | tee bakup-cryptopay-evolution-secrets.yaml
+kubectl --namespace=cexiopay-infra get --output=yaml secrets | tee "runtime.secrets/backup$(date '+%Y%m%d%H%M%S')-cexiopay-infra-secrets.yaml"
+kubectl --namespace=cexiopay-evolution get --output=yaml secrets | tee "runtime.secrets/backup$(date '+%Y%m%d%H%M%S')-cexiopay-evolution-secrets.yaml"
+kubectl --namespace=cexiopay-presentation get --output=yaml secrets | tee "runtime.secrets/backup$(date '+%Y%m%d%H%M%S')-cexiopay-presentation-secrets.yaml"
+kubectl --namespace=cexiopay-test get --output=yaml secrets | tee "runtime.secrets/backup$(date '+%Y%m%d%H%M%S')-cexiopay-test-secrets.yaml"
+```
+
+### Backup all configMaps
+
+```bash
+kubectl --namespace=cexiopay-infra get --output=yaml configmaps | tee "runtime.configmaps/backup$(date '+%Y%m%d%H%M%S')-cexiopay-infra-configmaps.yaml"
+kubectl --namespace=cexiopay-evolution get --output=yaml configmaps | tee "runtime.configmaps/backup$(date '+%Y%m%d%H%M%S')-cexiopay-evolution-configmaps.yaml"
+kubectl --namespace=cexiopay-presentation get --output=yaml configmaps | tee "runtime.configmaps/backup$(date '+%Y%m%d%H%M%S')-cexiopay-presentation-configmaps.yaml"
+kubectl --namespace=cexiopay-test get --output=yaml configmaps | tee "runtime.configmaps/backup$(date '+%Y%m%d%H%M%S')-cexiopay-test-configmaps.yaml"
 ```

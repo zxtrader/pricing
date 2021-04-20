@@ -3,28 +3,28 @@ environment: production
 application:
   api:
     env:
-      WTFProviderConfigurationFile: /etc/cexiolabs/cryptopay.api/legacy-cpservice-config/WTF-prod.json
+      WTFProviderConfigurationFile: /etc/cexiolabs/cexiopay.api/legacy-cpservice-config/WTF-prod.json
   identity:
     env:
-      Emailer__SendGrid__senderEmail: "no-reply@cryptopay.band"
+      Emailer__SendGrid__senderEmail: "no-reply@cexiopay.band"
 
   processing:
     args:
       [
-        "--config-file=/etc/cexiolabs/cryptopay.processing/service.config",
-        "--config-toml-file=/etc/cexiolabs/cryptopay.processing/service.toml",
-        "--config-toml-file=/etc/cexiolabs/cryptopay.processing/service-setup.toml",
-        "--config-toml-file=/etc/cexiolabs/cryptopay.processing/service-setup-dach.toml",
-        "--config-toml-file=/etc/cexiolabs/cryptopay.processing/service-setup-goldenpay.toml",
-        "--config-toml-file=/etc/cexiolabs/cryptopay.processing/service-production.toml",
-        "--config-secrets-dir=/etc/cexiolabs/cryptopay/secrets",
-        "--config-secrets-dir=/etc/cexiolabs/cryptopay/secrets-setup",
+        "--config-file=/etc/cexiolabs/cexiopay.processing/service.config",
+        "--config-toml-file=/etc/cexiolabs/cexiopay.processing/service.toml",
+        "--config-toml-file=/etc/cexiolabs/cexiopay.processing/service-setup.toml",
+        "--config-toml-file=/etc/cexiolabs/cexiopay.processing/service-setup-dach.toml",
+        "--config-toml-file=/etc/cexiolabs/cexiopay.processing/service-setup-goldenpay.toml",
+        "--config-toml-file=/etc/cexiolabs/cexiopay.processing/service-production.toml",
+        "--config-secrets-dir=/etc/cexiolabs/cexiopay/secrets",
+        "--config-secrets-dir=/etc/cexiolabs/cexiopay/secrets-setup",
         "--config-env"
       ]
 
 ingress:
   API:
-    domain: api.cryptopay.band
+    domain: api.cexiopay.band
     certSecretName: ingress-gate-api-dashboard
     nginxConfigurationSnippet: |
       rewrite ^/$ /v2/time redirect;
@@ -36,7 +36,7 @@ ingress:
         backendServiceName: api
         backendServicePort: 8443
   API-Internal:
-    domain: api-cryptopay.prodcryptopay.kube
+    domain: api-cexiopay.prodcryptopay.kube
     certSecretName: callback
     nginxConfigurationSnippet: |
       rewrite ^/$ /v2/time redirect;
@@ -58,7 +58,7 @@ ingress:
         backendServiceName: processing
         backendServicePort: 8086
   DashboardObsolete:
-    domain: dashboard.cryptopay.band
+    domain: dashboard.cexiopay.band
     certSecretName: ingress-gate-api-dashboard
     nginxConfigurationSnippet: |
       add_header Last-Modified $date_gmt;
@@ -74,7 +74,7 @@ ingress:
         backendServiceName: processing
         backendServicePort: 8082
   # Gate:
-  #   domain: gate.cryptopay.band
+  #   domain: gate.cexiopay.band
   #   certSecretName: ingress-gate-api-dashboard
   #   nginxConfigurationSnippet: |
   #     add_header Last-Modified $date_gmt;
@@ -93,7 +93,7 @@ ingress:
   #       backendServiceName: processing
   #       backendServicePort: 8085
   Identity:
-    domain: id.cryptopay.band
+    domain: id.cexiopay.band
     certSecretName: ingress-gate-api-dashboard
     paths:
       "/":
@@ -101,7 +101,7 @@ ingress:
         backendServicePort: 8443
   MessengerBridge:
     # THIS temporary endpoint just for testing purposes
-    domain: messengerbridge-cryptopay.prodcryptopay.kube
+    domain: messengerbridge-cexiopay.prodcryptopay.kube
     certSecretName: callback
     paths:
       "/":

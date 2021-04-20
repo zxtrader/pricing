@@ -1,78 +1,80 @@
-# kubectl --namespace cryptopay-evolution get --output=yaml ConfigMap/processing-envvars | tee ~/w-cex/cryptopay/devops.kubernetes-deployment/runtime.configmaps/evolution/processing-envvars.yaml
+# kubectl --namespace cexiopay-evolution get --output=yaml ConfigMap/processing-envvars
+# kubectl --namespace cexiopay-evolution apply --filename=runtime.configmaps/evolution/processing-envvars.yaml
 
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: processing-envvars
-  namespace: cryptopay-evolution
+  namespace: cexiopay-evolution
 data:
   runtime.aggregator.url: wss://external-api-aggr-demo.dev.kube/ws
   runtime.dashboardAuth.apiKey: AKIA5YOJLJKEIFAKNWBV
   runtime.dashboardAuth.cognitoClientId: 6jusd0r1854j4aksj34dkuhuh
   runtime.dashboardAuth.cognitoUserPool: us-east-1_QNzFm4L9A
   runtime.dashboardAuth.region: us-east-1
-  runtime.endpoint.account.cors.allowedHeaders: "*"
+  runtime.endpoint.account.cors.allowedHeaders: '*'
   runtime.endpoint.account.cors.methods: GET, POST, PUT, DELETE
-  runtime.endpoint.account.cors.whiteList: https://evolution-cryptopay.dev.kube
-  runtime.endpoint.dashboard.cors.allowedHeaders: "*"
+  runtime.endpoint.account.cors.whiteList: https://evolution-cexiopay.dev.kube
+  runtime.endpoint.dashboard.cors.allowedHeaders: '*'
   runtime.endpoint.dashboard.cors.methods: GET, POST, PUT, DELETE
-  runtime.endpoint.dashboard.cors.whiteList: https://evolution-cryptopay.dev.kube
+  runtime.endpoint.dashboard.cors.whiteList: https://evolution-cexiopay.dev.kube
   runtime.endpoint.gatewayCallback.servers: sysadminSrv
   runtime.endpoint.gatewayUi.bindPath: /
-  runtime.endpoint.instrument.cors.allowedHeaders: "*"
+  runtime.endpoint.instrument.cors.allowedHeaders: '*'
   runtime.endpoint.instrument.cors.methods: GET, POST, PUT, DELETE
-  runtime.endpoint.instrument.cors.whiteList: https://evolution-cryptopay.dev.kube
-  runtime.endpoint.merchant.cors.allowedHeaders: "*"
+  runtime.endpoint.instrument.cors.whiteList: https://evolution-cexiopay.dev.kube
+  runtime.endpoint.merchant.cors.allowedHeaders: '*'
   runtime.endpoint.merchant.cors.methods: GET, POST, PUT, DELETE
-  runtime.endpoint.merchant.cors.whiteList: https://evolution-cryptopay.dev.kube
+  runtime.endpoint.merchant.cors.whiteList: https://evolution-cexiopay.dev.kube
   runtime.endpoint.monitoring-log-middleware.servers: monitoring pss-provider-wtf2-callbacks
-  runtime.endpoint.network.cors.allowedHeaders: "*"
+  runtime.endpoint.network.cors.allowedHeaders: '*'
   runtime.endpoint.network.cors.methods: GET, POST, PUT, DELETE
-  runtime.endpoint.network.cors.whiteList: https://evolution-cryptopay.dev.kube
-  runtime.endpoint.notification.cors.allowedHeaders: "*"
+  runtime.endpoint.network.cors.whiteList: https://evolution-cexiopay.dev.kube
+  runtime.endpoint.notification.cors.allowedHeaders: '*'
   runtime.endpoint.notification.cors.methods: GET, POST, PUT, DELETE
-  runtime.endpoint.notification.cors.whiteList: https://evolution-cryptopay.dev.kube
-  runtime.endpoint.order.cors.allowedHeaders: "*"
+  runtime.endpoint.notification.cors.whiteList: https://evolution-cexiopay.dev.kube
+  runtime.endpoint.order.cors.allowedHeaders: '*'
   runtime.endpoint.order.cors.methods: GET, POST, PUT, DELETE
-  runtime.endpoint.order.cors.whiteList: https://evolution-cryptopay.dev.kube
+  runtime.endpoint.order.cors.whiteList: https://evolution-cexiopay.dev.kube
   runtime.endpoint.order.servers: processingApiSrv sysadminSrv
-  runtime.endpoint.paymentGateway.cors.allowedHeaders: "*"
+  runtime.endpoint.paymentGateway.cors.allowedHeaders: '*'
   runtime.endpoint.paymentGateway.cors.methods: GET, POST, PUT, DELETE
-  runtime.endpoint.paymentGateway.cors.whiteList: https://evolution-cryptopay.dev.kube
-  runtime.endpoint.risk.cors.allowedHeaders: "*"
+  runtime.endpoint.paymentGateway.cors.whiteList: https://evolution-cexiopay.dev.kube
+  runtime.endpoint.risk.cors.allowedHeaders: '*'
   runtime.endpoint.risk.cors.methods: GET, POST, PUT, DELETE
-  runtime.endpoint.risk.cors.whiteList: https://evolution-cryptopay.dev.kube
+  runtime.endpoint.risk.cors.whiteList: https://evolution-cexiopay.dev.kube
   runtime.endpoint.swaggerUi.bindPath: /specs
   runtime.endpoint.swaggerUi.servers: evolutionSrv
   runtime.endpoint.swaggerUi.specs.Cryptopay: /v2/cryptopay.v2.oas3.yaml
   runtime.endpoint.swaggerUi.specs.Gateway: /gateway/gateway.v2.oas3.yaml
   runtime.endpoint.swaggerUi.specsExtendServer.evolution.description: Evolution Environment
-  runtime.endpoint.swaggerUi.specsExtendServer.evolution.url: https://evolution-cryptopay.dev.kube
+  runtime.endpoint.swaggerUi.specsExtendServer.evolution.url: https://evolution-cexiopay.dev.kube
   runtime.endpoint.swaggerUi.specsExtendServer_indexer: evolution
   runtime.endpoint.swaggerUi.type: swagger-ui
-  runtime.endpoint.time.cors.allowedHeaders: "*"
+  runtime.endpoint.time.cors.allowedHeaders: '*'
   runtime.endpoint.time.cors.methods: GET, POST, PUT, DELETE
-  runtime.endpoint.time.cors.whiteList: https://evolution-cryptopay.dev.kube
-  runtime.endpoint_indexer: account dashboard instrument internalInfo gateApi gateCallback merchant monitoring network notification order rate risk sysadmin swaggerUi time
+  runtime.endpoint.time.cors.whiteList: https://evolution-cexiopay.dev.kube
+  runtime.endpoint_indexer: account dashboard info instrument internalInfo gateApi gateCallback merchant monitoring network notification order rate risk sysadmin swaggerUi time
   runtime.gateway.CPService.url: http://127.0.0.1:8081
   runtime.notifier.subscriber.kind: web-socket-client
-  runtime.notifier.subscriber.url: ws://notifier.cryptopay-infra:8080/v2/callback/cryptoproviders/pss-provider-wtf2-subscriber/websockethost/maks4683-a00d-4269-b116-6959fb9ac889
+  runtime.notifier.subscriber.url: ws://notifier.cexiopay-infra:8080/v2/callback/cryptoproviders/pss-provider-wtf2-subscriber/websockethost/maks4683-a00d-4269-b116-6959fb9ac889
   runtime.pss.aggregator.url: https://pss-rpc.dev.kube/aggregator
   runtime.pss.cryptoWalletHelper.url: https://pss-rpc.dev.kube/cryptopay
-  runtime.pss.cryptopay.url: https://pss-rpc.dev.kube/cryptopay
+  runtime.pss.cexiopay.url: https://pss-rpc.dev.kube/cryptopay
   runtime.pss.es.url: https://pss-rpc.dev.kube/cryptopay
   runtime.server.evolutionSrv.clientCertificateMode: none
   runtime.server.evolutionSrv.listenHost: 0.0.0.0
   runtime.server.evolutionSrv.listenPort: "8083"
-  runtime.server.evolutionSrv.serverCertificate: /etc/cexiolabs/cryptopay/ssl/tls.crt
-  runtime.server.evolutionSrv.serverKey: /etc/cexiolabs/cryptopay/ssl/tls.key
+  runtime.server.evolutionSrv.serverCertificate: /etc/cexiolabs/cexiopay/ssl/tls.crt
+  runtime.server.evolutionSrv.serverKey: /etc/cexiolabs/cexiopay/ssl/tls.key
   runtime.server.evolutionSrv.trustProxy: "true"
   runtime.server.evolutionSrv.type: https
   runtime.server.sysadminSrv.clientCertificateMode: none
   runtime.server.sysadminSrv.listenHost: 0.0.0.0
-  runtime.server.sysadminSrv.serverCertificate: /etc/cexiolabs/cryptopay/ssl/tls.crt
-  runtime.server.sysadminSrv.serverKey: /etc/cexiolabs/cryptopay/ssl/tls.key
+  runtime.server.sysadminSrv.serverCertificate: /etc/cexiolabs/cexiopay/ssl/tls.crt
+  runtime.server.sysadminSrv.serverKey: /etc/cexiolabs/cexiopay/ssl/tls.key
   runtime.server.sysadminSrv.trustProxy: "true"
   runtime.server.sysadminSrv.type: https
-  runtime.server_indexer: dashboardApiSrv evolutionSrv gateApiSrv monitoringSrv processingApiSrv sysadminSrv
+  runtime.server_indexer: dashboardApiSrv evolutionSrv gateApiSrv monitoringSrv processingApiSrv
+    sysadminSrv
   runtime.wtf2pss.url: https://pss-provider-wtf2.dev.kube

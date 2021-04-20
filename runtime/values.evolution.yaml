@@ -2,38 +2,42 @@ environment: evolution
 
 application:
   api:
-    serviceImage: harbor.infra.kube/cryptopay/api/snapshot
+    serviceImage: harbor.infra.kube/cexiopay/api/snapshot
     env:
-      WTFProviderConfigurationFile: /etc/cexiolabs/cryptopay.api/legacy-cpservice-config/WTF-dev.json
+      WTFProviderConfigurationFile: /etc/cexiolabs/cexiopay.api/legacy-cpservice-config/WTF-dev.json
+    replicas: 1
   dashboard:
-    serviceImage: harbor.infra.kube/cryptopay/dashboard/snapshot
+    serviceImage: harbor.infra.kube/cexiopay/dashboard/snapshot
     replicas: 0
   dashboardobsolete:
-    serviceImage: devdocker.infra.kube/cryptopay/dashboard-backup-evolution
+    serviceImage: devdocker.infra.kube/cexiopay/dashboard-backup-evolution
+    replicas: 0
   demo:
     env:
       BASE_PATH: /widget-demo/
-      GATE_API_ORIGIN: https://cryptopay-processing:8080
+      GATE_API_ORIGIN: https://cexiopay-processing:8080
       GATE_ID: 09635610-6109-4179-833b-8675fa709d9b
-      GATE_URL: https://gate-evolution-cryptopay.dev.kube/widget
+      GATE_URL: https://gate-evolution-cexiopay.dev.kube/widget
       NODE_TLS_REJECT_UNAUTHORIZED: 0
+    replicas: 0
   identity:
-    serviceImage: harbor.infra.kube/cryptopay/identity/snapshot
+    serviceImage: devdocker.infra.kube/cexiopay/identity
     env:
-      Emailer__SendGrid__senderEmail: "no-reply@evolution-cryptopay-dev.band"
+      Emailer__SendGrid__senderEmail: "no-reply@evolution-cexiopay-dev.band"
+    replicas: 1
   processing:
     replicas: 0
-    serviceImage: devdocker.infra.kube/cryptopay/cpservice/snapshot
+    serviceImage: devdocker.infra.kube/cexiopay/cpservice/snapshot
     args:
       [
-        "--config-file=/etc/cexiolabs/cryptopay.processing/service.config",
-        "--config-toml-file=/etc/cexiolabs/cryptopay.processing/service.toml",
-        "--config-toml-file=/etc/cexiolabs/cryptopay.processing/service-setup.toml",
-        "--config-toml-file=/etc/cexiolabs/cryptopay.processing/service-setup-dach.toml",
-        "--config-toml-file=/etc/cexiolabs/cryptopay.processing/service-setup-goldenpay.toml",
-        "--config-toml-file=/etc/cexiolabs/cryptopay.processing/service-evolution.toml",
-        "--config-secrets-dir=/etc/cexiolabs/cryptopay/secrets",
-        "--config-secrets-dir=/etc/cexiolabs/cryptopay/secrets-setup",
+        "--config-file=/etc/cexiolabs/cexiopay.processing/service.config",
+        "--config-toml-file=/etc/cexiolabs/cexiopay.processing/service.toml",
+        "--config-toml-file=/etc/cexiolabs/cexiopay.processing/service-setup.toml",
+        "--config-toml-file=/etc/cexiolabs/cexiopay.processing/service-setup-dach.toml",
+        "--config-toml-file=/etc/cexiolabs/cexiopay.processing/service-setup-goldenpay.toml",
+        "--config-toml-file=/etc/cexiolabs/cexiopay.processing/service-evolution.toml",
+        "--config-secrets-dir=/etc/cexiolabs/cexiopay/secrets",
+        "--config-secrets-dir=/etc/cexiolabs/cexiopay/secrets-setup",
         "--config-env",
         "--runtime-gate-email-sender=nodemailer",
         "--runtime-use-notifier-service",
@@ -43,10 +47,11 @@ application:
       DEBUG_PORT: 9229
       DEBUG_WAIT: "no"
       LOG_LEVEL: "debug"
-      GATE_URL: https://gate-evolution-cryptopay.dev.kube/widget
+      GATE_URL: https://gate-evolution-cexiopay.dev.kube/widget
+    replicas: 0
 ingress:
   API:
-    domain: api-evolution-cryptopay.dev.kube
+    domain: api-evolution-cexiopay.dev.kube
     certSecretName: dev
     nginxConfigurationSnippet: |
       rewrite ^/$ /v2/time redirect;
@@ -58,14 +63,14 @@ ingress:
         backendServiceName: api
         backendServicePort: 8443
   Callbacks:
-    domain: callback-evolution-cryptopay.dev.kube
+    domain: callback-evolution-cexiopay.dev.kube
     certSecretName: dev
     paths:
       "/ws/":
         backendServiceName: processing
         backendServicePort: 8086
   Dashboard:
-    domain: dashboard-next-evolution-cryptopay.dev.kube
+    domain: dashboard-next-evolution-cexiopay.dev.kube
     backendInsecure: true
     nginxConfigurationSnippet: |
       add_header Last-Modified $date_gmt;
@@ -78,7 +83,7 @@ ingress:
         backendServiceName: dashboard
         backendServicePort: 8080
   DashboardObsolete:
-    domain: dashboard-evolution-cryptopay.dev.kube
+    domain: dashboard-evolution-cexiopay.dev.kube
     certSecretName: dev
     nginxConfigurationSnippet: |
       add_header Last-Modified $date_gmt;
@@ -94,14 +99,14 @@ ingress:
         backendServiceName: processing
         backendServicePort: 8082
   Echo:
-    domain: echo-evolution-cryptopay.dev.kube
+    domain: echo-evolution-cexiopay.dev.kube
     certSecretName: dev
     paths:
       "/":
         backendServiceName: echo
         backendServicePort: 8443
   Gate:
-    domain: gate-evolution-cryptopay.dev.kube
+    domain: gate-evolution-cexiopay.dev.kube
     certSecretName: dev
     nginxConfigurationSnippet: |
       add_header Last-Modified $date_gmt;
@@ -120,7 +125,7 @@ ingress:
         backendServiceName: processing
         backendServicePort: 8085
   Identity:
-    domain: id-evolution-cryptopay.dev.kube
+    domain: id-evolution-cexiopay.dev.kube
     certSecretName: dev
     paths:
       "/":
@@ -128,14 +133,14 @@ ingress:
         backendServicePort: 8443
   MessengerBridge:
     # THIS endpoint just for development purposes
-    domain: messengerbridge-evolution-cryptopay.dev.kube
+    domain: messengerbridge-evolution-cexiopay.dev.kube
     certSecretName: dev
     paths:
       "/":
         backendServiceName: messengerbridge
         backendServicePort: 8443
   Welcome:
-    domain: evolution-cryptopay.dev.kube
+    domain: evolution-cexiopay.dev.kube
     backendInsecure: true
     paths:
       "/":

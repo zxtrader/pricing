@@ -56,13 +56,13 @@ Helm3:1EVO:install:runtime:
     - verify_runtime_version_helm3
     - kube_config_setup
     - cd runtime
-    - helm --namespace "cryptopay-evolution" list
-    - helm --namespace "cryptopay-evolution" upgrade --install --history-max 3 --values "values-base.yaml" --values "values.evolution.yaml" "${RUNTIME_RELEASE}" .
-    - helm --namespace "cryptopay-evolution" history "${RUNTIME_RELEASE}" --max=3
+    - helm --namespace "cexiopay-evolution" list
+    - helm --namespace "cexiopay-evolution" upgrade --install --history-max 3 --values "values-base.yaml" --values "values.evolution.yaml" "${RUNTIME_RELEASE}" .
+    - helm --namespace "cexiopay-evolution" history "${RUNTIME_RELEASE}" --max=3
   when: manual
   environment:
     name: evolution
-    url: https://evolution-cryptopay.dev.kube
+    url: https://evolution-cexiopay.dev.kube
   only:
     refs:
       - tags
@@ -78,14 +78,14 @@ Helm3:1EVO:rollback:runtime:
     - verify_runtime_version_helm3
     - kube_config_setup
     - cd runtime
-    - helm --namespace "cryptopay-evolution" list
-    - helm --namespace "cryptopay-evolution" history "${RUNTIME_RELEASE}" --max=3
-    - helm --namespace "cryptopay-evolution" rollback --recreate-pods "${RUNTIME_RELEASE}" 0
-    - helm --namespace "cryptopay-evolution" history "${RUNTIME_RELEASE}" --max=3
+    - helm --namespace "cexiopay-evolution" list
+    - helm --namespace "cexiopay-evolution" history "${RUNTIME_RELEASE}" --max=3
+    - helm --namespace "cexiopay-evolution" rollback --recreate-pods "${RUNTIME_RELEASE}" 0
+    - helm --namespace "cexiopay-evolution" history "${RUNTIME_RELEASE}" --max=3
   when: manual
   environment:
     name: evolution
-    url: https://evolution-cryptopay.dev.kube
+    url: https://evolution-cexiopay.dev.kube
   only:
     refs:
       - tags
@@ -101,13 +101,13 @@ Helm3:1EVO:delete:runtime:
     - verify_runtime_version_helm3
     - kube_config_setup
     - cd runtime
-    - helm --namespace "cryptopay-evolution" list
-    - helm --namespace "cryptopay-evolution" history "${RUNTIME_RELEASE}" --max=3
-    - helm --namespace "cryptopay-evolution" uninstall  "${RUNTIME_RELEASE}"
+    - helm --namespace "cexiopay-evolution" list
+    - helm --namespace "cexiopay-evolution" history "${RUNTIME_RELEASE}" --max=3
+    - helm --namespace "cexiopay-evolution" uninstall  "${RUNTIME_RELEASE}"
   when: manual
   environment:
     name: evolution
-    url: https://evolution-cryptopay.dev.kube
+    url: https://evolution-cexiopay.dev.kube
   only:
     refs:
       - tags
@@ -123,13 +123,13 @@ Helm3:1EVO:delete:runtime:
 #     - verify_runtime_version_helm3
 #     - kube_config_setup
 #     - cd runtime
-#     - helm --namespace "cryptopay-presentation" list
-#     - helm --namespace "cryptopay-presentation" upgrade --install --history-max 3 --values "values-base.yaml" --values "values.presentation.yaml" "${RUNTIME_RELEASE}" .
-#     - helm --namespace "cryptopay-presentation" history "${RUNTIME_RELEASE}" --max=3
+#     - helm --namespace "cexiopay-presentation" list
+#     - helm --namespace "cexiopay-presentation" upgrade --install --history-max 3 --values "values-base.yaml" --values "values.presentation.yaml" "${RUNTIME_RELEASE}" .
+#     - helm --namespace "cexiopay-presentation" history "${RUNTIME_RELEASE}" --max=3
 #   when: manual
 #   environment:
 #     name: presentation
-#     url: https://presentation-cryptopay.dev.kube
+#     url: https://presentation-cexiopay.dev.kube
 #   only:
 #     refs:
 #       - tags
@@ -145,14 +145,14 @@ Helm3:1EVO:delete:runtime:
 #     - verify_runtime_version_helm3
 #     - kube_config_setup
 #     - cd runtime
-#     - helm --namespace "cryptopay-presentation" list
-#     - helm --namespace "cryptopay-presentation" history "${RUNTIME_RELEASE}" --max=3
-#     - helm --namespace "cryptopay-presentation" rollback --recreate-pods "${RUNTIME_RELEASE}" 0
-#     - helm --namespace "cryptopay-presentation" history "${RUNTIME_RELEASE}" --max=3
+#     - helm --namespace "cexiopay-presentation" list
+#     - helm --namespace "cexiopay-presentation" history "${RUNTIME_RELEASE}" --max=3
+#     - helm --namespace "cexiopay-presentation" rollback --recreate-pods "${RUNTIME_RELEASE}" 0
+#     - helm --namespace "cexiopay-presentation" history "${RUNTIME_RELEASE}" --max=3
 #   when: manual
 #   environment:
 #     name: presentation
-#     url: https://presentation-cryptopay.dev.kube
+#     url: https://presentation-cexiopay.dev.kube
 #   only:
 #     refs:
 #       - tags
@@ -168,13 +168,13 @@ Helm3:1EVO:delete:runtime:
 #     - verify_runtime_version_helm3
 #     - kube_config_setup
 #     - cd runtime
-#     - helm --namespace "cryptopay-presentation" list
-#     - helm --namespace "cryptopay-presentation" history "${RUNTIME_RELEASE}" --max=3
-#     - helm --namespace "cryptopay-presentation" uninstall  "${RUNTIME_RELEASE}"
+#     - helm --namespace "cexiopay-presentation" list
+#     - helm --namespace "cexiopay-presentation" history "${RUNTIME_RELEASE}" --max=3
+#     - helm --namespace "cexiopay-presentation" uninstall  "${RUNTIME_RELEASE}"
 #   when: manual
 #   environment:
 #     name: presentation
-#     url: https://presentation-cryptopay.dev.kube
+#     url: https://presentation-cexiopay.dev.kube
 #   only:
 #     refs:
 #       - tags
@@ -196,7 +196,7 @@ Helm3:1EVO:delete:runtime:
 #   when: manual
 #   environment:
 #     name: production
-#     url: https://cryptopay.band/
+#     url: https://pay-cex.io/
 #   tags:
 #     - crtpdpl
 #   only:
@@ -221,7 +221,7 @@ Helm3:1EVO:delete:runtime:
 #   when: manual
 #   environment:
 #     name: production
-#     url: https://cryptopay.band/
+#     url: https://pay-cex.io/
 #   tags:
 #     - crtpdpl
 #   only:
@@ -245,7 +245,7 @@ Helm3:1EVO:delete:runtime:
 #   when: manual
 #   environment:
 #     name: production
-#     url: https://cryptopay.band/
+#     url: https://pay-cex.io/
 #   tags:
 #     - crtpdpl
 #   only:
@@ -266,13 +266,13 @@ Helm3:1EVO:delete:runtime:
 #     - verify_runtime_version_helm2
 #     - kube_config_setup
 #     - cd runtime
-#     - helm --tiller-namespace "cryptopay-evolution" list
-#     - helm --tiller-namespace "cryptopay-evolution" upgrade --install --namespace "cryptopay-evolution"  --values "values-base.yaml" --values "values.evolution.yaml" "${RUNTIME_RELEASE}" .
-#     - helm --tiller-namespace "cryptopay-evolution" history "${RUNTIME_RELEASE}" --max=3
+#     - helm --tiller-namespace "cexiopay-evolution" list
+#     - helm --tiller-namespace "cexiopay-evolution" upgrade --install --namespace "cexiopay-evolution"  --values "values-base.yaml" --values "values.evolution.yaml" "${RUNTIME_RELEASE}" .
+#     - helm --tiller-namespace "cexiopay-evolution" history "${RUNTIME_RELEASE}" --max=3
 #   when: manual
 #   environment:
 #     name: evolution
-#     url: https://evolution-cryptopay.dev.kube
+#     url: https://evolution-cexiopay.dev.kube
 #   only:
 #     refs:
 #       - tags
@@ -288,14 +288,14 @@ Helm3:1EVO:delete:runtime:
 #     - verify_runtime_version_helm2
 #     - kube_config_setup
 #     - cd runtime
-#     - helm --tiller-namespace "cryptopay-evolution" list
-#     - helm --tiller-namespace "cryptopay-evolution" history "${RUNTIME_RELEASE}" --max=3
-#     - helm --tiller-namespace "cryptopay-evolution" rollback --recreate-pods "${RUNTIME_RELEASE}" 0
-#     - helm --tiller-namespace "cryptopay-evolution" history "${RUNTIME_RELEASE}" --max=3
+#     - helm --tiller-namespace "cexiopay-evolution" list
+#     - helm --tiller-namespace "cexiopay-evolution" history "${RUNTIME_RELEASE}" --max=3
+#     - helm --tiller-namespace "cexiopay-evolution" rollback --recreate-pods "${RUNTIME_RELEASE}" 0
+#     - helm --tiller-namespace "cexiopay-evolution" history "${RUNTIME_RELEASE}" --max=3
 #   when: manual
 #   environment:
 #     name: evolution
-#     url: https://evolution-cryptopay.dev.kube
+#     url: https://evolution-cexiopay.dev.kube
 #   only:
 #     refs:
 #       - tags
@@ -311,13 +311,13 @@ Helm3:1EVO:delete:runtime:
 #     - verify_runtime_version_helm2
 #     - kube_config_setup
 #     - cd runtime
-#     - helm --tiller-namespace "cryptopay-evolution" list
-#     - helm --tiller-namespace "cryptopay-evolution" history "${RUNTIME_RELEASE}" --max=3
-#     - helm --tiller-namespace "cryptopay-evolution" delete --purge "${RUNTIME_RELEASE}"
+#     - helm --tiller-namespace "cexiopay-evolution" list
+#     - helm --tiller-namespace "cexiopay-evolution" history "${RUNTIME_RELEASE}" --max=3
+#     - helm --tiller-namespace "cexiopay-evolution" delete --purge "${RUNTIME_RELEASE}"
 #   when: manual
 #   environment:
 #     name: evolution
-#     url: https://evolution-cryptopay.dev.kube
+#     url: https://evolution-cexiopay.dev.kube
 #   only:
 #     refs:
 #       - tags
@@ -333,13 +333,13 @@ Helm2:2PRSN:install:runtime:
     - verify_runtime_version_helm2
     - kube_config_setup
     - cd runtime
-    - helm --tiller-namespace "cryptopay-presentation" list
-    - helm --tiller-namespace "cryptopay-presentation" upgrade --install --namespace "cryptopay-presentation"  --values "values-base.yaml" --values "values.presentation.yaml" "${RUNTIME_RELEASE}" .
-    - helm --tiller-namespace "cryptopay-presentation" history "${RUNTIME_RELEASE}" --max=3
+    - helm --tiller-namespace "cexiopay-presentation" list
+    - helm --tiller-namespace "cexiopay-presentation" upgrade --install --namespace "cexiopay-presentation"  --values "values-base.yaml" --values "values.presentation.yaml" "${RUNTIME_RELEASE}" .
+    - helm --tiller-namespace "cexiopay-presentation" history "${RUNTIME_RELEASE}" --max=3
   when: manual
   environment:
     name: presentation
-    url: https://presentation-cryptopay.dev.kube
+    url: https://presentation-cexiopay.dev.kube
   only:
     refs:
       - tags
@@ -355,14 +355,14 @@ Helm2:2PRSN:rollback:runtime:
     - verify_runtime_version_helm2
     - kube_config_setup
     - cd runtime
-    - helm --tiller-namespace "cryptopay-presentation" list
-    - helm --tiller-namespace "cryptopay-presentation" history "${RUNTIME_RELEASE}" --max=3
-    - helm --tiller-namespace "cryptopay-presentation" rollback --recreate-pods "${RUNTIME_RELEASE}" 0
-    - helm --tiller-namespace "cryptopay-presentation" history "${RUNTIME_RELEASE}" --max=3
+    - helm --tiller-namespace "cexiopay-presentation" list
+    - helm --tiller-namespace "cexiopay-presentation" history "${RUNTIME_RELEASE}" --max=3
+    - helm --tiller-namespace "cexiopay-presentation" rollback --recreate-pods "${RUNTIME_RELEASE}" 0
+    - helm --tiller-namespace "cexiopay-presentation" history "${RUNTIME_RELEASE}" --max=3
   when: manual
   environment:
     name: presentation
-    url: https://presentation-cryptopay.dev.kube
+    url: https://presentation-cexiopay.dev.kube
   only:
     refs:
       - tags
@@ -378,13 +378,13 @@ Helm2:2PRSN:delete:runtime:
     - verify_runtime_version_helm2
     - kube_config_setup
     - cd runtime
-    - helm --tiller-namespace "cryptopay-presentation" list
-    - helm --tiller-namespace "cryptopay-presentation" history "${RUNTIME_RELEASE}" --max=3
-    - helm --tiller-namespace "cryptopay-presentation" delete --purge "${RUNTIME_RELEASE}"
+    - helm --tiller-namespace "cexiopay-presentation" list
+    - helm --tiller-namespace "cexiopay-presentation" history "${RUNTIME_RELEASE}" --max=3
+    - helm --tiller-namespace "cexiopay-presentation" delete --purge "${RUNTIME_RELEASE}"
   when: manual
   environment:
     name: presentation
-    url: https://presentation-cryptopay.dev.kube
+    url: https://presentation-cexiopay.dev.kube
   only:
     refs:
       - tags
@@ -406,7 +406,7 @@ Helm2:4PROD:install:runtime:
   when: manual
   environment:
     name: production
-    url: https://cryptopay.band/
+    url: https://pay-cex.io/
   tags:
     - crtpdpl
   only:
@@ -431,7 +431,7 @@ Helm2:4PROD:rollback:runtime:
   when: manual
   environment:
     name: production
-    url: https://cryptopay.band/
+    url: https://pay-cex.io/
   tags:
     - crtpdpl
   only:
@@ -455,7 +455,7 @@ Helm2:4PROD:delete:runtime:
   when: manual
   environment:
     name: production
-    url: https://cryptopay.band/
+    url: https://pay-cex.io/
   tags:
     - crtpdpl
   only:
@@ -479,11 +479,11 @@ devel-1EVO:install:db:
   script:
     - export KUBECONFIG=/tmp/.kube-config
     - echo "$KUBECONF_BASE64" | base64 -d > "${KUBECONFIG}"
-    - ./migration/migration-exec.sh --kube-context=evolution --image=devdocker.infra.kube/cryptopay/database-evolution --tag="$DEVEL_DB_IMAGE_TAG" --install
+    - ./migration/migration-exec.sh --kube-context=evolution --image=devdocker.infra.kube/cexiopay/database-evolution --tag="$DEVEL_DB_IMAGE_TAG" --install
   when: manual
   environment:
     name: evolution
-    url: https://evolution-cryptopay.dev.kube
+    url: https://evolution-cexiopay.dev.kube
   only:
     variables:
       - $DEVEL_DB_IMAGE_TAG
@@ -496,11 +496,11 @@ devel-1EVO:rollback:db:
   script:
     - export KUBECONFIG=/tmp/.kube-config
     - echo "$KUBECONF_BASE64" | base64 -d > "${KUBECONFIG}"
-    - ./migration/migration-exec.sh --kube-context=evolution --image=devdocker.infra.kube/cryptopay/database-evolution --tag="$DEVEL_DB_IMAGE_TAG" --rollback
+    - ./migration/migration-exec.sh --kube-context=evolution --image=devdocker.infra.kube/cexiopay/database-evolution --tag="$DEVEL_DB_IMAGE_TAG" --rollback
   when: manual
   environment:
     name: evolution
-    url: https://evolution-cryptopay.dev.kube
+    url: https://evolution-cexiopay.dev.kube
   only:
     variables:
       - $DEVEL_DB_IMAGE_TAG
@@ -513,11 +513,11 @@ devel-2PRSN:install:db:
   script:
     - export KUBECONFIG=/tmp/.kube-config
     - echo "$KUBECONF_BASE64" | base64 -d > "${KUBECONFIG}"
-    - ./migration/migration-exec.sh --kube-context=presentation --image=devdocker.infra.kube/cryptopay/database-presentation --tag="$DEVEL_DB_IMAGE_TAG" --install
+    - ./migration/migration-exec.sh --kube-context=presentation --image=devdocker.infra.kube/cexiopay/database-presentation --tag="$DEVEL_DB_IMAGE_TAG" --install
   when: manual
   environment:
     name: presentation
-    url: https://presentation-cryptopay.dev.kube
+    url: https://presentation-cexiopay.dev.kube
   only:
     variables:
       - $DEVEL_DB_IMAGE_TAG
@@ -530,11 +530,11 @@ devel-2PRSN:rollback:db:
   script:
     - export KUBECONFIG=/tmp/.kube-config
     - echo "$KUBECONF_BASE64" | base64 -d > "${KUBECONFIG}"
-    - ./migration/migration-exec.sh --kube-context=presentation --image=devdocker.infra.kube/cryptopay/database-presentation --tag="$DEVEL_DB_IMAGE_TAG" --rollback
+    - ./migration/migration-exec.sh --kube-context=presentation --image=devdocker.infra.kube/cexiopay/database-presentation --tag="$DEVEL_DB_IMAGE_TAG" --rollback
   when: manual
   environment:
     name: presentation
-    url: https://presentation-cryptopay.dev.kube
+    url: https://presentation-cexiopay.dev.kube
   only:
     variables:
       - $DEVEL_DB_IMAGE_TAG
@@ -552,11 +552,11 @@ devel-2PRSN:rollback:db:
   script:
     - export KUBECONFIG=/tmp/.kube-config
     - echo "$KUBECONF_BASE64" | base64 -d > "${KUBECONFIG}"
-    - ./migration/migration-exec.sh --kube-context=evolution --image=devdocker.infra.kube/cryptopay/database-evolution --tag="$(echo $CI_COMMIT_TAG | cut -d- -f1)" --install
+    - ./migration/migration-exec.sh --kube-context=evolution --image=devdocker.infra.kube/cexiopay/database-evolution --tag="$(echo $CI_COMMIT_TAG | cut -d- -f1)" --install
   when: manual
   environment:
     name: evolution
-    url: https://evolution-cryptopay.dev.kube
+    url: https://evolution-cexiopay.dev.kube
   only:
     refs:
       - tags
@@ -571,11 +571,11 @@ devel-2PRSN:rollback:db:
   script:
     - export KUBECONFIG=/tmp/.kube-config
     - echo "$KUBECONF_BASE64" | base64 -d > "${KUBECONFIG}"
-    - ./migration/migration-exec.sh --kube-context=evolution --image=devdocker.infra.kube/cryptopay/database-evolution --tag="$(echo $CI_COMMIT_TAG | cut -d- -f1)" --rollback
+    - ./migration/migration-exec.sh --kube-context=evolution --image=devdocker.infra.kube/cexiopay/database-evolution --tag="$(echo $CI_COMMIT_TAG | cut -d- -f1)" --rollback
   when: manual
   environment:
     name: evolution
-    url: https://evolution-cryptopay.dev.kube
+    url: https://evolution-cexiopay.dev.kube
   only:
     refs:
       - tags
@@ -590,11 +590,11 @@ devel-2PRSN:rollback:db:
   script:
     - export KUBECONFIG=/tmp/.kube-config
     - echo "$KUBECONF_BASE64" | base64 -d > "${KUBECONFIG}"
-    - ./migration/migration-exec.sh --kube-context=presentation --image=devdocker.infra.kube/cryptopay/database-presentation --tag="$(echo $CI_COMMIT_TAG | cut -d- -f1)" --install
+    - ./migration/migration-exec.sh --kube-context=presentation --image=devdocker.infra.kube/cexiopay/database-presentation --tag="$(echo $CI_COMMIT_TAG | cut -d- -f1)" --install
   when: manual
   environment:
     name: presentation
-    url: https://presentation-cryptopay.dev.kube
+    url: https://presentation-cexiopay.dev.kube
   only:
     refs:
       - tags
@@ -609,11 +609,11 @@ devel-2PRSN:rollback:db:
   script:
     - export KUBECONFIG=/tmp/.kube-config
     - echo "$KUBECONF_BASE64" | base64 -d > "${KUBECONFIG}"
-    - ./migration/migration-exec.sh --kube-context=presentation --image=devdocker.infra.kube/cryptopay/database-presentation --tag="$(echo $CI_COMMIT_TAG | cut -d- -f1)" --rollback
+    - ./migration/migration-exec.sh --kube-context=presentation --image=devdocker.infra.kube/cexiopay/database-presentation --tag="$(echo $CI_COMMIT_TAG | cut -d- -f1)" --rollback
   when: manual
   environment:
     name: presentation
-    url: https://presentation-cryptopay.dev.kube
+    url: https://presentation-cexiopay.dev.kube
   only:
     refs:
       - tags
@@ -628,11 +628,11 @@ devel-2PRSN:rollback:db:
 #   script:
 #     - export KUBECONFIG=/tmp/.kube-config
 #     - echo "$KUBECONF_BASE64" | base64 -d > "${KUBECONFIG}"
-#     - ./migration/migration-exec.sh --kube-context=preproduction --image=devdocker.infra.kube/cryptopay/database-preproduction --tag="$(echo $CI_COMMIT_TAG | cut -d- -f1)" --install
+#     - ./migration/migration-exec.sh --kube-context=preproduction --image=devdocker.infra.kube/cexiopay/database-preproduction --tag="$(echo $CI_COMMIT_TAG | cut -d- -f1)" --install
 #   when: manual
 #   environment:
 #     name: preproduction
-#     url: https://preproduction-cryptopay.dev.kube
+#     url: https://preproduction-cexiopay.dev.kube
 #   only:
 #     refs:
 #       - tags
@@ -647,11 +647,11 @@ devel-2PRSN:rollback:db:
 #   script:
 #     - export KUBECONFIG=/tmp/.kube-config
 #     - echo "$KUBECONF_BASE64" | base64 -d > "${KUBECONFIG}"
-#     - ./migration/migration-exec.sh --kube-context=preproduction --image=devdocker.infra.kube/cryptopay/database-preproduction --tag="$(echo $CI_COMMIT_TAG | cut -d- -f1)" --rollback
+#     - ./migration/migration-exec.sh --kube-context=preproduction --image=devdocker.infra.kube/cexiopay/database-preproduction --tag="$(echo $CI_COMMIT_TAG | cut -d- -f1)" --rollback
 #   when: manual
 #   environment:
 #     name: preproduction
-#     url: https://preproduction-cryptopay.dev.kube
+#     url: https://preproduction-cexiopay.dev.kube
 #   only:
 #     refs:
 #       - tags
@@ -666,11 +666,11 @@ devel-2PRSN:rollback:db:
   script:
     - export KUBECONFIG=/tmp/.kube-config
     - echo "$KUBECONF_BASE64" | base64 -d > "${KUBECONFIG}"
-    - ./migration/migration-exec.sh --kube-context=prod --kube-namespace=cryptopay --image=harbor.infra.kube/cryptopay/database-production --tag="$(echo $CI_COMMIT_TAG | cut -d- -f1)" --install
+    - ./migration/migration-exec.sh --kube-context=prod --kube-namespace=cryptopay --image=harbor.infra.kube/cexiopay/database-production --tag="$(echo $CI_COMMIT_TAG | cut -d- -f1)" --install
   when: manual
   environment:
     name: production
-    url: https://cryptopay.band/
+    url: https://cexiopay.band/
   tags:
     - crtpdpl
   only:
@@ -687,11 +687,11 @@ devel-2PRSN:rollback:db:
   script:
     - export KUBECONFIG=/tmp/.kube-config
     - echo "$KUBECONF_BASE64" | base64 -d > "${KUBECONFIG}"
-    - ./migration/migration-exec.sh --kube-context=prod --kube-namespace=cryptopay --image=harbor.infra.kube/cryptopay/database-production --tag="$(echo $CI_COMMIT_TAG | cut -d- -f1)" --rollback
+    - ./migration/migration-exec.sh --kube-context=prod --kube-namespace=cryptopay --image=harbor.infra.kube/cexiopay/database-production --tag="$(echo $CI_COMMIT_TAG | cut -d- -f1)" --rollback
   when: manual
   environment:
     name: production
-    url: https://cryptopay.band/
+    url: https://pay-cex.io/
   tags:
     - crtpdpl
   only:

@@ -1,7 +1,7 @@
 {{ if or (eq .Values.environment "evolution") (eq .Values.environment "presentation") }}
 # In prodution "dashboard" is hosted on GitHub Pages:
-# - https://github.com/cexiolabs/cryptopay.dashboard
-# - https://github.com/cexiolabs/cryptopay.dashboard-next
+# - https://github.com/cexiolabs/cexiopay.dashboard
+# - https://github.com/cexiolabs/cexiopay.dashboard-next
 apiVersion: v1
 kind: Service
 metadata:
