@@ -1,0 +1,522 @@
+apiVersion: v1
+items:
+- apiVersion: v1
+  data:
+    Aggregator-dev.json: "{\n\t\"user\": {\n\t\t\"username\": \"Processing-Service_1\",\n\t\t\"password\":
+      \"PS_VCJ13hr7WBh*R\"\n\t},\n\t\"external\": {\n\t\t\"rejectUnauthorized\": false,\n\t\t\"url\":
+      \"https://pss-rpc.dev.kube/aggregator\",\n\t\t\"instrumentId\": \"aggregatorcex\",\n\t\t\"provider\":
+      \"aggregator\",\n\t\t\"ipAddress\": \"172.16.50.251\",\n\t\t\"mid\": \"cex\",\n\t\t\"accountId\":
+      \"\",\n\t\t\"encryption_key\": \"31sFfA3SsZgRsfGJ23ggDsdG43ag2f5fds\",\n\t\t\"merchant_user\":
+      {\n\t\t\t\"DACH:d092d750\": \"ud200659094\",\n\t\t\t\"DACH:c69ae511\": \"ud200659094\"\n\t\t},\n\t\t\"signFields\":
+      {\n\t\t\t\"basesign\": [\n\t\t\t\t\"mid\",\n\t\t\t\t\"userId\",\n\t\t\t\t\"action\",\n\t\t\t\t\"timestamp\"\n\t\t\t]\n\t\t},\n\t\t\"actions\":
+      {\n\t\t\t\"WITHDRAWAL\": \"withdrawal\",\n\t\t\t\"DEPOSIT\": \"deposit\"\n\t\t}\n\t},\n\t\"client\":
+      {\n\t\t\"rejectUnauthorized\": false,\n\t\t\"url\": \"https://aggregatorprovider:55040\",\n\t\t\"description\":
+      \"Dev application aggregator\",\n\t\t\"client_id\": \"CP-PROC-2366f30b-b8f1-46ac-a4dd-3070ac28034a\",\n\t\t\"client_secret\":
+      \"CP-PROC-1577296977000-5721904a-6003-402e-bbd0-27c890856998\",\n\t\t\"encryption_key\":
+      \"testAggr_Goo23-dF22\",\n\t\t\"endpoints\": {\n\t\t\t\"oauth\": \"/v1/oauth/token\",\n\t\t\t\"getRate\":
+      \"/v1/rates\",\n\t\t\t\"getOrderByInvoice\": \"/v1/orders\",\n\t\t\t\"createOrderByInvoice\":
+      \"/v1/orders\"\n\t\t},\n\t\t\"signFields\": {\n\t\t\t\"oauth\": {\n\t\t\t\t\"password\":
+      [\n\t\t\t\t\t\"password\",\n\t\t\t\t\t\"client_secret\",\n\t\t\t\t\t\"timestamp\"\n\t\t\t\t],\n\t\t\t\t\"refresh_token\":
+      [\n\t\t\t\t\t\"refresh_token\",\n\t\t\t\t\t\"client_secret\",\n\t\t\t\t\t\"timestamp\"\n\t\t\t\t]\n\t\t\t},\n\t\t\t\"create_order\":
+      [\n\t\t\t\t\"invoiceId\",\n\t\t\t\t\"amountFrom\",\n\t\t\t\t\"timestamp\"\n\t\t\t]\n\t\t}\n\t}\n}"
+    ES-dev.json: "{\n\t\"user\": {\n\t\t\"username\": \"\",\n\t\t\"password\": \"\"\n\t},\n\t\"external\":
+      {\n\t\t\"rejectUnauthorized\": false,\n\t\t\"url\": \"https://pss-rpc.dev.kube/cryptopay\",\n\t\t\"instrumentId\":
+      \"cpcrypto\",\n\t\t\"encryption_key\": \"\",\n\t\t\"signFields\": {},\n\t\t\"actions\":
+      {\n\t\t\t\"HASH\": \"runDepositFlow\",\n\t\t\t\"ADDRESS\": \"runRefundFlow\"\n\t\t}\n\t},\n\t\"client\":
+      {\n\t\t\"rejectUnauthorized\": false,\n\t\t\"url\": \"\",\n\t\t\"description\":
+      \"ES provider\",\n\t\t\"client_id\": \"\",\n\t\t\"client_secret\": \"\",\n\t\t\"encryption_key\":
+      \"\",\n\t\t\"endpoints\": {},\n\t\t\"signFields\": {}\n\t}\n}"
+    PSSAccount-dev.json: "{\n\t\"user\": {\n\t\t\"username\": \"\",\n\t\t\"password\":
+      \"\"\n\t},\n\t\"external\": {\n\t\t\"rejectUnauthorized\": false,\n\t\t\"url\":
+      \"https://pss-rpc.dev.kube/cryptopay\",\n\t\t\"instrumentId\": \"cpcrypto\",\n\t\t\"merchant_user\":
+      {\n\t\t\t\"DACH:d092d750\": \"ud200659094\",\n\t\t\t\"DACH:c69ae511\": \"ud200659094\",\n\t\t\t\"TRANSFER:d092d750\":
+      \"ud200659094\",\n\t\t\t\"TRANSFER:c69ae511\": \"ud200659094\"\n\t\t},\n\t\t\"encryption_key\":
+      \"$2b$10$X9LnrTf5bqARzd0BHdtlYe4cyf3.TSXDJcPHEqOuYCUtC14Q.rsFO\",\n\t\t\"signFields\":
+      {\n\t\t\t\"basesign\": [\n\t\t\t\t\"mid\",\n\t\t\t\t\"userId\",\n\t\t\t\t\"action\",\n\t\t\t\t\"timestamp\"\n\t\t\t]\n\t\t},\n\t\t\"actions\":
+      {\n\t\t\t\"DEPOSIT\": \"deposit\",\n\t\t\t\"WITHDRAWAL\": \"withdrawal\",\n\t\t\t\"WITHDRAWAL_TO_EXCHANGE\":
+      \"withdrawalToExchange\",\n\t\t\t\"DEPOSIT_FROM_EXCHANGE\": \"depositFromExchange\",\n\t\t\t\"HOT_WALLET_TRANSFER\":
+      \"hotWalletTransfer\"\n\t\t}\n\t},\n\t\"client\": {\n\t\t\"rejectUnauthorized\":
+      false,\n\t\t\"url\": \"\",\n\t\t\"description\": \"ES provider\",\n\t\t\"client_id\":
+      \"\",\n\t\t\"client_secret\": \"\",\n\t\t\"encryption_key\": \"\",\n\t\t\"endpoints\":
+      {},\n\t\t\"signFields\": {}\n\t}\n}"
+    WTF-dev.json: "{\n\t\"user\": {\n\t\t\"username\": \"Processing-Service_2\",\n\t\t\"password\":
+      \"PS_VCJ112c=b3hr7WBh*R\"\n\t},\n\t\"client\": {\n\t\t\"rejectUnauthorized\":
+      false,\n\t\t\"url\": \"https://wtfcryptoprovider:55060\",\n\t\t\"description\":
+      \"Dev application DACH\",\n\t\t\"client_id\": \"CP-PROC-eea4f2ef-b29c-4b78-8f62-87e58c389265\",\n\t\t\"client_secret\":
+      \"CP-PROC-1550494940424-0fe70109-e4d0-45cf-bca3-fa727890ab48\",\n\t\t\"encryption_key\":
+      \"cpWtf_Goof23-dF122\",\n\t\t\"endpoints\": {\n\t\t\t\"oauth\": \"/v1/oauth/token\",\n\t\t\t\"address\":
+      \"/v1/addresses\",\n\t\t\t\"create\": \"/v1/operations\",\n\t\t\t\"validate\":
+      \"/v1/addresses/validator\",\n\t\t\t\"getOperationByInvoice\": \"/v1/operations\"\n\t\t},\n\t\t\"signFields\":
+      {\n\t\t\t\"oauth\": {\n\t\t\t\t\"password\": [\n\t\t\t\t\t\"password\",\n\t\t\t\t\t\"client_secret\",\n\t\t\t\t\t\"timestamp\"\n\t\t\t\t],\n\t\t\t\t\"refresh_token\":
+      [\n\t\t\t\t\t\"refresh_token\",\n\t\t\t\t\t\"client_secret\",\n\t\t\t\t\t\"timestamp\"\n\t\t\t\t]\n\t\t\t},\n\t\t\t\"address\":
+      [\n\t\t\t\t\"invoiceId\",\n\t\t\t\t\"currency\",\n\t\t\t\t\"timestamp\"\n\t\t\t],\n\t\t\t\"create\":
+      [\n\t\t\t\t\"invoiceId\",\n\t\t\t\t\"currency\",\n\t\t\t\t\"address\",\n\t\t\t\t\"amount\",\n\t\t\t\t\"timestamp\"\n\t\t\t]\n\t\t}\n\t}\n}"
+    dev.json: "{\n\t\"appConfig\": {\n\t\t\"cors\": {\n\t\t\t\"methods\": [\n\t\t\t\t\"POST\",\n\t\t\t\t\"PUT\",\n\t\t\t\t\"GET\"\n\t\t\t],\n\t\t\t\"whiteList\":
+      [\n\t\t\t\t\"https://nplus.ecommpay.com/dach/callbacks/invoice\"\n\t\t\t],\n\t\t\t\"allowedHeaders\":
+      [\n\t\t\t\t\"Content-Type\",\n\t\t\t\t\"Authorization\"\n\t\t\t]\n\t\t},\n\t\t\"ssl\":
+      {\n\t\t\t\"enable\": true,\n\t\t\t\"sslKey\": \"/app/config/ssl/tls.key\",\n\t\t\t\"sslCert\":
+      \"/app/config/ssl/tls.crt\"\n\t\t},\n\t\t\"port\": 55020\n\t},\n\t\"mqConfig\":
+      {\n\t\t\"url\": \"RMQ_URL\"\n\t},\n\t\"reqConfig\": {\n\t\t\"aggr\": {\n\t\t\t\"url\":
+      \"https://aggr.cps.cex.io/\",\n\t\t\t\"ssl\": {\n\t\t\t\t\"enable\": false,\n\t\t\t\t\"clientKey\":
+      \"<<PATH TO CLIENT KEY>>\",\n\t\t\t\t\"clientCert\": \"<<PATH TO CLIENT CERTIFICATE>>\"\n\t\t\t}\n\t\t},\n\t\t\"wtf\":
+      {\n\t\t\t\"url\": \"https://wtf.cps.cex.io/\",\n\t\t\t\"ssl\": {\n\t\t\t\t\"enable\":
+      false,\n\t\t\t\t\"clientKey\": \"<<PATH TO CLIENT KEY>>\",\n\t\t\t\t\"clientCert\":
+      \"<<PATH TO CLIENT CERTIFICATE>>\"\n\t\t\t}\n\t\t}\n\t},\n\t\"postgresConfig\":
+      {\n\t\t\"url\": \"POSTGRES_URL\",\n\t\t\"dialect\": \"postgres\",\n\t\t\"logging\":
+      false,\n\t\t\"define\": {\n\t\t\t\"underscored\": true,\n\t\t\t\"freezeTableName\":
+      true\n\t\t}\n\t},\n\t\"redisConfig\": {\n\t\t\"url\": \"REDIS_URL\"\n\t},\n\t\"dbConfig\":
+      {\n\t\t\"authorization\": {\n\t\t\t\"users\": [\n\t\t\t\t{\n\t\t\t\t\t\"id\":
+      \"3f4159fd-0163-4a78-9385-ce8725f58fa0\",\n\t\t\t\t\t\"username\": \"Back_CEX_Dev1\",\n\t\t\t\t\t\"merchant_id\":
+      1,\n\t\t\t\t\t\"password\": \"@NMJ8+pVZYM!x4Ty\",\n\t\t\t\t\t\"name\": \"Full
+      dev data tester\",\n\t\t\t\t\t\"scope\": [\n\t\t\t\t\t\t\"add_commission\",\n\t\t\t\t\t\t\"get_commission\",\n\t\t\t\t\t\t\"update_commission\",\n\t\t\t\t\t\t\"add_currency\",\n\t\t\t\t\t\t\"update_currency\",\n\t\t\t\t\t\t\"get_currency\",\n\t\t\t\t\t\t\"get_invoice\",\n\t\t\t\t\t\t\"get_invoice_by_id\",\n\t\t\t\t\t\t\"get_invoice_by_id_full\",\n\t\t\t\t\t\t\"add_invoice\",\n\t\t\t\t\t\t\"update_invoice_merchant\",\n\t\t\t\t\t\t\"get_instrument\",\n\t\t\t\t\t\t\"add_instrument\",\n\t\t\t\t\t\t\"update_instrument\",\n\t\t\t\t\t\t\"get_instrument_by_id\",\n\t\t\t\t\t\t\"get_invoice_state\",\n\t\t\t\t\t\t\"get_invoice_status\",\n\t\t\t\t\t\t\"get_merchant_site\",\n\t\t\t\t\t\t\"add_invoice_state\",\n\t\t\t\t\t\t\"add_invoice_status\",\n\t\t\t\t\t\t\"add_merchant_site\",\n\t\t\t\t\t\t\"update_invoice_state\",\n\t\t\t\t\t\t\"update_invoice_status\",\n\t\t\t\t\t\t\"update_merchant_site\",\n\t\t\t\t\t\t\"get_merchant_site_by_id\",\n\t\t\t\t\t\t\"get_merchant\",\n\t\t\t\t\t\t\"get_merchant_by_id\",\n\t\t\t\t\t\t\"add_merchant\",\n\t\t\t\t\t\t\"update_merchant\",\n\t\t\t\t\t\t\"get_limit\",\n\t\t\t\t\t\t\"get_limit_by_id\",\n\t\t\t\t\t\t\"add_limit\",\n\t\t\t\t\t\t\"update_limit\",\n\t\t\t\t\t\t\"get_provider\",\n\t\t\t\t\t\t\"get_provider_by_id\",\n\t\t\t\t\t\t\"add_provider\",\n\t\t\t\t\t\t\"update_provider\",\n\t\t\t\t\t\t\"get_aggregator\",\n\t\t\t\t\t\t\"get_aggregator_by_id\",\n\t\t\t\t\t\t\"add_aggregator\",\n\t\t\t\t\t\t\"update_aggregator\",\n\t\t\t\t\t\t\"get_limit_type\",\n\t\t\t\t\t\t\"add_limit_type\",\n\t\t\t\t\t\t\"update_limit_type\",\n\t\t\t\t\t\t\"get_limit_dimension_type\",\n\t\t\t\t\t\t\"add_limit_dimension_type\",\n\t\t\t\t\t\t\"update_limit_dimension_type\",\n\t\t\t\t\t\t\"invoice_data_merchant\",\n\t\t\t\t\t\t\"invoice_data_full_developer\",\n\t\t\t\t\t\t\"all_invoices_back_office_full\"\n\t\t\t\t\t],\n\t\t\t\t\t\"status\":
+      \"enable\",\n\t\t\t\t\t\"client_id\": \"CPS-944699f8-f780-41eb-afa8-1047e2663e08\"\n\t\t\t\t},\n\t\t\t\t{\n\t\t\t\t\t\"id\":
+      \"25e0c2e6-7918-478d-ba38-2559f9612fa8\",\n\t\t\t\t\t\"merchant_id\": 1,\n\t\t\t\t\t\"username\":
+      \"B2B_DACH_User1\",\n\t\t\t\t\t\"password\": \"WJs&GKJ?p8-9GAXQ\",\n\t\t\t\t\t\"name\":
+      \"App B2B Dach user\",\n\t\t\t\t\t\"scope\": [\n\t\t\t\t\t\t\"add_invoice\",\n\t\t\t\t\t\t\"get_invoice\",\n\t\t\t\t\t\t\"get_invoice_by_id\",\n\t\t\t\t\t\t\"get_instrument\",\n\t\t\t\t\t\t\"update_invoice_merchant\",\n\t\t\t\t\t\t\"invoice_data_merchant\",\n\t\t\t\t\t\t\"all_invoices_merchant\"\n\t\t\t\t\t],\n\t\t\t\t\t\"status\":
+      \"enable\",\n\t\t\t\t\t\"client_id\": \"CPS-944699f8-f780-41eb-afa8-1047e2663e08\"\n\t\t\t\t},\n\t\t\t\t{\n\t\t\t\t\t\"id\":
+      \"f6c78ba7-0345-4de3-8de7-42c225b4b709\",\n\t\t\t\t\t\"merchant_id\": 1,\n\t\t\t\t\t\"username\":
+      \"B2B_DACH_User2_Finance\",\n\t\t\t\t\t\"password\": \"cMu8ti2V4Omf0udB\",\n\t\t\t\t\t\"name\":
+      \"App B2B Dach user finance\",\n\t\t\t\t\t\"scope\": [\n\t\t\t\t\t\t\"get_invoice\",\n\t\t\t\t\t\t\"get_invoice_by_id\",\n\t\t\t\t\t\t\"invoice_data_merchant\",\n\t\t\t\t\t\t\"all_invoices_merchant\"\n\t\t\t\t\t],\n\t\t\t\t\t\"status\":
+      \"enable\",\n\t\t\t\t\t\"client_id\": \"CPS-944699f8-f780-41eb-afa8-1047e2663e08\"\n\t\t\t\t},\n\t\t\t\t{\n\t\t\t\t\t\"id\":
+      \"8fa7f83e-6599-4fc7-9e36-8bfa62d93552\",\n\t\t\t\t\t\"merchant_id\": 1,\n\t\t\t\t\t\"username\":
+      \"Back_DACH_Comp1\",\n\t\t\t\t\t\"password\": \"36Q*3CXV$A_pCXu+\",\n\t\t\t\t\t\"name\":
+      \"App Back Office Dach compliance 1\",\n\t\t\t\t\t\"scope\": [\n\t\t\t\t\t\t\"get_invoice\",\n\t\t\t\t\t\t\"get_invoice_by_id\",\n\t\t\t\t\t\t\"get_invoice_by_id_full\",\n\t\t\t\t\t\t\"get_instrument\",\n\t\t\t\t\t\t\"get_invoice_state\",\n\t\t\t\t\t\t\"get_invoice_status\",\n\t\t\t\t\t\t\"get_merchant_site\",\n\t\t\t\t\t\t\"invoice_data_full_external\",\n\t\t\t\t\t\t\"all_invoices_back_office_external\",\n\t\t\t\t\t\t\"get_currency\"\n\t\t\t\t\t],\n\t\t\t\t\t\"status\":
+      \"enable\",\n\t\t\t\t\t\"client_id\": \"CPS-c3921aec-4fc4-463c-b874-765dc8e2e5ae\"\n\t\t\t\t},\n\t\t\t\t{\n\t\t\t\t\t\"id\":
+      \"2394ec7d-030c-401e-a3fc-8716ec9a4121\",\n\t\t\t\t\t\"merchant_id_\": \"*\",\n\t\t\t\t\t\"username\":
+      \"Back_CEX_Dev3\",\n\t\t\t\t\t\"password\": \"TIUbjMp80yLl0FGs\",\n\t\t\t\t\t\"name\":
+      \"App Back Office Cex Developer\",\n\t\t\t\t\t\"scope\": [\n\t\t\t\t\t\t\"get_invoice\",\n\t\t\t\t\t\t\"get_invoice_by_id\",\n\t\t\t\t\t\t\"get_invoice_by_id_full\",\n\t\t\t\t\t\t\"get_instrument\",\n\t\t\t\t\t\t\"get_invoice_state\",\n\t\t\t\t\t\t\"get_invoice_status\",\n\t\t\t\t\t\t\"get_merchant_site\",\n\t\t\t\t\t\t\"invoice_data_full_developer\",\n\t\t\t\t\t\t\"all_invoices_back_office_full\",\n\t\t\t\t\t\t\"invoice_data_merchant\",\n\t\t\t\t\t\t\"get_currency\",\n\t\t\t\t\t\t\"add_currency\",\n\t\t\t\t\t\t\"update_instrument\",\n\t\t\t\t\t\t\"add_instrument\",\n\t\t\t\t\t\t\"add_merchant_site\",\n\t\t\t\t\t\t\"update_merchant_site\",\n\t\t\t\t\t\t\"add_commission\",\n\t\t\t\t\t\t\"get_commission\",\n\t\t\t\t\t\t\"add_limit\",\n\t\t\t\t\t\t\"get_limit\",\n\t\t\t\t\t\t\"get_limit_by_id\"\n\t\t\t\t\t],\n\t\t\t\t\t\"status\":
+      \"enable\",\n\t\t\t\t\t\"client_id\": \"CPS-c3921aec-4fc4-463c-b874-765dc8e2e5ae\"\n\t\t\t\t},\n\t\t\t\t{\n\t\t\t\t\t\"id\":
+      \"8fa7f83e-6599-4fc7-9e36-8bfa62d977ba\",\n\t\t\t\t\t\"merchant_id\": 2,\n\t\t\t\t\t\"username\":
+      \"Back_TRANSFER_Comp1\",\n\t\t\t\t\t\"password\": \"36Q*3CXV$A_Ab12\",\n\t\t\t\t\t\"name\":
+      \"App Back Office Dach compliance 1\",\n\t\t\t\t\t\"scope\": [\n\t\t\t\t\t\t\"get_invoice\",\n\t\t\t\t\t\t\"get_invoice_by_id\",\n\t\t\t\t\t\t\"get_invoice_by_id_full\",\n\t\t\t\t\t\t\"get_instrument\",\n\t\t\t\t\t\t\"get_invoice_state\",\n\t\t\t\t\t\t\"get_invoice_status\",\n\t\t\t\t\t\t\"get_merchant_site\",\n\t\t\t\t\t\t\"invoice_data_full_external\",\n\t\t\t\t\t\t\"all_invoices_back_office\",\n\t\t\t\t\t\t\"get_currency\"\n\t\t\t\t\t],\n\t\t\t\t\t\"status\":
+      \"enable\",\n\t\t\t\t\t\"client_id\": \"CPS-c3921aec-4fc4-463c-b874-765dc8e2e5ae\"\n\t\t\t\t},\n\t\t\t\t{\n\t\t\t\t\t\"id\":
+      \"f3a7bae9-fdbf-4475-8416-e34666a50b52\",\n\t\t\t\t\t\"merchant_id\": 1,\n\t\t\t\t\t\"username\":
+      \"Back_DACH_Comp2\",\n\t\t\t\t\t\"password\": \"f3b$*U34xqdhRDTX\",\n\t\t\t\t\t\"name\":
+      \"App Back Office Dach compliance 2\",\n\t\t\t\t\t\"scope\": [\n\t\t\t\t\t\t\"get_invoice\",\n\t\t\t\t\t\t\"get_invoice_by_id\",\n\t\t\t\t\t\t\"get_invoice_by_id_full\",\n\t\t\t\t\t\t\"get_instrument\",\n\t\t\t\t\t\t\"get_invoice_state\",\n\t\t\t\t\t\t\"get_invoice_status\",\n\t\t\t\t\t\t\"get_merchant_site\",\n\t\t\t\t\t\t\"invoice_data_full_external\",\n\t\t\t\t\t\t\"all_invoices_back_office\",\n\t\t\t\t\t\t\"get_currency\"\n\t\t\t\t\t],\n\t\t\t\t\t\"status\":
+      \"enable\",\n\t\t\t\t\t\"client_id\": \"CPS-c3921aec-4fc4-463c-b874-765dc8e2e5ae\"\n\t\t\t\t},\n\t\t\t\t{\n\t\t\t\t\t\"id\":
+      \"ec0a6b19-146c-4284-b7de-d9b1f44846d2\",\n\t\t\t\t\t\"aggregator_id\": 1,\n\t\t\t\t\t\"username\":
+      \"C2C_Callback_Aggr1\",\n\t\t\t\t\t\"password\": \"mCWePZ2$7s+v88*r\",\n\t\t\t\t\t\"name\":
+      \"App aggregator\",\n\t\t\t\t\t\"scope\": [\n\t\t\t\t\t\t\"callback_aggregator\"\n\t\t\t\t\t],\n\t\t\t\t\t\"status\":
+      \"enable\",\n\t\t\t\t\t\"client_id\": \"CPS-43977f4e-7e91-4951-b7a8-4d6be605b475\"\n\t\t\t\t},\n\t\t\t\t{\n\t\t\t\t\t\"id\":
+      \"d503de44-3a4e-4f05-8f40-2b5a8c528cb4\",\n\t\t\t\t\t\"provider_id\": 1,\n\t\t\t\t\t\"username\":
+      \"C2C_Callback_Provider1\",\n\t\t\t\t\t\"password\": \"7qNzQ9#$5f7WsAz2\",\n\t\t\t\t\t\"name\":
+      \"App provider\",\n\t\t\t\t\t\"scope\": [\n\t\t\t\t\t\t\"callback_provider\"\n\t\t\t\t\t],\n\t\t\t\t\t\"status\":
+      \"enable\",\n\t\t\t\t\t\"client_id\": \"CPS-f1093ab5-0fa5-4cbf-9a4c-ffdb83274963\"\n\t\t\t\t}\n\t\t\t],\n\t\t\t\"apps\":
+      [\n\t\t\t\t{\n\t\t\t\t\t\"provider_id\": 1,\n\t\t\t\t\t\"description\": \"Dev
+      application provider\",\n\t\t\t\t\t\"client_id\": \"CPS-f1093ab5-0fa5-4cbf-9a4c-ffdb83274963\",\n\t\t\t\t\t\"client_secret\":
+      \"CPS-1550508666000-d85eccf7-19c4-4d1c-87ae-ba1fcb0f7e10\",\n\t\t\t\t\t\"encryption_key\":
+      \"CPS5e21375dcf17612a4d073d625bd7ca249a4735675978a0d1d204bf07af989143\",\n\t\t\t\t\t\"callbacks\":
+      [\n\t\t\t\t\t\t{\n\t\t\t\t\t\t\t\"rejectUnauthorized\": false,\n\t\t\t\t\t\t\t\"url\":
+      \"https://127.0.0.1:9090/livenessProbe\",\n\t\t\t\t\t\t\t\"ssl\": {\n\t\t\t\t\t\t\t\t\"enable\":
+      false,\n\t\t\t\t\t\t\t\t\"clientKey\": \"<<PATH TO CLIENT KEY>>\",\n\t\t\t\t\t\t\t\t\"clientCert\":
+      \"<<PATH TO CLIENT CERTIFICATE>>\"\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t}\n\t\t\t\t\t]\n\t\t\t\t},\n\t\t\t\t{\n\t\t\t\t\t\"merchant_id\":
+      1,\n\t\t\t\t\t\"description\": \"Dev application DACH\",\n\t\t\t\t\t\"client_id\":
+      \"CPS-944699f8-f780-41eb-afa8-1047e2663e08\",\n\t\t\t\t\t\"client_secret\":
+      \"CPS-1549542233505-187f5017-43d5-4597-943f-d7bfe63b2491\",\n\t\t\t\t\t\"encryption_key\":
+      \"CPS35626fda8094405f090b371ae0556f0ca9a7eacf8946c789c5c9e545c9f9402f\",\n\t\t\t\t\t\"callbacks\":
+      [\n\t\t\t\t\t\t{\n\t\t\t\t\t\t\t\"rejectUnauthorized\": false,\n\t\t\t\t\t\t\t\"url_\":
+      \"https://127.0.0.1:9090/livenessProbe\",\n\t\t\t\t\t\t\t\"url\": \"https://nplus.ecommpay.com/dach/callbacks/invoice\",\n\t\t\t\t\t\t\t\"url__\":
+      \"http://tls-listener-demo.dev.kube/callbacks/invoice\",\n\t\t\t\t\t\t\t\"ssl\":
+      {\n\t\t\t\t\t\t\t\t\"enable\": false,\n\t\t\t\t\t\t\t\t\"clientKey\": \"<<PATH
+      TO CLIENT KEY>>\",\n\t\t\t\t\t\t\t\t\"clientCert\": \"<<PATH TO CLIENT CERTIFICATE>>\"\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t}\n\t\t\t\t\t]\n\t\t\t\t},\n\t\t\t\t{\n\t\t\t\t\t\"backoffice_id\":
+      1,\n\t\t\t\t\t\"description\": \"Dev application back-office\",\n\t\t\t\t\t\"client_id\":
+      \"CPS-c3921aec-4fc4-463c-b874-765dc8e2e5ae\",\n\t\t\t\t\t\"client_secret\":
+      \"CPS-1549542631330-4bf96569-55b9-4c6a-b984-007e0f4228c2\",\n\t\t\t\t\t\"encryption_key\":
+      \"CPSc7782de7765b0929642ef2e2ceffbf0edb46e0e7839a7983d0fae53fe7430581\",\n\t\t\t\t\t\"callbacks\":
+      [\n\t\t\t\t\t\t{\n\t\t\t\t\t\t\t\"rejectUnauthorized\": false,\n\t\t\t\t\t\t\t\"url\":
+      \"https://127.0.0.1:9090/livenessProbe\",\n\t\t\t\t\t\t\t\"ssl\": {\n\t\t\t\t\t\t\t\t\"enable\":
+      false,\n\t\t\t\t\t\t\t\t\"clientKey\": \"<<PATH TO CLIENT KEY>>\",\n\t\t\t\t\t\t\t\t\"clientCert\":
+      \"<<PATH TO CLIENT CERTIFICATE>>\"\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t}\n\t\t\t\t\t]\n\t\t\t\t},\n\t\t\t\t{\n\t\t\t\t\t\"aggregator_id\":
+      1,\n\t\t\t\t\t\"description\": \"Dev application aggregator\",\n\t\t\t\t\t\"client_id\":
+      \"CPS-43977f4e-7e91-4951-b7a8-4d6be605b475\",\n\t\t\t\t\t\"client_secret\":
+      \"CPS-1549542779103-9623d9c1-567e-4d9d-8ff6-16069c9dd412\",\n\t\t\t\t\t\"encryption_key\":
+      \"CPS12b711b16bd96d4d7ab8a6bdd5ef4a7a20df4a7073c1567f9f93e205eb415518\",\n\t\t\t\t\t\"callbacks\":
+      [\n\t\t\t\t\t\t{\n\t\t\t\t\t\t\t\"rejectUnauthorized\": false,\n\t\t\t\t\t\t\t\"url\":
+      \"https://127.0.0.1:9090/livenessProbe\",\n\t\t\t\t\t\t\t\"ssl\": {\n\t\t\t\t\t\t\t\t\"enable\":
+      false,\n\t\t\t\t\t\t\t\t\"clientKey\": \"<<PATH TO CLIENT KEY>>\",\n\t\t\t\t\t\t\t\t\"clientCert\":
+      \"<<PATH TO CLIENT CERTIFICATE>>\"\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t}\n\t\t\t\t\t]\n\t\t\t\t},\n\t\t\t\t{\n\t\t\t\t\t\"merchant_id\":
+      2,\n\t\t\t\t\t\"description\": \"Dev application TRANSFER\",\n\t\t\t\t\t\"client_id\":
+      \"CPS-9e474f6f-7ad1-4f17-a745-45a076d73f4b\",\n\t\t\t\t\t\"client_secret\":
+      \"CPS-1549542233505-46c9e250-4427-46c9-a1fb-2bea9ee0f0de\",\n\t\t\t\t\t\"encryption_key\":
+      \"CPS35626fda8094405f090b371aeaad471ca9a7eacf8946c789c5c9e545c9f9402f\",\n\t\t\t\t\t\"return_wallet\":
+      \"2N5HVr9K3hmctaXrHxHufHuimsvef2cVUDz\",\n\t\t\t\t\t\"return_wallets\": {\n\t\t\t\t\t\t\"BTC\":
+      \"2N5HVr9K3hmctaXrHxHufHuimsvef2cVUDz\",\n\t\t\t\t\t\t\"BCH\": \"2N8uHpJPHpFAyDr9rpvkbBU7dBWmibkn8E7\"\n\t\t\t\t\t},\n\t\t\t\t\t\"callbacks\":
+      [\n\t\t\t\t\t\t{\n\t\t\t\t\t\t\t\"rejectUnauthorized\": false,\n\t\t\t\t\t\t\t\"url\":
+      \"https://127.0.0.1:9090/livenessProbe\",\n\t\t\t\t\t\t\t\"ssl\": {\n\t\t\t\t\t\t\t\t\"enable\":
+      false,\n\t\t\t\t\t\t\t\t\"clientKey\": \"<<PATH TO CLIENT KEY>>\",\n\t\t\t\t\t\t\t\t\"clientCert\":
+      \"<<PATH TO CLIENT CERTIFICATE>>\"\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t}\n\t\t\t\t\t]\n\t\t\t\t}\n\t\t\t]\n\t\t}\n\t},\n\t\"log4jsConfig\":
+      {\n\t\t\"appenders\": {\n\t\t\t\"out\": {\n\t\t\t\t\"type\": \"stdout\",\n\t\t\t\t\"layout\":
+      {\n\t\t\t\t\t\"type\": \"json\"\n\t\t\t\t}\n\t\t\t},\n\t\t\t\"json\": {\n\t\t\t\t\"type\":
+      \"stdout\",\n\t\t\t\t\"layout\": {\n\t\t\t\t\t\"type\": \"json\",\n\t\t\t\t\t\"context\":
+      [\n\t\t\t\t\t\t\"rid\",\n\t\t\t\t\t\t\"iid\",\n\t\t\t\t\t\t\"oid\",\n\t\t\t\t\t\t\"eoid\"\n\t\t\t\t\t]\n\t\t\t\t}\n\t\t\t}\n\t\t},\n\t\t\"categories\":
+      {\n\t\t\t\"default\": {\n\t\t\t\t\"appenders\": [\n\t\t\t\t\t\"json\"\n\t\t\t\t],\n\t\t\t\t\"level\":
+      \"all\"\n\t\t\t}\n\t\t}\n\t}\n}"
+    postgresMigration.js: "module.exports = {\n\tdev: {\n\t\turl: process.env.POSTGRES_URL,\n\t\tdialect:
+      \"postgres\",\n\t\tdefine: {\n\t\t\tunderscored: true,\n\t\t\tfreezeTableName:
+      true\n\t\t}\n\t}\n};"
+  kind: ConfigMap
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","data":{"Aggregator-dev.json":"{\n\t\"user\": {\n\t\t\"username\": \"Processing-Service_1\",\n\t\t\"password\": \"PS_VCJ13hr7WBh*R\"\n\t},\n\t\"external\": {\n\t\t\"rejectUnauthorized\": false,\n\t\t\"url\": \"https://pss-rpc.dev.kube/aggregator\",\n\t\t\"instrumentId\": \"aggregatorcex\",\n\t\t\"provider\": \"aggregator\",\n\t\t\"ipAddress\": \"172.16.50.251\",\n\t\t\"mid\": \"cex\",\n\t\t\"accountId\": \"\",\n\t\t\"encryption_key\": \"31sFfA3SsZgRsfGJ23ggDsdG43ag2f5fds\",\n\t\t\"merchant_user\": {\n\t\t\t\"DACH:d092d750\": \"ud200659094\",\n\t\t\t\"DACH:c69ae511\": \"ud200659094\"\n\t\t},\n\t\t\"signFields\": {\n\t\t\t\"basesign\": [\n\t\t\t\t\"mid\",\n\t\t\t\t\"userId\",\n\t\t\t\t\"action\",\n\t\t\t\t\"timestamp\"\n\t\t\t]\n\t\t},\n\t\t\"actions\": {\n\t\t\t\"WITHDRAWAL\": \"withdrawal\",\n\t\t\t\"DEPOSIT\": \"deposit\"\n\t\t}\n\t},\n\t\"client\": {\n\t\t\"rejectUnauthorized\": false,\n\t\t\"url\": \"https://aggregatorprovider:55040\",\n\t\t\"description\": \"Dev application aggregator\",\n\t\t\"client_id\": \"CP-PROC-2366f30b-b8f1-46ac-a4dd-3070ac28034a\",\n\t\t\"client_secret\": \"CP-PROC-1577296977000-5721904a-6003-402e-bbd0-27c890856998\",\n\t\t\"encryption_key\": \"testAggr_Goo23-dF22\",\n\t\t\"endpoints\": {\n\t\t\t\"oauth\": \"/v1/oauth/token\",\n\t\t\t\"getRate\": \"/v1/rates\",\n\t\t\t\"getOrderByInvoice\": \"/v1/orders\",\n\t\t\t\"createOrderByInvoice\": \"/v1/orders\"\n\t\t},\n\t\t\"signFields\": {\n\t\t\t\"oauth\": {\n\t\t\t\t\"password\": [\n\t\t\t\t\t\"password\",\n\t\t\t\t\t\"client_secret\",\n\t\t\t\t\t\"timestamp\"\n\t\t\t\t],\n\t\t\t\t\"refresh_token\": [\n\t\t\t\t\t\"refresh_token\",\n\t\t\t\t\t\"client_secret\",\n\t\t\t\t\t\"timestamp\"\n\t\t\t\t]\n\t\t\t},\n\t\t\t\"create_order\": [\n\t\t\t\t\"invoiceId\",\n\t\t\t\t\"amountFrom\",\n\t\t\t\t\"timestamp\"\n\t\t\t]\n\t\t}\n\t}\n}","ES-dev.json":"{\n\t\"user\": {\n\t\t\"username\": \"\",\n\t\t\"password\": \"\"\n\t},\n\t\"external\": {\n\t\t\"rejectUnauthorized\": false,\n\t\t\"url\": \"https://pss-rpc.dev.kube/cryptopay\",\n\t\t\"instrumentId\": \"cpcrypto\",\n\t\t\"encryption_key\": \"\",\n\t\t\"signFields\": {},\n\t\t\"actions\": {\n\t\t\t\"HASH\": \"runDepositFlow\",\n\t\t\t\"ADDRESS\": \"runRefundFlow\"\n\t\t}\n\t},\n\t\"client\": {\n\t\t\"rejectUnauthorized\": false,\n\t\t\"url\": \"\",\n\t\t\"description\": \"ES provider\",\n\t\t\"client_id\": \"\",\n\t\t\"client_secret\": \"\",\n\t\t\"encryption_key\": \"\",\n\t\t\"endpoints\": {},\n\t\t\"signFields\": {}\n\t}\n}","PSSAccount-dev.json":"{\n\t\"user\": {\n\t\t\"username\": \"\",\n\t\t\"password\": \"\"\n\t},\n\t\"external\": {\n\t\t\"rejectUnauthorized\": false,\n\t\t\"url\": \"https://pss-rpc.dev.kube/cryptopay\",\n\t\t\"instrumentId\": \"cpcrypto\",\n\t\t\"merchant_user\": {\n\t\t\t\"DACH:d092d750\": \"ud200659094\",\n\t\t\t\"DACH:c69ae511\": \"ud200659094\",\n\t\t\t\"TRANSFER:d092d750\": \"ud200659094\",\n\t\t\t\"TRANSFER:c69ae511\": \"ud200659094\"\n\t\t},\n\t\t\"encryption_key\": \"$2b$10$X9LnrTf5bqARzd0BHdtlYe4cyf3.TSXDJcPHEqOuYCUtC14Q.rsFO\",\n\t\t\"signFields\": {\n\t\t\t\"basesign\": [\n\t\t\t\t\"mid\",\n\t\t\t\t\"userId\",\n\t\t\t\t\"action\",\n\t\t\t\t\"timestamp\"\n\t\t\t]\n\t\t},\n\t\t\"actions\": {\n\t\t\t\"DEPOSIT\": \"deposit\",\n\t\t\t\"WITHDRAWAL\": \"withdrawal\",\n\t\t\t\"WITHDRAWAL_TO_EXCHANGE\": \"withdrawalToExchange\",\n\t\t\t\"DEPOSIT_FROM_EXCHANGE\": \"depositFromExchange\",\n\t\t\t\"HOT_WALLET_TRANSFER\": \"hotWalletTransfer\"\n\t\t}\n\t},\n\t\"client\": {\n\t\t\"rejectUnauthorized\": false,\n\t\t\"url\": \"\",\n\t\t\"description\": \"ES provider\",\n\t\t\"client_id\": \"\",\n\t\t\"client_secret\": \"\",\n\t\t\"encryption_key\": \"\",\n\t\t\"endpoints\": {},\n\t\t\"signFields\": {}\n\t}\n}","WTF-dev.json":"{\n\t\"user\": {\n\t\t\"username\": \"Processing-Service_2\",\n\t\t\"password\": \"PS_VCJ112c=b3hr7WBh*R\"\n\t},\n\t\"client\": {\n\t\t\"rejectUnauthorized\": false,\n\t\t\"url\": \"https://wtfcryptoprovider:55060\",\n\t\t\"description\": \"Dev application DACH\",\n\t\t\"client_id\": \"CP-PROC-eea4f2ef-b29c-4b78-8f62-87e58c389265\",\n\t\t\"client_secret\": \"CP-PROC-1550494940424-0fe70109-e4d0-45cf-bca3-fa727890ab48\",\n\t\t\"encryption_key\": \"cpWtf_Goof23-dF122\",\n\t\t\"endpoints\": {\n\t\t\t\"oauth\": \"/v1/oauth/token\",\n\t\t\t\"address\": \"/v1/addresses\",\n\t\t\t\"create\": \"/v1/operations\",\n\t\t\t\"validate\": \"/v1/addresses/validator\",\n\t\t\t\"getOperationByInvoice\": \"/v1/operations\"\n\t\t},\n\t\t\"signFields\": {\n\t\t\t\"oauth\": {\n\t\t\t\t\"password\": [\n\t\t\t\t\t\"password\",\n\t\t\t\t\t\"client_secret\",\n\t\t\t\t\t\"timestamp\"\n\t\t\t\t],\n\t\t\t\t\"refresh_token\": [\n\t\t\t\t\t\"refresh_token\",\n\t\t\t\t\t\"client_secret\",\n\t\t\t\t\t\"timestamp\"\n\t\t\t\t]\n\t\t\t},\n\t\t\t\"address\": [\n\t\t\t\t\"invoiceId\",\n\t\t\t\t\"currency\",\n\t\t\t\t\"timestamp\"\n\t\t\t],\n\t\t\t\"create\": [\n\t\t\t\t\"invoiceId\",\n\t\t\t\t\"currency\",\n\t\t\t\t\"address\",\n\t\t\t\t\"amount\",\n\t\t\t\t\"timestamp\"\n\t\t\t]\n\t\t}\n\t}\n}","dev.json":"{\n\t\"appConfig\": {\n\t\t\"cors\": {\n\t\t\t\"methods\": [\n\t\t\t\t\"POST\",\n\t\t\t\t\"PUT\",\n\t\t\t\t\"GET\"\n\t\t\t],\n\t\t\t\"whiteList\": [\n\t\t\t\t\"https://nplus.ecommpay.com/dach/callbacks/invoice\"\n\t\t\t],\n\t\t\t\"allowedHeaders\": [\n\t\t\t\t\"Content-Type\",\n\t\t\t\t\"Authorization\"\n\t\t\t]\n\t\t},\n\t\t\"ssl\": {\n\t\t\t\"enable\": true,\n\t\t\t\"sslKey\": \"/app/config/ssl/tls.key\",\n\t\t\t\"sslCert\": \"/app/config/ssl/tls.crt\"\n\t\t},\n\t\t\"port\": 55020\n\t},\n\t\"mqConfig\": {\n\t\t\"url\": \"RMQ_URL\"\n\t},\n\t\"reqConfig\": {\n\t\t\"aggr\": {\n\t\t\t\"url\": \"https://aggr.cps.cex.io/\",\n\t\t\t\"ssl\": {\n\t\t\t\t\"enable\": false,\n\t\t\t\t\"clientKey\": \"\u003c\u003cPATH TO CLIENT KEY\u003e\u003e\",\n\t\t\t\t\"clientCert\": \"\u003c\u003cPATH TO CLIENT CERTIFICATE\u003e\u003e\"\n\t\t\t}\n\t\t},\n\t\t\"wtf\": {\n\t\t\t\"url\": \"https://wtf.cps.cex.io/\",\n\t\t\t\"ssl\": {\n\t\t\t\t\"enable\": false,\n\t\t\t\t\"clientKey\": \"\u003c\u003cPATH TO CLIENT KEY\u003e\u003e\",\n\t\t\t\t\"clientCert\": \"\u003c\u003cPATH TO CLIENT CERTIFICATE\u003e\u003e\"\n\t\t\t}\n\t\t}\n\t},\n\t\"postgresConfig\": {\n\t\t\"url\": \"POSTGRES_URL\",\n\t\t\"dialect\": \"postgres\",\n\t\t\"logging\": false,\n\t\t\"define\": {\n\t\t\t\"underscored\": true,\n\t\t\t\"freezeTableName\": true\n\t\t}\n\t},\n\t\"redisConfig\": {\n\t\t\"url\": \"REDIS_URL\"\n\t},\n\t\"dbConfig\": {\n\t\t\"authorization\": {\n\t\t\t\"users\": [\n\t\t\t\t{\n\t\t\t\t\t\"id\": \"3f4159fd-0163-4a78-9385-ce8725f58fa0\",\n\t\t\t\t\t\"username\": \"Back_CEX_Dev1\",\n\t\t\t\t\t\"merchant_id\": 1,\n\t\t\t\t\t\"password\": \"@NMJ8+pVZYM!x4Ty\",\n\t\t\t\t\t\"name\": \"Full dev data tester\",\n\t\t\t\t\t\"scope\": [\n\t\t\t\t\t\t\"add_commission\",\n\t\t\t\t\t\t\"get_commission\",\n\t\t\t\t\t\t\"update_commission\",\n\t\t\t\t\t\t\"add_currency\",\n\t\t\t\t\t\t\"update_currency\",\n\t\t\t\t\t\t\"get_currency\",\n\t\t\t\t\t\t\"get_invoice\",\n\t\t\t\t\t\t\"get_invoice_by_id\",\n\t\t\t\t\t\t\"get_invoice_by_id_full\",\n\t\t\t\t\t\t\"add_invoice\",\n\t\t\t\t\t\t\"update_invoice_merchant\",\n\t\t\t\t\t\t\"get_instrument\",\n\t\t\t\t\t\t\"add_instrument\",\n\t\t\t\t\t\t\"update_instrument\",\n\t\t\t\t\t\t\"get_instrument_by_id\",\n\t\t\t\t\t\t\"get_invoice_state\",\n\t\t\t\t\t\t\"get_invoice_status\",\n\t\t\t\t\t\t\"get_merchant_site\",\n\t\t\t\t\t\t\"add_invoice_state\",\n\t\t\t\t\t\t\"add_invoice_status\",\n\t\t\t\t\t\t\"add_merchant_site\",\n\t\t\t\t\t\t\"update_invoice_state\",\n\t\t\t\t\t\t\"update_invoice_status\",\n\t\t\t\t\t\t\"update_merchant_site\",\n\t\t\t\t\t\t\"get_merchant_site_by_id\",\n\t\t\t\t\t\t\"get_merchant\",\n\t\t\t\t\t\t\"get_merchant_by_id\",\n\t\t\t\t\t\t\"add_merchant\",\n\t\t\t\t\t\t\"update_merchant\",\n\t\t\t\t\t\t\"get_limit\",\n\t\t\t\t\t\t\"get_limit_by_id\",\n\t\t\t\t\t\t\"add_limit\",\n\t\t\t\t\t\t\"update_limit\",\n\t\t\t\t\t\t\"get_provider\",\n\t\t\t\t\t\t\"get_provider_by_id\",\n\t\t\t\t\t\t\"add_provider\",\n\t\t\t\t\t\t\"update_provider\",\n\t\t\t\t\t\t\"get_aggregator\",\n\t\t\t\t\t\t\"get_aggregator_by_id\",\n\t\t\t\t\t\t\"add_aggregator\",\n\t\t\t\t\t\t\"update_aggregator\",\n\t\t\t\t\t\t\"get_limit_type\",\n\t\t\t\t\t\t\"add_limit_type\",\n\t\t\t\t\t\t\"update_limit_type\",\n\t\t\t\t\t\t\"get_limit_dimension_type\",\n\t\t\t\t\t\t\"add_limit_dimension_type\",\n\t\t\t\t\t\t\"update_limit_dimension_type\",\n\t\t\t\t\t\t\"invoice_data_merchant\",\n\t\t\t\t\t\t\"invoice_data_full_developer\",\n\t\t\t\t\t\t\"all_invoices_back_office_full\"\n\t\t\t\t\t],\n\t\t\t\t\t\"status\": \"enable\",\n\t\t\t\t\t\"client_id\": \"CPS-944699f8-f780-41eb-afa8-1047e2663e08\"\n\t\t\t\t},\n\t\t\t\t{\n\t\t\t\t\t\"id\": \"25e0c2e6-7918-478d-ba38-2559f9612fa8\",\n\t\t\t\t\t\"merchant_id\": 1,\n\t\t\t\t\t\"username\": \"B2B_DACH_User1\",\n\t\t\t\t\t\"password\": \"WJs\u0026GKJ?p8-9GAXQ\",\n\t\t\t\t\t\"name\": \"App B2B Dach user\",\n\t\t\t\t\t\"scope\": [\n\t\t\t\t\t\t\"add_invoice\",\n\t\t\t\t\t\t\"get_invoice\",\n\t\t\t\t\t\t\"get_invoice_by_id\",\n\t\t\t\t\t\t\"get_instrument\",\n\t\t\t\t\t\t\"update_invoice_merchant\",\n\t\t\t\t\t\t\"invoice_data_merchant\",\n\t\t\t\t\t\t\"all_invoices_merchant\"\n\t\t\t\t\t],\n\t\t\t\t\t\"status\": \"enable\",\n\t\t\t\t\t\"client_id\": \"CPS-944699f8-f780-41eb-afa8-1047e2663e08\"\n\t\t\t\t},\n\t\t\t\t{\n\t\t\t\t\t\"id\": \"f6c78ba7-0345-4de3-8de7-42c225b4b709\",\n\t\t\t\t\t\"merchant_id\": 1,\n\t\t\t\t\t\"username\": \"B2B_DACH_User2_Finance\",\n\t\t\t\t\t\"password\": \"cMu8ti2V4Omf0udB\",\n\t\t\t\t\t\"name\": \"App B2B Dach user finance\",\n\t\t\t\t\t\"scope\": [\n\t\t\t\t\t\t\"get_invoice\",\n\t\t\t\t\t\t\"get_invoice_by_id\",\n\t\t\t\t\t\t\"invoice_data_merchant\",\n\t\t\t\t\t\t\"all_invoices_merchant\"\n\t\t\t\t\t],\n\t\t\t\t\t\"status\": \"enable\",\n\t\t\t\t\t\"client_id\": \"CPS-944699f8-f780-41eb-afa8-1047e2663e08\"\n\t\t\t\t},\n\t\t\t\t{\n\t\t\t\t\t\"id\": \"8fa7f83e-6599-4fc7-9e36-8bfa62d93552\",\n\t\t\t\t\t\"merchant_id\": 1,\n\t\t\t\t\t\"username\": \"Back_DACH_Comp1\",\n\t\t\t\t\t\"password\": \"36Q*3CXV$A_pCXu+\",\n\t\t\t\t\t\"name\": \"App Back Office Dach compliance 1\",\n\t\t\t\t\t\"scope\": [\n\t\t\t\t\t\t\"get_invoice\",\n\t\t\t\t\t\t\"get_invoice_by_id\",\n\t\t\t\t\t\t\"get_invoice_by_id_full\",\n\t\t\t\t\t\t\"get_instrument\",\n\t\t\t\t\t\t\"get_invoice_state\",\n\t\t\t\t\t\t\"get_invoice_status\",\n\t\t\t\t\t\t\"get_merchant_site\",\n\t\t\t\t\t\t\"invoice_data_full_external\",\n\t\t\t\t\t\t\"all_invoices_back_office_external\",\n\t\t\t\t\t\t\"get_currency\"\n\t\t\t\t\t],\n\t\t\t\t\t\"status\": \"enable\",\n\t\t\t\t\t\"client_id\": \"CPS-c3921aec-4fc4-463c-b874-765dc8e2e5ae\"\n\t\t\t\t},\n\t\t\t\t{\n\t\t\t\t\t\"id\": \"2394ec7d-030c-401e-a3fc-8716ec9a4121\",\n\t\t\t\t\t\"merchant_id_\": \"*\",\n\t\t\t\t\t\"username\": \"Back_CEX_Dev3\",\n\t\t\t\t\t\"password\": \"TIUbjMp80yLl0FGs\",\n\t\t\t\t\t\"name\": \"App Back Office Cex Developer\",\n\t\t\t\t\t\"scope\": [\n\t\t\t\t\t\t\"get_invoice\",\n\t\t\t\t\t\t\"get_invoice_by_id\",\n\t\t\t\t\t\t\"get_invoice_by_id_full\",\n\t\t\t\t\t\t\"get_instrument\",\n\t\t\t\t\t\t\"get_invoice_state\",\n\t\t\t\t\t\t\"get_invoice_status\",\n\t\t\t\t\t\t\"get_merchant_site\",\n\t\t\t\t\t\t\"invoice_data_full_developer\",\n\t\t\t\t\t\t\"all_invoices_back_office_full\",\n\t\t\t\t\t\t\"invoice_data_merchant\",\n\t\t\t\t\t\t\"get_currency\",\n\t\t\t\t\t\t\"add_currency\",\n\t\t\t\t\t\t\"update_instrument\",\n\t\t\t\t\t\t\"add_instrument\",\n\t\t\t\t\t\t\"add_merchant_site\",\n\t\t\t\t\t\t\"update_merchant_site\",\n\t\t\t\t\t\t\"add_commission\",\n\t\t\t\t\t\t\"get_commission\",\n\t\t\t\t\t\t\"add_limit\",\n\t\t\t\t\t\t\"get_limit\",\n\t\t\t\t\t\t\"get_limit_by_id\"\n\t\t\t\t\t],\n\t\t\t\t\t\"status\": \"enable\",\n\t\t\t\t\t\"client_id\": \"CPS-c3921aec-4fc4-463c-b874-765dc8e2e5ae\"\n\t\t\t\t},\n\t\t\t\t{\n\t\t\t\t\t\"id\": \"8fa7f83e-6599-4fc7-9e36-8bfa62d977ba\",\n\t\t\t\t\t\"merchant_id\": 2,\n\t\t\t\t\t\"username\": \"Back_TRANSFER_Comp1\",\n\t\t\t\t\t\"password\": \"36Q*3CXV$A_Ab12\",\n\t\t\t\t\t\"name\": \"App Back Office Dach compliance 1\",\n\t\t\t\t\t\"scope\": [\n\t\t\t\t\t\t\"get_invoice\",\n\t\t\t\t\t\t\"get_invoice_by_id\",\n\t\t\t\t\t\t\"get_invoice_by_id_full\",\n\t\t\t\t\t\t\"get_instrument\",\n\t\t\t\t\t\t\"get_invoice_state\",\n\t\t\t\t\t\t\"get_invoice_status\",\n\t\t\t\t\t\t\"get_merchant_site\",\n\t\t\t\t\t\t\"invoice_data_full_external\",\n\t\t\t\t\t\t\"all_invoices_back_office\",\n\t\t\t\t\t\t\"get_currency\"\n\t\t\t\t\t],\n\t\t\t\t\t\"status\": \"enable\",\n\t\t\t\t\t\"client_id\": \"CPS-c3921aec-4fc4-463c-b874-765dc8e2e5ae\"\n\t\t\t\t},\n\t\t\t\t{\n\t\t\t\t\t\"id\": \"f3a7bae9-fdbf-4475-8416-e34666a50b52\",\n\t\t\t\t\t\"merchant_id\": 1,\n\t\t\t\t\t\"username\": \"Back_DACH_Comp2\",\n\t\t\t\t\t\"password\": \"f3b$*U34xqdhRDTX\",\n\t\t\t\t\t\"name\": \"App Back Office Dach compliance 2\",\n\t\t\t\t\t\"scope\": [\n\t\t\t\t\t\t\"get_invoice\",\n\t\t\t\t\t\t\"get_invoice_by_id\",\n\t\t\t\t\t\t\"get_invoice_by_id_full\",\n\t\t\t\t\t\t\"get_instrument\",\n\t\t\t\t\t\t\"get_invoice_state\",\n\t\t\t\t\t\t\"get_invoice_status\",\n\t\t\t\t\t\t\"get_merchant_site\",\n\t\t\t\t\t\t\"invoice_data_full_external\",\n\t\t\t\t\t\t\"all_invoices_back_office\",\n\t\t\t\t\t\t\"get_currency\"\n\t\t\t\t\t],\n\t\t\t\t\t\"status\": \"enable\",\n\t\t\t\t\t\"client_id\": \"CPS-c3921aec-4fc4-463c-b874-765dc8e2e5ae\"\n\t\t\t\t},\n\t\t\t\t{\n\t\t\t\t\t\"id\": \"ec0a6b19-146c-4284-b7de-d9b1f44846d2\",\n\t\t\t\t\t\"aggregator_id\": 1,\n\t\t\t\t\t\"username\": \"C2C_Callback_Aggr1\",\n\t\t\t\t\t\"password\": \"mCWePZ2$7s+v88*r\",\n\t\t\t\t\t\"name\": \"App aggregator\",\n\t\t\t\t\t\"scope\": [\n\t\t\t\t\t\t\"callback_aggregator\"\n\t\t\t\t\t],\n\t\t\t\t\t\"status\": \"enable\",\n\t\t\t\t\t\"client_id\": \"CPS-43977f4e-7e91-4951-b7a8-4d6be605b475\"\n\t\t\t\t},\n\t\t\t\t{\n\t\t\t\t\t\"id\": \"d503de44-3a4e-4f05-8f40-2b5a8c528cb4\",\n\t\t\t\t\t\"provider_id\": 1,\n\t\t\t\t\t\"username\": \"C2C_Callback_Provider1\",\n\t\t\t\t\t\"password\": \"7qNzQ9#$5f7WsAz2\",\n\t\t\t\t\t\"name\": \"App provider\",\n\t\t\t\t\t\"scope\": [\n\t\t\t\t\t\t\"callback_provider\"\n\t\t\t\t\t],\n\t\t\t\t\t\"status\": \"enable\",\n\t\t\t\t\t\"client_id\": \"CPS-f1093ab5-0fa5-4cbf-9a4c-ffdb83274963\"\n\t\t\t\t}\n\t\t\t],\n\t\t\t\"apps\": [\n\t\t\t\t{\n\t\t\t\t\t\"provider_id\": 1,\n\t\t\t\t\t\"description\": \"Dev application provider\",\n\t\t\t\t\t\"client_id\": \"CPS-f1093ab5-0fa5-4cbf-9a4c-ffdb83274963\",\n\t\t\t\t\t\"client_secret\": \"CPS-1550508666000-d85eccf7-19c4-4d1c-87ae-ba1fcb0f7e10\",\n\t\t\t\t\t\"encryption_key\": \"CPS5e21375dcf17612a4d073d625bd7ca249a4735675978a0d1d204bf07af989143\",\n\t\t\t\t\t\"callbacks\": [\n\t\t\t\t\t\t{\n\t\t\t\t\t\t\t\"rejectUnauthorized\": false,\n\t\t\t\t\t\t\t\"url\": \"https://127.0.0.1:9090/livenessProbe\",\n\t\t\t\t\t\t\t\"ssl\": {\n\t\t\t\t\t\t\t\t\"enable\": false,\n\t\t\t\t\t\t\t\t\"clientKey\": \"\u003c\u003cPATH TO CLIENT KEY\u003e\u003e\",\n\t\t\t\t\t\t\t\t\"clientCert\": \"\u003c\u003cPATH TO CLIENT CERTIFICATE\u003e\u003e\"\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t}\n\t\t\t\t\t]\n\t\t\t\t},\n\t\t\t\t{\n\t\t\t\t\t\"merchant_id\": 1,\n\t\t\t\t\t\"description\": \"Dev application DACH\",\n\t\t\t\t\t\"client_id\": \"CPS-944699f8-f780-41eb-afa8-1047e2663e08\",\n\t\t\t\t\t\"client_secret\": \"CPS-1549542233505-187f5017-43d5-4597-943f-d7bfe63b2491\",\n\t\t\t\t\t\"encryption_key\": \"CPS35626fda8094405f090b371ae0556f0ca9a7eacf8946c789c5c9e545c9f9402f\",\n\t\t\t\t\t\"callbacks\": [\n\t\t\t\t\t\t{\n\t\t\t\t\t\t\t\"rejectUnauthorized\": false,\n\t\t\t\t\t\t\t\"url_\": \"https://127.0.0.1:9090/livenessProbe\",\n\t\t\t\t\t\t\t\"url\": \"https://nplus.ecommpay.com/dach/callbacks/invoice\",\n\t\t\t\t\t\t\t\"url__\": \"http://tls-listener-demo.dev.kube/callbacks/invoice\",\n\t\t\t\t\t\t\t\"ssl\": {\n\t\t\t\t\t\t\t\t\"enable\": false,\n\t\t\t\t\t\t\t\t\"clientKey\": \"\u003c\u003cPATH TO CLIENT KEY\u003e\u003e\",\n\t\t\t\t\t\t\t\t\"clientCert\": \"\u003c\u003cPATH TO CLIENT CERTIFICATE\u003e\u003e\"\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t}\n\t\t\t\t\t]\n\t\t\t\t},\n\t\t\t\t{\n\t\t\t\t\t\"backoffice_id\": 1,\n\t\t\t\t\t\"description\": \"Dev application back-office\",\n\t\t\t\t\t\"client_id\": \"CPS-c3921aec-4fc4-463c-b874-765dc8e2e5ae\",\n\t\t\t\t\t\"client_secret\": \"CPS-1549542631330-4bf96569-55b9-4c6a-b984-007e0f4228c2\",\n\t\t\t\t\t\"encryption_key\": \"CPSc7782de7765b0929642ef2e2ceffbf0edb46e0e7839a7983d0fae53fe7430581\",\n\t\t\t\t\t\"callbacks\": [\n\t\t\t\t\t\t{\n\t\t\t\t\t\t\t\"rejectUnauthorized\": false,\n\t\t\t\t\t\t\t\"url\": \"https://127.0.0.1:9090/livenessProbe\",\n\t\t\t\t\t\t\t\"ssl\": {\n\t\t\t\t\t\t\t\t\"enable\": false,\n\t\t\t\t\t\t\t\t\"clientKey\": \"\u003c\u003cPATH TO CLIENT KEY\u003e\u003e\",\n\t\t\t\t\t\t\t\t\"clientCert\": \"\u003c\u003cPATH TO CLIENT CERTIFICATE\u003e\u003e\"\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t}\n\t\t\t\t\t]\n\t\t\t\t},\n\t\t\t\t{\n\t\t\t\t\t\"aggregator_id\": 1,\n\t\t\t\t\t\"description\": \"Dev application aggregator\",\n\t\t\t\t\t\"client_id\": \"CPS-43977f4e-7e91-4951-b7a8-4d6be605b475\",\n\t\t\t\t\t\"client_secret\": \"CPS-1549542779103-9623d9c1-567e-4d9d-8ff6-16069c9dd412\",\n\t\t\t\t\t\"encryption_key\": \"CPS12b711b16bd96d4d7ab8a6bdd5ef4a7a20df4a7073c1567f9f93e205eb415518\",\n\t\t\t\t\t\"callbacks\": [\n\t\t\t\t\t\t{\n\t\t\t\t\t\t\t\"rejectUnauthorized\": false,\n\t\t\t\t\t\t\t\"url\": \"https://127.0.0.1:9090/livenessProbe\",\n\t\t\t\t\t\t\t\"ssl\": {\n\t\t\t\t\t\t\t\t\"enable\": false,\n\t\t\t\t\t\t\t\t\"clientKey\": \"\u003c\u003cPATH TO CLIENT KEY\u003e\u003e\",\n\t\t\t\t\t\t\t\t\"clientCert\": \"\u003c\u003cPATH TO CLIENT CERTIFICATE\u003e\u003e\"\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t}\n\t\t\t\t\t]\n\t\t\t\t},\n\t\t\t\t{\n\t\t\t\t\t\"merchant_id\": 2,\n\t\t\t\t\t\"description\": \"Dev application TRANSFER\",\n\t\t\t\t\t\"client_id\": \"CPS-9e474f6f-7ad1-4f17-a745-45a076d73f4b\",\n\t\t\t\t\t\"client_secret\": \"CPS-1549542233505-46c9e250-4427-46c9-a1fb-2bea9ee0f0de\",\n\t\t\t\t\t\"encryption_key\": \"CPS35626fda8094405f090b371aeaad471ca9a7eacf8946c789c5c9e545c9f9402f\",\n\t\t\t\t\t\"return_wallet\": \"2N5HVr9K3hmctaXrHxHufHuimsvef2cVUDz\",\n\t\t\t\t\t\"return_wallets\": {\n\t\t\t\t\t\t\"BTC\": \"2N5HVr9K3hmctaXrHxHufHuimsvef2cVUDz\",\n\t\t\t\t\t\t\"BCH\": \"2N8uHpJPHpFAyDr9rpvkbBU7dBWmibkn8E7\"\n\t\t\t\t\t},\n\t\t\t\t\t\"callbacks\": [\n\t\t\t\t\t\t{\n\t\t\t\t\t\t\t\"rejectUnauthorized\": false,\n\t\t\t\t\t\t\t\"url\": \"https://127.0.0.1:9090/livenessProbe\",\n\t\t\t\t\t\t\t\"ssl\": {\n\t\t\t\t\t\t\t\t\"enable\": false,\n\t\t\t\t\t\t\t\t\"clientKey\": \"\u003c\u003cPATH TO CLIENT KEY\u003e\u003e\",\n\t\t\t\t\t\t\t\t\"clientCert\": \"\u003c\u003cPATH TO CLIENT CERTIFICATE\u003e\u003e\"\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t}\n\t\t\t\t\t]\n\t\t\t\t}\n\t\t\t]\n\t\t}\n\t},\n\t\"log4jsConfig\": {\n\t\t\"appenders\": {\n\t\t\t\"out\": {\n\t\t\t\t\"type\": \"stdout\",\n\t\t\t\t\"layout\": {\n\t\t\t\t\t\"type\": \"json\"\n\t\t\t\t}\n\t\t\t},\n\t\t\t\"json\": {\n\t\t\t\t\"type\": \"stdout\",\n\t\t\t\t\"layout\": {\n\t\t\t\t\t\"type\": \"json\",\n\t\t\t\t\t\"context\": [\n\t\t\t\t\t\t\"rid\",\n\t\t\t\t\t\t\"iid\",\n\t\t\t\t\t\t\"oid\",\n\t\t\t\t\t\t\"eoid\"\n\t\t\t\t\t]\n\t\t\t\t}\n\t\t\t}\n\t\t},\n\t\t\"categories\": {\n\t\t\t\"default\": {\n\t\t\t\t\"appenders\": [\n\t\t\t\t\t\"json\"\n\t\t\t\t],\n\t\t\t\t\"level\": \"all\"\n\t\t\t}\n\t\t}\n\t}\n}","postgresMigration.js":"module.exports = {\n\tdev: {\n\t\turl: process.env.POSTGRES_URL,\n\t\tdialect: \"postgres\",\n\t\tdefine: {\n\t\t\tunderscored: true,\n\t\t\tfreezeTableName: true\n\t\t}\n\t}\n};"},"kind":"ConfigMap","metadata":{"annotations":{},"name":"cpservice","namespace":"cryptopay-evolution"}}
+    creationTimestamp: "2021-03-09T10:46:40Z"
+    name: cpservice
+    namespace: cryptopay-evolution
+    resourceVersion: "499413077"
+    selfLink: /api/v1/namespaces/cryptopay-evolution/configmaps/cpservice
+    uid: 3bc23181-7f6f-4c8b-9660-953cc3ad7766
+- apiVersion: v1
+  data:
+    messenger-bridge.toml: "# File format: https://github.com/toml-lang/toml\n\n\n#
+      Select Web servers to be used (splitted by space)\nserver_indexer = \"apiSrv\"\n\n#
+      Select endpoints to be used (splitted by space)\nendpoint_indexer = \"rest welcome\"\n\n#
+      Select messengers to be used\nmessenger_indexer = \"cryptopay_devel_bot\"\n\n[[server]]\n
+      \ # Declare an API HTTP server\n  index = \"apiSrv\"\n  type = \"https\"\n  listenHost
+      = \"0.0.0.0\"\n  listenPort = 8443\n  trustProxy = true\n  clientCertificateMode
+      = \"none\"\n  serverCertificate = \"/etc/cexiolabs/cryptopay/ssl/tls.crt\"\n
+      \ serverKey = \"/etc/cexiolabs/cryptopay/ssl/tls.key\"\n\n[[endpoint]]\n  #
+      Declare REST endpoint and bound to the API HTTP server on path /v1\n  index
+      = \"rest\"\n  type = \"rest\"\n  servers = \"apiSrv\"\n  bindPath = \"/v1\"\n\n[[endpoint]]\n
+      \ # Declare Welcome Page endpoint and bound to the API HTTP server on path /\n
+      \ index = \"welcome\"\n  type = \"welcome-page\"\n  servers = \"apiSrv\"\n  bindPath
+      = \"/\" \n\n\n[approvement]\n  # Select topics to be enabled\n  topic_indexer
+      = \"AcceptDepositApprove ZeroConfirmationApprove\"\n\n  [[approvement.topic]]\n
+      \   index = \"ZeroConfirmationApprove\"\n    description = \"Manual approve
+      of zero confirmation.\"\n    requireVotes = 2\n    expireTimeout = 600\n\n  [[approvement.topic]]\n
+      \   index = \"AcceptDepositApprove\"\n    description = \"Manual approve of
+      number of confirmations (blockchain specific).\"\n    requireVotes = 2\n    expireTimeout
+      = 300\n\n[[messenger]]\n  index = \"cryptopay_devel_bot\"\n  type = \"telegram\"\n
+      \ #apiToken = <bot API token>\n  approvementTopicBinding_indexer = \"AcceptDepositApproveBinding
+      ZeroConfirmationApproveBinding\"\n\n  [[messenger.approvementTopicBinding]]\n
+      \   index = \"ZeroConfirmationApproveBinding\"\n    bindTopic = \"ZeroConfirmationApprove\"\n
+      \   #chatId = <Telegram's Unique identifier for the target chat or username
+      of the target channel (in the format @channelusername)>\n    renderTemplate
+      = \"\"\"\n<b>!TESTNET! Запрос на ручное подтверждение 0-confirmation (нет колбека
+      от pss-provider-wtf2)</b>\n<i>Order: </i><a href=\"https://dashboard-evolution-cryptopay.dev.kube/order/{{cpoOrderId}}\">{{cpoOrderId}}</a>\n<i>Amount:
+      </i><b>{{amount}} {{currency}}</b>\n<i>Deposit address: </i><a href=\"https://blockstream.info/testnet/address/{{depositAddress}}/\">{{depositAddress}}</a>.
+      See also <a href=\"https://live.blockcypher.com/btc-testnet/address/{{depositAddress}}/\">BlockCypher</a>,
+      <a href=\"https://www.blockchain.com/btc-testnet/address/{{depositAddress}}\">BlockchainInfo</a>.\n<i>Input
+      TX hash: </i><a href=\"https://live.blockcypher.com/btc-testnet/tx/{{txHash}}/\">{{txHash}}</a>.
+      See also <a href=\"https://blockstream.info/testnet/tx/{{txHash}}\">BlockCypher</a>,
+      <a href=\"https://www.blockchain.com/btc-testnet/tx/{{txHash}}\">BlockchainInfo</a>.\n\"\"\"\n\n
+      \ [[messenger.approvementTopicBinding]]\n    index = \"AcceptDepositApproveBinding\"\n
+      \   bindTopic = \"AcceptDepositApprove\"\n    #chatId = <Telegram's Unique identifier
+      for the target chat or username of the target channel (in the format @channelusername)>\n
+      \   renderTemplate = \"\"\"\n<b>!TESTNET! Запрос на ручное подтверждение депозита
+      по достижению {{confirmations}}-confirmations (нет колбеков от pss-provider-wtf2)</b>\n<i>Order:
+      </i><a href=\"https://dashboard-evolution-cryptopay.dev.kube/order/{{cpoOrderId}}\">{{cpoOrderId}}</a>\n<i>Amount:
+      </i><b>{{amount}} {{currency}}</b>\n<i>Public confirmations: </i><a href=\"https://live.blockcypher.com/btc-testnet/tx/{{txHash}}/\">{{confirmations}}</a>\n<i>Deposit
+      address: </i><a href=\"https://blockstream.info/testnet/address/{{depositAddress}}/\">{{depositAddress}}</a>.
+      See also <a href=\"https://live.blockcypher.com/btc-testnet/address/{{depositAddress}}/\">BlockCypher</a>,
+      <a href=\"https://www.blockchain.com/btc-testnet/address/{{depositAddress}}\">BlockchainInfo</a>.\n<i>Input
+      TX hash: </i><a href=\"https://live.blockcypher.com/btc-testnet/tx/{{txHash}}/\">{{txHash}}</a>.
+      See also <a href=\"https://blockstream.info/testnet/tx/{{txHash}}\">BlockCypher</a>,
+      <a href=\"https://www.blockchain.com/btc-testnet/tx/{{txHash}}\">BlockchainInfo</a>.\n\"\"\""
+  kind: ConfigMap
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","data":{"messenger-bridge.toml":"# File format: https://github.com/toml-lang/toml\n\n\n# Select Web servers to be used (splitted by space)\nserver_indexer = \"apiSrv\"\n\n# Select endpoints to be used (splitted by space)\nendpoint_indexer = \"rest welcome\"\n\n# Select messengers to be used\nmessenger_indexer = \"cryptopay_devel_bot\"\n\n[[server]]\n  # Declare an API HTTP server\n  index = \"apiSrv\"\n  type = \"https\"\n  listenHost = \"0.0.0.0\"\n  listenPort = 8443\n  trustProxy = true\n  clientCertificateMode = \"none\"\n  serverCertificate = \"/etc/cexiolabs/cryptopay/ssl/tls.crt\"\n  serverKey = \"/etc/cexiolabs/cryptopay/ssl/tls.key\"\n\n[[endpoint]]\n  # Declare REST endpoint and bound to the API HTTP server on path /v1\n  index = \"rest\"\n  type = \"rest\"\n  servers = \"apiSrv\"\n  bindPath = \"/v1\"\n\n[[endpoint]]\n  # Declare Welcome Page endpoint and bound to the API HTTP server on path /\n  index = \"welcome\"\n  type = \"welcome-page\"\n  servers = \"apiSrv\"\n  bindPath = \"/\" \n\n\n[approvement]\n  # Select topics to be enabled\n  topic_indexer = \"AcceptDepositApprove ZeroConfirmationApprove\"\n\n  [[approvement.topic]]\n    index = \"ZeroConfirmationApprove\"\n    description = \"Manual approve of zero confirmation.\"\n    requireVotes = 2\n    expireTimeout = 600\n\n  [[approvement.topic]]\n    index = \"AcceptDepositApprove\"\n    description = \"Manual approve of number of confirmations (blockchain specific).\"\n    requireVotes = 2\n    expireTimeout = 300\n\n[[messenger]]\n  index = \"cryptopay_devel_bot\"\n  type = \"telegram\"\n  #apiToken = \u003cbot API token\u003e\n  approvementTopicBinding_indexer = \"AcceptDepositApproveBinding ZeroConfirmationApproveBinding\"\n\n  [[messenger.approvementTopicBinding]]\n    index = \"ZeroConfirmationApproveBinding\"\n    bindTopic = \"ZeroConfirmationApprove\"\n    #chatId = \u003cTelegram's Unique identifier for the target chat or username of the target channel (in the format @channelusername)\u003e\n    renderTemplate = \"\"\"\n\u003cb\u003e!TESTNET! Запрос на ручное подтверждение 0-confirmation (нет колбека от pss-provider-wtf2)\u003c/b\u003e\n\u003ci\u003eOrder: \u003c/i\u003e\u003ca href=\"https://dashboard-evolution-cryptopay.dev.kube/order/{{cpoOrderId}}\"\u003e{{cpoOrderId}}\u003c/a\u003e\n\u003ci\u003eAmount: \u003c/i\u003e\u003cb\u003e{{amount}} {{currency}}\u003c/b\u003e\n\u003ci\u003eDeposit address: \u003c/i\u003e\u003ca href=\"https://blockstream.info/testnet/address/{{depositAddress}}/\"\u003e{{depositAddress}}\u003c/a\u003e. See also \u003ca href=\"https://live.blockcypher.com/btc-testnet/address/{{depositAddress}}/\"\u003eBlockCypher\u003c/a\u003e, \u003ca href=\"https://www.blockchain.com/btc-testnet/address/{{depositAddress}}\"\u003eBlockchainInfo\u003c/a\u003e.\n\u003ci\u003eInput TX hash: \u003c/i\u003e\u003ca href=\"https://live.blockcypher.com/btc-testnet/tx/{{txHash}}/\"\u003e{{txHash}}\u003c/a\u003e. See also \u003ca href=\"https://blockstream.info/testnet/tx/{{txHash}}\"\u003eBlockCypher\u003c/a\u003e, \u003ca href=\"https://www.blockchain.com/btc-testnet/tx/{{txHash}}\"\u003eBlockchainInfo\u003c/a\u003e.\n\"\"\"\n\n  [[messenger.approvementTopicBinding]]\n    index = \"AcceptDepositApproveBinding\"\n    bindTopic = \"AcceptDepositApprove\"\n    #chatId = \u003cTelegram's Unique identifier for the target chat or username of the target channel (in the format @channelusername)\u003e\n    renderTemplate = \"\"\"\n\u003cb\u003e!TESTNET! Запрос на ручное подтверждение депозита по достижению {{confirmations}}-confirmations (нет колбеков от pss-provider-wtf2)\u003c/b\u003e\n\u003ci\u003eOrder: \u003c/i\u003e\u003ca href=\"https://dashboard-evolution-cryptopay.dev.kube/order/{{cpoOrderId}}\"\u003e{{cpoOrderId}}\u003c/a\u003e\n\u003ci\u003eAmount: \u003c/i\u003e\u003cb\u003e{{amount}} {{currency}}\u003c/b\u003e\n\u003ci\u003ePublic confirmations: \u003c/i\u003e\u003ca href=\"https://live.blockcypher.com/btc-testnet/tx/{{txHash}}/\"\u003e{{confirmations}}\u003c/a\u003e\n\u003ci\u003eDeposit address: \u003c/i\u003e\u003ca href=\"https://blockstream.info/testnet/address/{{depositAddress}}/\"\u003e{{depositAddress}}\u003c/a\u003e. See also \u003ca href=\"https://live.blockcypher.com/btc-testnet/address/{{depositAddress}}/\"\u003eBlockCypher\u003c/a\u003e, \u003ca href=\"https://www.blockchain.com/btc-testnet/address/{{depositAddress}}\"\u003eBlockchainInfo\u003c/a\u003e.\n\u003ci\u003eInput TX hash: \u003c/i\u003e\u003ca href=\"https://live.blockcypher.com/btc-testnet/tx/{{txHash}}/\"\u003e{{txHash}}\u003c/a\u003e. See also \u003ca href=\"https://blockstream.info/testnet/tx/{{txHash}}\"\u003eBlockCypher\u003c/a\u003e, \u003ca href=\"https://www.blockchain.com/btc-testnet/tx/{{txHash}}\"\u003eBlockchainInfo\u003c/a\u003e.\n\"\"\""},"kind":"ConfigMap","metadata":{"annotations":{},"name":"messengerbridge-files","namespace":"cryptopay-evolution"}}
+    creationTimestamp: "2021-03-06T09:02:47Z"
+    name: messengerbridge-files
+    namespace: cryptopay-evolution
+    resourceVersion: "496793379"
+    selfLink: /api/v1/namespaces/cryptopay-evolution/configmaps/messengerbridge-files
+    uid: 7303fdfd-4cda-4e14-af7d-214736b46b16
+- apiVersion: v1
+  data:
+    runtime.aggregator.url: wss://external-api-aggr-demo.dev.kube/ws
+    runtime.dashboardAuth.apiKey: AKIA5YOJLJKEIFAKNWBV
+    runtime.dashboardAuth.cognitoClientId: 6jusd0r1854j4aksj34dkuhuh
+    runtime.dashboardAuth.cognitoUserPool: us-east-1_QNzFm4L9A
+    runtime.dashboardAuth.region: us-east-1
+    runtime.endpoint.account.cors.allowedHeaders: '*'
+    runtime.endpoint.account.cors.methods: GET, POST, PUT, DELETE
+    runtime.endpoint.account.cors.whiteList: https://evolution-cryptopay.dev.kube
+    runtime.endpoint.dashboard.cors.allowedHeaders: '*'
+    runtime.endpoint.dashboard.cors.methods: GET, POST, PUT, DELETE
+    runtime.endpoint.dashboard.cors.whiteList: https://evolution-cryptopay.dev.kube
+    runtime.endpoint.gatewayCallback.servers: sysadminSrv
+    runtime.endpoint.gatewayUi.bindPath: /
+    runtime.endpoint.instrument.cors.allowedHeaders: '*'
+    runtime.endpoint.instrument.cors.methods: GET, POST, PUT, DELETE
+    runtime.endpoint.instrument.cors.whiteList: https://evolution-cryptopay.dev.kube
+    runtime.endpoint.merchant.cors.allowedHeaders: '*'
+    runtime.endpoint.merchant.cors.methods: GET, POST, PUT, DELETE
+    runtime.endpoint.merchant.cors.whiteList: https://evolution-cryptopay.dev.kube
+    runtime.endpoint.monitoring-log-middleware.servers: monitoring pss-provider-wtf2-callbacks
+    runtime.endpoint.network.cors.allowedHeaders: '*'
+    runtime.endpoint.network.cors.methods: GET, POST, PUT, DELETE
+    runtime.endpoint.network.cors.whiteList: https://evolution-cryptopay.dev.kube
+    runtime.endpoint.notification.cors.allowedHeaders: '*'
+    runtime.endpoint.notification.cors.methods: GET, POST, PUT, DELETE
+    runtime.endpoint.notification.cors.whiteList: https://evolution-cryptopay.dev.kube
+    runtime.endpoint.order.cors.allowedHeaders: '*'
+    runtime.endpoint.order.cors.methods: GET, POST, PUT, DELETE
+    runtime.endpoint.order.cors.whiteList: https://evolution-cryptopay.dev.kube
+    runtime.endpoint.order.servers: processingApiSrv sysadminSrv
+    runtime.endpoint.paymentGateway.cors.allowedHeaders: '*'
+    runtime.endpoint.paymentGateway.cors.methods: GET, POST, PUT, DELETE
+    runtime.endpoint.paymentGateway.cors.whiteList: https://evolution-cryptopay.dev.kube
+    runtime.endpoint.risk.cors.allowedHeaders: '*'
+    runtime.endpoint.risk.cors.methods: GET, POST, PUT, DELETE
+    runtime.endpoint.risk.cors.whiteList: https://evolution-cryptopay.dev.kube
+    runtime.endpoint.swaggerUi.bindPath: /specs
+    runtime.endpoint.swaggerUi.servers: evolutionSrv
+    runtime.endpoint.swaggerUi.specs.Cryptopay: /v2/cryptopay.v2.oas3.yaml
+    runtime.endpoint.swaggerUi.specs.Gateway: /gateway/gateway.v2.oas3.yaml
+    runtime.endpoint.swaggerUi.specsExtendServer.evolution.description: Evolution
+      Environment
+    runtime.endpoint.swaggerUi.specsExtendServer.evolution.url: https://evolution-cryptopay.dev.kube
+    runtime.endpoint.swaggerUi.specsExtendServer_indexer: evolution
+    runtime.endpoint.swaggerUi.type: swagger-ui
+    runtime.endpoint.time.cors.allowedHeaders: '*'
+    runtime.endpoint.time.cors.methods: GET, POST, PUT, DELETE
+    runtime.endpoint.time.cors.whiteList: https://evolution-cryptopay.dev.kube
+    runtime.endpoint_indexer: account dashboard info instrument internalInfo gateApi
+      gateCallback merchant monitoring network notification order rate risk sysadmin
+      swaggerUi time
+    runtime.gateway.CPService.url: http://127.0.0.1:8081
+    runtime.notifier.subscriber.kind: web-socket-client
+    runtime.notifier.subscriber.url: ws://notifier.cryptopay-infra:8080/v2/callback/cryptoproviders/pss-provider-wtf2-subscriber/websockethost/maks4683-a00d-4269-b116-6959fb9ac889
+    runtime.pss.aggregator.url: https://pss-rpc.dev.kube/aggregator
+    runtime.pss.cryptoWalletHelper.url: https://pss-rpc.dev.kube/cryptopay
+    runtime.pss.cryptopay.url: https://pss-rpc.dev.kube/cryptopay
+    runtime.pss.es.url: https://pss-rpc.dev.kube/cryptopay
+    runtime.server.evolutionSrv.clientCertificateMode: none
+    runtime.server.evolutionSrv.listenHost: 0.0.0.0
+    runtime.server.evolutionSrv.listenPort: "8083"
+    runtime.server.evolutionSrv.serverCertificate: /etc/cexiolabs/cryptopay/ssl/tls.crt
+    runtime.server.evolutionSrv.serverKey: /etc/cexiolabs/cryptopay/ssl/tls.key
+    runtime.server.evolutionSrv.trustProxy: "true"
+    runtime.server.evolutionSrv.type: https
+    runtime.server.sysadminSrv.clientCertificateMode: none
+    runtime.server.sysadminSrv.listenHost: 0.0.0.0
+    runtime.server.sysadminSrv.serverCertificate: /etc/cexiolabs/cryptopay/ssl/tls.crt
+    runtime.server.sysadminSrv.serverKey: /etc/cexiolabs/cryptopay/ssl/tls.key
+    runtime.server.sysadminSrv.trustProxy: "true"
+    runtime.server.sysadminSrv.type: https
+    runtime.server_indexer: dashboardApiSrv evolutionSrv gateApiSrv monitoringSrv
+      processingApiSrv sysadminSrv
+    runtime.wtf2pss.url: https://pss-provider-wtf2.dev.kube
+  kind: ConfigMap
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: '{"apiVersion":"v1","data":{"runtime.aggregator.url":"wss://external-api-aggr-demo.dev.kube/ws","runtime.dashboardAuth.apiKey":"AKIA5YOJLJKEIFAKNWBV","runtime.dashboardAuth.cognitoClientId":"6jusd0r1854j4aksj34dkuhuh","runtime.dashboardAuth.cognitoUserPool":"us-east-1_QNzFm4L9A","runtime.dashboardAuth.region":"us-east-1","runtime.endpoint.account.cors.allowedHeaders":"*","runtime.endpoint.account.cors.methods":"GET,
+        POST, PUT, DELETE","runtime.endpoint.account.cors.whiteList":"https://evolution-cryptopay.dev.kube","runtime.endpoint.dashboard.cors.allowedHeaders":"*","runtime.endpoint.dashboard.cors.methods":"GET,
+        POST, PUT, DELETE","runtime.endpoint.dashboard.cors.whiteList":"https://evolution-cryptopay.dev.kube","runtime.endpoint.gatewayCallback.servers":"sysadminSrv","runtime.endpoint.gatewayUi.bindPath":"/","runtime.endpoint.instrument.cors.allowedHeaders":"*","runtime.endpoint.instrument.cors.methods":"GET,
+        POST, PUT, DELETE","runtime.endpoint.instrument.cors.whiteList":"https://evolution-cryptopay.dev.kube","runtime.endpoint.merchant.cors.allowedHeaders":"*","runtime.endpoint.merchant.cors.methods":"GET,
+        POST, PUT, DELETE","runtime.endpoint.merchant.cors.whiteList":"https://evolution-cryptopay.dev.kube","runtime.endpoint.monitoring-log-middleware.servers":"monitoring
+        pss-provider-wtf2-callbacks","runtime.endpoint.network.cors.allowedHeaders":"*","runtime.endpoint.network.cors.methods":"GET,
+        POST, PUT, DELETE","runtime.endpoint.network.cors.whiteList":"https://evolution-cryptopay.dev.kube","runtime.endpoint.notification.cors.allowedHeaders":"*","runtime.endpoint.notification.cors.methods":"GET,
+        POST, PUT, DELETE","runtime.endpoint.notification.cors.whiteList":"https://evolution-cryptopay.dev.kube","runtime.endpoint.order.cors.allowedHeaders":"*","runtime.endpoint.order.cors.methods":"GET,
+        POST, PUT, DELETE","runtime.endpoint.order.cors.whiteList":"https://evolution-cryptopay.dev.kube","runtime.endpoint.order.servers":"processingApiSrv
+        sysadminSrv","runtime.endpoint.paymentGateway.cors.allowedHeaders":"*","runtime.endpoint.paymentGateway.cors.methods":"GET,
+        POST, PUT, DELETE","runtime.endpoint.paymentGateway.cors.whiteList":"https://evolution-cryptopay.dev.kube","runtime.endpoint.risk.cors.allowedHeaders":"*","runtime.endpoint.risk.cors.methods":"GET,
+        POST, PUT, DELETE","runtime.endpoint.risk.cors.whiteList":"https://evolution-cryptopay.dev.kube","runtime.endpoint.swaggerUi.bindPath":"/specs","runtime.endpoint.swaggerUi.servers":"evolutionSrv","runtime.endpoint.swaggerUi.specs.Cryptopay":"/v2/cryptopay.v2.oas3.yaml","runtime.endpoint.swaggerUi.specs.Gateway":"/gateway/gateway.v2.oas3.yaml","runtime.endpoint.swaggerUi.specsExtendServer.evolution.description":"Evolution
+        Environment","runtime.endpoint.swaggerUi.specsExtendServer.evolution.url":"https://evolution-cryptopay.dev.kube","runtime.endpoint.swaggerUi.specsExtendServer_indexer":"evolution","runtime.endpoint.swaggerUi.type":"swagger-ui","runtime.endpoint.time.cors.allowedHeaders":"*","runtime.endpoint.time.cors.methods":"GET,
+        POST, PUT, DELETE","runtime.endpoint.time.cors.whiteList":"https://evolution-cryptopay.dev.kube","runtime.endpoint_indexer":"account
+        dashboard instrument internalInfo gateApi gateCallback merchant monitoring
+        network notification order rate risk sysadmin swaggerUi time","runtime.gateway.CPService.url":"http://127.0.0.1:8081","runtime.notifier.subscriber.kind":"web-socket-client","runtime.notifier.subscriber.url":"ws://notifier.cryptopay-infra:8080/v2/callback/cryptoproviders/pss-provider-wtf2-subscriber/websockethost/maks4683-a00d-4269-b116-6959fb9ac889","runtime.pss.aggregator.url":"https://pss-rpc.dev.kube/aggregator","runtime.pss.cryptoWalletHelper.url":"https://pss-rpc.dev.kube/cryptopay","runtime.pss.cryptopay.url":"https://pss-rpc.dev.kube/cryptopay","runtime.pss.es.url":"https://pss-rpc.dev.kube/cryptopay","runtime.server.evolutionSrv.clientCertificateMode":"none","runtime.server.evolutionSrv.listenHost":"0.0.0.0","runtime.server.evolutionSrv.listenPort":"8083","runtime.server.evolutionSrv.serverCertificate":"/etc/cexiolabs/cryptopay/ssl/tls.crt","runtime.server.evolutionSrv.serverKey":"/etc/cexiolabs/cryptopay/ssl/tls.key","runtime.server.evolutionSrv.trustProxy":"true","runtime.server.evolutionSrv.type":"https","runtime.server.sysadminSrv.clientCertificateMode":"none","runtime.server.sysadminSrv.listenHost":"0.0.0.0","runtime.server.sysadminSrv.serverCertificate":"/etc/cexiolabs/cryptopay/ssl/tls.crt","runtime.server.sysadminSrv.serverKey":"/etc/cexiolabs/cryptopay/ssl/tls.key","runtime.server.sysadminSrv.trustProxy":"true","runtime.server.sysadminSrv.type":"https","runtime.server_indexer":"dashboardApiSrv
+        evolutionSrv gateApiSrv monitoringSrv processingApiSrv sysadminSrv","runtime.wtf2pss.url":"https://pss-provider-wtf2.dev.kube"},"kind":"ConfigMap","metadata":{"annotations":{},"name":"processing-envvars","namespace":"cryptopay-evolution"}}'
+    creationTimestamp: "2021-03-06T08:52:20Z"
+    name: processing-envvars
+    namespace: cryptopay-evolution
+    resourceVersion: "500427908"
+    selfLink: /api/v1/namespaces/cryptopay-evolution/configmaps/processing-envvars
+    uid: 0f0eb6fc-34a4-44aa-89d5-9796b7685be9
+- apiVersion: v1
+  data:
+    setup.accessKeyCreate.3e45e6e50b1ba24461e26e530cd27d24.merchantName: INTERNAL_DEBUG
+    setup.accessKeyCreate.3e45e6e50b1ba24461e26e530cd27d24.passphrase: ud200659094
+    setup.accessKeyCreate.3e45e6e50b1ba24461e26e530cd27d24.tag: Key for INTERNAL_DEBUG
+      merchant
+    setup.accessKeyCreate.ccb2ecef368c8bf194adb66918f29e64.merchantName: QA
+    setup.accessKeyCreate.ccb2ecef368c8bf194adb66918f29e64.passphrase: 1xb93hmg5zt9d2io
+    setup.accessKeyCreate.ccb2ecef368c8bf194adb66918f29e64.tag: Key for QA merchant
+    setup.accessKeyCreate_indexer: 3e45e6e50b1ba24461e26e530cd27d24 ccb2ecef368c8bf194adb66918f29e64
+  kind: ConfigMap
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","data":{"setup.accessKeyCreate.3e45e6e50b1ba24461e26e530cd27d24.merchantName":"INTERNAL_DEBUG","setup.accessKeyCreate.3e45e6e50b1ba24461e26e530cd27d24.passphrase":"ud200659094","setup.accessKeyCreate.3e45e6e50b1ba24461e26e530cd27d24.tag":"Key for INTERNAL_DEBUG merchant","setup.accessKeyCreate.ccb2ecef368c8bf194adb66918f29e64.merchantName":"QA","setup.accessKeyCreate.ccb2ecef368c8bf194adb66918f29e64.passphrase":"1xb93hmg5zt9d2io","setup.accessKeyCreate.ccb2ecef368c8bf194adb66918f29e64.tag":"Key for QA merchant","setup.accessKeyCreate_indexer":"3e45e6e50b1ba24461e26e530cd27d24 ccb2ecef368c8bf194adb66918f29e64"},"kind":"ConfigMap","metadata":{"annotations":{},"name":"processing-envvars-setup","namespace":"cryptopay-evolution"}}
+    creationTimestamp: "2021-03-06T08:52:00Z"
+    name: processing-envvars-setup
+    namespace: cryptopay-evolution
+    resourceVersion: "496786916"
+    selfLink: /api/v1/namespaces/cryptopay-evolution/configmaps/processing-envvars-setup
+    uid: 89d8b6fd-beed-4b2e-9ddd-34788d7f29e0
+- apiVersion: v1
+  data:
+    trusted-aggregator-ca.crt: |-
+      -----BEGIN CERTIFICATE-----
+      MIIC+zCCAeOgAwIBAgIJAL+WKDjrPicJMA0GCSqGSIb3DQEBCwUAMBQxEjAQBgNV
+      BAMMCURldkN1YmVDQTAeFw0xODExMTMwMzM4MzVaFw0yODExMTAwMzM4MzVaMBQx
+      EjAQBgNVBAMMCURldkN1YmVDQTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoC
+      ggEBAK46Ufg03ITIJJB/zhxfxSpP/ErsY+z6V9gW+5rcvMK93i6XAfsBdvGgmSoY
+      Jxuz6sfp8HKaORfWhbaiqC3OSZZB+qf2j1LcafplsyXs5JlsKyayhZxMgAEsniTf
+      LK02x64YAExWy6Khj/ksWG1Iuz7xBvxjhNxq1Av7xxELeX72HNadQnX+SPhMqMmC
+      iDYpZ4/ZB+u+HH7bvH85p15XSqmVFaOJYQ9nzU89lNvk7LjZY1bZYjxQMGLG3iMM
+      nBvF00dNXKE0H0ggWXKqZBQ/Ga5vQD9fWuJJ8tllWw0FJ0VKYpv9UxqNRlhLYKeS
+      Tph1mb+Zz2SkCV6usAQUjY1lUr8CAwEAAaNQME4wHQYDVR0OBBYEFHFM744LvPZa
+      oSmiaLn84bkkPmRaMB8GA1UdIwQYMBaAFHFM744LvPZaoSmiaLn84bkkPmRaMAwG
+      A1UdEwQFMAMBAf8wDQYJKoZIhvcNAQELBQADggEBABXjoNJxuTMCODqEss5JVSVx
+      /iO4vhWzK22mjrNw2MhYcn1S0/SjnrZej+iYATLS6dJHy3zLiCt5okk3IQvABK5z
+      x3WoCcle3nAwYCUEcGH75FJ2v8/2usBc8KgMS0ChfDJ6SeHeU/6baIsQNtzUC6oh
+      6YlqkpmwWe4EiWTxtkg6OPiBkO8gpEfmGCZMcaBXh2ECo3rbAZd/ExBTrpOjeUqM
+      by0rQ4vBeRtUwQjqqpkbxkhRZTt3fbcpOCC9UfM7efpAvt0QQd5ZopNnQp4SZdv/
+      +H7iW/hOXvy3PIlBn92NobrFZhJNRGl0zYdpfyN3nYF3/p2pCDxi5j+hOy9QtM8=
+      -----END CERTIFICATE-----
+    trusted-notifier-ca.crt: |-
+      -----BEGIN CERTIFICATE-----
+      MIIDljCCAn6gAwIBAgIUD24zuoOQNAuIP9yj4qvgrAgMxwMwDQYJKoZIhvcNAQEL
+      BQAwLTEWMBQGA1UECgwNV05CIFNvbHV0aW9uczETMBEGA1UEAwwKSW5mcmFXTkJD
+      QTAeFw0xOTA4MDcxNTI0MTFaFw0yOTA4MDQxNTI0MTFaMC0xFjAUBgNVBAoMDVdO
+      QiBTb2x1dGlvbnMxEzARBgNVBAMMCkluZnJhV05CQ0EwggEiMA0GCSqGSIb3DQEB
+      AQUAA4IBDwAwggEKAoIBAQDW7V7uXeJt1u19ct/Xqom5PHPJBbXFSJzkmZb9OGwy
+      O88B/EBkLdOrYG6yVh81bRM2BAhYe4kWQ7Gxv0+8IVZlvOr15izBLyAj6HJ72S65
+      muRNHC9s/zGt5U+3Lsr7hc7pc1lSXc2+CUuFgS+pOwVf4btxCvukOUGgOXenyK3y
+      wPNJPWDCN+Zfe/aGKu3Qz+hZuqvJME10FZN6EGl+PFuqLfbub8uOIcQUV+Bay/zo
+      LM1M5h/Tmcs0QcRkk3dFaD2k5YtBRzxGGRIZfBbAvxrWFpdcRAGXEsTH7F85G9+u
+      0+e4O/6B1dlxpZ2xtcylEhyvG/RLJYcMMpYoUXaHSlYvAgMBAAGjga0wgaowDwYD
+      VR0TAQH/BAUwAwEB/zAOBgNVHQ8BAf8EBAMCAQYwHQYDVR0OBBYEFN79y6IAEzSk
+      TvP0707bJZ9pimlrMGgGA1UdIwRhMF+AFN79y6IAEzSkTvP0707bJZ9pimlroTGk
+      LzAtMRYwFAYDVQQKDA1XTkIgU29sdXRpb25zMRMwEQYDVQQDDApJbmZyYVdOQkNB
+      ghQPbjO6g5A0C4g/3KPiq+CsCAzHAzANBgkqhkiG9w0BAQsFAAOCAQEAeyrGsLUz
+      4mhsUh25TR+EFM47QpkO5vkCoR7Ey4NBDaPwreCvlMfVH6p7LmVNRjPvZZ3XuRy4
+      IfxaqGPW1ayFSywT/7sQuPlGERoVSFpiP52tg1gHEhYMrw5aLNj/1vtRfSXwcbg8
+      fcgsH2JFE7oeSrJiYCz/KcQLCh+GcRODsh6bplAQ9T/DZ6RsaOuwpN/GuyOdJRMU
+      hJuiNGe5F68sCu8AG9pYgPfPks6hSSOjWbt2RbdRvD5O27E9xZpN3oMWlnveNTcD
+      sLQ+LfDODy8padt2P3GgWj/RTn4yAIvtvUJg9+HqpqIYmq5HANzW85oNGTg7/KOH
+      qBHLI7AoM+YmlA==
+      -----END CERTIFICATE-----
+    trusted-pssaggregator-ca.crt: |-
+      -----BEGIN CERTIFICATE-----
+      MIIDljCCAn6gAwIBAgIUD24zuoOQNAuIP9yj4qvgrAgMxwMwDQYJKoZIhvcNAQEL
+      BQAwLTEWMBQGA1UECgwNV05CIFNvbHV0aW9uczETMBEGA1UEAwwKSW5mcmFXTkJD
+      QTAeFw0xOTA4MDcxNTI0MTFaFw0yOTA4MDQxNTI0MTFaMC0xFjAUBgNVBAoMDVdO
+      QiBTb2x1dGlvbnMxEzARBgNVBAMMCkluZnJhV05CQ0EwggEiMA0GCSqGSIb3DQEB
+      AQUAA4IBDwAwggEKAoIBAQDW7V7uXeJt1u19ct/Xqom5PHPJBbXFSJzkmZb9OGwy
+      O88B/EBkLdOrYG6yVh81bRM2BAhYe4kWQ7Gxv0+8IVZlvOr15izBLyAj6HJ72S65
+      muRNHC9s/zGt5U+3Lsr7hc7pc1lSXc2+CUuFgS+pOwVf4btxCvukOUGgOXenyK3y
+      wPNJPWDCN+Zfe/aGKu3Qz+hZuqvJME10FZN6EGl+PFuqLfbub8uOIcQUV+Bay/zo
+      LM1M5h/Tmcs0QcRkk3dFaD2k5YtBRzxGGRIZfBbAvxrWFpdcRAGXEsTH7F85G9+u
+      0+e4O/6B1dlxpZ2xtcylEhyvG/RLJYcMMpYoUXaHSlYvAgMBAAGjga0wgaowDwYD
+      VR0TAQH/BAUwAwEB/zAOBgNVHQ8BAf8EBAMCAQYwHQYDVR0OBBYEFN79y6IAEzSk
+      TvP0707bJZ9pimlrMGgGA1UdIwRhMF+AFN79y6IAEzSkTvP0707bJZ9pimlroTGk
+      LzAtMRYwFAYDVQQKDA1XTkIgU29sdXRpb25zMRMwEQYDVQQDDApJbmZyYVdOQkNB
+      ghQPbjO6g5A0C4g/3KPiq+CsCAzHAzANBgkqhkiG9w0BAQsFAAOCAQEAeyrGsLUz
+      4mhsUh25TR+EFM47QpkO5vkCoR7Ey4NBDaPwreCvlMfVH6p7LmVNRjPvZZ3XuRy4
+      IfxaqGPW1ayFSywT/7sQuPlGERoVSFpiP52tg1gHEhYMrw5aLNj/1vtRfSXwcbg8
+      fcgsH2JFE7oeSrJiYCz/KcQLCh+GcRODsh6bplAQ9T/DZ6RsaOuwpN/GuyOdJRMU
+      hJuiNGe5F68sCu8AG9pYgPfPks6hSSOjWbt2RbdRvD5O27E9xZpN3oMWlnveNTcD
+      sLQ+LfDODy8padt2P3GgWj/RTn4yAIvtvUJg9+HqpqIYmq5HANzW85oNGTg7/KOH
+      qBHLI7AoM+YmlA==
+      -----END CERTIFICATE-----
+    trusted-psscryptopay-ca.crt: |-
+      -----BEGIN CERTIFICATE-----
+      MIIDljCCAn6gAwIBAgIUD24zuoOQNAuIP9yj4qvgrAgMxwMwDQYJKoZIhvcNAQEL
+      BQAwLTEWMBQGA1UECgwNV05CIFNvbHV0aW9uczETMBEGA1UEAwwKSW5mcmFXTkJD
+      QTAeFw0xOTA4MDcxNTI0MTFaFw0yOTA4MDQxNTI0MTFaMC0xFjAUBgNVBAoMDVdO
+      QiBTb2x1dGlvbnMxEzARBgNVBAMMCkluZnJhV05CQ0EwggEiMA0GCSqGSIb3DQEB
+      AQUAA4IBDwAwggEKAoIBAQDW7V7uXeJt1u19ct/Xqom5PHPJBbXFSJzkmZb9OGwy
+      O88B/EBkLdOrYG6yVh81bRM2BAhYe4kWQ7Gxv0+8IVZlvOr15izBLyAj6HJ72S65
+      muRNHC9s/zGt5U+3Lsr7hc7pc1lSXc2+CUuFgS+pOwVf4btxCvukOUGgOXenyK3y
+      wPNJPWDCN+Zfe/aGKu3Qz+hZuqvJME10FZN6EGl+PFuqLfbub8uOIcQUV+Bay/zo
+      LM1M5h/Tmcs0QcRkk3dFaD2k5YtBRzxGGRIZfBbAvxrWFpdcRAGXEsTH7F85G9+u
+      0+e4O/6B1dlxpZ2xtcylEhyvG/RLJYcMMpYoUXaHSlYvAgMBAAGjga0wgaowDwYD
+      VR0TAQH/BAUwAwEB/zAOBgNVHQ8BAf8EBAMCAQYwHQYDVR0OBBYEFN79y6IAEzSk
+      TvP0707bJZ9pimlrMGgGA1UdIwRhMF+AFN79y6IAEzSkTvP0707bJZ9pimlroTGk
+      LzAtMRYwFAYDVQQKDA1XTkIgU29sdXRpb25zMRMwEQYDVQQDDApJbmZyYVdOQkNB
+      ghQPbjO6g5A0C4g/3KPiq+CsCAzHAzANBgkqhkiG9w0BAQsFAAOCAQEAeyrGsLUz
+      4mhsUh25TR+EFM47QpkO5vkCoR7Ey4NBDaPwreCvlMfVH6p7LmVNRjPvZZ3XuRy4
+      IfxaqGPW1ayFSywT/7sQuPlGERoVSFpiP52tg1gHEhYMrw5aLNj/1vtRfSXwcbg8
+      fcgsH2JFE7oeSrJiYCz/KcQLCh+GcRODsh6bplAQ9T/DZ6RsaOuwpN/GuyOdJRMU
+      hJuiNGe5F68sCu8AG9pYgPfPks6hSSOjWbt2RbdRvD5O27E9xZpN3oMWlnveNTcD
+      sLQ+LfDODy8padt2P3GgWj/RTn4yAIvtvUJg9+HqpqIYmq5HANzW85oNGTg7/KOH
+      qBHLI7AoM+YmlA==
+      -----END CERTIFICATE-----
+    trusted-psscryptowallethelper-ca.crt: |-
+      -----BEGIN CERTIFICATE-----
+      MIIDljCCAn6gAwIBAgIUD24zuoOQNAuIP9yj4qvgrAgMxwMwDQYJKoZIhvcNAQEL
+      BQAwLTEWMBQGA1UECgwNV05CIFNvbHV0aW9uczETMBEGA1UEAwwKSW5mcmFXTkJD
+      QTAeFw0xOTA4MDcxNTI0MTFaFw0yOTA4MDQxNTI0MTFaMC0xFjAUBgNVBAoMDVdO
+      QiBTb2x1dGlvbnMxEzARBgNVBAMMCkluZnJhV05CQ0EwggEiMA0GCSqGSIb3DQEB
+      AQUAA4IBDwAwggEKAoIBAQDW7V7uXeJt1u19ct/Xqom5PHPJBbXFSJzkmZb9OGwy
+      O88B/EBkLdOrYG6yVh81bRM2BAhYe4kWQ7Gxv0+8IVZlvOr15izBLyAj6HJ72S65
+      muRNHC9s/zGt5U+3Lsr7hc7pc1lSXc2+CUuFgS+pOwVf4btxCvukOUGgOXenyK3y
+      wPNJPWDCN+Zfe/aGKu3Qz+hZuqvJME10FZN6EGl+PFuqLfbub8uOIcQUV+Bay/zo
+      LM1M5h/Tmcs0QcRkk3dFaD2k5YtBRzxGGRIZfBbAvxrWFpdcRAGXEsTH7F85G9+u
+      0+e4O/6B1dlxpZ2xtcylEhyvG/RLJYcMMpYoUXaHSlYvAgMBAAGjga0wgaowDwYD
+      VR0TAQH/BAUwAwEB/zAOBgNVHQ8BAf8EBAMCAQYwHQYDVR0OBBYEFN79y6IAEzSk
+      TvP0707bJZ9pimlrMGgGA1UdIwRhMF+AFN79y6IAEzSkTvP0707bJZ9pimlroTGk
+      LzAtMRYwFAYDVQQKDA1XTkIgU29sdXRpb25zMRMwEQYDVQQDDApJbmZyYVdOQkNB
+      ghQPbjO6g5A0C4g/3KPiq+CsCAzHAzANBgkqhkiG9w0BAQsFAAOCAQEAeyrGsLUz
+      4mhsUh25TR+EFM47QpkO5vkCoR7Ey4NBDaPwreCvlMfVH6p7LmVNRjPvZZ3XuRy4
+      IfxaqGPW1ayFSywT/7sQuPlGERoVSFpiP52tg1gHEhYMrw5aLNj/1vtRfSXwcbg8
+      fcgsH2JFE7oeSrJiYCz/KcQLCh+GcRODsh6bplAQ9T/DZ6RsaOuwpN/GuyOdJRMU
+      hJuiNGe5F68sCu8AG9pYgPfPks6hSSOjWbt2RbdRvD5O27E9xZpN3oMWlnveNTcD
+      sLQ+LfDODy8padt2P3GgWj/RTn4yAIvtvUJg9+HqpqIYmq5HANzW85oNGTg7/KOH
+      qBHLI7AoM+YmlA==
+      -----END CERTIFICATE-----
+    trusted-wtf1-ca.crt: |-
+      -----BEGIN CERTIFICATE-----
+      MIIDljCCAn6gAwIBAgIUD24zuoOQNAuIP9yj4qvgrAgMxwMwDQYJKoZIhvcNAQEL
+      BQAwLTEWMBQGA1UECgwNV05CIFNvbHV0aW9uczETMBEGA1UEAwwKSW5mcmFXTkJD
+      QTAeFw0xOTA4MDcxNTI0MTFaFw0yOTA4MDQxNTI0MTFaMC0xFjAUBgNVBAoMDVdO
+      QiBTb2x1dGlvbnMxEzARBgNVBAMMCkluZnJhV05CQ0EwggEiMA0GCSqGSIb3DQEB
+      AQUAA4IBDwAwggEKAoIBAQDW7V7uXeJt1u19ct/Xqom5PHPJBbXFSJzkmZb9OGwy
+      O88B/EBkLdOrYG6yVh81bRM2BAhYe4kWQ7Gxv0+8IVZlvOr15izBLyAj6HJ72S65
+      muRNHC9s/zGt5U+3Lsr7hc7pc1lSXc2+CUuFgS+pOwVf4btxCvukOUGgOXenyK3y
+      wPNJPWDCN+Zfe/aGKu3Qz+hZuqvJME10FZN6EGl+PFuqLfbub8uOIcQUV+Bay/zo
+      LM1M5h/Tmcs0QcRkk3dFaD2k5YtBRzxGGRIZfBbAvxrWFpdcRAGXEsTH7F85G9+u
+      0+e4O/6B1dlxpZ2xtcylEhyvG/RLJYcMMpYoUXaHSlYvAgMBAAGjga0wgaowDwYD
+      VR0TAQH/BAUwAwEB/zAOBgNVHQ8BAf8EBAMCAQYwHQYDVR0OBBYEFN79y6IAEzSk
+      TvP0707bJZ9pimlrMGgGA1UdIwRhMF+AFN79y6IAEzSkTvP0707bJZ9pimlroTGk
+      LzAtMRYwFAYDVQQKDA1XTkIgU29sdXRpb25zMRMwEQYDVQQDDApJbmZyYVdOQkNB
+      ghQPbjO6g5A0C4g/3KPiq+CsCAzHAzANBgkqhkiG9w0BAQsFAAOCAQEAeyrGsLUz
+      4mhsUh25TR+EFM47QpkO5vkCoR7Ey4NBDaPwreCvlMfVH6p7LmVNRjPvZZ3XuRy4
+      IfxaqGPW1ayFSywT/7sQuPlGERoVSFpiP52tg1gHEhYMrw5aLNj/1vtRfSXwcbg8
+      fcgsH2JFE7oeSrJiYCz/KcQLCh+GcRODsh6bplAQ9T/DZ6RsaOuwpN/GuyOdJRMU
+      hJuiNGe5F68sCu8AG9pYgPfPks6hSSOjWbt2RbdRvD5O27E9xZpN3oMWlnveNTcD
+      sLQ+LfDODy8padt2P3GgWj/RTn4yAIvtvUJg9+HqpqIYmq5HANzW85oNGTg7/KOH
+      qBHLI7AoM+YmlA==
+      -----END CERTIFICATE-----
+    trusted-wtf2pss-ca.crt: |-
+      -----BEGIN CERTIFICATE-----
+      MIIDljCCAn6gAwIBAgIUD24zuoOQNAuIP9yj4qvgrAgMxwMwDQYJKoZIhvcNAQEL
+      BQAwLTEWMBQGA1UECgwNV05CIFNvbHV0aW9uczETMBEGA1UEAwwKSW5mcmFXTkJD
+      QTAeFw0xOTA4MDcxNTI0MTFaFw0yOTA4MDQxNTI0MTFaMC0xFjAUBgNVBAoMDVdO
+      QiBTb2x1dGlvbnMxEzARBgNVBAMMCkluZnJhV05CQ0EwggEiMA0GCSqGSIb3DQEB
+      AQUAA4IBDwAwggEKAoIBAQDW7V7uXeJt1u19ct/Xqom5PHPJBbXFSJzkmZb9OGwy
+      O88B/EBkLdOrYG6yVh81bRM2BAhYe4kWQ7Gxv0+8IVZlvOr15izBLyAj6HJ72S65
+      muRNHC9s/zGt5U+3Lsr7hc7pc1lSXc2+CUuFgS+pOwVf4btxCvukOUGgOXenyK3y
+      wPNJPWDCN+Zfe/aGKu3Qz+hZuqvJME10FZN6EGl+PFuqLfbub8uOIcQUV+Bay/zo
+      LM1M5h/Tmcs0QcRkk3dFaD2k5YtBRzxGGRIZfBbAvxrWFpdcRAGXEsTH7F85G9+u
+      0+e4O/6B1dlxpZ2xtcylEhyvG/RLJYcMMpYoUXaHSlYvAgMBAAGjga0wgaowDwYD
+      VR0TAQH/BAUwAwEB/zAOBgNVHQ8BAf8EBAMCAQYwHQYDVR0OBBYEFN79y6IAEzSk
+      TvP0707bJZ9pimlrMGgGA1UdIwRhMF+AFN79y6IAEzSkTvP0707bJZ9pimlroTGk
+      LzAtMRYwFAYDVQQKDA1XTkIgU29sdXRpb25zMRMwEQYDVQQDDApJbmZyYVdOQkNB
+      ghQPbjO6g5A0C4g/3KPiq+CsCAzHAzANBgkqhkiG9w0BAQsFAAOCAQEAeyrGsLUz
+      4mhsUh25TR+EFM47QpkO5vkCoR7Ey4NBDaPwreCvlMfVH6p7LmVNRjPvZZ3XuRy4
+      IfxaqGPW1ayFSywT/7sQuPlGERoVSFpiP52tg1gHEhYMrw5aLNj/1vtRfSXwcbg8
+      fcgsH2JFE7oeSrJiYCz/KcQLCh+GcRODsh6bplAQ9T/DZ6RsaOuwpN/GuyOdJRMU
+      hJuiNGe5F68sCu8AG9pYgPfPks6hSSOjWbt2RbdRvD5O27E9xZpN3oMWlnveNTcD
+      sLQ+LfDODy8padt2P3GgWj/RTn4yAIvtvUJg9+HqpqIYmq5HANzW85oNGTg7/KOH
+      qBHLI7AoM+YmlA==
+      -----END CERTIFICATE-----
+  kind: ConfigMap
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","data":{"trusted-aggregator-ca.crt":"-----BEGIN CERTIFICATE-----\nMIIC+zCCAeOgAwIBAgIJAL+WKDjrPicJMA0GCSqGSIb3DQEBCwUAMBQxEjAQBgNV\nBAMMCURldkN1YmVDQTAeFw0xODExMTMwMzM4MzVaFw0yODExMTAwMzM4MzVaMBQx\nEjAQBgNVBAMMCURldkN1YmVDQTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoC\nggEBAK46Ufg03ITIJJB/zhxfxSpP/ErsY+z6V9gW+5rcvMK93i6XAfsBdvGgmSoY\nJxuz6sfp8HKaORfWhbaiqC3OSZZB+qf2j1LcafplsyXs5JlsKyayhZxMgAEsniTf\nLK02x64YAExWy6Khj/ksWG1Iuz7xBvxjhNxq1Av7xxELeX72HNadQnX+SPhMqMmC\niDYpZ4/ZB+u+HH7bvH85p15XSqmVFaOJYQ9nzU89lNvk7LjZY1bZYjxQMGLG3iMM\nnBvF00dNXKE0H0ggWXKqZBQ/Ga5vQD9fWuJJ8tllWw0FJ0VKYpv9UxqNRlhLYKeS\nTph1mb+Zz2SkCV6usAQUjY1lUr8CAwEAAaNQME4wHQYDVR0OBBYEFHFM744LvPZa\noSmiaLn84bkkPmRaMB8GA1UdIwQYMBaAFHFM744LvPZaoSmiaLn84bkkPmRaMAwG\nA1UdEwQFMAMBAf8wDQYJKoZIhvcNAQELBQADggEBABXjoNJxuTMCODqEss5JVSVx\n/iO4vhWzK22mjrNw2MhYcn1S0/SjnrZej+iYATLS6dJHy3zLiCt5okk3IQvABK5z\nx3WoCcle3nAwYCUEcGH75FJ2v8/2usBc8KgMS0ChfDJ6SeHeU/6baIsQNtzUC6oh\n6YlqkpmwWe4EiWTxtkg6OPiBkO8gpEfmGCZMcaBXh2ECo3rbAZd/ExBTrpOjeUqM\nby0rQ4vBeRtUwQjqqpkbxkhRZTt3fbcpOCC9UfM7efpAvt0QQd5ZopNnQp4SZdv/\n+H7iW/hOXvy3PIlBn92NobrFZhJNRGl0zYdpfyN3nYF3/p2pCDxi5j+hOy9QtM8=\n-----END CERTIFICATE-----","trusted-notifier-ca.crt":"-----BEGIN CERTIFICATE-----\nMIIDljCCAn6gAwIBAgIUD24zuoOQNAuIP9yj4qvgrAgMxwMwDQYJKoZIhvcNAQEL\nBQAwLTEWMBQGA1UECgwNV05CIFNvbHV0aW9uczETMBEGA1UEAwwKSW5mcmFXTkJD\nQTAeFw0xOTA4MDcxNTI0MTFaFw0yOTA4MDQxNTI0MTFaMC0xFjAUBgNVBAoMDVdO\nQiBTb2x1dGlvbnMxEzARBgNVBAMMCkluZnJhV05CQ0EwggEiMA0GCSqGSIb3DQEB\nAQUAA4IBDwAwggEKAoIBAQDW7V7uXeJt1u19ct/Xqom5PHPJBbXFSJzkmZb9OGwy\nO88B/EBkLdOrYG6yVh81bRM2BAhYe4kWQ7Gxv0+8IVZlvOr15izBLyAj6HJ72S65\nmuRNHC9s/zGt5U+3Lsr7hc7pc1lSXc2+CUuFgS+pOwVf4btxCvukOUGgOXenyK3y\nwPNJPWDCN+Zfe/aGKu3Qz+hZuqvJME10FZN6EGl+PFuqLfbub8uOIcQUV+Bay/zo\nLM1M5h/Tmcs0QcRkk3dFaD2k5YtBRzxGGRIZfBbAvxrWFpdcRAGXEsTH7F85G9+u\n0+e4O/6B1dlxpZ2xtcylEhyvG/RLJYcMMpYoUXaHSlYvAgMBAAGjga0wgaowDwYD\nVR0TAQH/BAUwAwEB/zAOBgNVHQ8BAf8EBAMCAQYwHQYDVR0OBBYEFN79y6IAEzSk\nTvP0707bJZ9pimlrMGgGA1UdIwRhMF+AFN79y6IAEzSkTvP0707bJZ9pimlroTGk\nLzAtMRYwFAYDVQQKDA1XTkIgU29sdXRpb25zMRMwEQYDVQQDDApJbmZyYVdOQkNB\nghQPbjO6g5A0C4g/3KPiq+CsCAzHAzANBgkqhkiG9w0BAQsFAAOCAQEAeyrGsLUz\n4mhsUh25TR+EFM47QpkO5vkCoR7Ey4NBDaPwreCvlMfVH6p7LmVNRjPvZZ3XuRy4\nIfxaqGPW1ayFSywT/7sQuPlGERoVSFpiP52tg1gHEhYMrw5aLNj/1vtRfSXwcbg8\nfcgsH2JFE7oeSrJiYCz/KcQLCh+GcRODsh6bplAQ9T/DZ6RsaOuwpN/GuyOdJRMU\nhJuiNGe5F68sCu8AG9pYgPfPks6hSSOjWbt2RbdRvD5O27E9xZpN3oMWlnveNTcD\nsLQ+LfDODy8padt2P3GgWj/RTn4yAIvtvUJg9+HqpqIYmq5HANzW85oNGTg7/KOH\nqBHLI7AoM+YmlA==\n-----END CERTIFICATE-----","trusted-pssaggregator-ca.crt":"-----BEGIN CERTIFICATE-----\nMIIDljCCAn6gAwIBAgIUD24zuoOQNAuIP9yj4qvgrAgMxwMwDQYJKoZIhvcNAQEL\nBQAwLTEWMBQGA1UECgwNV05CIFNvbHV0aW9uczETMBEGA1UEAwwKSW5mcmFXTkJD\nQTAeFw0xOTA4MDcxNTI0MTFaFw0yOTA4MDQxNTI0MTFaMC0xFjAUBgNVBAoMDVdO\nQiBTb2x1dGlvbnMxEzARBgNVBAMMCkluZnJhV05CQ0EwggEiMA0GCSqGSIb3DQEB\nAQUAA4IBDwAwggEKAoIBAQDW7V7uXeJt1u19ct/Xqom5PHPJBbXFSJzkmZb9OGwy\nO88B/EBkLdOrYG6yVh81bRM2BAhYe4kWQ7Gxv0+8IVZlvOr15izBLyAj6HJ72S65\nmuRNHC9s/zGt5U+3Lsr7hc7pc1lSXc2+CUuFgS+pOwVf4btxCvukOUGgOXenyK3y\nwPNJPWDCN+Zfe/aGKu3Qz+hZuqvJME10FZN6EGl+PFuqLfbub8uOIcQUV+Bay/zo\nLM1M5h/Tmcs0QcRkk3dFaD2k5YtBRzxGGRIZfBbAvxrWFpdcRAGXEsTH7F85G9+u\n0+e4O/6B1dlxpZ2xtcylEhyvG/RLJYcMMpYoUXaHSlYvAgMBAAGjga0wgaowDwYD\nVR0TAQH/BAUwAwEB/zAOBgNVHQ8BAf8EBAMCAQYwHQYDVR0OBBYEFN79y6IAEzSk\nTvP0707bJZ9pimlrMGgGA1UdIwRhMF+AFN79y6IAEzSkTvP0707bJZ9pimlroTGk\nLzAtMRYwFAYDVQQKDA1XTkIgU29sdXRpb25zMRMwEQYDVQQDDApJbmZyYVdOQkNB\nghQPbjO6g5A0C4g/3KPiq+CsCAzHAzANBgkqhkiG9w0BAQsFAAOCAQEAeyrGsLUz\n4mhsUh25TR+EFM47QpkO5vkCoR7Ey4NBDaPwreCvlMfVH6p7LmVNRjPvZZ3XuRy4\nIfxaqGPW1ayFSywT/7sQuPlGERoVSFpiP52tg1gHEhYMrw5aLNj/1vtRfSXwcbg8\nfcgsH2JFE7oeSrJiYCz/KcQLCh+GcRODsh6bplAQ9T/DZ6RsaOuwpN/GuyOdJRMU\nhJuiNGe5F68sCu8AG9pYgPfPks6hSSOjWbt2RbdRvD5O27E9xZpN3oMWlnveNTcD\nsLQ+LfDODy8padt2P3GgWj/RTn4yAIvtvUJg9+HqpqIYmq5HANzW85oNGTg7/KOH\nqBHLI7AoM+YmlA==\n-----END CERTIFICATE-----","trusted-psscryptopay-ca.crt":"-----BEGIN CERTIFICATE-----\nMIIDljCCAn6gAwIBAgIUD24zuoOQNAuIP9yj4qvgrAgMxwMwDQYJKoZIhvcNAQEL\nBQAwLTEWMBQGA1UECgwNV05CIFNvbHV0aW9uczETMBEGA1UEAwwKSW5mcmFXTkJD\nQTAeFw0xOTA4MDcxNTI0MTFaFw0yOTA4MDQxNTI0MTFaMC0xFjAUBgNVBAoMDVdO\nQiBTb2x1dGlvbnMxEzARBgNVBAMMCkluZnJhV05CQ0EwggEiMA0GCSqGSIb3DQEB\nAQUAA4IBDwAwggEKAoIBAQDW7V7uXeJt1u19ct/Xqom5PHPJBbXFSJzkmZb9OGwy\nO88B/EBkLdOrYG6yVh81bRM2BAhYe4kWQ7Gxv0+8IVZlvOr15izBLyAj6HJ72S65\nmuRNHC9s/zGt5U+3Lsr7hc7pc1lSXc2+CUuFgS+pOwVf4btxCvukOUGgOXenyK3y\nwPNJPWDCN+Zfe/aGKu3Qz+hZuqvJME10FZN6EGl+PFuqLfbub8uOIcQUV+Bay/zo\nLM1M5h/Tmcs0QcRkk3dFaD2k5YtBRzxGGRIZfBbAvxrWFpdcRAGXEsTH7F85G9+u\n0+e4O/6B1dlxpZ2xtcylEhyvG/RLJYcMMpYoUXaHSlYvAgMBAAGjga0wgaowDwYD\nVR0TAQH/BAUwAwEB/zAOBgNVHQ8BAf8EBAMCAQYwHQYDVR0OBBYEFN79y6IAEzSk\nTvP0707bJZ9pimlrMGgGA1UdIwRhMF+AFN79y6IAEzSkTvP0707bJZ9pimlroTGk\nLzAtMRYwFAYDVQQKDA1XTkIgU29sdXRpb25zMRMwEQYDVQQDDApJbmZyYVdOQkNB\nghQPbjO6g5A0C4g/3KPiq+CsCAzHAzANBgkqhkiG9w0BAQsFAAOCAQEAeyrGsLUz\n4mhsUh25TR+EFM47QpkO5vkCoR7Ey4NBDaPwreCvlMfVH6p7LmVNRjPvZZ3XuRy4\nIfxaqGPW1ayFSywT/7sQuPlGERoVSFpiP52tg1gHEhYMrw5aLNj/1vtRfSXwcbg8\nfcgsH2JFE7oeSrJiYCz/KcQLCh+GcRODsh6bplAQ9T/DZ6RsaOuwpN/GuyOdJRMU\nhJuiNGe5F68sCu8AG9pYgPfPks6hSSOjWbt2RbdRvD5O27E9xZpN3oMWlnveNTcD\nsLQ+LfDODy8padt2P3GgWj/RTn4yAIvtvUJg9+HqpqIYmq5HANzW85oNGTg7/KOH\nqBHLI7AoM+YmlA==\n-----END CERTIFICATE-----","trusted-psscryptowallethelper-ca.crt":"-----BEGIN CERTIFICATE-----\nMIIDljCCAn6gAwIBAgIUD24zuoOQNAuIP9yj4qvgrAgMxwMwDQYJKoZIhvcNAQEL\nBQAwLTEWMBQGA1UECgwNV05CIFNvbHV0aW9uczETMBEGA1UEAwwKSW5mcmFXTkJD\nQTAeFw0xOTA4MDcxNTI0MTFaFw0yOTA4MDQxNTI0MTFaMC0xFjAUBgNVBAoMDVdO\nQiBTb2x1dGlvbnMxEzARBgNVBAMMCkluZnJhV05CQ0EwggEiMA0GCSqGSIb3DQEB\nAQUAA4IBDwAwggEKAoIBAQDW7V7uXeJt1u19ct/Xqom5PHPJBbXFSJzkmZb9OGwy\nO88B/EBkLdOrYG6yVh81bRM2BAhYe4kWQ7Gxv0+8IVZlvOr15izBLyAj6HJ72S65\nmuRNHC9s/zGt5U+3Lsr7hc7pc1lSXc2+CUuFgS+pOwVf4btxCvukOUGgOXenyK3y\nwPNJPWDCN+Zfe/aGKu3Qz+hZuqvJME10FZN6EGl+PFuqLfbub8uOIcQUV+Bay/zo\nLM1M5h/Tmcs0QcRkk3dFaD2k5YtBRzxGGRIZfBbAvxrWFpdcRAGXEsTH7F85G9+u\n0+e4O/6B1dlxpZ2xtcylEhyvG/RLJYcMMpYoUXaHSlYvAgMBAAGjga0wgaowDwYD\nVR0TAQH/BAUwAwEB/zAOBgNVHQ8BAf8EBAMCAQYwHQYDVR0OBBYEFN79y6IAEzSk\nTvP0707bJZ9pimlrMGgGA1UdIwRhMF+AFN79y6IAEzSkTvP0707bJZ9pimlroTGk\nLzAtMRYwFAYDVQQKDA1XTkIgU29sdXRpb25zMRMwEQYDVQQDDApJbmZyYVdOQkNB\nghQPbjO6g5A0C4g/3KPiq+CsCAzHAzANBgkqhkiG9w0BAQsFAAOCAQEAeyrGsLUz\n4mhsUh25TR+EFM47QpkO5vkCoR7Ey4NBDaPwreCvlMfVH6p7LmVNRjPvZZ3XuRy4\nIfxaqGPW1ayFSywT/7sQuPlGERoVSFpiP52tg1gHEhYMrw5aLNj/1vtRfSXwcbg8\nfcgsH2JFE7oeSrJiYCz/KcQLCh+GcRODsh6bplAQ9T/DZ6RsaOuwpN/GuyOdJRMU\nhJuiNGe5F68sCu8AG9pYgPfPks6hSSOjWbt2RbdRvD5O27E9xZpN3oMWlnveNTcD\nsLQ+LfDODy8padt2P3GgWj/RTn4yAIvtvUJg9+HqpqIYmq5HANzW85oNGTg7/KOH\nqBHLI7AoM+YmlA==\n-----END CERTIFICATE-----","trusted-wtf1-ca.crt":"-----BEGIN CERTIFICATE-----\nMIIDljCCAn6gAwIBAgIUD24zuoOQNAuIP9yj4qvgrAgMxwMwDQYJKoZIhvcNAQEL\nBQAwLTEWMBQGA1UECgwNV05CIFNvbHV0aW9uczETMBEGA1UEAwwKSW5mcmFXTkJD\nQTAeFw0xOTA4MDcxNTI0MTFaFw0yOTA4MDQxNTI0MTFaMC0xFjAUBgNVBAoMDVdO\nQiBTb2x1dGlvbnMxEzARBgNVBAMMCkluZnJhV05CQ0EwggEiMA0GCSqGSIb3DQEB\nAQUAA4IBDwAwggEKAoIBAQDW7V7uXeJt1u19ct/Xqom5PHPJBbXFSJzkmZb9OGwy\nO88B/EBkLdOrYG6yVh81bRM2BAhYe4kWQ7Gxv0+8IVZlvOr15izBLyAj6HJ72S65\nmuRNHC9s/zGt5U+3Lsr7hc7pc1lSXc2+CUuFgS+pOwVf4btxCvukOUGgOXenyK3y\nwPNJPWDCN+Zfe/aGKu3Qz+hZuqvJME10FZN6EGl+PFuqLfbub8uOIcQUV+Bay/zo\nLM1M5h/Tmcs0QcRkk3dFaD2k5YtBRzxGGRIZfBbAvxrWFpdcRAGXEsTH7F85G9+u\n0+e4O/6B1dlxpZ2xtcylEhyvG/RLJYcMMpYoUXaHSlYvAgMBAAGjga0wgaowDwYD\nVR0TAQH/BAUwAwEB/zAOBgNVHQ8BAf8EBAMCAQYwHQYDVR0OBBYEFN79y6IAEzSk\nTvP0707bJZ9pimlrMGgGA1UdIwRhMF+AFN79y6IAEzSkTvP0707bJZ9pimlroTGk\nLzAtMRYwFAYDVQQKDA1XTkIgU29sdXRpb25zMRMwEQYDVQQDDApJbmZyYVdOQkNB\nghQPbjO6g5A0C4g/3KPiq+CsCAzHAzANBgkqhkiG9w0BAQsFAAOCAQEAeyrGsLUz\n4mhsUh25TR+EFM47QpkO5vkCoR7Ey4NBDaPwreCvlMfVH6p7LmVNRjPvZZ3XuRy4\nIfxaqGPW1ayFSywT/7sQuPlGERoVSFpiP52tg1gHEhYMrw5aLNj/1vtRfSXwcbg8\nfcgsH2JFE7oeSrJiYCz/KcQLCh+GcRODsh6bplAQ9T/DZ6RsaOuwpN/GuyOdJRMU\nhJuiNGe5F68sCu8AG9pYgPfPks6hSSOjWbt2RbdRvD5O27E9xZpN3oMWlnveNTcD\nsLQ+LfDODy8padt2P3GgWj/RTn4yAIvtvUJg9+HqpqIYmq5HANzW85oNGTg7/KOH\nqBHLI7AoM+YmlA==\n-----END CERTIFICATE-----","trusted-wtf2pss-ca.crt":"-----BEGIN CERTIFICATE-----\nMIIDljCCAn6gAwIBAgIUD24zuoOQNAuIP9yj4qvgrAgMxwMwDQYJKoZIhvcNAQEL\nBQAwLTEWMBQGA1UECgwNV05CIFNvbHV0aW9uczETMBEGA1UEAwwKSW5mcmFXTkJD\nQTAeFw0xOTA4MDcxNTI0MTFaFw0yOTA4MDQxNTI0MTFaMC0xFjAUBgNVBAoMDVdO\nQiBTb2x1dGlvbnMxEzARBgNVBAMMCkluZnJhV05CQ0EwggEiMA0GCSqGSIb3DQEB\nAQUAA4IBDwAwggEKAoIBAQDW7V7uXeJt1u19ct/Xqom5PHPJBbXFSJzkmZb9OGwy\nO88B/EBkLdOrYG6yVh81bRM2BAhYe4kWQ7Gxv0+8IVZlvOr15izBLyAj6HJ72S65\nmuRNHC9s/zGt5U+3Lsr7hc7pc1lSXc2+CUuFgS+pOwVf4btxCvukOUGgOXenyK3y\nwPNJPWDCN+Zfe/aGKu3Qz+hZuqvJME10FZN6EGl+PFuqLfbub8uOIcQUV+Bay/zo\nLM1M5h/Tmcs0QcRkk3dFaD2k5YtBRzxGGRIZfBbAvxrWFpdcRAGXEsTH7F85G9+u\n0+e4O/6B1dlxpZ2xtcylEhyvG/RLJYcMMpYoUXaHSlYvAgMBAAGjga0wgaowDwYD\nVR0TAQH/BAUwAwEB/zAOBgNVHQ8BAf8EBAMCAQYwHQYDVR0OBBYEFN79y6IAEzSk\nTvP0707bJZ9pimlrMGgGA1UdIwRhMF+AFN79y6IAEzSkTvP0707bJZ9pimlroTGk\nLzAtMRYwFAYDVQQKDA1XTkIgU29sdXRpb25zMRMwEQYDVQQDDApJbmZyYVdOQkNB\nghQPbjO6g5A0C4g/3KPiq+CsCAzHAzANBgkqhkiG9w0BAQsFAAOCAQEAeyrGsLUz\n4mhsUh25TR+EFM47QpkO5vkCoR7Ey4NBDaPwreCvlMfVH6p7LmVNRjPvZZ3XuRy4\nIfxaqGPW1ayFSywT/7sQuPlGERoVSFpiP52tg1gHEhYMrw5aLNj/1vtRfSXwcbg8\nfcgsH2JFE7oeSrJiYCz/KcQLCh+GcRODsh6bplAQ9T/DZ6RsaOuwpN/GuyOdJRMU\nhJuiNGe5F68sCu8AG9pYgPfPks6hSSOjWbt2RbdRvD5O27E9xZpN3oMWlnveNTcD\nsLQ+LfDODy8padt2P3GgWj/RTn4yAIvtvUJg9+HqpqIYmq5HANzW85oNGTg7/KOH\nqBHLI7AoM+YmlA==\n-----END CERTIFICATE-----"},"kind":"ConfigMap","metadata":{"annotations":{},"name":"processing-files","namespace":"cryptopay-evolution"}}
+    creationTimestamp: "2021-03-06T08:36:03Z"
+    name: processing-files
+    namespace: cryptopay-evolution
+    resourceVersion: "496777636"
+    selfLink: /api/v1/namespaces/cryptopay-evolution/configmaps/processing-files
+    uid: 1bc12512-5ebc-4fc3-a20e-1cb90befd0a1
+kind: List
+metadata:
+  resourceVersion: ""
+  selfLink: ""

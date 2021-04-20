@@ -1,0 +1,97 @@
+apiVersion: v1
+items:
+- apiVersion: v1
+  data:
+    traefik-dynamic.toml: |-
+      [http]
+        [http.middlewares]
+          [http.middlewares.cors]
+            [http.middlewares.cors.headers]
+              accessControlAllowMethods= ["GET", "OPTIONS", "PUT"]
+              accessControlAllowOrigin = "origin-list-or-null"
+              accessControlMaxAge = 100
+              addVaryHeader = true
+          [http.middlewares.auth]
+            [http.middlewares.auth.basicAuth]
+              realm = "CryptoPay's Restricted Area"
+              removeHeader = true
+              usersFile = "/run/secrets/traefik/users"
+          [http.middlewares.infra-stripprefix.stripPrefix]
+            prefixes = ["/infra"]
+        [http.routers.dashboard]
+          rule="Host(`cryptopay.dev.kube`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))"
+      #    middlewares = ["infra-stripprefix"]
+          service="api@internal"
+          entrypoints=["web"]
+    traefik.toml: |-
+      [log]
+        level = "DEBUG"
+      #  level = "INFO"
+      [providers.file]
+          filename = "/etc/traefik/traefik-dynamic.toml"
+          watch = false
+      [api]
+        insecure = false
+        dashboard = true
+      #  debug = true
+      [entryPoints]
+        [entryPoints.web]
+          address = ":80"
+  kind: ConfigMap
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","data":{"traefik-dynamic.toml":"[http]\n  [http.middlewares]\n    [http.middlewares.cors]\n      [http.middlewares.cors.headers]\n        accessControlAllowMethods= [\"GET\", \"OPTIONS\", \"PUT\"]\n        accessControlAllowOrigin = \"origin-list-or-null\"\n        accessControlMaxAge = 100\n        addVaryHeader = true\n    [http.middlewares.auth]\n      [http.middlewares.auth.basicAuth]\n        realm = \"CryptoPay's Restricted Area\"\n        removeHeader = true\n        usersFile = \"/run/secrets/traefik/users\"\n    [http.middlewares.infra-stripprefix.stripPrefix]\n      prefixes = [\"/infra\"]\n  [http.routers.dashboard]\n    rule=\"Host(`cryptopay.dev.kube`) \u0026\u0026 (PathPrefix(`/api`) || PathPrefix(`/dashboard`))\"\n#    middlewares = [\"infra-stripprefix\"]\n    service=\"api@internal\"\n    entrypoints=[\"web\"]","traefik.toml":"[log]\n  level = \"DEBUG\"\n#  level = \"INFO\"\n[providers.file]\n    filename = \"/etc/traefik/traefik-dynamic.toml\"\n    watch = false\n[api]\n  insecure = false\n  dashboard = true\n#  debug = true\n[entryPoints]\n  [entryPoints.web]\n    address = \":80\""},"kind":"ConfigMap","metadata":{"annotations":{},"name":"balancer-files","namespace":"cryptopay-infra"}}
+    creationTimestamp: "2020-02-26T22:09:28Z"
+    name: balancer-files
+    namespace: cryptopay-infra
+    resourceVersion: "234406977"
+    selfLink: /api/v1/namespaces/cryptopay-infra/configmaps/balancer-files
+    uid: a85c88b3-58e4-11ea-9eff-00163e6b1f66
+- apiVersion: v1
+  data:
+    enabled_plugins: '[rabbitmq_management].'
+    rabbitmq.conf: |-
+      ##username and password
+      default_user=admin
+      default_pass=CHANGEME
+      ## Clustering
+      #cluster_formation.peer_discovery_backend  = rabbit_peer_discovery_k8s
+      #cluster_formation.k8s.host = kubernetes.default.svc.cluster.local
+      #cluster_formation.node_cleanup.interval = 10
+      #cluster_formation.node_cleanup.only_log_warning = true
+      #cluster_partition_handling = autoheal
+      ## queue master locator
+      queue_master_locator=min-masters
+      ## enable guest user
+      loopback_users.guest = false
+  kind: ConfigMap
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","data":{"enabled_plugins":"[rabbitmq_management].","rabbitmq.conf":"##username and password\ndefault_user=admin\ndefault_pass=CHANGEME\n## Clustering\n#cluster_formation.peer_discovery_backend  = rabbit_peer_discovery_k8s\n#cluster_formation.k8s.host = kubernetes.default.svc.cluster.local\n#cluster_formation.node_cleanup.interval = 10\n#cluster_formation.node_cleanup.only_log_warning = true\n#cluster_partition_handling = autoheal\n## queue master locator\nqueue_master_locator=min-masters\n## enable guest user\nloopback_users.guest = false"},"kind":"ConfigMap","metadata":{"annotations":{},"name":"rabbitmq","namespace":"cryptopay-infra"}}
+    creationTimestamp: "2019-11-25T20:11:58Z"
+    name: rabbitmq
+    namespace: cryptopay-infra
+    resourceVersion: "171395092"
+    selfLink: /api/v1/namespaces/cryptopay-infra/configmaps/rabbitmq
+    uid: d5db5250-0fbf-11ea-9eff-00163e6b1f66
+- apiVersion: v1
+  data:
+    test: test
+  kind: ConfigMap
+  metadata:
+    annotations:
+      field.cattle.io/creatorId: u-b7lh2
+    creationTimestamp: "2020-02-26T14:13:12Z"
+    labels:
+      cattle.io/creator: norman
+    name: traefik
+    namespace: cryptopay-infra
+    resourceVersion: "234116905"
+    selfLink: /api/v1/namespaces/cryptopay-infra/configmaps/traefik
+    uid: 1f8a597f-58a2-11ea-9eff-00163e6b1f66
+kind: List
+metadata:
+  resourceVersion: ""
+  selfLink: ""

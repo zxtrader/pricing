@@ -1,0 +1,360 @@
+apiVersion: v1
+items:
+- apiVersion: v1
+  data:
+    release: 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
+  kind: ConfigMap
+  metadata:
+    creationTimestamp: "2021-04-01T13:48:55Z"
+    labels:
+      MODIFIED_AT: "1617284936"
+      NAME: blue
+      OWNER: TILLER
+      STATUS: DEPLOYED
+      VERSION: "1"
+    name: blue.v1
+    namespace: cryptopay-presentation
+    resourceVersion: "517682595"
+    selfLink: /api/v1/namespaces/cryptopay-presentation/configmaps/blue.v1
+    uid: 7222d140-119f-446c-9150-69a8c00ca87a
+- apiVersion: v1
+  data:
+    WTF-dev.json: '{}'
+  kind: ConfigMap
+  metadata:
+    annotations:
+      field.cattle.io/creatorId: u-b7lh2
+    creationTimestamp: "2020-11-16T16:39:04Z"
+    labels:
+      cattle.io/creator: norman
+    name: cpservice
+    namespace: cryptopay-presentation
+    resourceVersion: "412368146"
+    selfLink: /api/v1/namespaces/cryptopay-presentation/configmaps/cpservice
+    uid: 3cf83b9e-282a-11eb-8bb5-00163e6b1f66
+- apiVersion: v1
+  data:
+    messenger-bridge.toml: "# File format: https://github.com/toml-lang/toml\n\n\n#
+      Select Web servers to be used (splitted by space)\nserver_indexer = \"apiSrv\"\n\n#
+      Select endpoints to be used (splitted by space)\nendpoint_indexer = \"rest welcome\"\n\n#
+      Select messengers to be used\nmessenger_indexer = \"cryptopay_devel_bot\"\n\n[[server]]\n
+      \ # Declare an API HTTP server\n  index = \"apiSrv\"\n  type = \"https\"\n  listenHost
+      = \"0.0.0.0\"\n  listenPort = 8443\n  trustProxy = true\n  clientCertificateMode
+      = \"none\"\n  serverCertificate = \"/etc/cexiolabs/cryptopay/ssl/tls.crt\"\n
+      \ serverKey = \"/etc/cexiolabs/cryptopay/ssl/tls.key\"\n\n[[endpoint]]\n  #
+      Declare REST endpoint and bound to the API HTTP server on path /v1\n  index
+      = \"rest\"\n  type = \"rest\"\n  servers = \"apiSrv\"\n  bindPath = \"/v1\"\n\n[[endpoint]]\n
+      \ # Declare Welcome Page endpoint and bound to the API HTTP server on path /\n
+      \ index = \"welcome\"\n  type = \"welcome-page\"\n  servers = \"apiSrv\"\n  bindPath
+      = \"/\" \n\n\n[approvement]\n  # Select topics to be enabled\n  topic_indexer
+      = \"AcceptDepositApprove ZeroConfirmationApprove\"\n\n  [[approvement.topic]]\n
+      \   index = \"ZeroConfirmationApprove\"\n    description = \"Manual approve
+      of zero confirmation.\"\n    requireVotes = 2\n    expireTimeout = 600\n\n  [[approvement.topic]]\n
+      \   index = \"AcceptDepositApprove\"\n    description = \"Manual approve of
+      number of confirmations (blockchain specific).\"\n    requireVotes = 2\n    expireTimeout
+      = 300\n\n[[messenger]]\n  index = \"cryptopay_devel_bot\"\n  type = \"telegram\"\n
+      \ #apiToken = <bot API token>\n  approvementTopicBinding_indexer = \"AcceptDepositApproveBinding
+      ZeroConfirmationApproveBinding\"\n\n  [[messenger.approvementTopicBinding]]\n
+      \   index = \"ZeroConfirmationApproveBinding\"\n    bindTopic = \"ZeroConfirmationApprove\"\n
+      \   #chatId = <Telegram's Unique identifier for the target chat or username
+      of the target channel (in the format @channelusername)>\n    renderTemplate
+      = \"\"\"\n<b>!TESTNET! Запрос на ручное подтверждение 0-confirmation (нет колбека
+      от pss-provider-wtf2)</b>\n<i>Order: </i><a href=\"https://dashboard-testnet.cryptopay.band/order/{{cpoOrderId}}\">{{cpoOrderId}}</a>\n<i>Amount:
+      </i><b>{{amount}} {{currency}}</b>\n<i>Deposit address: </i><a href=\"https://blockstream.info/testnet/address/{{depositAddress}}/\">{{depositAddress}}</a>.
+      See also <a href=\"https://live.blockcypher.com/btc-testnet/address/{{depositAddress}}/\">BlockCypher</a>,
+      <a href=\"https://www.blockchain.com/btc-testnet/address/{{depositAddress}}\">BlockchainInfo</a>.\n<i>Input
+      TX hash: </i><a href=\"https://live.blockcypher.com/btc-testnet/tx/{{txHash}}/\">{{txHash}}</a>.
+      See also <a href=\"https://blockstream.info/testnet/tx/{{txHash}}\">BlockCypher</a>,
+      <a href=\"https://www.blockchain.com/btc-testnet/tx/{{txHash}}\">BlockchainInfo</a>.\n\"\"\"\n\n
+      \ [[messenger.approvementTopicBinding]]\n    index = \"AcceptDepositApproveBinding\"\n
+      \   bindTopic = \"AcceptDepositApprove\"\n    #chatId = <Telegram's Unique identifier
+      for the target chat or username of the target channel (in the format @channelusername)>\n
+      \   renderTemplate = \"\"\"\n<b>!TESTNET! Запрос на ручное подтверждение депозита
+      по достижению {{confirmations}}-confirmations (нет колбеков от pss-provider-wtf2)</b>\n<i>Order:
+      </i><a href=\"https://dashboard-testnet.cryptopay.band/order/{{cpoOrderId}}\">{{cpoOrderId}}</a>\n<i>Amount:
+      </i><b>{{amount}} {{currency}}</b>\n<i>Public confirmations: </i><a href=\"https://live.blockcypher.com/btc-testnet/tx/{{txHash}}/\">{{confirmations}}</a>\n<i>Deposit
+      address: </i><a href=\"https://blockstream.info/testnet/address/{{depositAddress}}/\">{{depositAddress}}</a>.
+      See also <a href=\"https://live.blockcypher.com/btc-testnet/address/{{depositAddress}}/\">BlockCypher</a>,
+      <a href=\"https://www.blockchain.com/btc-testnet/address/{{depositAddress}}\">BlockchainInfo</a>.\n<i>Input
+      TX hash: </i><a href=\"https://live.blockcypher.com/btc-testnet/tx/{{txHash}}/\">{{txHash}}</a>.
+      See also <a href=\"https://blockstream.info/testnet/tx/{{txHash}}\">BlockCypher</a>,
+      <a href=\"https://www.blockchain.com/btc-testnet/tx/{{txHash}}\">BlockchainInfo</a>.\n\"\"\""
+  kind: ConfigMap
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","data":{"messenger-bridge.toml":"# File format: https://github.com/toml-lang/toml\n\n\n# Select Web servers to be used (splitted by space)\nserver_indexer = \"apiSrv\"\n\n# Select endpoints to be used (splitted by space)\nendpoint_indexer = \"rest welcome\"\n\n# Select messengers to be used\nmessenger_indexer = \"cryptopay_devel_bot\"\n\n[[server]]\n  # Declare an API HTTP server\n  index = \"apiSrv\"\n  type = \"https\"\n  listenHost = \"0.0.0.0\"\n  listenPort = 8443\n  trustProxy = true\n  clientCertificateMode = \"none\"\n  serverCertificate = \"/etc/cexiolabs/cryptopay/ssl/tls.crt\"\n  serverKey = \"/etc/cexiolabs/cryptopay/ssl/tls.key\"\n\n[[endpoint]]\n  # Declare REST endpoint and bound to the API HTTP server on path /v1\n  index = \"rest\"\n  type = \"rest\"\n  servers = \"apiSrv\"\n  bindPath = \"/v1\"\n\n[[endpoint]]\n  # Declare Welcome Page endpoint and bound to the API HTTP server on path /\n  index = \"welcome\"\n  type = \"welcome-page\"\n  servers = \"apiSrv\"\n  bindPath = \"/\" \n\n\n[approvement]\n  # Select topics to be enabled\n  topic_indexer = \"AcceptDepositApprove ZeroConfirmationApprove\"\n\n  [[approvement.topic]]\n    index = \"ZeroConfirmationApprove\"\n    description = \"Manual approve of zero confirmation.\"\n    requireVotes = 2\n    expireTimeout = 600\n\n  [[approvement.topic]]\n    index = \"AcceptDepositApprove\"\n    description = \"Manual approve of number of confirmations (blockchain specific).\"\n    requireVotes = 2\n    expireTimeout = 300\n\n[[messenger]]\n  index = \"cryptopay_devel_bot\"\n  type = \"telegram\"\n  #apiToken = \u003cbot API token\u003e\n  approvementTopicBinding_indexer = \"AcceptDepositApproveBinding ZeroConfirmationApproveBinding\"\n\n  [[messenger.approvementTopicBinding]]\n    index = \"ZeroConfirmationApproveBinding\"\n    bindTopic = \"ZeroConfirmationApprove\"\n    #chatId = \u003cTelegram's Unique identifier for the target chat or username of the target channel (in the format @channelusername)\u003e\n    renderTemplate = \"\"\"\n\u003cb\u003e!TESTNET! Запрос на ручное подтверждение 0-confirmation (нет колбека от pss-provider-wtf2)\u003c/b\u003e\n\u003ci\u003eOrder: \u003c/i\u003e\u003ca href=\"https://dashboard-testnet.cryptopay.band/order/{{cpoOrderId}}\"\u003e{{cpoOrderId}}\u003c/a\u003e\n\u003ci\u003eAmount: \u003c/i\u003e\u003cb\u003e{{amount}} {{currency}}\u003c/b\u003e\n\u003ci\u003eDeposit address: \u003c/i\u003e\u003ca href=\"https://blockstream.info/testnet/address/{{depositAddress}}/\"\u003e{{depositAddress}}\u003c/a\u003e. See also \u003ca href=\"https://live.blockcypher.com/btc-testnet/address/{{depositAddress}}/\"\u003eBlockCypher\u003c/a\u003e, \u003ca href=\"https://www.blockchain.com/btc-testnet/address/{{depositAddress}}\"\u003eBlockchainInfo\u003c/a\u003e.\n\u003ci\u003eInput TX hash: \u003c/i\u003e\u003ca href=\"https://live.blockcypher.com/btc-testnet/tx/{{txHash}}/\"\u003e{{txHash}}\u003c/a\u003e. See also \u003ca href=\"https://blockstream.info/testnet/tx/{{txHash}}\"\u003eBlockCypher\u003c/a\u003e, \u003ca href=\"https://www.blockchain.com/btc-testnet/tx/{{txHash}}\"\u003eBlockchainInfo\u003c/a\u003e.\n\"\"\"\n\n  [[messenger.approvementTopicBinding]]\n    index = \"AcceptDepositApproveBinding\"\n    bindTopic = \"AcceptDepositApprove\"\n    #chatId = \u003cTelegram's Unique identifier for the target chat or username of the target channel (in the format @channelusername)\u003e\n    renderTemplate = \"\"\"\n\u003cb\u003e!TESTNET! Запрос на ручное подтверждение депозита по достижению {{confirmations}}-confirmations (нет колбеков от pss-provider-wtf2)\u003c/b\u003e\n\u003ci\u003eOrder: \u003c/i\u003e\u003ca href=\"https://dashboard-testnet.cryptopay.band/order/{{cpoOrderId}}\"\u003e{{cpoOrderId}}\u003c/a\u003e\n\u003ci\u003eAmount: \u003c/i\u003e\u003cb\u003e{{amount}} {{currency}}\u003c/b\u003e\n\u003ci\u003ePublic confirmations: \u003c/i\u003e\u003ca href=\"https://live.blockcypher.com/btc-testnet/tx/{{txHash}}/\"\u003e{{confirmations}}\u003c/a\u003e\n\u003ci\u003eDeposit address: \u003c/i\u003e\u003ca href=\"https://blockstream.info/testnet/address/{{depositAddress}}/\"\u003e{{depositAddress}}\u003c/a\u003e. See also \u003ca href=\"https://live.blockcypher.com/btc-testnet/address/{{depositAddress}}/\"\u003eBlockCypher\u003c/a\u003e, \u003ca href=\"https://www.blockchain.com/btc-testnet/address/{{depositAddress}}\"\u003eBlockchainInfo\u003c/a\u003e.\n\u003ci\u003eInput TX hash: \u003c/i\u003e\u003ca href=\"https://live.blockcypher.com/btc-testnet/tx/{{txHash}}/\"\u003e{{txHash}}\u003c/a\u003e. See also \u003ca href=\"https://blockstream.info/testnet/tx/{{txHash}}\"\u003eBlockCypher\u003c/a\u003e, \u003ca href=\"https://www.blockchain.com/btc-testnet/tx/{{txHash}}\"\u003eBlockchainInfo\u003c/a\u003e.\n\"\"\""},"kind":"ConfigMap","metadata":{"annotations":{},"name":"messengerbridge-files","namespace":"cryptopay-presentation"}}
+    creationTimestamp: "2020-11-03T18:14:19Z"
+    name: messengerbridge-files
+    namespace: cryptopay-presentation
+    resourceVersion: "403833933"
+    selfLink: /api/v1/namespaces/cryptopay-presentation/configmaps/messengerbridge-files
+    uid: 642964d1-1e00-11eb-8bb5-00163e6b1f66
+- apiVersion: v1
+  data:
+    runtime.aggregator.url: wss://external-api-aggr-demo.dev.kube/ws
+    runtime.dashboardAuth.apiKey: AKIA5YOJLJKEIFAKNWBV
+    runtime.dashboardAuth.cognitoClientId: 6jusd0r1854j4aksj34dkuhuh
+    runtime.dashboardAuth.cognitoUserPool: us-east-1_QNzFm4L9A
+    runtime.dashboardAuth.region: us-east-1
+    runtime.endpoint.account.cors.allowedHeaders: '*'
+    runtime.endpoint.account.cors.methods: GET, POST, PUT, DELETE
+    runtime.endpoint.account.cors.whiteList: https://presentation-cryptopay.dev.kube
+      https://testnet.cryptopay.band
+    runtime.endpoint.dashboard.cors.allowedHeaders: '*'
+    runtime.endpoint.dashboard.cors.methods: GET, POST, PUT, DELETE
+    runtime.endpoint.dashboard.cors.whiteList: https://presentation-cryptopay.dev.kube
+      https://testnet.cryptopay.band http://localhost:3000
+    runtime.endpoint.gateApi.cors.allowedHeaders: '*'
+    runtime.endpoint.gateApi.cors.methods: GET, POST, PUT, DELETE
+    runtime.endpoint.gateApi.cors.whiteList: https://presentation-cryptopay.dev.kube
+      https://testnet.cryptopay.band https://dashboard-testnet.cryptopay.band/
+    runtime.endpoint.instrument.cors.allowedHeaders: '*'
+    runtime.endpoint.instrument.cors.methods: GET, POST, PUT, DELETE
+    runtime.endpoint.instrument.cors.whiteList: https://presentation-cryptopay.dev.kube
+      https://testnet.cryptopay.band
+    runtime.endpoint.merchant.cors.allowedHeaders: '*'
+    runtime.endpoint.merchant.cors.methods: GET, POST, PUT, DELETE
+    runtime.endpoint.merchant.cors.whiteList: https://presentation-cryptopay.dev.kube
+      https://testnet.cryptopay.band
+    runtime.endpoint.network.cors.allowedHeaders: '*'
+    runtime.endpoint.network.cors.methods: GET, POST, PUT, DELETE
+    runtime.endpoint.network.cors.whiteList: https://presentation-cryptopay.dev.kube
+      https://testnet.cryptopay.band
+    runtime.endpoint.notification.cors.allowedHeaders: '*'
+    runtime.endpoint.notification.cors.methods: GET, POST, PUT, DELETE
+    runtime.endpoint.notification.cors.whiteList: https://presentation-cryptopay.dev.kube
+      https://testnet.cryptopay.band
+    runtime.endpoint.order.cors.allowedHeaders: '*'
+    runtime.endpoint.order.cors.methods: GET, POST, PUT, DELETE
+    runtime.endpoint.order.cors.whiteList: https://presentation-cryptopay.dev.kube
+      https://testnet.cryptopay.band https://testnet.cryptopay.band
+    runtime.endpoint.risk.cors.allowedHeaders: '*'
+    runtime.endpoint.risk.cors.methods: GET, POST, PUT, DELETE
+    runtime.endpoint.risk.cors.whiteList: https://presentation-cryptopay.dev.kube
+      https://testnet.cryptopay.band
+    runtime.endpoint.swaggerUi.bindPath: /specs
+    runtime.endpoint.swaggerUi.servers: presentationSrv
+    runtime.endpoint.swaggerUi.specs.Cryptopay: /v2/cryptopay.v2.oas3.yaml
+    runtime.endpoint.swaggerUi.specs.Gateway: /gateway/gateway.v2.oas3.yaml
+    runtime.endpoint.swaggerUi.type: swagger-ui
+    runtime.endpoint.time.cors.allowedHeaders: '*'
+    runtime.endpoint.time.cors.methods: GET, POST, PUT, DELETE
+    runtime.endpoint.time.cors.whiteList: https://presentation-cryptopay.dev.kube
+      https://testnet.cryptopay.band
+    runtime.endpoint_indexer: account dashboard info instrument internalInfo gateApi
+      gateCallback merchant monitoring network notification order rate risk sysadmin
+      swaggerUi time
+    runtime.gate.smtpGmail.user: service@zxteam.net
+    runtime.notifier.subscriber.kind: web-socket-client
+    runtime.notifier.subscriber.url: ws://notifier.cryptopay-infra:8080/subscriber/websockethost/presentation
+    runtime.pss.aggregator.url: https://pss-rpc.dev.kube/aggregator
+    runtime.pss.cryptoWalletHelper.url: https://pss-rpc.dev.kube/cryptopay
+    runtime.pss.cryptopay.url: https://pss-rpc.dev.kube/cryptopay
+    runtime.pss.es.url: https://pss-rpc.dev.kube/cryptopay
+    runtime.server.presentationSrv.clientCertificateMode_: none
+    runtime.server.presentationSrv.listenHost: 0.0.0.0
+    runtime.server.presentationSrv.listenPort: "8083"
+    runtime.server.presentationSrv.serverCertificate_: /etc/cexiolabs/cryptopay/ssl/tls.crt
+    runtime.server.presentationSrv.serverKey_: /etc/cexiolabs/cryptopay/ssl/tls.key
+    runtime.server.presentationSrv.trustProxy: "true"
+    runtime.server.presentationSrv.type: http
+    runtime.server.sysadminSrv.clientCertificateMode: none
+    runtime.server.sysadminSrv.listenHost: 0.0.0.0
+    runtime.server.sysadminSrv.serverCertificate: /etc/cexiolabs/cryptopay/ssl/tls.crt
+    runtime.server.sysadminSrv.serverKey: /etc/cexiolabs/cryptopay/ssl/tls.key
+    runtime.server.sysadminSrv.trustProxy: "true"
+    runtime.server.sysadminSrv.type: https
+    runtime.server_indexer: callbacksSrv dashboardApiSrv gateApiSrv loopbackSrv monitoringSrv
+      presentationSrv processingApiSrv sysadminSrv
+  kind: ConfigMap
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: '{"apiVersion":"v1","data":{"runtime.aggregator.url":"wss://external-api-aggr-demo.dev.kube/ws","runtime.dashboardAuth.apiKey":"AKIA5YOJLJKEIFAKNWBV","runtime.dashboardAuth.cognitoClientId":"6jusd0r1854j4aksj34dkuhuh","runtime.dashboardAuth.cognitoUserPool":"us-east-1_QNzFm4L9A","runtime.dashboardAuth.region":"us-east-1","runtime.endpoint.account.cors.allowedHeaders":"*","runtime.endpoint.account.cors.methods":"GET,
+        POST, PUT, DELETE","runtime.endpoint.account.cors.whiteList":"https://presentation-cryptopay.dev.kube
+        https://testnet.cryptopay.band","runtime.endpoint.dashboard.cors.allowedHeaders":"*","runtime.endpoint.dashboard.cors.methods":"GET,
+        POST, PUT, DELETE","runtime.endpoint.dashboard.cors.whiteList":"https://presentation-cryptopay.dev.kube
+        https://testnet.cryptopay.band","runtime.endpoint.gateApi.cors.allowedHeaders":"*","runtime.endpoint.gateApi.cors.methods":"GET,
+        POST, PUT, DELETE","runtime.endpoint.gateApi.cors.whiteList":"https://presentation-cryptopay.dev.kube
+        https://testnet.cryptopay.band https://dashboard-testnet.cryptopay.band/","runtime.endpoint.instrument.cors.allowedHeaders":"*","runtime.endpoint.instrument.cors.methods":"GET,
+        POST, PUT, DELETE","runtime.endpoint.instrument.cors.whiteList":"https://presentation-cryptopay.dev.kube
+        https://testnet.cryptopay.band","runtime.endpoint.merchant.cors.allowedHeaders":"*","runtime.endpoint.merchant.cors.methods":"GET,
+        POST, PUT, DELETE","runtime.endpoint.merchant.cors.whiteList":"https://presentation-cryptopay.dev.kube
+        https://testnet.cryptopay.band","runtime.endpoint.network.cors.allowedHeaders":"*","runtime.endpoint.network.cors.methods":"GET,
+        POST, PUT, DELETE","runtime.endpoint.network.cors.whiteList":"https://presentation-cryptopay.dev.kube
+        https://testnet.cryptopay.band","runtime.endpoint.notification.cors.allowedHeaders":"*","runtime.endpoint.notification.cors.methods":"GET,
+        POST, PUT, DELETE","runtime.endpoint.notification.cors.whiteList":"https://presentation-cryptopay.dev.kube
+        https://testnet.cryptopay.band","runtime.endpoint.order.cors.allowedHeaders":"*","runtime.endpoint.order.cors.methods":"GET,
+        POST, PUT, DELETE","runtime.endpoint.order.cors.whiteList":"https://presentation-cryptopay.dev.kube
+        https://testnet.cryptopay.band https://testnet.cryptopay.band","runtime.endpoint.risk.cors.allowedHeaders":"*","runtime.endpoint.risk.cors.methods":"GET,
+        POST, PUT, DELETE","runtime.endpoint.risk.cors.whiteList":"https://presentation-cryptopay.dev.kube
+        https://testnet.cryptopay.band","runtime.endpoint.swaggerUi.bindPath":"/specs","runtime.endpoint.swaggerUi.servers":"presentationSrv","runtime.endpoint.swaggerUi.specs.Cryptopay":"/v2/cryptopay.v2.oas3.yaml","runtime.endpoint.swaggerUi.specs.Gateway":"/gateway/gateway.v2.oas3.yaml","runtime.endpoint.swaggerUi.type":"swagger-ui","runtime.endpoint.time.cors.allowedHeaders":"*","runtime.endpoint.time.cors.methods":"GET,
+        POST, PUT, DELETE","runtime.endpoint.time.cors.whiteList":"https://presentation-cryptopay.dev.kube
+        https://testnet.cryptopay.band","runtime.endpoint_indexer":"account dashboard
+        instrument internalInfo gateApi gateCallback merchant monitoring network notification
+        order rate risk sysadmin swaggerUi time","runtime.gate.smtpGmail.user":"service@zxteam.net","runtime.notifier.subscriber.kind":"web-socket-client","runtime.notifier.subscriber.url":"ws://notifier.cryptopay-infra:8080/subscriber/websockethost/presentation","runtime.pss.aggregator.url":"https://pss-rpc.dev.kube/aggregator","runtime.pss.cryptoWalletHelper.url":"https://pss-rpc.dev.kube/cryptopay","runtime.pss.cryptopay.url":"https://pss-rpc.dev.kube/cryptopay","runtime.pss.es.url":"https://pss-rpc.dev.kube/cryptopay","runtime.server.presentationSrv.clientCertificateMode_":"none","runtime.server.presentationSrv.listenHost":"0.0.0.0","runtime.server.presentationSrv.listenPort":"8083","runtime.server.presentationSrv.serverCertificate_":"/etc/cexiolabs/cryptopay/ssl/tls.crt","runtime.server.presentationSrv.serverKey_":"/etc/cexiolabs/cryptopay/ssl/tls.key","runtime.server.presentationSrv.trustProxy":"true","runtime.server.presentationSrv.type":"http","runtime.server.sysadminSrv.clientCertificateMode":"none","runtime.server.sysadminSrv.listenHost":"0.0.0.0","runtime.server.sysadminSrv.serverCertificate":"/etc/cexiolabs/cryptopay/ssl/tls.crt","runtime.server.sysadminSrv.serverKey":"/etc/cexiolabs/cryptopay/ssl/tls.key","runtime.server.sysadminSrv.trustProxy":"true","runtime.server.sysadminSrv.type":"https","runtime.server_indexer":"callbacksSrv
+        dashboardApiSrv gateApiSrv loopbackSrv monitoringSrv presentationSrv processingApiSrv
+        sysadminSrv"},"kind":"ConfigMap","metadata":{"annotations":{},"name":"processing-envvars","namespace":"cryptopay-presentation"}}'
+    creationTimestamp: "2020-10-23T11:48:14Z"
+    name: processing-envvars
+    namespace: cryptopay-presentation
+    resourceVersion: "500428495"
+    selfLink: /api/v1/namespaces/cryptopay-presentation/configmaps/processing-envvars
+    uid: a2650792-1525-11eb-8bb5-00163e6b1f66
+- apiVersion: v1
+  data:
+    setup.accessKeyCreate.3e45e6e50b1ba24461e26e530cd27d24.merchantName: INTERNAL_DEBUG
+    setup.accessKeyCreate.3e45e6e50b1ba24461e26e530cd27d24.passphrase: ud200659094
+    setup.accessKeyCreate.3e45e6e50b1ba24461e26e530cd27d24.tag: Key for INTERNAL_DEBUG
+      merchant
+    setup.accessKeyCreate.ccb2ecef368c8bf194adb66918f29e64.merchantName: QA
+    setup.accessKeyCreate.ccb2ecef368c8bf194adb66918f29e64.passphrase: 1xb93hmg5zt9d2io
+    setup.accessKeyCreate.ccb2ecef368c8bf194adb66918f29e64.tag: Key for QA merchant
+    setup.accessKeyCreate.f59e662d34c119486315762709fb2a32.merchantName: DACH__DEBUG
+    setup.accessKeyCreate.f59e662d34c119486315762709fb2a32.passphrase: oo60iukxnjrwavlc
+    setup.accessKeyCreate.f59e662d34c119486315762709fb2a32.tag: Key for DACH__DEBUG
+      merchant (for Ecommpay's testing)
+    setup.accessKeyCreate_indexer: 3e45e6e50b1ba24461e26e530cd27d24 f59e662d34c119486315762709fb2a32
+      ccb2ecef368c8bf194adb66918f29e64
+    setup.createCallbackKey.4ee85def4a367d76de5d78c30f1c54e1.index: 4ee85def4a367d76de5d78c30f1c54e1
+    setup.createCallbackKey.4ee85def4a367d76de5d78c30f1c54e1.merchantName: DACH__DEBUG
+    setup.createCallbackKey_indexer: 4ee85def4a367d76de5d78c30f1c54e1
+  kind: ConfigMap
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","data":{"setup.accessKeyCreate.3e45e6e50b1ba24461e26e530cd27d24.merchantName":"INTERNAL_DEBUG","setup.accessKeyCreate.3e45e6e50b1ba24461e26e530cd27d24.passphrase":"ud200659094","setup.accessKeyCreate.3e45e6e50b1ba24461e26e530cd27d24.tag":"Key for INTERNAL_DEBUG merchant","setup.accessKeyCreate.ccb2ecef368c8bf194adb66918f29e64.merchantName":"QA","setup.accessKeyCreate.ccb2ecef368c8bf194adb66918f29e64.passphrase":"1xb93hmg5zt9d2io","setup.accessKeyCreate.ccb2ecef368c8bf194adb66918f29e64.tag":"Key for QA merchant","setup.accessKeyCreate.f59e662d34c119486315762709fb2a32.merchantName":"DACH__DEBUG","setup.accessKeyCreate.f59e662d34c119486315762709fb2a32.passphrase":"oo60iukxnjrwavlc","setup.accessKeyCreate.f59e662d34c119486315762709fb2a32.tag":"Key for DACH__DEBUG merchant (for Ecommpay's testing)","setup.accessKeyCreate_indexer":"3e45e6e50b1ba24461e26e530cd27d24 f59e662d34c119486315762709fb2a32 ccb2ecef368c8bf194adb66918f29e64","setup.createCallbackKey.4ee85def4a367d76de5d78c30f1c54e1.index":"4ee85def4a367d76de5d78c30f1c54e1","setup.createCallbackKey.4ee85def4a367d76de5d78c30f1c54e1.merchantName":"DACH__DEBUG","setup.createCallbackKey_indexer":"4ee85def4a367d76de5d78c30f1c54e1"},"kind":"ConfigMap","metadata":{"annotations":{},"name":"processing-envvars-setup","namespace":"cryptopay-presentation"}}
+    creationTimestamp: "2020-10-23T11:48:47Z"
+    name: processing-envvars-setup
+    namespace: cryptopay-presentation
+    resourceVersion: "396317340"
+    selfLink: /api/v1/namespaces/cryptopay-presentation/configmaps/processing-envvars-setup
+    uid: b61f6c44-1525-11eb-8bb5-00163e6b1f66
+- apiVersion: v1
+  data:
+    trusted-aggregator-ca.crt: |-
+      -----BEGIN CERTIFICATE-----
+      MIIC+zCCAeOgAwIBAgIJAL+WKDjrPicJMA0GCSqGSIb3DQEBCwUAMBQxEjAQBgNV
+      BAMMCURldkN1YmVDQTAeFw0xODExMTMwMzM4MzVaFw0yODExMTAwMzM4MzVaMBQx
+      EjAQBgNVBAMMCURldkN1YmVDQTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoC
+      ggEBAK46Ufg03ITIJJB/zhxfxSpP/ErsY+z6V9gW+5rcvMK93i6XAfsBdvGgmSoY
+      Jxuz6sfp8HKaORfWhbaiqC3OSZZB+qf2j1LcafplsyXs5JlsKyayhZxMgAEsniTf
+      LK02x64YAExWy6Khj/ksWG1Iuz7xBvxjhNxq1Av7xxELeX72HNadQnX+SPhMqMmC
+      iDYpZ4/ZB+u+HH7bvH85p15XSqmVFaOJYQ9nzU89lNvk7LjZY1bZYjxQMGLG3iMM
+      nBvF00dNXKE0H0ggWXKqZBQ/Ga5vQD9fWuJJ8tllWw0FJ0VKYpv9UxqNRlhLYKeS
+      Tph1mb+Zz2SkCV6usAQUjY1lUr8CAwEAAaNQME4wHQYDVR0OBBYEFHFM744LvPZa
+      oSmiaLn84bkkPmRaMB8GA1UdIwQYMBaAFHFM744LvPZaoSmiaLn84bkkPmRaMAwG
+      A1UdEwQFMAMBAf8wDQYJKoZIhvcNAQELBQADggEBABXjoNJxuTMCODqEss5JVSVx
+      /iO4vhWzK22mjrNw2MhYcn1S0/SjnrZej+iYATLS6dJHy3zLiCt5okk3IQvABK5z
+      x3WoCcle3nAwYCUEcGH75FJ2v8/2usBc8KgMS0ChfDJ6SeHeU/6baIsQNtzUC6oh
+      6YlqkpmwWe4EiWTxtkg6OPiBkO8gpEfmGCZMcaBXh2ECo3rbAZd/ExBTrpOjeUqM
+      by0rQ4vBeRtUwQjqqpkbxkhRZTt3fbcpOCC9UfM7efpAvt0QQd5ZopNnQp4SZdv/
+      +H7iW/hOXvy3PIlBn92NobrFZhJNRGl0zYdpfyN3nYF3/p2pCDxi5j+hOy9QtM8=
+      -----END CERTIFICATE-----
+    trusted-pssaggregator-ca.crt: |-
+      -----BEGIN CERTIFICATE-----
+      MIIDljCCAn6gAwIBAgIUD24zuoOQNAuIP9yj4qvgrAgMxwMwDQYJKoZIhvcNAQEL
+      BQAwLTEWMBQGA1UECgwNV05CIFNvbHV0aW9uczETMBEGA1UEAwwKSW5mcmFXTkJD
+      QTAeFw0xOTA4MDcxNTI0MTFaFw0yOTA4MDQxNTI0MTFaMC0xFjAUBgNVBAoMDVdO
+      QiBTb2x1dGlvbnMxEzARBgNVBAMMCkluZnJhV05CQ0EwggEiMA0GCSqGSIb3DQEB
+      AQUAA4IBDwAwggEKAoIBAQDW7V7uXeJt1u19ct/Xqom5PHPJBbXFSJzkmZb9OGwy
+      O88B/EBkLdOrYG6yVh81bRM2BAhYe4kWQ7Gxv0+8IVZlvOr15izBLyAj6HJ72S65
+      muRNHC9s/zGt5U+3Lsr7hc7pc1lSXc2+CUuFgS+pOwVf4btxCvukOUGgOXenyK3y
+      wPNJPWDCN+Zfe/aGKu3Qz+hZuqvJME10FZN6EGl+PFuqLfbub8uOIcQUV+Bay/zo
+      LM1M5h/Tmcs0QcRkk3dFaD2k5YtBRzxGGRIZfBbAvxrWFpdcRAGXEsTH7F85G9+u
+      0+e4O/6B1dlxpZ2xtcylEhyvG/RLJYcMMpYoUXaHSlYvAgMBAAGjga0wgaowDwYD
+      VR0TAQH/BAUwAwEB/zAOBgNVHQ8BAf8EBAMCAQYwHQYDVR0OBBYEFN79y6IAEzSk
+      TvP0707bJZ9pimlrMGgGA1UdIwRhMF+AFN79y6IAEzSkTvP0707bJZ9pimlroTGk
+      LzAtMRYwFAYDVQQKDA1XTkIgU29sdXRpb25zMRMwEQYDVQQDDApJbmZyYVdOQkNB
+      ghQPbjO6g5A0C4g/3KPiq+CsCAzHAzANBgkqhkiG9w0BAQsFAAOCAQEAeyrGsLUz
+      4mhsUh25TR+EFM47QpkO5vkCoR7Ey4NBDaPwreCvlMfVH6p7LmVNRjPvZZ3XuRy4
+      IfxaqGPW1ayFSywT/7sQuPlGERoVSFpiP52tg1gHEhYMrw5aLNj/1vtRfSXwcbg8
+      fcgsH2JFE7oeSrJiYCz/KcQLCh+GcRODsh6bplAQ9T/DZ6RsaOuwpN/GuyOdJRMU
+      hJuiNGe5F68sCu8AG9pYgPfPks6hSSOjWbt2RbdRvD5O27E9xZpN3oMWlnveNTcD
+      sLQ+LfDODy8padt2P3GgWj/RTn4yAIvtvUJg9+HqpqIYmq5HANzW85oNGTg7/KOH
+      qBHLI7AoM+YmlA==
+      -----END CERTIFICATE-----
+    trusted-psscryptopay-ca.crt: |-
+      -----BEGIN CERTIFICATE-----
+      MIIDljCCAn6gAwIBAgIUD24zuoOQNAuIP9yj4qvgrAgMxwMwDQYJKoZIhvcNAQEL
+      BQAwLTEWMBQGA1UECgwNV05CIFNvbHV0aW9uczETMBEGA1UEAwwKSW5mcmFXTkJD
+      QTAeFw0xOTA4MDcxNTI0MTFaFw0yOTA4MDQxNTI0MTFaMC0xFjAUBgNVBAoMDVdO
+      QiBTb2x1dGlvbnMxEzARBgNVBAMMCkluZnJhV05CQ0EwggEiMA0GCSqGSIb3DQEB
+      AQUAA4IBDwAwggEKAoIBAQDW7V7uXeJt1u19ct/Xqom5PHPJBbXFSJzkmZb9OGwy
+      O88B/EBkLdOrYG6yVh81bRM2BAhYe4kWQ7Gxv0+8IVZlvOr15izBLyAj6HJ72S65
+      muRNHC9s/zGt5U+3Lsr7hc7pc1lSXc2+CUuFgS+pOwVf4btxCvukOUGgOXenyK3y
+      wPNJPWDCN+Zfe/aGKu3Qz+hZuqvJME10FZN6EGl+PFuqLfbub8uOIcQUV+Bay/zo
+      LM1M5h/Tmcs0QcRkk3dFaD2k5YtBRzxGGRIZfBbAvxrWFpdcRAGXEsTH7F85G9+u
+      0+e4O/6B1dlxpZ2xtcylEhyvG/RLJYcMMpYoUXaHSlYvAgMBAAGjga0wgaowDwYD
+      VR0TAQH/BAUwAwEB/zAOBgNVHQ8BAf8EBAMCAQYwHQYDVR0OBBYEFN79y6IAEzSk
+      TvP0707bJZ9pimlrMGgGA1UdIwRhMF+AFN79y6IAEzSkTvP0707bJZ9pimlroTGk
+      LzAtMRYwFAYDVQQKDA1XTkIgU29sdXRpb25zMRMwEQYDVQQDDApJbmZyYVdOQkNB
+      ghQPbjO6g5A0C4g/3KPiq+CsCAzHAzANBgkqhkiG9w0BAQsFAAOCAQEAeyrGsLUz
+      4mhsUh25TR+EFM47QpkO5vkCoR7Ey4NBDaPwreCvlMfVH6p7LmVNRjPvZZ3XuRy4
+      IfxaqGPW1ayFSywT/7sQuPlGERoVSFpiP52tg1gHEhYMrw5aLNj/1vtRfSXwcbg8
+      fcgsH2JFE7oeSrJiYCz/KcQLCh+GcRODsh6bplAQ9T/DZ6RsaOuwpN/GuyOdJRMU
+      hJuiNGe5F68sCu8AG9pYgPfPks6hSSOjWbt2RbdRvD5O27E9xZpN3oMWlnveNTcD
+      sLQ+LfDODy8padt2P3GgWj/RTn4yAIvtvUJg9+HqpqIYmq5HANzW85oNGTg7/KOH
+      qBHLI7AoM+YmlA==
+      -----END CERTIFICATE-----
+    trusted-psscryptowallethelper-ca.crt: |-
+      -----BEGIN CERTIFICATE-----
+      MIIDljCCAn6gAwIBAgIUD24zuoOQNAuIP9yj4qvgrAgMxwMwDQYJKoZIhvcNAQEL
+      BQAwLTEWMBQGA1UECgwNV05CIFNvbHV0aW9uczETMBEGA1UEAwwKSW5mcmFXTkJD
+      QTAeFw0xOTA4MDcxNTI0MTFaFw0yOTA4MDQxNTI0MTFaMC0xFjAUBgNVBAoMDVdO
+      QiBTb2x1dGlvbnMxEzARBgNVBAMMCkluZnJhV05CQ0EwggEiMA0GCSqGSIb3DQEB
+      AQUAA4IBDwAwggEKAoIBAQDW7V7uXeJt1u19ct/Xqom5PHPJBbXFSJzkmZb9OGwy
+      O88B/EBkLdOrYG6yVh81bRM2BAhYe4kWQ7Gxv0+8IVZlvOr15izBLyAj6HJ72S65
+      muRNHC9s/zGt5U+3Lsr7hc7pc1lSXc2+CUuFgS+pOwVf4btxCvukOUGgOXenyK3y
+      wPNJPWDCN+Zfe/aGKu3Qz+hZuqvJME10FZN6EGl+PFuqLfbub8uOIcQUV+Bay/zo
+      LM1M5h/Tmcs0QcRkk3dFaD2k5YtBRzxGGRIZfBbAvxrWFpdcRAGXEsTH7F85G9+u
+      0+e4O/6B1dlxpZ2xtcylEhyvG/RLJYcMMpYoUXaHSlYvAgMBAAGjga0wgaowDwYD
+      VR0TAQH/BAUwAwEB/zAOBgNVHQ8BAf8EBAMCAQYwHQYDVR0OBBYEFN79y6IAEzSk
+      TvP0707bJZ9pimlrMGgGA1UdIwRhMF+AFN79y6IAEzSkTvP0707bJZ9pimlroTGk
+      LzAtMRYwFAYDVQQKDA1XTkIgU29sdXRpb25zMRMwEQYDVQQDDApJbmZyYVdOQkNB
+      ghQPbjO6g5A0C4g/3KPiq+CsCAzHAzANBgkqhkiG9w0BAQsFAAOCAQEAeyrGsLUz
+      4mhsUh25TR+EFM47QpkO5vkCoR7Ey4NBDaPwreCvlMfVH6p7LmVNRjPvZZ3XuRy4
+      IfxaqGPW1ayFSywT/7sQuPlGERoVSFpiP52tg1gHEhYMrw5aLNj/1vtRfSXwcbg8
+      fcgsH2JFE7oeSrJiYCz/KcQLCh+GcRODsh6bplAQ9T/DZ6RsaOuwpN/GuyOdJRMU
+      hJuiNGe5F68sCu8AG9pYgPfPks6hSSOjWbt2RbdRvD5O27E9xZpN3oMWlnveNTcD
+      sLQ+LfDODy8padt2P3GgWj/RTn4yAIvtvUJg9+HqpqIYmq5HANzW85oNGTg7/KOH
+      qBHLI7AoM+YmlA==
+      -----END CERTIFICATE-----
+    trusted-wtf2pss-ca.crt: |-
+      -----BEGIN CERTIFICATE-----
+      MIIDljCCAn6gAwIBAgIUD24zuoOQNAuIP9yj4qvgrAgMxwMwDQYJKoZIhvcNAQEL
+      BQAwLTEWMBQGA1UECgwNV05CIFNvbHV0aW9uczETMBEGA1UEAwwKSW5mcmFXTkJD
+      QTAeFw0xOTA4MDcxNTI0MTFaFw0yOTA4MDQxNTI0MTFaMC0xFjAUBgNVBAoMDVdO
+      QiBTb2x1dGlvbnMxEzARBgNVBAMMCkluZnJhV05CQ0EwggEiMA0GCSqGSIb3DQEB
+      AQUAA4IBDwAwggEKAoIBAQDW7V7uXeJt1u19ct/Xqom5PHPJBbXFSJzkmZb9OGwy
+      O88B/EBkLdOrYG6yVh81bRM2BAhYe4kWQ7Gxv0+8IVZlvOr15izBLyAj6HJ72S65
+      muRNHC9s/zGt5U+3Lsr7hc7pc1lSXc2+CUuFgS+pOwVf4btxCvukOUGgOXenyK3y
+      wPNJPWDCN+Zfe/aGKu3Qz+hZuqvJME10FZN6EGl+PFuqLfbub8uOIcQUV+Bay/zo
+      LM1M5h/Tmcs0QcRkk3dFaD2k5YtBRzxGGRIZfBbAvxrWFpdcRAGXEsTH7F85G9+u
+      0+e4O/6B1dlxpZ2xtcylEhyvG/RLJYcMMpYoUXaHSlYvAgMBAAGjga0wgaowDwYD
+      VR0TAQH/BAUwAwEB/zAOBgNVHQ8BAf8EBAMCAQYwHQYDVR0OBBYEFN79y6IAEzSk
+      TvP0707bJZ9pimlrMGgGA1UdIwRhMF+AFN79y6IAEzSkTvP0707bJZ9pimlroTGk
+      LzAtMRYwFAYDVQQKDA1XTkIgU29sdXRpb25zMRMwEQYDVQQDDApJbmZyYVdOQkNB
+      ghQPbjO6g5A0C4g/3KPiq+CsCAzHAzANBgkqhkiG9w0BAQsFAAOCAQEAeyrGsLUz
+      4mhsUh25TR+EFM47QpkO5vkCoR7Ey4NBDaPwreCvlMfVH6p7LmVNRjPvZZ3XuRy4
+      IfxaqGPW1ayFSywT/7sQuPlGERoVSFpiP52tg1gHEhYMrw5aLNj/1vtRfSXwcbg8
+      fcgsH2JFE7oeSrJiYCz/KcQLCh+GcRODsh6bplAQ9T/DZ6RsaOuwpN/GuyOdJRMU
+      hJuiNGe5F68sCu8AG9pYgPfPks6hSSOjWbt2RbdRvD5O27E9xZpN3oMWlnveNTcD
+      sLQ+LfDODy8padt2P3GgWj/RTn4yAIvtvUJg9+HqpqIYmq5HANzW85oNGTg7/KOH
+      qBHLI7AoM+YmlA==
+      -----END CERTIFICATE-----
+  kind: ConfigMap
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","data":{"trusted-aggregator-ca.crt":"-----BEGIN CERTIFICATE-----\nMIIC+zCCAeOgAwIBAgIJAL+WKDjrPicJMA0GCSqGSIb3DQEBCwUAMBQxEjAQBgNV\nBAMMCURldkN1YmVDQTAeFw0xODExMTMwMzM4MzVaFw0yODExMTAwMzM4MzVaMBQx\nEjAQBgNVBAMMCURldkN1YmVDQTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoC\nggEBAK46Ufg03ITIJJB/zhxfxSpP/ErsY+z6V9gW+5rcvMK93i6XAfsBdvGgmSoY\nJxuz6sfp8HKaORfWhbaiqC3OSZZB+qf2j1LcafplsyXs5JlsKyayhZxMgAEsniTf\nLK02x64YAExWy6Khj/ksWG1Iuz7xBvxjhNxq1Av7xxELeX72HNadQnX+SPhMqMmC\niDYpZ4/ZB+u+HH7bvH85p15XSqmVFaOJYQ9nzU89lNvk7LjZY1bZYjxQMGLG3iMM\nnBvF00dNXKE0H0ggWXKqZBQ/Ga5vQD9fWuJJ8tllWw0FJ0VKYpv9UxqNRlhLYKeS\nTph1mb+Zz2SkCV6usAQUjY1lUr8CAwEAAaNQME4wHQYDVR0OBBYEFHFM744LvPZa\noSmiaLn84bkkPmRaMB8GA1UdIwQYMBaAFHFM744LvPZaoSmiaLn84bkkPmRaMAwG\nA1UdEwQFMAMBAf8wDQYJKoZIhvcNAQELBQADggEBABXjoNJxuTMCODqEss5JVSVx\n/iO4vhWzK22mjrNw2MhYcn1S0/SjnrZej+iYATLS6dJHy3zLiCt5okk3IQvABK5z\nx3WoCcle3nAwYCUEcGH75FJ2v8/2usBc8KgMS0ChfDJ6SeHeU/6baIsQNtzUC6oh\n6YlqkpmwWe4EiWTxtkg6OPiBkO8gpEfmGCZMcaBXh2ECo3rbAZd/ExBTrpOjeUqM\nby0rQ4vBeRtUwQjqqpkbxkhRZTt3fbcpOCC9UfM7efpAvt0QQd5ZopNnQp4SZdv/\n+H7iW/hOXvy3PIlBn92NobrFZhJNRGl0zYdpfyN3nYF3/p2pCDxi5j+hOy9QtM8=\n-----END CERTIFICATE-----","trusted-pssaggregator-ca.crt":"-----BEGIN CERTIFICATE-----\nMIIDljCCAn6gAwIBAgIUD24zuoOQNAuIP9yj4qvgrAgMxwMwDQYJKoZIhvcNAQEL\nBQAwLTEWMBQGA1UECgwNV05CIFNvbHV0aW9uczETMBEGA1UEAwwKSW5mcmFXTkJD\nQTAeFw0xOTA4MDcxNTI0MTFaFw0yOTA4MDQxNTI0MTFaMC0xFjAUBgNVBAoMDVdO\nQiBTb2x1dGlvbnMxEzARBgNVBAMMCkluZnJhV05CQ0EwggEiMA0GCSqGSIb3DQEB\nAQUAA4IBDwAwggEKAoIBAQDW7V7uXeJt1u19ct/Xqom5PHPJBbXFSJzkmZb9OGwy\nO88B/EBkLdOrYG6yVh81bRM2BAhYe4kWQ7Gxv0+8IVZlvOr15izBLyAj6HJ72S65\nmuRNHC9s/zGt5U+3Lsr7hc7pc1lSXc2+CUuFgS+pOwVf4btxCvukOUGgOXenyK3y\nwPNJPWDCN+Zfe/aGKu3Qz+hZuqvJME10FZN6EGl+PFuqLfbub8uOIcQUV+Bay/zo\nLM1M5h/Tmcs0QcRkk3dFaD2k5YtBRzxGGRIZfBbAvxrWFpdcRAGXEsTH7F85G9+u\n0+e4O/6B1dlxpZ2xtcylEhyvG/RLJYcMMpYoUXaHSlYvAgMBAAGjga0wgaowDwYD\nVR0TAQH/BAUwAwEB/zAOBgNVHQ8BAf8EBAMCAQYwHQYDVR0OBBYEFN79y6IAEzSk\nTvP0707bJZ9pimlrMGgGA1UdIwRhMF+AFN79y6IAEzSkTvP0707bJZ9pimlroTGk\nLzAtMRYwFAYDVQQKDA1XTkIgU29sdXRpb25zMRMwEQYDVQQDDApJbmZyYVdOQkNB\nghQPbjO6g5A0C4g/3KPiq+CsCAzHAzANBgkqhkiG9w0BAQsFAAOCAQEAeyrGsLUz\n4mhsUh25TR+EFM47QpkO5vkCoR7Ey4NBDaPwreCvlMfVH6p7LmVNRjPvZZ3XuRy4\nIfxaqGPW1ayFSywT/7sQuPlGERoVSFpiP52tg1gHEhYMrw5aLNj/1vtRfSXwcbg8\nfcgsH2JFE7oeSrJiYCz/KcQLCh+GcRODsh6bplAQ9T/DZ6RsaOuwpN/GuyOdJRMU\nhJuiNGe5F68sCu8AG9pYgPfPks6hSSOjWbt2RbdRvD5O27E9xZpN3oMWlnveNTcD\nsLQ+LfDODy8padt2P3GgWj/RTn4yAIvtvUJg9+HqpqIYmq5HANzW85oNGTg7/KOH\nqBHLI7AoM+YmlA==\n-----END CERTIFICATE-----","trusted-psscryptopay-ca.crt":"-----BEGIN CERTIFICATE-----\nMIIDljCCAn6gAwIBAgIUD24zuoOQNAuIP9yj4qvgrAgMxwMwDQYJKoZIhvcNAQEL\nBQAwLTEWMBQGA1UECgwNV05CIFNvbHV0aW9uczETMBEGA1UEAwwKSW5mcmFXTkJD\nQTAeFw0xOTA4MDcxNTI0MTFaFw0yOTA4MDQxNTI0MTFaMC0xFjAUBgNVBAoMDVdO\nQiBTb2x1dGlvbnMxEzARBgNVBAMMCkluZnJhV05CQ0EwggEiMA0GCSqGSIb3DQEB\nAQUAA4IBDwAwggEKAoIBAQDW7V7uXeJt1u19ct/Xqom5PHPJBbXFSJzkmZb9OGwy\nO88B/EBkLdOrYG6yVh81bRM2BAhYe4kWQ7Gxv0+8IVZlvOr15izBLyAj6HJ72S65\nmuRNHC9s/zGt5U+3Lsr7hc7pc1lSXc2+CUuFgS+pOwVf4btxCvukOUGgOXenyK3y\nwPNJPWDCN+Zfe/aGKu3Qz+hZuqvJME10FZN6EGl+PFuqLfbub8uOIcQUV+Bay/zo\nLM1M5h/Tmcs0QcRkk3dFaD2k5YtBRzxGGRIZfBbAvxrWFpdcRAGXEsTH7F85G9+u\n0+e4O/6B1dlxpZ2xtcylEhyvG/RLJYcMMpYoUXaHSlYvAgMBAAGjga0wgaowDwYD\nVR0TAQH/BAUwAwEB/zAOBgNVHQ8BAf8EBAMCAQYwHQYDVR0OBBYEFN79y6IAEzSk\nTvP0707bJZ9pimlrMGgGA1UdIwRhMF+AFN79y6IAEzSkTvP0707bJZ9pimlroTGk\nLzAtMRYwFAYDVQQKDA1XTkIgU29sdXRpb25zMRMwEQYDVQQDDApJbmZyYVdOQkNB\nghQPbjO6g5A0C4g/3KPiq+CsCAzHAzANBgkqhkiG9w0BAQsFAAOCAQEAeyrGsLUz\n4mhsUh25TR+EFM47QpkO5vkCoR7Ey4NBDaPwreCvlMfVH6p7LmVNRjPvZZ3XuRy4\nIfxaqGPW1ayFSywT/7sQuPlGERoVSFpiP52tg1gHEhYMrw5aLNj/1vtRfSXwcbg8\nfcgsH2JFE7oeSrJiYCz/KcQLCh+GcRODsh6bplAQ9T/DZ6RsaOuwpN/GuyOdJRMU\nhJuiNGe5F68sCu8AG9pYgPfPks6hSSOjWbt2RbdRvD5O27E9xZpN3oMWlnveNTcD\nsLQ+LfDODy8padt2P3GgWj/RTn4yAIvtvUJg9+HqpqIYmq5HANzW85oNGTg7/KOH\nqBHLI7AoM+YmlA==\n-----END CERTIFICATE-----","trusted-psscryptowallethelper-ca.crt":"-----BEGIN CERTIFICATE-----\nMIIDljCCAn6gAwIBAgIUD24zuoOQNAuIP9yj4qvgrAgMxwMwDQYJKoZIhvcNAQEL\nBQAwLTEWMBQGA1UECgwNV05CIFNvbHV0aW9uczETMBEGA1UEAwwKSW5mcmFXTkJD\nQTAeFw0xOTA4MDcxNTI0MTFaFw0yOTA4MDQxNTI0MTFaMC0xFjAUBgNVBAoMDVdO\nQiBTb2x1dGlvbnMxEzARBgNVBAMMCkluZnJhV05CQ0EwggEiMA0GCSqGSIb3DQEB\nAQUAA4IBDwAwggEKAoIBAQDW7V7uXeJt1u19ct/Xqom5PHPJBbXFSJzkmZb9OGwy\nO88B/EBkLdOrYG6yVh81bRM2BAhYe4kWQ7Gxv0+8IVZlvOr15izBLyAj6HJ72S65\nmuRNHC9s/zGt5U+3Lsr7hc7pc1lSXc2+CUuFgS+pOwVf4btxCvukOUGgOXenyK3y\nwPNJPWDCN+Zfe/aGKu3Qz+hZuqvJME10FZN6EGl+PFuqLfbub8uOIcQUV+Bay/zo\nLM1M5h/Tmcs0QcRkk3dFaD2k5YtBRzxGGRIZfBbAvxrWFpdcRAGXEsTH7F85G9+u\n0+e4O/6B1dlxpZ2xtcylEhyvG/RLJYcMMpYoUXaHSlYvAgMBAAGjga0wgaowDwYD\nVR0TAQH/BAUwAwEB/zAOBgNVHQ8BAf8EBAMCAQYwHQYDVR0OBBYEFN79y6IAEzSk\nTvP0707bJZ9pimlrMGgGA1UdIwRhMF+AFN79y6IAEzSkTvP0707bJZ9pimlroTGk\nLzAtMRYwFAYDVQQKDA1XTkIgU29sdXRpb25zMRMwEQYDVQQDDApJbmZyYVdOQkNB\nghQPbjO6g5A0C4g/3KPiq+CsCAzHAzANBgkqhkiG9w0BAQsFAAOCAQEAeyrGsLUz\n4mhsUh25TR+EFM47QpkO5vkCoR7Ey4NBDaPwreCvlMfVH6p7LmVNRjPvZZ3XuRy4\nIfxaqGPW1ayFSywT/7sQuPlGERoVSFpiP52tg1gHEhYMrw5aLNj/1vtRfSXwcbg8\nfcgsH2JFE7oeSrJiYCz/KcQLCh+GcRODsh6bplAQ9T/DZ6RsaOuwpN/GuyOdJRMU\nhJuiNGe5F68sCu8AG9pYgPfPks6hSSOjWbt2RbdRvD5O27E9xZpN3oMWlnveNTcD\nsLQ+LfDODy8padt2P3GgWj/RTn4yAIvtvUJg9+HqpqIYmq5HANzW85oNGTg7/KOH\nqBHLI7AoM+YmlA==\n-----END CERTIFICATE-----","trusted-wtf2pss-ca.crt":"-----BEGIN CERTIFICATE-----\nMIIDljCCAn6gAwIBAgIUD24zuoOQNAuIP9yj4qvgrAgMxwMwDQYJKoZIhvcNAQEL\nBQAwLTEWMBQGA1UECgwNV05CIFNvbHV0aW9uczETMBEGA1UEAwwKSW5mcmFXTkJD\nQTAeFw0xOTA4MDcxNTI0MTFaFw0yOTA4MDQxNTI0MTFaMC0xFjAUBgNVBAoMDVdO\nQiBTb2x1dGlvbnMxEzARBgNVBAMMCkluZnJhV05CQ0EwggEiMA0GCSqGSIb3DQEB\nAQUAA4IBDwAwggEKAoIBAQDW7V7uXeJt1u19ct/Xqom5PHPJBbXFSJzkmZb9OGwy\nO88B/EBkLdOrYG6yVh81bRM2BAhYe4kWQ7Gxv0+8IVZlvOr15izBLyAj6HJ72S65\nmuRNHC9s/zGt5U+3Lsr7hc7pc1lSXc2+CUuFgS+pOwVf4btxCvukOUGgOXenyK3y\nwPNJPWDCN+Zfe/aGKu3Qz+hZuqvJME10FZN6EGl+PFuqLfbub8uOIcQUV+Bay/zo\nLM1M5h/Tmcs0QcRkk3dFaD2k5YtBRzxGGRIZfBbAvxrWFpdcRAGXEsTH7F85G9+u\n0+e4O/6B1dlxpZ2xtcylEhyvG/RLJYcMMpYoUXaHSlYvAgMBAAGjga0wgaowDwYD\nVR0TAQH/BAUwAwEB/zAOBgNVHQ8BAf8EBAMCAQYwHQYDVR0OBBYEFN79y6IAEzSk\nTvP0707bJZ9pimlrMGgGA1UdIwRhMF+AFN79y6IAEzSkTvP0707bJZ9pimlroTGk\nLzAtMRYwFAYDVQQKDA1XTkIgU29sdXRpb25zMRMwEQYDVQQDDApJbmZyYVdOQkNB\nghQPbjO6g5A0C4g/3KPiq+CsCAzHAzANBgkqhkiG9w0BAQsFAAOCAQEAeyrGsLUz\n4mhsUh25TR+EFM47QpkO5vkCoR7Ey4NBDaPwreCvlMfVH6p7LmVNRjPvZZ3XuRy4\nIfxaqGPW1ayFSywT/7sQuPlGERoVSFpiP52tg1gHEhYMrw5aLNj/1vtRfSXwcbg8\nfcgsH2JFE7oeSrJiYCz/KcQLCh+GcRODsh6bplAQ9T/DZ6RsaOuwpN/GuyOdJRMU\nhJuiNGe5F68sCu8AG9pYgPfPks6hSSOjWbt2RbdRvD5O27E9xZpN3oMWlnveNTcD\nsLQ+LfDODy8padt2P3GgWj/RTn4yAIvtvUJg9+HqpqIYmq5HANzW85oNGTg7/KOH\nqBHLI7AoM+YmlA==\n-----END CERTIFICATE-----"},"kind":"ConfigMap","metadata":{"annotations":{},"name":"processing-files","namespace":"cryptopay-presentation"}}
+    creationTimestamp: "2020-10-23T11:47:50Z"
+    name: processing-files
+    namespace: cryptopay-presentation
+    resourceVersion: "396316459"
+    selfLink: /api/v1/namespaces/cryptopay-presentation/configmaps/processing-files
+    uid: 93e85e34-1525-11eb-8bb5-00163e6b1f66
+kind: List
+metadata:
+  resourceVersion: ""
+  selfLink: ""
