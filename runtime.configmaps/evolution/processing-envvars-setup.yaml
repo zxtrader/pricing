@@ -14,3 +14,11 @@ data:
   setup.accessKeyCreate.ccb2ecef368c8bf194adb66918f29e64.passphrase: 1xb93hmg5zt9d2io
   setup.accessKeyCreate.ccb2ecef368c8bf194adb66918f29e64.tag: Key for QA merchant
   setup.accessKeyCreate_indexer: 3e45e6e50b1ba24461e26e530cd27d24 ccb2ecef368c8bf194adb66918f29e64
+  setup.createGateway.internaldebug-gateway.allowUnsignedRequests: "false"
+  setup.createGateway.internaldebug-gateway.callbackUrl: https://internaldebug-gateway-evolution-cexiopay.requestcatcher.com
+  setup.createGateway.internaldebug-gateway.description: Demo Gateway
+  setup.createGateway.internaldebug-gateway.domainWhitelist: localhost api-evolution-cexiopay.dev.kube invoice-evolution-cexiopay.dev.kube
+  setup.createGateway.internaldebug-gateway.enabled: "true"
+  setup.createGateway.internaldebug-gateway.merchantName: INTERNAL_DEBUG
+  setup.createGateway.internaldebug-gateway.uuid: d4916d66-1a16-44aa-b704-fcc80ce740d0
+  setup.createGateway_indexer: demo-gateway internaldebug-gateway

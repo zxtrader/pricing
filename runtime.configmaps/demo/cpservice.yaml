@@ -1,10 +1,10 @@
-# kubectl --namespace cryptopay-demo get --output=yaml ConfigMap/cpservice
+# kubectl --namespace cexiopay-demo get --output=yaml ConfigMap/cpservice
 
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: cpservice
-  namespace: cryptopay-demo
+  namespace: cexiopay-demo
 data:
   Aggregator-dev.json: "{\n\t\"user\": {\n\t\t\"username\": \"Processing-Service_1\",\n\t\t\"password\":
     \"PS_VCJ13hr7WBh*R\"\n\t},\n\t\"external\": {\n\t\t\"rejectUnauthorized\": false,\n\t\t\"url\":
