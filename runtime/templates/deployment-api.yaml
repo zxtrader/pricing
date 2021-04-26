@@ -56,8 +56,12 @@ spec:
         # - secretRef:
         #     name: api
         env:
-        - name: CRYPTOPAY_ENVIRONMENT
-          value: {{ .Values.environment }}
+        - name: Serilog__MinimumLevel__Default
+          value: Information
+        - name: IdentityHttpClient__Url
+          value: https://{{ template "prefix" . }}identity:8443/
+        - name: GatewayOrderHttpClient__Url
+          value: https://{{ template "prefix" . }}processing:8085/
 {{- if .Values.application.api.env }}
 {{ range $key, $value := .Values.application.api.env }}
         - name: "{{ $key }}"

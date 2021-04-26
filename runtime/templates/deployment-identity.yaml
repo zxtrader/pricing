@@ -56,8 +56,8 @@ spec:
         # - secretRef:
         #     name: identity
         env:
-        - name: CRYPTOPAY_ENVIRONMENT
-          value: {{ .Values.environment }}
+        - name: Serilog__MinimumLevel__Default
+          value: Information
 {{- if .Values.application.identity.env }}
 {{ range $key, $value := .Values.application.identity.env }}
         - name: "{{ $key }}"

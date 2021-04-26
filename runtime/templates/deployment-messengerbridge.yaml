@@ -1,3 +1,4 @@
+{{ if eq .Release.Name "blue" }}
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
@@ -44,8 +45,6 @@ spec:
           # The service will delete all files after read its. So need write access.
           readOnly: false
         env:
-        - name: RUNTIME
-          value: {{ .Values.environment }}
         - name: LOG_LEVEL
           value: info
 {{- if .Values.application.messengerbridge.env }}
@@ -85,3 +84,4 @@ spec:
       - name: secret-files
         secret:
           secretName: messengerbridge
+{{ end }}

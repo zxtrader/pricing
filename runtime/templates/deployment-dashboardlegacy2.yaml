@@ -1,41 +1,38 @@
 {{ if or (eq .Values.zone "evolution") (eq .Values.zone "presentation") }}
-# In prodution "dashboard" is hosted on GitHub Pages:
-# - https://github.com/cexiolabs/cexiopay.dashboard
-# - https://github.com/cexiolabs/cexiopay.dashboard-next
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   labels:
-    app: {{ template "prefix" . }}dashboard
-  name: {{ template "prefix" . }}dashboard
+    app: {{ template "prefix" . }}dashboardlegacy2
+  name: {{ template "prefix" . }}dashboardlegacy2
 spec:
-  replicas: {{ .Values.application.dashboard.replicas | default 0 }}
+  replicas: {{ .Values.application.dashboardlegacy2.replicas | default 0 }}
   strategy:
     type: RollingUpdate
   revisionHistoryLimit: 3
   template:
     metadata:
       labels:
-        app: {{ template "prefix" . }}dashboard
+        app: {{ template "prefix" . }}dashboardlegacy2
     spec:
       containers:
-      - name: dashboard
-        image: {{ .Values.application.dashboard.serviceImage }}:{{ .Values.application.dashboard.tag }}
-{{- if .Values.application.dashboard.command }}
+      - name: dashboardlegacy2
+        image: {{ .Values.application.dashboardlegacy2.serviceImage }}:{{ .Values.application.dashboardlegacy2.tag }}
+{{- if .Values.application.dashboardlegacy2.command }}
         command:
-{{ range .Values.application.dashboard.command }}
+{{ range .Values.application.dashboardlegacy2.command }}
         - {{ . }}
 {{ end }}
 {{- end }}
-{{- if .Values.application.dashboard.args }}
+{{- if .Values.application.dashboardlegacy2.args }}
         args:
-{{ range .Values.application.dashboard.args }}
+{{ range .Values.application.dashboardlegacy2.args }}
         - {{ . }}
 {{ end }}
 {{- end }}
         env:
-{{- if .Values.application.dashboard.env }}
-{{ range $key, $value := .Values.application.dashboard.env }}
+{{- if .Values.application.dashboardlegacy2.env }}
+{{ range $key, $value := .Values.application.dashboardlegacy2.env }}
         - name: "{{ $key }}"
           value: "{{ $value }}"
 {{ end }}
@@ -66,9 +63,9 @@ spec:
             memory: 64Mi
         volumeMounts:
         - name: secret-certificate
-          mountPath: /etc/cexiolabs/cexiopay.dashboard/ssl/
+          mountPath: /etc/cexiolabs/cexiopay.dashboard-react/ssl/
       volumes:
       - name: secret-certificate
         secret:
-          secretName: {{ template "prefix" . }}dashboard-certificate
+          secretName: {{ template "prefix" . }}dashboardlegacy2-certificate
 {{ end }}

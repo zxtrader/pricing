@@ -30,8 +30,6 @@ spec:
 {{ end }}
 {{- end }}
         env:
-        - name: RUNTIME
-          value: "{{ .Values.environment }}"
         - name: HTTPS_PORT
           value: "8443"
         - name: LOG_LEVEL

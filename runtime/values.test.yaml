@@ -1,4 +1,4 @@
-zone: evolution
+zone: test
 
 application:
   api:
@@ -6,14 +6,14 @@ application:
     args:
       [
         "--config-json-file=/etc/cexiolabs/cexiopay.api/appsettings.json",
-        "--config-json-file=/etc/cexiolabs/cexiopay.api/appsettings.evolution.json",
+        "--config-json-file=/etc/cexiolabs/cexiopay.api/appsettings.test.json",
         "--config-keyperfile-directory=/etc/cexiolabs/cexiopay.api/secrets",
         "--config-env",
         "--log-json"
       ]
     env:
       WTFProviderConfigurationFile: /etc/cexiolabs/cexiopay.api/legacy-cpservice-config/WTF-dev.json
-    replicas: 1
+    replicas: 0
   dashboard:
     serviceImage: harbor.infra.kube/cexiopay/dashboard/snapshot
     replicas: 1
@@ -23,22 +23,24 @@ application:
   demo:
     env:
       BASE_PATH: /widget-demo/
-      GATE_API_ORIGIN: https://processing:8443
-      GATE_ID: 09635610-6109-4179-833b-8675fa709d9b
-      GATE_URL: https://gate-evolution-cexiopay.dev.kube
+      GATE_API_ORIGIN: https://processing:8443/
+      GATE_ID: d3812aab-e74e-4408-94ac-0f6029f680f6
+      GATE_URL: https://gate.pay-cex-test.net
       NODE_TLS_REJECT_UNAUTHORIZED: 0
     replicas: 0
   identity:
-    serviceImage: devdocker.infra.kube/cexiopay/identity/snapshot
+    serviceImage: harbor.infra.kube/cexiopay/identity/snapshot
     args:
       [
         "--config-json-file=/etc/cexiolabs/cexiopay.identity/appsettings.json",
-        "--config-json-file=/etc/cexiolabs/cexiopay.identity/appsettings.evolution.json",
+        "--config-json-file=/etc/cexiolabs/cexiopay.identity/appsettings.test.json",
         "--config-keyperfile-directory=/etc/cexiolabs/cexiopay.identity/secrets",
         "--config-env",
         "--log-json"
       ]
-    replicas: 1
+    replicas: 0
+  messengerbridge:
+    replicas: 0
   processing:
     serviceImage: harbor.infra.kube/cexiopay/processing/snapshot
     args:
@@ -48,7 +50,7 @@ application:
         "--config-toml-file=/etc/cexiolabs/cexiopay.processing/service-setup.toml",
         "--config-toml-file=/etc/cexiolabs/cexiopay.processing/service-setup-dach.toml",
         "--config-toml-file=/etc/cexiolabs/cexiopay.processing/service-setup-goldenpay.toml",
-        "--config-toml-file=/etc/cexiolabs/cexiopay.processing/service-evolution.toml",
+        "--config-toml-file=/etc/cexiolabs/cexiopay.processing/service-test.toml",
         "--config-secrets-dir=/etc/cexiolabs/cexiopay/secrets",
         "--config-secrets-dir=/etc/cexiolabs/cexiopay/secrets-setup",
         "--config-env",
@@ -60,12 +62,12 @@ application:
       DEBUG_PORT: 9229
       DEBUG_WAIT: "no"
       LOG_LEVEL: "debug"
-      GATE_URL: https://gate-evolution-cexiopay.dev.kube
-    replicas: 1
+      GATE_URL: https://gate.pay-cex-test.net
+    replicas: 0
 ingress:
   API:
-    domain: api-evolution-cexiopay.dev.kube
-    certSecretName: dev
+    domain: api.pay-cex-test.net
+    certSecretName: ingress-pay-cex-test-certificate
     backendInsecure: false
     nginxConfigurationSnippet: |
       rewrite ^/$ /v2/time redirect;
@@ -77,15 +79,15 @@ ingress:
         backendServiceName: processing
         backendServicePort: 8080
   Callbacks:
-    domain: callback-evolution-cexiopay.dev.kube
+    domain: callback-presentation-cexiopay.dev.kube
     certSecretName: dev
     paths:
       "/ws/":
         backendServiceName: processing
         backendServicePort: 8086
   Board:
-    domain: board-evolution-cexiopay.dev.kube
-    certSecretName: dev
+    domain: board.pay-cex-test.net
+    certSecretName: ingress-pay-cex-test-certificate
     backendInsecure: false
     nginxConfigurationSnippet: |
       rewrite ^/$ /next/ redirect;
@@ -105,16 +107,16 @@ ingress:
         backendServiceName: dashboard
         backendServicePort: 8443
   Echo:
-    domain: echo-evolution-cexiopay.dev.kube
-    certSecretName: dev
+    domain: echo.pay-cex-test.net
+    certSecretName: ingress-pay-cex-test-certificate
     backendInsecure: false
     paths:
       "/":
         backendServiceName: echo
         backendServicePort: 8443
   Gate:
-    domain: gate-evolution-cexiopay.dev.kube
-    certSecretName: dev
+    domain: gate.pay-cex-test.net
+    certSecretName: ingress-pay-cex-test-certificate
     backendInsecure: false
     nginxConfigurationSnippet: |
       add_header Last-Modified $date_gmt;
@@ -127,8 +129,8 @@ ingress:
         backendServiceName: processing
         backendServicePort: 8085
   Identity:
-    domain: id-evolution-cexiopay.dev.kube
-    certSecretName: dev
+    domain: id.pay-cex-test.net
+    certSecretName: ingress-pay-cex-test-certificate
     backendInsecure: false
     paths:
       "/":
@@ -136,7 +138,7 @@ ingress:
         backendServicePort: 8443
   MessengerBridge:
     # THIS endpoint just for development purposes
-    domain: messengerbridge-evolution-cexiopay.dev.kube
+    domain: messengerbridge-test-cexiopay.dev.kube
     certSecretName: dev
     backendInsecure: false
     paths:
@@ -144,8 +146,8 @@ ingress:
         backendServiceName: messengerbridge
         backendServicePort: 8443
   Welcome:
-    domain: evolution-cexiopay.dev.kube
-    certSecretName: dev
+    domain: pay-cex-test.net
+    certSecretName: ingress-pay-cex-test-certificate
     backendInsecure: false
     paths:
       "/":

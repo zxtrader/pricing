@@ -1,4 +1,4 @@
-{{- if ne .Values.environment "production" }}
+{{- if ne .Values.zone "production" }}
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
@@ -31,8 +31,6 @@ spec:
 {{ end }}
 {{- end }}
         env:
-        - name: RUNTIME
-          value: {{ .Values.environment }}
 {{- if .Values.application.demo.env }}
 {{ range $key, $value := .Values.application.demo.env }}
         - name: "{{ $key }}"
@@ -50,7 +48,7 @@ spec:
               name: processing
               key: setup.createGateway.demo-gateway.secret
         ports:
-        - containerPort: 8080
+        - containerPort: 8443
           protocol: TCP
         resources:
           limits:

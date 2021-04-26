@@ -3,16 +3,16 @@ kind: Deployment
 metadata:
   labels:
     cattle.io/creator: norman
-    workload.user.cattle.io/workloadselector: deployment-cryptopay-infra-notifier
+    workload.user.cattle.io/workloadselector: deployment-cexiopay-infra-notifier
   name: notifier
-  namespace: cryptopay-infra
+  namespace: cexiopay-infra
 spec:
   progressDeadlineSeconds: 600
   replicas: 1
   revisionHistoryLimit: 10
   selector:
     matchLabels:
-      workload.user.cattle.io/workloadselector: deployment-cryptopay-infra-notifier
+      workload.user.cattle.io/workloadselector: deployment-cexiopay-infra-notifier
   strategy:
     rollingUpdate:
       maxSurge: 1
@@ -24,7 +24,7 @@ spec:
         field.cattle.io/ports: '[[{"containerPort":8080,"dnsName":"notifier","kind":"ClusterIP","name":"80tcp802","protocol":"TCP","sourcePort":8080}]]'
       creationTimestamp: null
       labels:
-        workload.user.cattle.io/workloadselector: deployment-cryptopay-infra-notifier
+        workload.user.cattle.io/workloadselector: deployment-cexiopay-infra-notifier
     spec:
       containers:
         - env:

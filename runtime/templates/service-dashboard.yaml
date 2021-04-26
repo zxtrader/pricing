@@ -1,7 +1,7 @@
-{{ if or (eq .Values.environment "evolution") (eq .Values.environment "presentation") }}
-# In prodution "dashboard" is hosted on GitHub Pages:
-# - https://github.com/cexiolabs/cexiopay.dashboard
-# - https://github.com/cexiolabs/cexiopay.dashboard-next
+{{ if or (eq .Values.zone "evolution") (eq .Values.zone "presentation") }}
+# In prodution and test zones "dashboard" is hosted on GitHub Pages:
+# - https://github.com/cexiolabs/cexiopay.dashboard-production-hosting
+# - https://github.com/cexiolabs/cexiopay.dashboard-test-hosting
 apiVersion: v1
 kind: Service
 metadata:
@@ -10,10 +10,10 @@ metadata:
   name: {{ template "prefix" . }}dashboard
 spec:
   ports:
-    - port: 8080
+    - port: 8443
       name: dashboard
       protocol: TCP
-      targetPort: 8080
+      targetPort: 8443
   type: ClusterIP
   selector:
     app: {{ template "prefix" . }}dashboard

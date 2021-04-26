@@ -19,8 +19,8 @@ Tag name format: `<APP_VERSION>-runtime`
 Создание тега в таком формате, создаст pipeline с набором задач для деплоймента сервисов. `APP_VERSION` это версия Chart.yaml `appVersion`.
 
 Например:
-* [2.3.2-runtime-helm2](https://gitlab.wnb:28443/cryptopay/devops/kubernetes-deployment/-/commits/2.3.2-runtime-helm2)
-* [2.3.2-runtime](https://gitlab.wnb:28443/cryptopay/devops/kubernetes-deployment/-/tags/2.3.2-runtime)
+* [2.3.2-runtime-helm2](https://gitlab.wnb:28443/cexiopay/devops/kubernetes-deployment/-/commits/2.3.2-runtime-helm2)
+* [2.3.2-runtime](https://gitlab.wnb:28443/cexiopay/devops/kubernetes-deployment/-/tags/2.3.2-runtime)
 * etc
 
 NOTE! Перед созданием тега, вы должны убедиться, что релизные контейнеры сервисов выложены в репозитории контейнеров.
@@ -41,7 +41,7 @@ NOTE! Во время переходной фазы на `Helm 3` остаютс
 1. Имеем работающую сборку `runtime vX.X.X` задеплоен под Helm релизом `Blue`. Helm релиза `Green` нет в кластере (имеем только `Blue`)
 1. Подготовили новую сборку `runtime vY.Y.Y` и выполняем деплой под Helm релизом `Green`. В этот период времени доступно следующее:
 	* Продуктивный трафик продолжает направляться ТОЛЬКО на Helm релиз `Blue`
-	* К Helm релизу `Green` есть подключение через внутренний домен `***-green-cryptopay.prodcryptopay.kube`(PROD) для проведения [Smoke testing](https://en.wikipedia.org/wiki/Smoke_testing_(software)) по новой функциональности.
+	* К Helm релизу `Green` есть подключение через внутренний домен `***-green-cexiopay.prodcryptopay.kube`(PROD) для проведения [Smoke testing](https://en.wikipedia.org/wiki/Smoke_testing_(software)) по новой функциональности.
 	* Если в процессе тестирования обнаружены деффекты, Helm релиз `Green` удаляется и команда работает над исправлением деффектов. ТУТ КОНЕЦ (итого имеем состояние как на шаге 1).
 1. Переключаем продуктивный трафик (возможно постепенно 10%, 25%, 50%, 100%) на использование Helm релиза `Green`
 1. Ожидаем завершения всех фоновых задач процессинга на Helm релизе `Blue`
@@ -57,11 +57,11 @@ Tag name format: `<DB_VERSION>-database`
 
 Создание тега в таком формате, создаст pipeline с набором задач для деплоймента базы версии `DB_VERSION`.
 Например:
-* [v02.32-database](https://gitlab.wnb:28443/cryptopay/devops/kubernetes-deployment/-/tags/v02.32-database)
-* [v02.33-database](https://gitlab.wnb:28443/cryptopay/devops/kubernetes-deployment/-/tags/v02.33-database)
+* [v02.32-database](https://gitlab.wnb:28443/cexiopay/devops/kubernetes-deployment/-/tags/v02.32-database)
+* [v02.33-database](https://gitlab.wnb:28443/cexiopay/devops/kubernetes-deployment/-/tags/v02.33-database)
 * etc
 
-NOTE! Перед созданием тега, вы должны убедиться, что [релизные контейнеры](https://gitlab.wnb:28443/cryptopay/database/pipelines) с версией [`DB_VERSION`](https://gitlab.wnb:28443/cryptopay/database/-/tags) выложены в репозитории контейнеров (прод контейнер в продовский репозиторий)
+NOTE! Перед созданием тега, вы должны убедиться, что [релизные контейнеры](https://gitlab.wnb:28443/cexiopay/database/pipelines) с версией [`DB_VERSION`](https://gitlab.wnb:28443/cexiopay/database/-/tags) выложены в репозитории контейнеров (прод контейнер в продовский репозиторий)
 
 ## Snapshots
 
@@ -76,7 +76,7 @@ curl --insecure -X POST -F "token=${DEPLOY_PIPELINE_TOKEN}" -F "ref=master" -F "
 ```
 ### Database Snapshot
 
-Запустите Pipeline с переменной `SNAPSHOT_DATABASE` = `dev.57e5a60e`, где [`dev.57e5a60e`](https://gitlab.wnb:28443/cryptopay/database/pipelines) тег от образа с миграцией базы данных.
+Запустите Pipeline с переменной `SNAPSHOT_DATABASE` = `dev.57e5a60e`, где [`dev.57e5a60e`](https://gitlab.wnb:28443/cexiopay/database/pipelines) тег от образа с миграцией базы данных.
 
 Пример триггера
 ```bash
@@ -91,7 +91,7 @@ curl --insecure -X POST -F "token=${DEPLOY_PIPELINE_TOKEN}" -F "ref=master" -F "
 1. Make configuration file for `kubectl` application (setup ~/.kube/config)
 1. Set alias to HELM
 	```bash
-	$ cd_cryptopay
+	$ cd_cexiopay
 	$ cd devops.kubernetes-deployment/runtime/
 	# Set "helm" docker alias if you does not have Helm locally. Choose one of following:
 	$ alias helm="docker run --interactive --tty --rm --volume \"${HOME}/.kube/config:/root/.kube/config\" --volume \"$(pwd):/apps\" --entrypoint /usr/bin/helm harbor.infra.kube/infra/helm:3"
@@ -101,7 +101,7 @@ curl --insecure -X POST -F "token=${DEPLOY_PIPELINE_TOKEN}" -F "ref=master" -F "
 	```bash
 	$ export ENV=evolution
 	$ export ENV=presentation
-	$ export ENV=preproduction
+	$ export ENV=test
 	```
 ### Useful commands
 See full doc https://v3.helm.sh/docs/helm

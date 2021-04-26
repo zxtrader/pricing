@@ -1,15 +1,19 @@
 application:
   api:
     serviceImage: harbor.infra.kube/cexiopay/api
-    tag: 0.1.0
+    tag: 0.1.13
     replicas: 1
   dashboard:
     serviceImage: harbor.infra.kube/cexiopay/dashboard
-    tag: 2.4.0
+    tag: 2.4.6
+    env:
+      BASE_PATH: /next/
     replicas: 1
-  dashboardobsolete:
-    serviceImage: harbor.infra.kube/cexiopay/dashboard-backup
-    tag: 2.1.29
+  dashboardlegacy2:
+    serviceImage: harbor.infra.kube/cexiopay/dashboard-react
+    tag: 2.2.2
+    env:
+      BASE_PATH: /legacy2/
     replicas: 1
   demo:
     serviceImage: cexiolabs/cexiopay.demo
@@ -21,7 +25,7 @@ application:
     replicas: 2
   identity:
     serviceImage: harbor.infra.kube/cexiopay/identity
-    tag: 0.1.1
+    tag: 0.1.6
     replicas: 1
   messengerbridge:
     serviceImage: zxteamorg/messenger-bridge
@@ -34,8 +38,8 @@ application:
       ]
     replicas: 1
   processing:
-    serviceImage: harbor.infra.kube/cexiopay/cpservice
-    tag: 2.2.8
+    serviceImage: harbor.infra.kube/cexiopay/processing
+    tag: 2.2.14
     replicas: 1
     env:
       "setup.instrumentModel_indexer": "CRYPTO_SELL_INTERMEDIATE_DEFAULT

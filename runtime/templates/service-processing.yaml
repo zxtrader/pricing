@@ -1,3 +1,4 @@
+{{ if eq .Release.Name "blue" }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -15,7 +16,7 @@ spec:
       name: processing-api
       protocol: TCP
       targetPort: 8080
-{{- if ne .Values.environment "production" }}
+{{- if ne .Values.zone "production" }}
     - port: 8081
       name: sysadmin-api
       protocol: TCP
@@ -25,13 +26,13 @@ spec:
       name: dashboard-api
       protocol: TCP
       targetPort: 8082
-{{ if or (eq .Values.environment "evolution") (eq .Values.environment "presentation") }}
+{{ if or (eq .Values.zone "evolution") (eq .Values.zone "presentation") }}
     - port: 8083
       name: specs
       protocol: TCP
       targetPort: 8083
 {{ end }}
-{{ if or (eq .Values.environment "preproduction") (eq .Values.environment "production") }}
+{{ if or (eq .Values.zone "preproduction") (eq .Values.zone "production") }}
     - port: 8084
       name: pss-provider-wtf2-callbacks
       protocol: TCP
@@ -48,3 +49,4 @@ spec:
   type: ClusterIP
   selector:
     app: {{ template "prefix" . }}processing
+{{ end }}

@@ -1,4 +1,4 @@
-environment: production
+zone: production
 
 application:
   api:
@@ -57,7 +57,7 @@ ingress:
       "/ws/":
         backendServiceName: processing
         backendServicePort: 8086
-  DashboardObsolete:
+  dashboardlegacy2:
     domain: dashboard.cexiopay.band
     certSecretName: ingress-gate-api-dashboard
     nginxConfigurationSnippet: |
@@ -68,7 +68,7 @@ ingress:
       etag off;
     paths:
       "/":
-        backendServiceName: dashboardobsolete
+        backendServiceName: dashboardlegacy2
         backendServicePort: 8445
       "/v2/dashboard/":
         backendServiceName: processing

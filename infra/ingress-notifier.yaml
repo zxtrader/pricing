@@ -2,10 +2,10 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: notifier
-  namespace: cryptopay-infra
+  namespace: cexiopay-infra
 spec:
   rules:
-    - host: infra-cryptopay.dev.kube
+    - host: infra-cexiopay.dev.kube
       http:
         paths:
           - backend:
@@ -14,5 +14,5 @@ spec:
             path: /
   tls:
     - hosts:
-        - infra-cryptopay.dev.kube
+        - infra-cexiopay.dev.kube
       secretName: dev

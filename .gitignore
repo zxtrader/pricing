@@ -1,3 +1,4 @@
 runtime.secrets/
 runtime.secrets
 .DS_Store
+.kube-config-gitlab

@@ -1,3 +1,4 @@
+{{ if eq .Release.Name "blue" }}
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
@@ -33,7 +34,7 @@ spec:
         # Main Web server
         - containerPort: 8080
           protocol: TCP
-{{- if ne .Values.environment "production" }}
+{{- if ne .Values.zone "production" }}
         # Sysadmin should not exposed outside production container
         - containerPort: 8081
           protocol: TCP
@@ -41,12 +42,12 @@ spec:
         # Dashboard API Web server
         - containerPort: 8082
           protocol: TCP
-{{ if or (eq .Values.environment "evolution") (eq .Values.environment "presentation") }}
+{{ if or (eq .Values.zone "evolution") (eq .Values.zone "presentation") }}
         # Swagger and welcome page used in "evolution" and "presentation" only, 
         - containerPort: 8083
           protocol: TCP
 {{ end }}
-{{ if not (or (eq .Values.environment "evolution") (eq .Values.environment "presentation")) }}
+{{ if not (or (eq .Values.zone "evolution") (eq .Values.zone "presentation")) }}
         # In "evolution" and "presentation" we use proxy-service called "notifier", 
         # to handle callbacks via WebSocket, so we do not need this port
         - containerPort: 8084
@@ -79,11 +80,9 @@ spec:
         envFrom:
         - configMapRef:
             name: processing-envvars
-        # - configMapRef:
-        #     name: processing-envvars-setup
+        - configMapRef:
+            name: processing-envvars-setup
         env:
-        - name: RUNTIME
-          value: {{ .Values.environment }}
         - name: LOG_LEVEL
           value: info
 {{- if .Values.application.processing.env }}
@@ -126,3 +125,4 @@ spec:
       - name: secret-certificate
         secret:
           secretName: {{ template "prefix" . }}processing-certificate
+{{ end }}

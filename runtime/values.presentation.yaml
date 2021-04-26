@@ -1,30 +1,46 @@
-environment: presentation
+zone: presentation
 
 application:
   api:
     serviceImage: harbor.infra.kube/cexiopay/api/snapshot
+    args:
+      [
+        "--config-json-file=/etc/cexiolabs/cexiopay.api/appsettings.json",
+        "--config-json-file=/etc/cexiolabs/cexiopay.api/appsettings.presentation.json",
+        "--config-keyperfile-directory=/etc/cexiolabs/cexiopay.api/secrets",
+        "--config-env",
+        "--log-json"
+      ]
     env:
       WTFProviderConfigurationFile: /etc/cexiolabs/cexiopay.api/legacy-cpservice-config/WTF-dev.json
-      IdentityServerAuthenticationBearerAuthority: https://id-testnet.cexiopay.band
-      CorsOrigins__0: https://cexiolabs.github.io
+    replicas: 1
   dashboard:
     serviceImage: harbor.infra.kube/cexiopay/dashboard/snapshot
-    replicas: 0
-  dashboardobsolete:
-    serviceImage: devdocker.infra.kube/cexiopay/dashboard-backup-presentation
+    replicas: 1
+  dashboardlegacy2:
+    serviceImage: harbor.infra.kube/cexiopay/dashboard-react/snapshot
+    replicas: 1
   demo:
     env:
       BASE_PATH: /widget-demo/
-      GATE_API_ORIGIN: https://cexiopay-processing:8080/
+      GATE_API_ORIGIN: https://processing:8080/
       GATE_ID: 51c15da2-a79b-456d-8300-7d289bc97bc9
-      GATE_URL: https://gate-testnet.cexiopay.band/widget
+      GATE_URL: https://gate-testnet.cryptopay.band
       NODE_TLS_REJECT_UNAUTHORIZED: 0
+    replicas: 0
   identity:
     serviceImage: harbor.infra.kube/cexiopay/identity/snapshot
-    env:
-      Emailer__SendGrid__senderEmail: "no-reply@presentation-cexiopay-dev.band"
+    args:
+      [
+        "--config-json-file=/etc/cexiolabs/cexiopay.identity/appsettings.json",
+        "--config-json-file=/etc/cexiolabs/cexiopay.identity/appsettings.presentation.json",
+        "--config-keyperfile-directory=/etc/cexiolabs/cexiopay.identity/secrets",
+        "--config-env",
+        "--log-json"
+      ]
+    replicas: 1
   processing:
-    serviceImage: harbor.infra.kube/cexiopay/cpservice/snapshot
+    serviceImage: harbor.infra.kube/cexiopay/processing/snapshot
     args:
       [
         "--config-file=/etc/cexiolabs/cexiopay.processing/service.config",
@@ -44,45 +60,22 @@ application:
       DEBUG_PORT: 9229
       DEBUG_WAIT: "no"
       LOG_LEVEL: "debug"
-      GATE_URL: https://gate-presentation-cexiopay.dev.kube/widget
-
+      GATE_URL: https://gate-presentation-cexiopay.dev.kube
+    replicas: 0
 ingress:
   API:
     domain: api-presentation-cexiopay.dev.kube
     certSecretName: dev
+    backendInsecure: false
     nginxConfigurationSnippet: |
       rewrite ^/$ /v2/time redirect;
     paths:
       "/":
-        backendServiceName: processing
-        backendServicePort: 8080
-      "/v3/":
         backendServiceName: api
         backendServicePort: 8443
-  API-External:
-    domain: api.pay-cex-test.net
-    certSecretName: cexiopay-band
-    nginxConfigurationSnippet: |
-      rewrite ^/$ /v2/time redirect;
-    paths:
-      "/":
+      "/v2/":
         backendServiceName: processing
         backendServicePort: 8080
-      "/v3/":
-        backendServiceName: api
-        backendServicePort: 8443
-  API-External-Old:
-    domain: api-testnet.cexiopay.band
-    certSecretName: cexiopay-band
-    nginxConfigurationSnippet: |
-      rewrite ^/$ /v2/time redirect;
-    paths:
-      "/":
-        backendServiceName: processing
-        backendServicePort: 8080
-      "/v3/":
-        backendServiceName: api
-        backendServicePort: 8443
   Callbacks:
     domain: callback-presentation-cexiopay.dev.kube
     certSecretName: dev
@@ -90,38 +83,31 @@ ingress:
       "/ws/":
         backendServiceName: processing
         backendServicePort: 8086
-  Dashboard:
-    domain: dashboard-presentation-cexiopay.dev.kube
-    backendInsecure: true
-    nginxConfigurationSnippet: |
-      add_header Last-Modified $date_gmt;
-      add_header Cache-Control 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0';
-      if_modified_since off;
-      expires off;
-      etag off;
-    paths:
-      "/":
-        backendServiceName: dashboard
-        backendServicePort: 8080
-  DashboardObsolete:
-    domain: dashboard-testnet.cexiopay.band
+  Board:
+    domain: board-presentation-cexiopay.dev.kube
     certSecretName: dev
+    backendInsecure: false
     nginxConfigurationSnippet: |
+      rewrite ^/$ /next/ redirect;
       add_header Last-Modified $date_gmt;
       add_header Cache-Control 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0';
       if_modified_since off;
       expires off;
       etag off;
     paths:
-      "/":
-        backendServiceName: dashboardobsolete
-        backendServicePort: 8445
+      "/legacy2/":
+        backendServiceName: dashboardlegacy2
+        backendServicePort: 8443
       "/v2/dashboard/":
         backendServiceName: processing
         backendServicePort: 8082
+      "/next/":
+        backendServiceName: dashboard
+        backendServicePort: 8443
   Echo:
     domain: echo-presentation-cexiopay.dev.kube
     certSecretName: dev
+    backendInsecure: false
     paths:
       "/":
         backendServiceName: echo
@@ -129,6 +115,7 @@ ingress:
   Gate:
     domain: gate-presentation-cexiopay.dev.kube
     certSecretName: dev
+    backendInsecure: false
     nginxConfigurationSnippet: |
       add_header Last-Modified $date_gmt;
       add_header Cache-Control 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0';
@@ -139,36 +126,10 @@ ingress:
       "/":
         backendServiceName: processing
         backendServicePort: 8085
-      "/v2/gate/":
-        backendServiceName: processing
-        backendServicePort: 8085
-      "/v2/gate-callback/":
-        backendServiceName: processing
-        backendServicePort: 8085
-  Gate-External:
-    domain: gate.pay-cex-test.net
-    certSecretName: dev
-    paths:
-      "/":
-        backendServiceName: echo
-        backendServicePort: 8443
   Identity:
     domain: id-presentation-cexiopay.dev.kube
     certSecretName: dev
-    paths:
-      "/":
-        backendServiceName: identity
-        backendServicePort: 8443
-  Identity-External:
-    domain: id.pay-cex-test.net
-    certSecretName: cexiopay-band
-    paths:
-      "/":
-        backendServiceName: identity
-        backendServicePort: 8443
-  Identity-External-Old:
-    domain: id-testnet.cexiopay.band
-    certSecretName: cexiopay-band
+    backendInsecure: false
     paths:
       "/":
         backendServiceName: identity
@@ -177,27 +138,19 @@ ingress:
     # THIS endpoint just for development purposes
     domain: messengerbridge-presentation-cexiopay.dev.kube
     certSecretName: dev
+    backendInsecure: false
     paths:
       "/":
         backendServiceName: messengerbridge
         backendServicePort: 8443
-  # Welcome:
-  #   domain: presentation-cexiopay.dev.kube
-  #   backendInsecure: true
-  #   paths:
-  #     "/":
-  #       backendServiceName: processing
-  #       backendServicePort: 8083
-  #     "/widget-demo/":
-  #       backendServiceName: demo
-  #       backendServicePort: 8080
-  Welcome-External:
-    domain: testnet.cexiopay.band
-    backendInsecure: true
+  Welcome:
+    domain: presentation-cexiopay.dev.kube
+    certSecretName: dev
+    backendInsecure: false
     paths:
       "/":
         backendServiceName: processing
         backendServicePort: 8083
       "/widget-demo/":
         backendServiceName: demo
-        backendServicePort: 8080
+        backendServicePort: 8443
