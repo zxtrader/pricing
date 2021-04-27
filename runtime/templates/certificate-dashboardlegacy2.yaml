@@ -2,13 +2,13 @@
 apiVersion: certmanager.k8s.io/v1alpha1
 kind: Certificate
 metadata:
-  name: {{ template "prefix" . }}dashboard-certificate
+  name: {{ template "prefix" . }}dashboardlegacy2-certificate
 spec:
-  secretName: {{ template "prefix" . }}dashboard-certificate
+  secretName: {{ template "prefix" . }}dashboardlegacy2-certificate
   issuerRef:
     name: ca-issuer
     # We can reference ClusterIssuers by changing the kind here.
     # The default value is Issuer (i.e. a locally namespaced Issuer)
     kind: ClusterIssuer
-  commonName: {{ template "prefix" . }}dashboard
+  commonName: {{ template "prefix" . }}dashboardlegacy2
 {{ end }}
