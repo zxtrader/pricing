@@ -31,10 +31,10 @@ Helm2:0DEMO:rollback:infratest:
   script:
     - kube_config_setup
     - cd infratest
-    - helm --tiller-namespace "cexiopay-demo" list
-    - helm --tiller-namespace "cexiopay-demo" history infratest --max=3
-    - helm --tiller-namespace "cexiopay-demo" rollback --recreate-pods infratest 0
-    - helm --tiller-namespace "cexiopay-demo" history infratest --max=3
+    - helm --tiller-namespace "cryptopay-demo" list
+    - helm --tiller-namespace "cryptopay-demo" history infratest --max=3
+    - helm --tiller-namespace "cryptopay-demo" rollback --recreate-pods infratest 0
+    - helm --tiller-namespace "cryptopay-demo" history infratest --max=3
   when: manual
   environment:
     name: demo
@@ -53,9 +53,9 @@ Helm2:0DEMO:delete:infratest:
   script:
     - kube_config_setup
     - cd infratest
-    - helm --tiller-namespace "cexiopay-demo" list
-    - helm --tiller-namespace "cexiopay-demo" history infratest --max=3
-    - helm --tiller-namespace "cexiopay-demo" delete --purge infratest
+    - helm --tiller-namespace "cryptopay-demo" list
+    - helm --tiller-namespace "cryptopay-demo" history infratest --max=3
+    - helm --tiller-namespace "cryptopay-demo" delete --purge infratest
   when: manual
   environment:
     name: demo
@@ -74,9 +74,9 @@ Helm3:0DEMO:install:infratest:
   script:
     - kube_config_setup
     - cd infratest
-    - helm --namespace "cexiopay-demo" list
-    - helm --namespace "cexiopay-demo" upgrade --install --history-max 3 --values "values-base.yaml" --values "values.demo.yaml" infratest .
-    - helm --namespace "cexiopay-demo" history infratest --max=3
+    - helm --namespace "cryptopay-demo" list
+    - helm --namespace "cryptopay-demo" upgrade --install --history-max 3 --values "values-base.yaml" --values "values.demo.yaml" infratest .
+    - helm --namespace "cryptopay-demo" history infratest --max=3
   when: manual
   environment:
     name: demo
@@ -95,10 +95,10 @@ Helm3:0DEMO:rollback:infratest:
   script:
     - kube_config_setup
     - cd infratest
-    - helm --namespace "cexiopay-demo" list
-    - helm --namespace "cexiopay-demo" history infratest --max=3
-    - helm --namespace "cexiopay-demo" rollback --recreate-pods infratest 0
-    - helm --namespace "cexiopay-demo" history infratest --max=3
+    - helm --namespace "cryptopay-demo" list
+    - helm --namespace "cryptopay-demo" history infratest --max=3
+    - helm --namespace "cryptopay-demo" rollback --recreate-pods infratest 0
+    - helm --namespace "cryptopay-demo" history infratest --max=3
   when: manual
   environment:
     name: demo
@@ -117,9 +117,9 @@ Helm3:0DEMO:delete:infratest:
   script:
     - kube_config_setup
     - cd infratest
-    - helm --namespace "cexiopay-demo" list
-    - helm --namespace "cexiopay-demo" history infratest --max=3
-    - helm --namespace "cexiopay-demo" uninstall  infratest
+    - helm --namespace "cryptopay-demo" list
+    - helm --namespace "cryptopay-demo" history infratest --max=3
+    - helm --namespace "cryptopay-demo" uninstall  infratest
   when: manual
   environment:
     name: demo
