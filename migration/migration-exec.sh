@@ -90,7 +90,7 @@ echo
 echo "# Job definition YAML"
 cat "${TEMP_FILE}"
 
-KUBE_OPTS="--namespace \"${ARG_KUBE_NAMESPACE}\""
+KUBE_OPTS="--namespace ${ARG_KUBE_NAMESPACE}"
 [ -n "${ARG_KUBE_CONTEXT}" ] && KUBE_OPTS="${KUBE_OPTS} --context ${ARG_KUBE_CONTEXT}"
 
 echo "# KUBE_OPTS is: ${KUBE_OPTS}"
