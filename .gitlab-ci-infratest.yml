@@ -8,7 +8,6 @@ Helm2:0DEMO:install:infratest:
     name: ${IMAGE_HELM2}
     entrypoint: [""]
   script:
-    - verify_runtime_version_helm2
     - kube_config_setup
     - cd infratest
     - helm --tiller-namespace "cryptopay-demo" list
@@ -30,7 +29,6 @@ Helm2:0DEMO:rollback:infratest:
     name: ${IMAGE_HELM2}
     entrypoint: [""]
   script:
-    - verify_runtime_version_helm2
     - kube_config_setup
     - cd infratest
     - helm --tiller-namespace "cexiopay-demo" list
@@ -53,7 +51,6 @@ Helm2:0DEMO:delete:infratest:
     name: ${IMAGE_HELM2}
     entrypoint: [""]
   script:
-    - verify_runtime_version_helm2
     - kube_config_setup
     - cd infratest
     - helm --tiller-namespace "cexiopay-demo" list
@@ -75,7 +72,6 @@ Helm3:0DEMO:install:infratest:
     name: ${IMAGE_HELM3}
     entrypoint: [""]
   script:
-    - verify_runtime_version_helm3
     - kube_config_setup
     - cd infratest
     - helm --namespace "cexiopay-demo" list
@@ -97,7 +93,6 @@ Helm3:0DEMO:rollback:infratest:
     name: ${IMAGE_HELM3}
     entrypoint: [""]
   script:
-    - verify_runtime_version_helm3
     - kube_config_setup
     - cd infratest
     - helm --namespace "cexiopay-demo" list
@@ -120,7 +115,6 @@ Helm3:0DEMO:delete:infratest:
     name: ${IMAGE_HELM3}
     entrypoint: [""]
   script:
-    - verify_runtime_version_helm3
     - kube_config_setup
     - cd infratest
     - helm --namespace "cexiopay-demo" list
@@ -145,7 +139,6 @@ Helm2:4PROD:install:infratest:
     name: ${IMAGE_HELM2}
     entrypoint: [""]
   script:
-    - verify_runtime_version_helm2
     - kube_config_setup
     - cd infratest
     - helm --tiller-namespace "cexdirect" list
@@ -169,7 +162,6 @@ Helm2:4PROD:rollback:infratest:
     name: ${IMAGE_HELM2}
     entrypoint: [""]
   script:
-    - verify_runtime_version_helm2
     - kube_config_setup
     - cd infratest
     - helm --tiller-namespace "cexdirect" list
@@ -194,7 +186,6 @@ Helm2:4PROD:delete:infratest:
     name: ${IMAGE_HELM2}
     entrypoint: [""]
   script:
-    - verify_runtime_version_helm2
     - kube_config_setup
     - cd infratest
     - helm --tiller-namespace "cexdirect" list
@@ -218,7 +209,6 @@ Helm3:4PROD:install:infratest:
     name: ${IMAGE_HELM3}
     entrypoint: [""]
   script:
-    - verify_runtime_version_helm3
     - kube_config_setup
     - cd infratest
     - helm --namespace "cexdirect" list
@@ -242,7 +232,6 @@ Helm3:4PROD:rollback:infratest:
     name: ${IMAGE_HELM3}
     entrypoint: [""]
   script:
-    - verify_runtime_version_helm3
     - kube_config_setup
     - cd infratest
     - helm --namespace "cexdirect" list
@@ -267,7 +256,6 @@ Helm3:4PROD:delete:infratest:
     name: ${IMAGE_HELM3}
     entrypoint: [""]
   script:
-    - verify_runtime_version_helm3
     - kube_config_setup
     - cd infratest
     - helm --namespace "cexdirect" list
