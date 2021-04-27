@@ -13,7 +13,7 @@ name: infratest
 version: 2.0.0
 
 # The version of the app that this contains (optional). This needn't be SemVer.
-appVersion: 1.0.0
+appVersion: 0.0.2
 
 # A single-sentence description of this project (optional)
 description: CEX.IO Pay
