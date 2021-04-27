@@ -95,7 +95,7 @@ spec:
             memory: 512Mi
           requests:
             cpu: 128m
-            memory: 64Mi
+            memory: 128Mi
         # # Will be available with Kubernetes 1.20
         # startupProbe:
         #   httpGet:
