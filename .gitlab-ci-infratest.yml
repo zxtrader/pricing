@@ -141,9 +141,9 @@ Helm2:4PROD:install:infratest:
   script:
     - kube_config_setup
     - cd infratest
-    - helm --tiller-namespace "cexdirect" list
-    - helm --tiller-namespace "cexdirect" upgrade --install --namespace "cexdirect"  --values "values-base.yaml" --values "values.production.yaml" infratest .
-    - helm --tiller-namespace "cexdirect" history infratest --max=3
+    - helm --tiller-namespace "cryptopay" list
+    - helm --tiller-namespace "cryptopay" upgrade --install --namespace "cryptopay"  --values "values-base.yaml" --values "values.production.yaml" infratest .
+    - helm --tiller-namespace "cryptopay" history infratest --max=3
   when: manual
   environment:
     name: production
@@ -164,10 +164,10 @@ Helm2:4PROD:rollback:infratest:
   script:
     - kube_config_setup
     - cd infratest
-    - helm --tiller-namespace "cexdirect" list
-    - helm --tiller-namespace "cexdirect" history infratest --max=3
-    - helm --tiller-namespace "cexdirect" rollback --recreate-pods infratest 0
-    - helm --tiller-namespace "cexdirect" history infratest --max=3
+    - helm --tiller-namespace "cryptopay" list
+    - helm --tiller-namespace "cryptopay" history infratest --max=3
+    - helm --tiller-namespace "cryptopay" rollback --recreate-pods infratest 0
+    - helm --tiller-namespace "cryptopay" history infratest --max=3
   when: manual
   environment:
     name: production
@@ -188,9 +188,9 @@ Helm2:4PROD:delete:infratest:
   script:
     - kube_config_setup
     - cd infratest
-    - helm --tiller-namespace "cexdirect" list
-    - helm --tiller-namespace "cexdirect" history infratest --max=3
-    - helm --tiller-namespace "cexdirect" delete --purge infratest
+    - helm --tiller-namespace "cryptopay" list
+    - helm --tiller-namespace "cryptopay" history infratest --max=3
+    - helm --tiller-namespace "cryptopay" delete --purge infratest
   when: manual
   environment:
     name: production
@@ -211,9 +211,9 @@ Helm3:4PROD:install:infratest:
   script:
     - kube_config_setup
     - cd infratest
-    - helm --namespace "cexdirect" list
-    - helm --namespace "cexdirect" upgrade --install --history-max 3 --values "values-base.yaml" --values "values.production.yaml" infratest .
-    - helm --namespace "cexdirect" history infratest --max=3
+    - helm --namespace "cryptopay" list
+    - helm --namespace "cryptopay" upgrade --install --history-max 3 --values "values-base.yaml" --values "values.production.yaml" infratest .
+    - helm --namespace "cryptopay" history infratest --max=3
   when: manual
   environment:
     name: production
@@ -234,10 +234,10 @@ Helm3:4PROD:rollback:infratest:
   script:
     - kube_config_setup
     - cd infratest
-    - helm --namespace "cexdirect" list
-    - helm --namespace "cexdirect" history infratest --max=3
-    - helm --namespace "cexdirect" rollback --recreate-pods infratest 0
-    - helm --namespace "cexdirect" history infratest --max=3
+    - helm --namespace "cryptopay" list
+    - helm --namespace "cryptopay" history infratest --max=3
+    - helm --namespace "cryptopay" rollback --recreate-pods infratest 0
+    - helm --namespace "cryptopay" history infratest --max=3
   when: manual
   environment:
     name: production
@@ -258,9 +258,9 @@ Helm3:4PROD:delete:infratest:
   script:
     - kube_config_setup
     - cd infratest
-    - helm --namespace "cexdirect" list
-    - helm --namespace "cexdirect" history infratest --max=3
-    - helm --namespace "cexdirect" uninstall  infratest
+    - helm --namespace "cryptopay" list
+    - helm --namespace "cryptopay" history infratest --max=3
+    - helm --namespace "cryptopay" uninstall  infratest
   when: manual
   environment:
     name: production
