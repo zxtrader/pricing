@@ -90,7 +90,7 @@ echo
 echo "# Job definition YAML"
 cat "${TEMP_FILE}"
 
-KUBE_OPTS=""
+KUBE_OPTS="--namespace \"${ARG_KUBE_NAMESPACE}\""
 [ -n "${ARG_KUBE_CONTEXT}" ] && KUBE_OPTS="${KUBE_OPTS} --context ${ARG_KUBE_CONTEXT}"
 
 echo "# KUBE_OPTS is: ${KUBE_OPTS}"
@@ -120,6 +120,8 @@ elif [ "$(readlink /bin/date)" = "/bin/busybox" ]; then
 else
 	OBSOLEBE_TIMESTAMP=$(date -d "3 month ago" '+%Y%m%d%H%M%S')
 fi
+
+set -x
 
 for EXIST_JOB in $(kubectl ${KUBE_OPTS} get jobs -o go-template --template='{{range .items}}{{.metadata.name}} {{end}}'); do
 	EXIST_JOB_PREFIX=$(echo "${EXIST_JOB}" | cut -d- -f1)
