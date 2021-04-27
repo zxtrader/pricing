@@ -1,0 +1,198 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  labels:
+    app: rabbitmq
+  name: rabbitmq
+  namespace: cexiopay-infra
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rabbitmq
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      annotations:
+        prometheus.io/port: "9090"
+        prometheus.io/scrape: "true"
+      labels:
+        app: rabbitmq
+    spec:
+      containers:
+      - name: rabbitmq
+        image: docker.io/bitnami/rabbitmq:3.7.10
+        imagePullPolicy: IfNotPresent
+        command:
+        - bash
+        - -ec
+        - |
+          mkdir -p /opt/bitnami/rabbitmq/.rabbitmq/
+          mkdir -p /opt/bitnami/rabbitmq/etc/rabbitmq/
+          #persist the erlang cookie in both places for server and cli tools
+          mkdir -p /opt/bitnami/rabbitmq/var/lib/rabbitmq/
+          mkdir -p /opt/bitnami/rabbitmq/var/log/rabbitmq/
+          echo $RABBITMQ_ERL_COOKIE > /opt/bitnami/rabbitmq/var/lib/rabbitmq/.erlang.cookie
+          cp /opt/bitnami/rabbitmq/var/lib/rabbitmq/.erlang.cookie /opt/bitnami/rabbitmq/.rabbitmq/
+          #change permission so only the user has access to the cookie file
+          chmod 600 /opt/bitnami/rabbitmq/.rabbitmq/.erlang.cookie /opt/bitnami/rabbitmq/var/lib/rabbitmq/.erlang.cookie
+          #copy the mounted configuration to both places
+          cp  /opt/bitnami/rabbitmq/conf/* /opt/bitnami/rabbitmq/etc/rabbitmq
+          # Apply resources limits
+          ulimit -n "${RABBITMQ_ULIMIT_NOFILES}"
+          #replace the default password that is generated
+          sed -i "s/CHANGEME/$RABBITMQ_PASSWORD/g" /opt/bitnami/rabbitmq/etc/rabbitmq/rabbitmq.conf
+          # Move logs to stdout
+          ln -sF /dev/stdout /opt/bitnami/rabbitmq/var/log/rabbitmq/rabbit@${MY_POD_IP}.log
+          ln -sF /dev/stdout /opt/bitnami/rabbitmq/var/log/rabbitmq/rabbit@${MY_POD_IP}_upgrade.log
+          exec rabbitmq-server
+        env:
+        - name: MY_POD_IP
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: status.podIP
+        - name: MY_POD_NAME
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.name
+        - name: MY_POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.namespace
+        - name: K8S_SERVICE_NAME
+          value: rabbitmq-headless
+        - name: K8S_ADDRESS_TYPE
+          value: ip
+        - name: RABBITMQ_NODENAME
+          value: rabbit@$(MY_POD_IP)
+        - name: RABBITMQ_ULIMIT_NOFILES
+          value: "65536"
+        - name: RABBITMQ_USE_LONGNAME
+          value: "true"
+        - name: RABBITMQ_ERL_COOKIE
+          valueFrom:
+            secretKeyRef:
+              key: rabbitmq-erlang-cookie
+              name: rabbitmq
+        - name: RABBITMQ_USERNAME
+          value: admin
+        - name: RABBITMQ_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: rabbitmq-password
+              name: rabbitmq
+        livenessProbe:
+          exec:
+            command:
+            - sh
+            - -c
+            - test "$(curl -sS -f --user admin:$RABBITMQ_PASSWORD 127.0.0.1:15672/api/healthchecks/node)"
+              = '{"status":"ok"}'
+          failureThreshold: 6
+          initialDelaySeconds: 120
+          periodSeconds: 30
+          successThreshold: 1
+          timeoutSeconds: 20
+        ports:
+        - containerPort: 4369
+          name: epmd
+          protocol: TCP
+        - containerPort: 5672
+          name: amqp
+          protocol: TCP
+        - containerPort: 25672
+          name: dist
+          protocol: TCP
+        - containerPort: 15672
+          name: stats
+          protocol: TCP
+        readinessProbe:
+          exec:
+            command:
+            - sh
+            - -c
+            - test "$(curl -sS -f --user admin:$RABBITMQ_PASSWORD 127.0.0.1:15672/api/healthchecks/node)"
+              = '{"status":"ok"}'
+          failureThreshold: 3
+          initialDelaySeconds: 10
+          periodSeconds: 30
+          successThreshold: 1
+          timeoutSeconds: 20
+        resources:
+          requests:
+            cpu: 100m
+            memory: 256Mi
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /opt/bitnami/rabbitmq/conf
+          name: config-volume
+      - name: rabbitmq-exporter
+        image: docker.io/kbudde/rabbitmq-exporter:v0.29.0
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: RABBIT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: rabbitmq-password
+              name: rabbitmq
+        - name: RABBIT_URL
+          value: http://rabbitmq:15672
+        - name: RABBIT_USER
+          value: admin
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /metrics
+            port: 9090tcp00
+            scheme: HTTP
+          initialDelaySeconds: 15
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 5
+        ports:
+        - containerPort: 9090
+          name: 9090tcp00
+          protocol: TCP
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /metrics
+            port: 9090tcp00
+            scheme: HTTP
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 5
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext:
+        fsGroup: 1001
+        runAsUser: 1001
+      terminationGracePeriodSeconds: 10
+      volumes:
+      - configMap:
+          defaultMode: 420
+          items:
+          - key: rabbitmq.conf
+            path: rabbitmq.conf
+          - key: enabled_plugins
+            path: enabled_plugins
+          name: rabbitmq
+        name: config-volume
+  updateStrategy:
+    rollingUpdate:
+      partition: 0
+    type: RollingUpdate
+
