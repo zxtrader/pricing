@@ -1,0 +1,5 @@
+application:
+  echo:
+    serviceImage: cexiolabs/http-https-echo
+    tag: latest
+    replicas: 1

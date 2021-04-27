@@ -1,0 +1,11 @@
+zone: production
+
+ingress:
+  Echo:
+    domain: echo-infratest-cexiopay.prodcryptopay.kube
+    certSecretName: callback
+    backendInsecure: false
+    paths:
+      "/":
+        backendServiceName: echo
+        backendServicePort: 8443

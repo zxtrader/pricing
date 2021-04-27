@@ -1,0 +1,11 @@
+zone: evolution
+
+ingress:
+  Echo:
+    domain: echo-demo-cryptopay.dev.kube
+    certSecretName: dev
+    backendInsecure: false
+    paths:
+      "/":
+        backendServiceName: echo
+        backendServicePort: 8443

@@ -1,0 +1,286 @@
+#
+# Include this into .gitlab-ci.yml to test deployment infrastructure
+#
+
+Helm2:0DEMO:install:infratest:
+  stage: deploy
+  image:
+    name: ${IMAGE_HELM2}
+    entrypoint: [""]
+  script:
+    - verify_runtime_version_helm2
+    - kube_config_setup
+    - cd infratest
+    - helm --tiller-namespace "cryptopay-demo" list
+    - helm --tiller-namespace "cryptopay-demo" upgrade --install --namespace "cryptopay-demo" --values "values-base.yaml" --values "values.demo.yaml" infratest .
+    - helm --tiller-namespace "cryptopay-demo" history infratest --max=3
+  when: manual
+  environment:
+    name: demo
+    url: https://demo-cryptopay.dev.kube
+  only:
+    refs:
+      - tags
+    variables:
+      - $CI_COMMIT_TAG =~ /-infratest$/
+
+Helm2:0DEMO:rollback:infratest:
+  stage: rollback
+  image:
+    name: ${IMAGE_HELM2}
+    entrypoint: [""]
+  script:
+    - verify_runtime_version_helm2
+    - kube_config_setup
+    - cd infratest
+    - helm --tiller-namespace "cexiopay-demo" list
+    - helm --tiller-namespace "cexiopay-demo" history infratest --max=3
+    - helm --tiller-namespace "cexiopay-demo" rollback --recreate-pods infratest 0
+    - helm --tiller-namespace "cexiopay-demo" history infratest --max=3
+  when: manual
+  environment:
+    name: demo
+    url: https://demo-cryptopay.dev.kube
+  only:
+    refs:
+      - tags
+    variables:
+      - $CI_COMMIT_TAG =~ /-infratest$/
+
+Helm2:0DEMO:delete:infratest:
+  stage: delete
+  image:
+    name: ${IMAGE_HELM2}
+    entrypoint: [""]
+  script:
+    - verify_runtime_version_helm2
+    - kube_config_setup
+    - cd infratest
+    - helm --tiller-namespace "cexiopay-demo" list
+    - helm --tiller-namespace "cexiopay-demo" history infratest --max=3
+    - helm --tiller-namespace "cexiopay-demo" delete --purge infratest
+  when: manual
+  environment:
+    name: demo
+    url: https://demo-cryptopay.dev.kube
+  only:
+    refs:
+      - tags
+    variables:
+      - $CI_COMMIT_TAG =~ /-infratest$/
+
+Helm3:0DEMO:install:infratest:
+  stage: deploy
+  image:
+    name: ${IMAGE_HELM3}
+    entrypoint: [""]
+  script:
+    - verify_runtime_version_helm3
+    - kube_config_setup
+    - cd infratest
+    - helm --namespace "cexiopay-demo" list
+    - helm --namespace "cexiopay-demo" upgrade --install --history-max 3 --values "values-base.yaml" --values "values.demo.yaml" infratest .
+    - helm --namespace "cexiopay-demo" history infratest --max=3
+  when: manual
+  environment:
+    name: demo
+    url: https://demo-cryptopay.dev.kube
+  only:
+    refs:
+      - tags
+    variables:
+      - $CI_COMMIT_TAG =~ /-infratest$/
+
+Helm3:0DEMO:rollback:infratest:
+  stage: rollback
+  image:
+    name: ${IMAGE_HELM3}
+    entrypoint: [""]
+  script:
+    - verify_runtime_version_helm3
+    - kube_config_setup
+    - cd infratest
+    - helm --namespace "cexiopay-demo" list
+    - helm --namespace "cexiopay-demo" history infratest --max=3
+    - helm --namespace "cexiopay-demo" rollback --recreate-pods infratest 0
+    - helm --namespace "cexiopay-demo" history infratest --max=3
+  when: manual
+  environment:
+    name: demo
+    url: https://demo-cryptopay.dev.kube
+  only:
+    refs:
+      - tags
+    variables:
+      - $CI_COMMIT_TAG =~ /-infratest$/
+
+Helm3:0DEMO:delete:infratest:
+  stage: delete
+  image:
+    name: ${IMAGE_HELM3}
+    entrypoint: [""]
+  script:
+    - verify_runtime_version_helm3
+    - kube_config_setup
+    - cd infratest
+    - helm --namespace "cexiopay-demo" list
+    - helm --namespace "cexiopay-demo" history infratest --max=3
+    - helm --namespace "cexiopay-demo" uninstall  infratest
+  when: manual
+  environment:
+    name: demo
+    url: https://demo-cryptopay.dev.kube
+  only:
+    refs:
+      - tags
+    variables:
+      - $CI_COMMIT_TAG =~ /-infratest$/
+
+
+
+
+Helm2:4PROD:install:infratest:
+  stage: deploy
+  image:
+    name: ${IMAGE_HELM2}
+    entrypoint: [""]
+  script:
+    - verify_runtime_version_helm2
+    - kube_config_setup
+    - cd infratest
+    - helm --tiller-namespace "cexdirect" list
+    - helm --tiller-namespace "cexdirect" upgrade --install --namespace "cexdirect"  --values "values-base.yaml" --values "values.production.yaml" infratest .
+    - helm --tiller-namespace "cexdirect" history infratest --max=3
+  when: manual
+  environment:
+    name: production
+    url: https://pay-cex.io/
+  tags:
+    - crtpdpl
+  only:
+    refs:
+      - tags
+    variables:
+      - $CI_COMMIT_TAG =~ /-infratest$/
+
+Helm2:4PROD:rollback:infratest:
+  stage: rollback
+  image:
+    name: ${IMAGE_HELM2}
+    entrypoint: [""]
+  script:
+    - verify_runtime_version_helm2
+    - kube_config_setup
+    - cd infratest
+    - helm --tiller-namespace "cexdirect" list
+    - helm --tiller-namespace "cexdirect" history infratest --max=3
+    - helm --tiller-namespace "cexdirect" rollback --recreate-pods infratest 0
+    - helm --tiller-namespace "cexdirect" history infratest --max=3
+  when: manual
+  environment:
+    name: production
+    url: https://pay-cex.io/
+  tags:
+    - crtpdpl
+  only:
+    refs:
+      - tags
+    variables:
+      - $CI_COMMIT_TAG =~ /-infratest$/
+
+Helm2:4PROD:delete:infratest:
+  stage: delete
+  image:
+    name: ${IMAGE_HELM2}
+    entrypoint: [""]
+  script:
+    - verify_runtime_version_helm2
+    - kube_config_setup
+    - cd infratest
+    - helm --tiller-namespace "cexdirect" list
+    - helm --tiller-namespace "cexdirect" history infratest --max=3
+    - helm --tiller-namespace "cexdirect" delete --purge infratest
+  when: manual
+  environment:
+    name: production
+    url: https://pay-cex.io/
+  tags:
+    - crtpdpl
+  only:
+    refs:
+      - tags
+    variables:
+      - $CI_COMMIT_TAG =~ /-infratest$/
+
+Helm3:4PROD:install:infratest:
+  stage: deploy
+  image:
+    name: ${IMAGE_HELM3}
+    entrypoint: [""]
+  script:
+    - verify_runtime_version_helm3
+    - kube_config_setup
+    - cd infratest
+    - helm --namespace "cexdirect" list
+    - helm --namespace "cexdirect" upgrade --install --history-max 3 --values "values-base.yaml" --values "values.production.yaml" infratest .
+    - helm --namespace "cexdirect" history infratest --max=3
+  when: manual
+  environment:
+    name: production
+    url: https://pay-cex.io/
+  tags:
+    - crtpdpl
+  only:
+    refs:
+      - tags
+    variables:
+      - $CI_COMMIT_TAG =~ /-infratest$/
+
+Helm3:4PROD:rollback:infratest:
+  stage: rollback
+  image:
+    name: ${IMAGE_HELM3}
+    entrypoint: [""]
+  script:
+    - verify_runtime_version_helm3
+    - kube_config_setup
+    - cd infratest
+    - helm --namespace "cexdirect" list
+    - helm --namespace "cexdirect" history infratest --max=3
+    - helm --namespace "cexdirect" rollback --recreate-pods infratest 0
+    - helm --namespace "cexdirect" history infratest --max=3
+  when: manual
+  environment:
+    name: production
+    url: https://pay-cex.io/
+  tags:
+    - crtpdpl
+  only:
+    refs:
+      - tags
+    variables:
+      - $CI_COMMIT_TAG =~ /-infratest$/
+
+Helm3:4PROD:delete:infratest:
+  stage: delete
+  image:
+    name: ${IMAGE_HELM3}
+    entrypoint: [""]
+  script:
+    - verify_runtime_version_helm3
+    - kube_config_setup
+    - cd infratest
+    - helm --namespace "cexdirect" list
+    - helm --namespace "cexdirect" history infratest --max=3
+    - helm --namespace "cexdirect" uninstall  infratest
+  when: manual
+  environment:
+    name: production
+    url: https://pay-cex.io/
+  tags:
+    - crtpdpl
+  only:
+    refs:
+      - tags
+    variables:
+      - $CI_COMMIT_TAG =~ /-infratest$/

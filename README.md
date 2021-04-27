@@ -6,6 +6,7 @@ Pipelines для релизов формируются с помощью соз�
 
 Суффиксы для тегов:
 
+* `-infratest` - Набор задач по деплойменту тестового чарта с использованием `Helm 2/3`
 * `-runtime` - Набор задач по деплойменту с использованием `Helm 3`
 * `-runtime-helm2` - Набор задач по деплойменту с использованием `Helm 2`
 * `-database` -  Набор задач по деплойменту миграций базы данных
@@ -62,28 +63,6 @@ Tag name format: `<DB_VERSION>-database`
 * etc
 
 NOTE! Перед созданием тега, вы должны убедиться, что [релизные контейнеры](https://gitlab.wnb:28443/cexiopay/database/pipelines) с версией [`DB_VERSION`](https://gitlab.wnb:28443/cexiopay/database/-/tags) выложены в репозитории контейнеров (прод контейнер в продовский репозиторий)
-
-## Snapshots
-
-### Runtime Snapshot
-
-Запустите Pipeline с переменной `SNAPSHOT_RUNTIME` со значением = `master` или `dev`. Это создаст pipeline с набором задач для деплоймента сервисов из соответсвующего бранчей.
-
-Пример триггера
-```bash
-export DEPLOY_PIPELINE_TOKEN=...
-curl --insecure -X POST -F "token=${DEPLOY_PIPELINE_TOKEN}" -F "ref=master" -F "variables[SNAPSHOT_RUNTIME]=dev" https://gitlab.wnb:28443/api/v4/projects/684/trigger/pipeline
-```
-### Database Snapshot
-
-Запустите Pipeline с переменной `SNAPSHOT_DATABASE` = `dev.57e5a60e`, где [`dev.57e5a60e`](https://gitlab.wnb:28443/cexiopay/database/pipelines) тег от образа с миграцией базы данных.
-
-Пример триггера
-```bash
-export DEPLOY_PIPELINE_TOKEN=...
-curl --insecure -X POST -F "token=${DEPLOY_PIPELINE_TOKEN}" -F "ref=master" -F "variables[SNAPSHOT_DATABASE]=dev.57e5a60e" https://gitlab.wnb:28443/api/v4/projects/684/trigger/pipeline
-```
-
 
 ## HELM Notes
 

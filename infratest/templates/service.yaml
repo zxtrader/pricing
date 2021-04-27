@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: {{ template "prefix" . }}echo
+  name: {{ template "prefix" . }}echo
+spec:
+  ports:
+    - port: 8443
+      name: echo
+      protocol: TCP
+      targetPort: 8443
+  type: ClusterIP
+  selector:
+    app: {{ template "prefix" . }}echo

@@ -1,0 +1,44 @@
+{{ $rootScope := . }}
+{{- range $key, $value := .Values.ingress -}}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ template "prefix" $rootScope }}{{ $key | lower }}
+  annotations:
+{{ if $value.backendCaSecretName }}
+    nginx.ingress.kubernetes.io/auth-tls-pass-certificate-to-upstream: "true"
+    nginx.ingress.kubernetes.io/auth-tls-secret: {{ $rootScope.Release.Namespace }}/{{ $value.backendCaSecretName }}
+    nginx.ingress.kubernetes.io/auth-tls-verify-client: "on"
+    nginx.ingress.kubernetes.io/auth-tls-verify-depth: "1"
+{{ end }}
+{{ if $value.backendInsecure }}
+    # https://github.com/kubernetes/ingress-nginx/blob/master/docs/user-guide/nginx-configuration/annotations.md#backend-protocol
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+    nginx.ingress.kubernetes.io/secure-backends: "false"
+{{ else }}
+    # https://github.com/kubernetes/ingress-nginx/blob/master/docs/user-guide/nginx-configuration/annotations.md#backend-protocol
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+    nginx.ingress.kubernetes.io/secure-backends: "true"
+{{ end }}
+{{ if $value.nginxConfigurationSnippet }}
+    nginx.ingress.kubernetes.io/configuration-snippet: {{ $value.nginxConfigurationSnippet | quote }}
+{{ end }}
+spec:
+  tls:
+    - hosts:
+        - "{{ $value.domain }}"
+{{ if $value.certSecretName }}
+      secretName: "{{ $value.certSecretName }}"
+{{ end }}
+  rules:
+    - host: "{{ $value.domain }}"
+      http:
+        paths:
+{{ range $bindPath, $serviceConnectivity := $value.paths }}
+          - backend:
+              serviceName: {{ template "prefix" $rootScope }}{{ $serviceConnectivity.backendServiceName }}
+              servicePort: {{ $serviceConnectivity.backendServicePort }}
+            path: {{ $bindPath }}
+{{ end }}
+---
+{{- end -}}
