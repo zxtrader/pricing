@@ -49,7 +49,7 @@ application:
         "--config-toml-file=/etc/cexiolabs/cexiopay.processing/service-zone-test.toml",
         "--config-secrets-dir=/etc/cexiolabs/cexiopay/secrets",
         "--config-secrets-dir=/etc/cexiolabs/cexiopay/secrets-setup",
-        "--config-env"
+        "--config-env",
         "--runtime-gate-email-sender=nodemailer",
         "--runtime-use-notifier-service"
       ]
