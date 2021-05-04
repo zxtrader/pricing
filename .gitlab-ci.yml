@@ -184,78 +184,145 @@ Helm3:2PRSN:delete:runtime:
     variables:
       - $CI_COMMIT_TAG =~ /-runtime$/
 
-# Helm3:4PROD:install:runtime:
-#   stage: deploy
-#   image:
-#     name: ${IMAGE_HELM3}
-#     entrypoint: [""]
-#   script:
-#     - verify_runtime_version_helm3
-#     - kube_config_setup
-#     - cd runtime
-#     - helm --namespace "cryptopay" list
-#     - helm --namespace "cryptopay" upgrade --install --history-max 3 --values "values-base.yaml" --values "values.production.yaml" "${RUNTIME_RELEASE}" .
-#     - helm --namespace "cryptopay" history "${RUNTIME_RELEASE}" --max=3
-#   when: manual
-#   environment:
-#     name: production
-#     url: https://pay-cex.io/
-#   tags:
-#     - crtpdpl
-#   only:
-#     refs:
-#       - tags
-#     variables:
-#       - $CI_COMMIT_TAG =~ /-runtime$/
+Helm3:3TEST:install:runtime:
+  stage: deploy
+  image:
+    name: ${IMAGE_HELM3}
+    entrypoint: [""]
+  script:
+    - verify_runtime_version_helm3
+    - kube_config_setup
+    - cd runtime
+    - helm --namespace "cexiopay-test" list
+    - helm --namespace "cexiopay-test" upgrade --install --history-max 3 --values "values-base.yaml" --values "values.test.yaml" "${RUNTIME_RELEASE}" .
+    - helm --namespace "cexiopay-test" history "${RUNTIME_RELEASE}" --max=3
+  when: manual
+  environment:
+    name: test
+    url: https://board.pay-cex-test.net/
+  only:
+    refs:
+      - tags
+    variables:
+      - $CI_COMMIT_TAG =~ /-runtime$/
 
-# Helm3:4PROD:rollback:runtime:
-#   stage: rollback
-#   image:
-#     name: ${IMAGE_HELM3}
-#     entrypoint: [""]
-#   script:
-#     - verify_runtime_version_helm3
-#     - kube_config_setup
-#     - cd runtime
-#     - helm --namespace "cryptopay" list
-#     - helm --namespace "cryptopay" history "${RUNTIME_RELEASE}" --max=3
-#     - helm --namespace "cryptopay" rollback --recreate-pods "${RUNTIME_RELEASE}" 0
-#     - helm --namespace "cryptopay" history "${RUNTIME_RELEASE}" --max=3
-#   when: manual
-#   environment:
-#     name: production
-#     url: https://pay-cex.io/
-#   tags:
-#     - crtpdpl
-#   only:
-#     refs:
-#       - tags
-#     variables:
-#       - $CI_COMMIT_TAG =~ /-runtime$/
+Helm3:3TEST:rollback:runtime:
+  stage: rollback
+  image:
+    name: ${IMAGE_HELM3}
+    entrypoint: [""]
+  script:
+    - verify_runtime_version_helm3
+    - kube_config_setup
+    - cd runtime
+    - helm --namespace "cexiopay-test" list
+    - helm --namespace "cexiopay-test" history "${RUNTIME_RELEASE}" --max=3
+    - helm --namespace "cexiopay-test" rollback --recreate-pods "${RUNTIME_RELEASE}" 0
+    - helm --namespace "cexiopay-test" history "${RUNTIME_RELEASE}" --max=3
+  when: manual
+  environment:
+    name: test
+    url: https://board.pay-cex-test.net/
+  only:
+    refs:
+      - tags
+    variables:
+      - $CI_COMMIT_TAG =~ /-runtime$/
 
-# Helm3:4PROD:delete:runtime:
-#   stage: delete
-#   image:
-#     name: ${IMAGE_HELM3}
-#     entrypoint: [""]
-#   script:
-#     - verify_runtime_version_helm3
-#     - kube_config_setup
-#     - cd runtime
-#     - helm --namespace "cryptopay" list
-#     - helm --namespace "cryptopay" history "${RUNTIME_RELEASE}" --max=3
-#     - helm --namespace "cryptopay" uninstall  "${RUNTIME_RELEASE}"
-#   when: manual
-#   environment:
-#     name: production
-#     url: https://pay-cex.io/
-#   tags:
-#     - crtpdpl
-#   only:
-#     refs:
-#       - tags
-#     variables:
-#       - $CI_COMMIT_TAG =~ /-runtime$/
+Helm3:3TEST:delete:runtime:
+  stage: delete
+  image:
+    name: ${IMAGE_HELM3}
+    entrypoint: [""]
+  script:
+    - verify_runtime_version_helm3
+    - kube_config_setup
+    - cd runtime
+    - helm --namespace "cexiopay-test" list
+    - helm --namespace "cexiopay-test" history "${RUNTIME_RELEASE}" --max=3
+    - helm --namespace "cexiopay-test" uninstall  "${RUNTIME_RELEASE}"
+  when: manual
+  environment:
+    name: test
+    url: https://board.pay-cex-test.net/
+  only:
+    refs:
+      - tags
+    variables:
+      - $CI_COMMIT_TAG =~ /-runtime$/
+
+Helm3:4PROD:install:runtime:
+  stage: deploy
+  image:
+    name: ${IMAGE_HELM3}
+    entrypoint: [""]
+  script:
+    - verify_runtime_version_helm3
+    - kube_config_setup
+    - cd runtime
+    - helm --namespace "cexiopay" list
+    - helm --namespace "cexiopay" upgrade --install --history-max 3 --values "values-base.yaml" --values "values.production.yaml" "${RUNTIME_RELEASE}" .
+    - helm --namespace "cexiopay" history "${RUNTIME_RELEASE}" --max=3
+  when: manual
+  environment:
+    name: production
+    url: https://pay-cex.io/
+  tags:
+    - crtpdpl
+  only:
+    refs:
+      - tags
+    variables:
+      - $CI_COMMIT_TAG =~ /-runtime$/
+
+Helm3:4PROD:rollback:runtime:
+  stage: rollback
+  image:
+    name: ${IMAGE_HELM3}
+    entrypoint: [""]
+  script:
+    - verify_runtime_version_helm3
+    - kube_config_setup
+    - cd runtime
+    - helm --namespace "cexiopay" list
+    - helm --namespace "cexiopay" history "${RUNTIME_RELEASE}" --max=3
+    - helm --namespace "cexiopay" rollback --recreate-pods "${RUNTIME_RELEASE}" 0
+    - helm --namespace "cexiopay" history "${RUNTIME_RELEASE}" --max=3
+  when: manual
+  environment:
+    name: production
+    url: https://pay-cex.io/
+  tags:
+    - crtpdpl
+  only:
+    refs:
+      - tags
+    variables:
+      - $CI_COMMIT_TAG =~ /-runtime$/
+
+Helm3:4PROD:delete:runtime:
+  stage: delete
+  image:
+    name: ${IMAGE_HELM3}
+    entrypoint: [""]
+  script:
+    - verify_runtime_version_helm3
+    - kube_config_setup
+    - cd runtime
+    - helm --namespace "cexiopay" list
+    - helm --namespace "cexiopay" history "${RUNTIME_RELEASE}" --max=3
+    - helm --namespace "cexiopay" uninstall  "${RUNTIME_RELEASE}"
+  when: manual
+  environment:
+    name: production
+    url: https://pay-cex.io/
+  tags:
+    - crtpdpl
+  only:
+    refs:
+      - tags
+    variables:
+      - $CI_COMMIT_TAG =~ /-runtime$/
 
 
 
@@ -394,78 +461,78 @@ Helm3:2PRSN:delete:runtime:
 #     variables:
 #       - $CI_COMMIT_TAG =~ /-runtime-helm2$/
 
-Helm2:4PROD:install:runtime:
-  stage: deploy
-  image:
-    name: ${IMAGE_HELM2}
-    entrypoint: [""]
-  script:
-    - verify_runtime_version_helm2
-    - kube_config_setup
-    - cd runtime
-    - helm --tiller-namespace "cryptopay" list
-    - helm --tiller-namespace "cryptopay" upgrade --install --namespace "cryptopay"  --values "values-base.yaml" --values "values.production.yaml" "${RUNTIME_RELEASE}" .
-    - helm --tiller-namespace "cryptopay" history "${RUNTIME_RELEASE}" --max=3
-  when: manual
-  environment:
-    name: production
-    url: https://pay-cex.io/
-  tags:
-    - crtpdpl
-  only:
-    refs:
-      - tags
-    variables:
-      - $CI_COMMIT_TAG =~ /-runtime-helm2$/
+# Helm2:4PROD:install:runtime:
+#   stage: deploy
+#   image:
+#     name: ${IMAGE_HELM2}
+#     entrypoint: [""]
+#   script:
+#     - verify_runtime_version_helm2
+#     - kube_config_setup
+#     - cd runtime
+#     - helm --tiller-namespace "cexiopay" list
+#     - helm --tiller-namespace "cexiopay" upgrade --install --namespace "cexiopay"  --values "values-base.yaml" --values "values.production.yaml" "${RUNTIME_RELEASE}" .
+#     - helm --tiller-namespace "cexiopay" history "${RUNTIME_RELEASE}" --max=3
+#   when: manual
+#   environment:
+#     name: production
+#     url: https://pay-cex.io/
+#   tags:
+#     - crtpdpl
+#   only:
+#     refs:
+#       - tags
+#     variables:
+#       - $CI_COMMIT_TAG =~ /-runtime-helm2$/
 
-Helm2:4PROD:rollback:runtime:
-  stage: rollback
-  image:
-    name: ${IMAGE_HELM2}
-    entrypoint: [""]
-  script:
-    - verify_runtime_version_helm2
-    - kube_config_setup
-    - cd runtime
-    - helm --tiller-namespace "cryptopay" list
-    - helm --tiller-namespace "cryptopay" history "${RUNTIME_RELEASE}" --max=3
-    - helm --tiller-namespace "cryptopay" rollback --recreate-pods "${RUNTIME_RELEASE}" 0
-    - helm --tiller-namespace "cryptopay" history "${RUNTIME_RELEASE}" --max=3
-  when: manual
-  environment:
-    name: production
-    url: https://pay-cex.io/
-  tags:
-    - crtpdpl
-  only:
-    refs:
-      - tags
-    variables:
-      - $CI_COMMIT_TAG =~ /-runtime-helm2$/
+# Helm2:4PROD:rollback:runtime:
+#   stage: rollback
+#   image:
+#     name: ${IMAGE_HELM2}
+#     entrypoint: [""]
+#   script:
+#     - verify_runtime_version_helm2
+#     - kube_config_setup
+#     - cd runtime
+#     - helm --tiller-namespace "cexiopay" list
+#     - helm --tiller-namespace "cexiopay" history "${RUNTIME_RELEASE}" --max=3
+#     - helm --tiller-namespace "cexiopay" rollback --recreate-pods "${RUNTIME_RELEASE}" 0
+#     - helm --tiller-namespace "cexiopay" history "${RUNTIME_RELEASE}" --max=3
+#   when: manual
+#   environment:
+#     name: production
+#     url: https://pay-cex.io/
+#   tags:
+#     - crtpdpl
+#   only:
+#     refs:
+#       - tags
+#     variables:
+#       - $CI_COMMIT_TAG =~ /-runtime-helm2$/
 
-Helm2:4PROD:delete:runtime:
-  stage: delete
-  image:
-    name: ${IMAGE_HELM2}
-    entrypoint: [""]
-  script:
-    - verify_runtime_version_helm2
-    - kube_config_setup
-    - cd runtime
-    - helm --tiller-namespace "cryptopay" list
-    - helm --tiller-namespace "cryptopay" history "${RUNTIME_RELEASE}" --max=3
-    - helm --tiller-namespace "cryptopay" delete --purge "${RUNTIME_RELEASE}"
-  when: manual
-  environment:
-    name: production
-    url: https://pay-cex.io/
-  tags:
-    - crtpdpl
-  only:
-    refs:
-      - tags
-    variables:
-      - $CI_COMMIT_TAG =~ /-runtime-helm2$/
+# Helm2:4PROD:delete:runtime:
+#   stage: delete
+#   image:
+#     name: ${IMAGE_HELM2}
+#     entrypoint: [""]
+#   script:
+#     - verify_runtime_version_helm2
+#     - kube_config_setup
+#     - cd runtime
+#     - helm --tiller-namespace "cexiopay" list
+#     - helm --tiller-namespace "cexiopay" history "${RUNTIME_RELEASE}" --max=3
+#     - helm --tiller-namespace "cexiopay" delete --purge "${RUNTIME_RELEASE}"
+#   when: manual
+#   environment:
+#     name: production
+#     url: https://pay-cex.io/
+#   tags:
+#     - crtpdpl
+#   only:
+#     refs:
+#       - tags
+#     variables:
+#       - $CI_COMMIT_TAG =~ /-runtime-helm2$/
 
 #
 #
@@ -474,13 +541,13 @@ Helm2:4PROD:delete:runtime:
 #
 1EVO:install:db:
   image:
-    name: bitnami/kubectl
+    name: ${IMAGE_KUBECTL}
     entrypoint: [""]
   stage: deploy
   script:
     - export KUBECONFIG=/tmp/.kube-config
     - echo "$KUBECONF_BASE64" | base64 -d > "${KUBECONFIG}"
-    - ./migration/migration-exec.sh --kube-context=evolution --image=devdocker.infra.kube/cexiopay/database-evolution --tag="$(echo $CI_COMMIT_TAG | cut -d- -f1)" --install
+    - ./migration/migration-exec.sh --kube-context=evolution --image=devdocker.infra.kube/cexiopay/database-evolution --tag="$(echo $CI_COMMIT_TAG | rev | cut -d- -f2- | rev)" --install
   when: manual
   environment:
     name: evolution
@@ -493,13 +560,13 @@ Helm2:4PROD:delete:runtime:
 
 1EVO:rollback:db:
   image:
-    name: bitnami/kubectl
+    name: ${IMAGE_KUBECTL}
     entrypoint: [""]
   stage: rollback
   script:
     - export KUBECONFIG=/tmp/.kube-config
     - echo "$KUBECONF_BASE64" | base64 -d > "${KUBECONFIG}"
-    - ./migration/migration-exec.sh --kube-context=evolution --image=devdocker.infra.kube/cexiopay/database-evolution --tag="$(echo $CI_COMMIT_TAG | cut -d- -f1)" --rollback
+    - ./migration/migration-exec.sh --kube-context=evolution --image=devdocker.infra.kube/cexiopay/database-evolution --tag="$(echo $CI_COMMIT_TAG | rev | cut -d- -f2- | rev)" --rollback
   when: manual
   environment:
     name: evolution
@@ -512,13 +579,13 @@ Helm2:4PROD:delete:runtime:
 
 2PRSN:install:db:
   image:
-    name: bitnami/kubectl
+    name: ${IMAGE_KUBECTL}
     entrypoint: [""]
   stage: deploy
   script:
     - export KUBECONFIG=/tmp/.kube-config
     - echo "$KUBECONF_BASE64" | base64 -d > "${KUBECONFIG}"
-    - ./migration/migration-exec.sh --kube-context=presentation --image=devdocker.infra.kube/cexiopay/database-presentation --tag="$(echo $CI_COMMIT_TAG | cut -d- -f1)" --install
+    - ./migration/migration-exec.sh --kube-context=presentation --image=devdocker.infra.kube/cexiopay/database-presentation --tag="$(echo $CI_COMMIT_TAG | rev | cut -d- -f2- | rev)" --install
   when: manual
   environment:
     name: presentation
@@ -531,13 +598,13 @@ Helm2:4PROD:delete:runtime:
 
 2PRSN:rollback:db:
   image:
-    name: bitnami/kubectl
+    name: ${IMAGE_KUBECTL}
     entrypoint: [""]
   stage: rollback
   script:
     - export KUBECONFIG=/tmp/.kube-config
     - echo "$KUBECONF_BASE64" | base64 -d > "${KUBECONFIG}"
-    - ./migration/migration-exec.sh --kube-context=presentation --image=devdocker.infra.kube/cexiopay/database-presentation --tag="$(echo $CI_COMMIT_TAG | cut -d- -f1)" --rollback
+    - ./migration/migration-exec.sh --kube-context=presentation --image=devdocker.infra.kube/cexiopay/database-presentation --tag="$(echo $CI_COMMIT_TAG | rev | cut -d- -f2- | rev)" --rollback
   when: manual
   environment:
     name: presentation
@@ -550,13 +617,13 @@ Helm2:4PROD:delete:runtime:
 
 3TEST:install:db:
   image:
-    name: bitnami/kubectl
+    name: ${IMAGE_KUBECTL}
     entrypoint: [""]
   stage: deploy
   script:
     - export KUBECONFIG=/tmp/.kube-config
     - echo "$KUBECONF_BASE64" | base64 -d > "${KUBECONFIG}"
-    - ./migration/migration-exec.sh --kube-context=test --image=devdocker.infra.kube/cexiopay/database-test --tag="$(echo $CI_COMMIT_TAG | cut -d- -f1)" --install
+    - ./migration/migration-exec.sh --kube-context=test --image=devdocker.infra.kube/cexiopay/database-test --tag="$(echo $CI_COMMIT_TAG | rev | cut -d- -f2- | rev)" --install
   when: manual
   environment:
     name: test
@@ -569,13 +636,13 @@ Helm2:4PROD:delete:runtime:
 
 3TEST:rollback:db:
   image:
-    name: bitnami/kubectl
+    name: ${IMAGE_KUBECTL}
     entrypoint: [""]
   stage: rollback
   script:
     - export KUBECONFIG=/tmp/.kube-config
     - echo "$KUBECONF_BASE64" | base64 -d > "${KUBECONFIG}"
-    - ./migration/migration-exec.sh --kube-context=test --image=devdocker.infra.kube/cexiopay/database-test --tag="$(echo $CI_COMMIT_TAG | cut -d- -f1)" --rollback
+    - ./migration/migration-exec.sh --kube-context=test --image=devdocker.infra.kube/cexiopay/database-test --tag="$(echo $CI_COMMIT_TAG | rev | cut -d- -f2- | rev)" --rollback
   when: manual
   environment:
     name: test
@@ -588,13 +655,13 @@ Helm2:4PROD:delete:runtime:
 
 4PROD:install:db:
   image:
-    name: bitnami/kubectl
+    name: ${IMAGE_KUBECTL}
     entrypoint: [""]
   stage: deploy
   script:
     - export KUBECONFIG=/tmp/.kube-config
     - echo "$KUBECONF_BASE64" | base64 -d > "${KUBECONFIG}"
-    - ./migration/migration-exec.sh --kube-context=prod --kube-namespace=cryptopay --image=harbor.infra.kube/cexiopay/database-production --tag="$(echo $CI_COMMIT_TAG | cut -d- -f1)" --install
+    - ./migration/migration-exec.sh --kube-context=prod --kube-namespace=cexiopay --image=harbor.infra.kube/cexiopay/database-production --tag="$(echo $CI_COMMIT_TAG | rev | cut -d- -f2- | rev)" --install
   when: manual
   environment:
     name: production
@@ -609,13 +676,13 @@ Helm2:4PROD:delete:runtime:
 
 4PROD:rollback:db:
   image:
-    name: bitnami/kubectl
+    name: ${IMAGE_KUBECTL}
     entrypoint: [""]
   stage: rollback
   script:
     - export KUBECONFIG=/tmp/.kube-config
     - echo "$KUBECONF_BASE64" | base64 -d > "${KUBECONFIG}"
-    - ./migration/migration-exec.sh --kube-context=prod --kube-namespace=cryptopay --image=harbor.infra.kube/cexiopay/database-production --tag="$(echo $CI_COMMIT_TAG | cut -d- -f1)" --rollback
+    - ./migration/migration-exec.sh --kube-context=prod --kube-namespace=cexiopay --image=harbor.infra.kube/cexiopay/database-production --tag="$(echo $CI_COMMIT_TAG | rev | cut -d- -f2- | rev)" --rollback
   when: manual
   environment:
     name: production

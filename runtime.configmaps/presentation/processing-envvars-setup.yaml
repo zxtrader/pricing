@@ -1,10 +1,11 @@
-# kubectl--namespace cryptopay-presentation get --output=yaml ConfigMap/processing-envvars-setup | tee ~/w-cex/cryptopay/devops.kubernetes-deployment/runtime.configmaps/presentation/processing-envvars-setup.yaml
+# kubectl --namespace cexiopay-presentation get --output=yaml ConfigMap/processing-envvars-setup
+# kubectl --namespace cexiopay-presentation apply --filename=runtime.configmaps/presentation/processing-envvars-setup.yaml
 
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: processing-envvars-setup
-  namespace: cryptopay-presentation
+  namespace: cexiopay-presentation
 data:
   setup.accessKeyCreate.3e45e6e50b1ba24461e26e530cd27d24.merchantName: INTERNAL_DEBUG
   setup.accessKeyCreate.3e45e6e50b1ba24461e26e530cd27d24.passphrase: ud200659094

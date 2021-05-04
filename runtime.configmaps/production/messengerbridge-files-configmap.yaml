@@ -25,8 +25,8 @@ data:
       listenPort = 8443
       trustProxy = true
       clientCertificateMode = "none"
-      serverCertificate = "/etc/cexiolabs/cryptopay/ssl/tls.crt"
-      serverKey = "/etc/cexiolabs/cryptopay/ssl/tls.key"
+      serverCertificate = "/etc/cexiolabs/cexiopay/ssl/tls.crt"
+      serverKey = "/etc/cexiolabs/cexiopay/ssl/tls.key"
 
     [[endpoint]]
       # Declare REST endpoint and bound to the API HTTP server on path /v1
@@ -77,7 +77,7 @@ data:
         #chatId = <Telegram's Unique identifier for the target chat or username of the target channel (in the format @channelusername)>
         renderTemplate = """
     <b>Запрос на ручное подтверждение 0-confirmation (нет колбека от pss-provider-wtf2)</b>
-    <i>Order: </i><a href="https://dashboard.cryptopay.band/order//{{cpoOrderId}}">{{cpoOrderId}}</a>
+    <i>Order: </i><a href="https://board.pay-cex.io/order//{{cpoOrderId}}">{{cpoOrderId}}</a>
     <i>Сумма: </i><b>{{amount}} {{currency}}</b>
     <i>Депозитный адрес: </i><a href="https://blockstream.info/address/{{depositAddress}}/">{{depositAddress}}</a>. See also <a href="https://live.blockcypher.com/btc/address/{{depositAddress}}/">BlockCypher</a>, <a href="https://www.blockchain.com/btc/address/{{depositAddress}}">BlockchainInfo</a>.
     <i>Хеш входящей транзакции: </i><a href="https://live.blockcypher.com/btc/tx/{{txHash}}/">{{txHash}}</a>. See also <a href="https://blockstream.info/tx/{{txHash}}">BlockCypher</a>, <a href="https://www.blockchain.com/btc/tx/{{txHash}}">BlockchainInfo</a>.
@@ -89,7 +89,7 @@ data:
         #chatId = <Telegram's Unique identifier for the target chat or username of the target channel (in the format @channelusername)>
         renderTemplate = """
     <b>Запрос на ручное подтверждение депозита по достижению {{confirmations}}-confirmations (нет колбеков от pss-provider-wtf2)</b>
-    <i>Order: </i><a href="https://dashboard.cryptopay.band/order//{{cpoOrderId}}">{{cpoOrderId}}</a>
+    <i>Order: </i><a href="https://board.board.pay-cex.io/order//{{cpoOrderId}}">{{cpoOrderId}}</a>
     <i>Сумма: </i><b>{{amount}} {{currency}}</b>
     <i>Текущее кол-во confirmations: </i><a href="https://live.blockcypher.com/btc/tx/{{txHash}}/">{{confirmations}}</a>
     <i>Депозитный адрес: </i><a href="https://blockstream.info/address/{{depositAddress}}/">{{depositAddress}}</a>. See also <a href="https://live.blockcypher.com/btc/address/{{depositAddress}}/">BlockCypher</a>, <a href="https://www.blockchain.com/btc/address/{{depositAddress}}">BlockchainInfo</a>.

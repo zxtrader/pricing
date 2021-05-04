@@ -1,4 +1,4 @@
 runtime.secrets/
 runtime.secrets
 .DS_Store
-.kube-config-gitlab
+.kube-config-cexiopay-gitlab

@@ -13,7 +13,6 @@ application:
       ]
     env:
       WTFProviderConfigurationFile: /etc/cexiolabs/cexiopay.api/legacy-cpservice-config/WTF-dev.json
-    replicas: 0
   dashboard:
     serviceImage: harbor.infra.kube/cexiopay/dashboard/snapshot
     replicas: 1
@@ -38,7 +37,6 @@ application:
         "--config-env",
         "--log-json"
       ]
-    replicas: 0
   messengerbridge:
     replicas: 0
   processing:
@@ -48,14 +46,12 @@ application:
         "--config-file=/etc/cexiolabs/cexiopay.processing/service.config",
         "--config-toml-file=/etc/cexiolabs/cexiopay.processing/service.toml",
         "--config-toml-file=/etc/cexiolabs/cexiopay.processing/service-setup.toml",
-        "--config-toml-file=/etc/cexiolabs/cexiopay.processing/service-setup-dach.toml",
-        "--config-toml-file=/etc/cexiolabs/cexiopay.processing/service-setup-goldenpay.toml",
-        "--config-toml-file=/etc/cexiolabs/cexiopay.processing/service-test.toml",
+        "--config-toml-file=/etc/cexiolabs/cexiopay.processing/service-zone-test.toml",
         "--config-secrets-dir=/etc/cexiolabs/cexiopay/secrets",
         "--config-secrets-dir=/etc/cexiolabs/cexiopay/secrets-setup",
-        "--config-env",
+        "--config-env"
         "--runtime-gate-email-sender=nodemailer",
-        "--runtime-use-notifier-service",
+        "--runtime-use-notifier-service"
       ]
     env:
       CMDBIN: "devel"
@@ -63,7 +59,6 @@ application:
       DEBUG_WAIT: "no"
       LOG_LEVEL: "debug"
       GATE_URL: https://gate.pay-cex-test.net
-    replicas: 0
 ingress:
   API:
     domain: api.pay-cex-test.net
@@ -75,6 +70,9 @@ ingress:
       "/":
         backendServiceName: api
         backendServicePort: 8443
+      "/emulator-crypto":
+        backendServiceName: processing
+        backendServicePort: 8080
       "/v2/":
         backendServiceName: processing
         backendServicePort: 8080

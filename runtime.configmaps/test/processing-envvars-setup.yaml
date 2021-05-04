@@ -1,0 +1,21 @@
+# kubectl --namespace cexiopay-test get --output=yaml ConfigMap/processing-envvars-setup
+# kubectl --namespace cexiopay-test apply --filename=runtime.configmaps/test/processing-envvars-setup.yaml
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: processing-envvars-setup
+  namespace: cexiopay-test
+data:
+  setup.accessKeyCreate.f59e662d34c119486315762709fb2a32.merchantName: DACH__DEBUG
+  setup.accessKeyCreate.f59e662d34c119486315762709fb2a32.passphrase: oo60iukxnjrwavlc
+  setup.accessKeyCreate.f59e662d34c119486315762709fb2a32.tag: Key for DACH__DEBUG merchant (for Ecommpay's testing)
+  setup.accessKeyCreate_indexer: f59e662d34c119486315762709fb2a32
+  # setup.createGateway.internaldebug-gateway.allowUnsignedRequests: "false"
+  # setup.createGateway.internaldebug-gateway.callbackUrl: https://internaldebug-gateway-evolution-cexiopay.requestcatcher.com
+  # setup.createGateway.internaldebug-gateway.description: Demo Gateway
+  # setup.createGateway.internaldebug-gateway.domainWhitelist: localhost api-evolution-cexiopay.dev.kube invoice-evolution-cexiopay.dev.kube
+  # setup.createGateway.internaldebug-gateway.enabled: "true"
+  # setup.createGateway.internaldebug-gateway.merchantName: INTERNAL_DEBUG
+  # setup.createGateway.internaldebug-gateway.uuid: d4916d66-1a16-44aa-b704-fcc80ce740d0
+  # setup.createGateway_indexer: demo-gateway internaldebug-gateway

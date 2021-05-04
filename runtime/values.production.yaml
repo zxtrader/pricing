@@ -4,19 +4,13 @@ application:
   api:
     env:
       WTFProviderConfigurationFile: /etc/cexiolabs/cexiopay.api/legacy-cpservice-config/WTF-prod.json
-  identity:
-    env:
-      Emailer__SendGrid__senderEmail: "no-reply@cexiopay.band"
-
   processing:
     args:
       [
         "--config-file=/etc/cexiolabs/cexiopay.processing/service.config",
         "--config-toml-file=/etc/cexiolabs/cexiopay.processing/service.toml",
         "--config-toml-file=/etc/cexiolabs/cexiopay.processing/service-setup.toml",
-        "--config-toml-file=/etc/cexiolabs/cexiopay.processing/service-setup-dach.toml",
-        "--config-toml-file=/etc/cexiolabs/cexiopay.processing/service-setup-goldenpay.toml",
-        "--config-toml-file=/etc/cexiolabs/cexiopay.processing/service-production.toml",
+        "--config-toml-file=/etc/cexiolabs/cexiopay.processing/service-zone-production.toml",
         "--config-secrets-dir=/etc/cexiolabs/cexiopay/secrets",
         "--config-secrets-dir=/etc/cexiolabs/cexiopay/secrets-setup",
         "--config-env"

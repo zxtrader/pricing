@@ -1,11 +1,11 @@
-# kubectl --namespace cexiopay-presentation get --output=yaml ConfigMap/processing-files
-# kubectl --namespace cexiopay-presentation apply --filename=runtime.configmaps/presentation/processing-files.yaml
+# kubectl --namespace cexiopay-test get --output=yaml ConfigMap/processing-files
+# kubectl --namespace cexiopay-test apply --filename=runtime.configmaps/test/processing-files.yaml
 
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: processing-files
-  namespace: cexiopay-presentation
+  namespace: cexiopay-test
 data:
   trusted-aggregator-ca.crt: |-
     -----BEGIN CERTIFICATE-----
@@ -25,6 +25,29 @@ data:
     6YlqkpmwWe4EiWTxtkg6OPiBkO8gpEfmGCZMcaBXh2ECo3rbAZd/ExBTrpOjeUqM
     by0rQ4vBeRtUwQjqqpkbxkhRZTt3fbcpOCC9UfM7efpAvt0QQd5ZopNnQp4SZdv/
     +H7iW/hOXvy3PIlBn92NobrFZhJNRGl0zYdpfyN3nYF3/p2pCDxi5j+hOy9QtM8=
+    -----END CERTIFICATE-----
+  trusted-notifier-ca.crt: |-
+    -----BEGIN CERTIFICATE-----
+    MIIDljCCAn6gAwIBAgIUD24zuoOQNAuIP9yj4qvgrAgMxwMwDQYJKoZIhvcNAQEL
+    BQAwLTEWMBQGA1UECgwNV05CIFNvbHV0aW9uczETMBEGA1UEAwwKSW5mcmFXTkJD
+    QTAeFw0xOTA4MDcxNTI0MTFaFw0yOTA4MDQxNTI0MTFaMC0xFjAUBgNVBAoMDVdO
+    QiBTb2x1dGlvbnMxEzARBgNVBAMMCkluZnJhV05CQ0EwggEiMA0GCSqGSIb3DQEB
+    AQUAA4IBDwAwggEKAoIBAQDW7V7uXeJt1u19ct/Xqom5PHPJBbXFSJzkmZb9OGwy
+    O88B/EBkLdOrYG6yVh81bRM2BAhYe4kWQ7Gxv0+8IVZlvOr15izBLyAj6HJ72S65
+    muRNHC9s/zGt5U+3Lsr7hc7pc1lSXc2+CUuFgS+pOwVf4btxCvukOUGgOXenyK3y
+    wPNJPWDCN+Zfe/aGKu3Qz+hZuqvJME10FZN6EGl+PFuqLfbub8uOIcQUV+Bay/zo
+    LM1M5h/Tmcs0QcRkk3dFaD2k5YtBRzxGGRIZfBbAvxrWFpdcRAGXEsTH7F85G9+u
+    0+e4O/6B1dlxpZ2xtcylEhyvG/RLJYcMMpYoUXaHSlYvAgMBAAGjga0wgaowDwYD
+    VR0TAQH/BAUwAwEB/zAOBgNVHQ8BAf8EBAMCAQYwHQYDVR0OBBYEFN79y6IAEzSk
+    TvP0707bJZ9pimlrMGgGA1UdIwRhMF+AFN79y6IAEzSkTvP0707bJZ9pimlroTGk
+    LzAtMRYwFAYDVQQKDA1XTkIgU29sdXRpb25zMRMwEQYDVQQDDApJbmZyYVdOQkNB
+    ghQPbjO6g5A0C4g/3KPiq+CsCAzHAzANBgkqhkiG9w0BAQsFAAOCAQEAeyrGsLUz
+    4mhsUh25TR+EFM47QpkO5vkCoR7Ey4NBDaPwreCvlMfVH6p7LmVNRjPvZZ3XuRy4
+    IfxaqGPW1ayFSywT/7sQuPlGERoVSFpiP52tg1gHEhYMrw5aLNj/1vtRfSXwcbg8
+    fcgsH2JFE7oeSrJiYCz/KcQLCh+GcRODsh6bplAQ9T/DZ6RsaOuwpN/GuyOdJRMU
+    hJuiNGe5F68sCu8AG9pYgPfPks6hSSOjWbt2RbdRvD5O27E9xZpN3oMWlnveNTcD
+    sLQ+LfDODy8padt2P3GgWj/RTn4yAIvtvUJg9+HqpqIYmq5HANzW85oNGTg7/KOH
+    qBHLI7AoM+YmlA==
     -----END CERTIFICATE-----
   trusted-pssaggregator-ca.crt: |-
     -----BEGIN CERTIFICATE-----
@@ -73,6 +96,29 @@ data:
     qBHLI7AoM+YmlA==
     -----END CERTIFICATE-----
   trusted-psscryptowallethelper-ca.crt: |-
+    -----BEGIN CERTIFICATE-----
+    MIIDljCCAn6gAwIBAgIUD24zuoOQNAuIP9yj4qvgrAgMxwMwDQYJKoZIhvcNAQEL
+    BQAwLTEWMBQGA1UECgwNV05CIFNvbHV0aW9uczETMBEGA1UEAwwKSW5mcmFXTkJD
+    QTAeFw0xOTA4MDcxNTI0MTFaFw0yOTA4MDQxNTI0MTFaMC0xFjAUBgNVBAoMDVdO
+    QiBTb2x1dGlvbnMxEzARBgNVBAMMCkluZnJhV05CQ0EwggEiMA0GCSqGSIb3DQEB
+    AQUAA4IBDwAwggEKAoIBAQDW7V7uXeJt1u19ct/Xqom5PHPJBbXFSJzkmZb9OGwy
+    O88B/EBkLdOrYG6yVh81bRM2BAhYe4kWQ7Gxv0+8IVZlvOr15izBLyAj6HJ72S65
+    muRNHC9s/zGt5U+3Lsr7hc7pc1lSXc2+CUuFgS+pOwVf4btxCvukOUGgOXenyK3y
+    wPNJPWDCN+Zfe/aGKu3Qz+hZuqvJME10FZN6EGl+PFuqLfbub8uOIcQUV+Bay/zo
+    LM1M5h/Tmcs0QcRkk3dFaD2k5YtBRzxGGRIZfBbAvxrWFpdcRAGXEsTH7F85G9+u
+    0+e4O/6B1dlxpZ2xtcylEhyvG/RLJYcMMpYoUXaHSlYvAgMBAAGjga0wgaowDwYD
+    VR0TAQH/BAUwAwEB/zAOBgNVHQ8BAf8EBAMCAQYwHQYDVR0OBBYEFN79y6IAEzSk
+    TvP0707bJZ9pimlrMGgGA1UdIwRhMF+AFN79y6IAEzSkTvP0707bJZ9pimlroTGk
+    LzAtMRYwFAYDVQQKDA1XTkIgU29sdXRpb25zMRMwEQYDVQQDDApJbmZyYVdOQkNB
+    ghQPbjO6g5A0C4g/3KPiq+CsCAzHAzANBgkqhkiG9w0BAQsFAAOCAQEAeyrGsLUz
+    4mhsUh25TR+EFM47QpkO5vkCoR7Ey4NBDaPwreCvlMfVH6p7LmVNRjPvZZ3XuRy4
+    IfxaqGPW1ayFSywT/7sQuPlGERoVSFpiP52tg1gHEhYMrw5aLNj/1vtRfSXwcbg8
+    fcgsH2JFE7oeSrJiYCz/KcQLCh+GcRODsh6bplAQ9T/DZ6RsaOuwpN/GuyOdJRMU
+    hJuiNGe5F68sCu8AG9pYgPfPks6hSSOjWbt2RbdRvD5O27E9xZpN3oMWlnveNTcD
+    sLQ+LfDODy8padt2P3GgWj/RTn4yAIvtvUJg9+HqpqIYmq5HANzW85oNGTg7/KOH
+    qBHLI7AoM+YmlA==
+    -----END CERTIFICATE-----
+  trusted-wtf1-ca.crt: |-
     -----BEGIN CERTIFICATE-----
     MIIDljCCAn6gAwIBAgIUD24zuoOQNAuIP9yj4qvgrAgMxwMwDQYJKoZIhvcNAQEL
     BQAwLTEWMBQGA1UECgwNV05CIFNvbHV0aW9uczETMBEGA1UEAwwKSW5mcmFXTkJD
