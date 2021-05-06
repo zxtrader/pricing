@@ -20,19 +20,22 @@ spec:
       annotations:
         prometheus.io/port: "9121"
         prometheus.io/scrape: "true"
+      creationTimestamp: null
       labels:
         app: redis
     spec:
       containers:
-      - name: redis
-        image: bitnami/redis:4.0
-        imagePullPolicy: IfNotPresent
-        env:
+      - env:
         - name: REDIS_PASSWORD
           valueFrom:
             secretKeyRef:
-              key: password
+              key: redis-password
               name: redis
+        - name: REDIS_PORT
+          value: "6379"
+        image: bitnami/redis:4.0
+        imagePullPolicy: IfNotPresent
+        name: redis
         ports:
         - containerPort: 9121
           name: 9121tcp00
@@ -48,17 +51,17 @@ spec:
           capabilities: {}
         terminationMessagePath: /dev/termination-log
         terminationMessagePolicy: File
-      - name: redis-exporter
-        image: oliver006/redis_exporter:latest
-        imagePullPolicy: Always
-        env:
+      - env:
         - name: REDIS_ALIAS
           value: cexiopay-infra-redis
         - name: REDIS_PASSWORD
           valueFrom:
             secretKeyRef:
-              key: password
+              key: redis-password
               name: redis
+        image: oliver006/redis_exporter:latest
+        imagePullPolicy: Always
+        name: redis-exporter
         ports:
         - containerPort: 9121
           name: 9121tcp00

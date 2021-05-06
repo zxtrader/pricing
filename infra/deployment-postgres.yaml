@@ -23,16 +23,20 @@ spec:
     spec:
       containers:
       - env:
-        - name: POSTGRES_USER
-          value: postgres
         - name: POSTGRES_PASSWORD
           valueFrom:
             secretKeyRef:
-              key: superuser-password
+              key: postgres-password
               name: postgres
+        - name: POSTGRES_USER
+          value: postgres
         image: postgres:11.1
         imagePullPolicy: IfNotPresent
         name: postgres
+        ports:
+        - containerPort: 8000
+          name: 8000tcp00
+          protocol: TCP
         resources:
           limits:
             cpu: "1"

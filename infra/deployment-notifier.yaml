@@ -20,9 +20,6 @@ spec:
     type: RollingUpdate
   template:
     metadata:
-      annotations:
-        field.cattle.io/ports: '[[{"containerPort":8080,"dnsName":"notifier","kind":"ClusterIP","name":"80tcp802","protocol":"TCP","sourcePort":8080}]]'
-      creationTimestamp: null
       labels:
         workload.user.cattle.io/workloadselector: deployment-cexiopay-infra-notifier
     spec:

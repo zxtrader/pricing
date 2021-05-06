@@ -1,3 +1,5 @@
+infra.secrets/
+infra.secrets
 runtime.secrets/
 runtime.secrets
 .DS_Store
