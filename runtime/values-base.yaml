@@ -1,7 +1,7 @@
 application:
   api:
     serviceImage: harbor.infra.kube/cexiopay/api
-    tag: 0.1.14
+    tag: 0.1.17
     replicas: 1
   dashboard:
     serviceImage: harbor.infra.kube/cexiopay/dashboard
@@ -39,5 +39,5 @@ application:
     replicas: 1
   processing:
     serviceImage: harbor.infra.kube/cexiopay/processing
-    tag: 2.2.21
+    tag: 2.2.26
     replicas: 1
