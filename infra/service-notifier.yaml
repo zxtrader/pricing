@@ -1,0 +1,18 @@
+# kubectl --namespace cexiopay-infra get --output=yaml Service/notifier
+# kubectl --namespace cexiopay-infra apply --filename=infra/service-notifier.yaml
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: notifier
+  namespace: cexiopay-infra
+spec:
+  type: ClusterIP
+  sessionAffinity: None
+  selector:
+    workloadID_notifier: "true"
+  ports:
+  - name: http
+    port: 8080
+    protocol: TCP
+    targetPort: 8080

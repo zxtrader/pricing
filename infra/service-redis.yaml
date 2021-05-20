@@ -1,17 +1,20 @@
+# kubectl --namespace cexiopay-infra get --output=yaml Service/redis
+# kubectl --namespace cexiopay-infra apply --filename=infra/service-redis.yaml
+
 apiVersion: v1
 kind: Service
 metadata:
-  labels:
-    app: redis
   name: redis
   namespace: cexiopay-infra
+  labels:
+    app: redis
 spec:
+  type: ClusterIP
+  sessionAffinity: None
+  selector:
+    app: redis
   ports:
   - name: redis
     port: 6379
     protocol: TCP
     targetPort: 6379
-  selector:
-    app: redis
-  sessionAffinity: None
-  type: ClusterIP
