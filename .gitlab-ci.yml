@@ -221,11 +221,11 @@ Helm3:3TEST:install:runtime:
   environment:
     name: test
     url: https://board.pay-cex-test.net/
-  # only:
-  #   refs:
-  #     - tags
-  #   variables:
-  #     - $CI_COMMIT_TAG =~ /-runtime$/
+  only:
+    refs:
+      - tags
+    variables:
+      - $CI_COMMIT_TAG =~ /-runtime$/
 
 Helm3:3TEST:rollback:runtime:
   stage: rollback
@@ -246,11 +246,11 @@ Helm3:3TEST:rollback:runtime:
   environment:
     name: test
     url: https://board.pay-cex-test.net/
-  # only:
-  #   refs:
-  #     - tags
-  #   variables:
-  #     - $CI_COMMIT_TAG =~ /-runtime$/
+  only:
+    refs:
+      - tags
+    variables:
+      - $CI_COMMIT_TAG =~ /-runtime$/
 
 Helm3:3TEST:delete:runtime:
   stage: delete
@@ -268,11 +268,11 @@ Helm3:3TEST:delete:runtime:
   environment:
     name: test
     url: https://board.pay-cex-test.net/
-  # only:
-  #   refs:
-  #     - tags
-  #   variables:
-  #     - $CI_COMMIT_TAG =~ /-runtime$/
+  only:
+    refs:
+      - tags
+    variables:
+      - $CI_COMMIT_TAG =~ /-runtime$/
 
 Helm3:4PROD:install:runtime:
   stage: deploy
