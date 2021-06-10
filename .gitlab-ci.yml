@@ -198,8 +198,6 @@ Helm3:3TEST:install:runtime:
   image:
     name: ${IMAGE_HELM3}
     entrypoint: [""]
-  variables:
-    GIT_STRATEGY: none
   script:
     - >
       verify_runtime_version_helm3
@@ -257,6 +255,8 @@ Helm3:3TEST:delete:runtime:
   image:
     name: ${IMAGE_HELM3}
     entrypoint: [""]
+  variables:
+    GIT_STRATEGY: none
   script:
     - verify_runtime_version_helm3
     - kube_config_setup
