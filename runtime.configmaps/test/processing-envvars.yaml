@@ -1,11 +1,11 @@
-# kubectl --namespace cexiopay-test get --output=yaml ConfigMap/processing-envvars
-# kubectl --namespace cexiopay-test apply --filename=runtime.configmaps/test/processing-envvars.yaml
+# kubectl --namespace cexiopay-test-admin get --output=yaml ConfigMap/processing-envvars
+# kubectl --namespace cexiopay-test-admin apply --filename=runtime.configmaps/test/processing-envvars.yaml
 
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: processing-envvars
-  namespace: cexiopay-test
+  namespace: cexiopay-test-admin
 data:
   runtime.aggregator.url: wss://external-api-aggr-demo.dev.kube/ws
   runtime.endpoint.gateUi.bindPath: /
