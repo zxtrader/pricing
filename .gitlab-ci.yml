@@ -199,22 +199,21 @@ Helm3:3TEST:install:runtime:
     name: ${IMAGE_HELM3}
     entrypoint: [""]
   script:
-    - >
-      verify_runtime_version_helm3
-      kube_config_setup
-      cd runtime
-      kubectl --namespace "cexiopay-test-admin" get --output=json ConfigMap/cpservice                 | jq -r '{ apiVersion: .apiVersion, kind: .kind, metadata: { name: .metadata.name }, data: .data }' | yq eval -P  > runtime/templates/config-cpservice.yaml
-      kubectl --namespace "cexiopay-test-admin" get --output=json ConfigMap/messengerbridge-files     | jq -r '{ apiVersion: .apiVersion, kind: .kind, metadata: { name: .metadata.name }, data: .data }' | yq eval -P  > runtime/templates/config-messengerbridge.yaml
-      kubectl --namespace "cexiopay-test-admin" get --output=json ConfigMap/processing-envvars-setup  | jq -r '{ apiVersion: .apiVersion, kind: .kind, metadata: { name: .metadata.name }, data: .data }' | yq eval -P  > runtime/templates/config-processing-envvars-setup.yaml
-      kubectl --namespace "cexiopay-test-admin" get --output=json ConfigMap/processing-envvars        | jq -r '{ apiVersion: .apiVersion, kind: .kind, metadata: { name: .metadata.name }, data: .data }' | yq eval -P  > runtime/templates/config-processing-envvars.yaml
-      kubectl --namespace "cexiopay-test-admin" get --output=json ConfigMap/processing-files          | jq -r '{ apiVersion: .apiVersion, kind: .kind, metadata: { name: .metadata.name }, data: .data }' | yq eval -P  > runtime/templates/config-processing-files.yaml
-      kubectl --namespace "cexiopay-test-admin" get --output=json Secrets/api                         | jq -r '{ apiVersion: .apiVersion, kind: .kind, metadata: { name: .metadata.name }, data: .data }' | yq eval -P  > runtime/templates/secret-api.yaml
-      kubectl --namespace "cexiopay-test-admin" get --output=json Secrets/identity                    | jq -r '{ apiVersion: .apiVersion, kind: .kind, metadata: { name: .metadata.name }, data: .data }' | yq eval -P  > runtime/templates/secret-identity.yaml
-      kubectl --namespace "cexiopay-test-admin" get --output=json Secrets/processing                  | jq -r '{ apiVersion: .apiVersion, kind: .kind, metadata: { name: .metadata.name }, data: .data }' | yq eval -P  > runtime/templates/secret-processing.yaml
-      kubectl --namespace "cexiopay-test-admin" get --output=json Secrets/processing-setup            | jq -r '{ apiVersion: .apiVersion, kind: .kind, metadata: { name: .metadata.name }, data: .data }' | yq eval -P  > runtime/templates/secret-processing-setup.yaml
-      helm --namespace "cexiopay-test" list
-      helm --namespace "cexiopay-test" upgrade --install --history-max 3 --values "values-base.yaml" --values "values.test.yaml" "${RUNTIME_RELEASE}" .
-      helm --namespace "cexiopay-test" history "${RUNTIME_RELEASE}" --max=3
+      - verify_runtime_version_helm3
+      - kube_config_setup
+      - cd runtime
+      - kubectl --namespace "cexiopay-test-admin" get --output=json ConfigMap/cpservice                 | jq -r '{ apiVersion: .apiVersion, kind: .kind, metadata: { name: .metadata.name }, data: .data }' | yq eval -P  > runtime/templates/config-cpservice.yaml
+      - kubectl --namespace "cexiopay-test-admin" get --output=json ConfigMap/messengerbridge-files     | jq -r '{ apiVersion: .apiVersion, kind: .kind, metadata: { name: .metadata.name }, data: .data }' | yq eval -P  > runtime/templates/config-messengerbridge.yaml
+      - kubectl --namespace "cexiopay-test-admin" get --output=json ConfigMap/processing-envvars-setup  | jq -r '{ apiVersion: .apiVersion, kind: .kind, metadata: { name: .metadata.name }, data: .data }' | yq eval -P  > runtime/templates/config-processing-envvars-setup.yaml
+      - kubectl --namespace "cexiopay-test-admin" get --output=json ConfigMap/processing-envvars        | jq -r '{ apiVersion: .apiVersion, kind: .kind, metadata: { name: .metadata.name }, data: .data }' | yq eval -P  > runtime/templates/config-processing-envvars.yaml
+      - kubectl --namespace "cexiopay-test-admin" get --output=json ConfigMap/processing-files          | jq -r '{ apiVersion: .apiVersion, kind: .kind, metadata: { name: .metadata.name }, data: .data }' | yq eval -P  > runtime/templates/config-processing-files.yaml
+      - kubectl --namespace "cexiopay-test-admin" get --output=json Secrets/api                         | jq -r '{ apiVersion: .apiVersion, kind: .kind, metadata: { name: .metadata.name }, data: .data }' | yq eval -P  > runtime/templates/secret-api.yaml
+      - kubectl --namespace "cexiopay-test-admin" get --output=json Secrets/identity                    | jq -r '{ apiVersion: .apiVersion, kind: .kind, metadata: { name: .metadata.name }, data: .data }' | yq eval -P  > runtime/templates/secret-identity.yaml
+      - kubectl --namespace "cexiopay-test-admin" get --output=json Secrets/processing                  | jq -r '{ apiVersion: .apiVersion, kind: .kind, metadata: { name: .metadata.name }, data: .data }' | yq eval -P  > runtime/templates/secret-processing.yaml
+      - kubectl --namespace "cexiopay-test-admin" get --output=json Secrets/processing-setup            | jq -r '{ apiVersion: .apiVersion, kind: .kind, metadata: { name: .metadata.name }, data: .data }' | yq eval -P  > runtime/templates/secret-processing-setup.yaml
+      - helm --namespace "cexiopay-test" list
+      - helm --namespace "cexiopay-test" upgrade --install --history-max 3 --values "values-base.yaml" --values "values.test.yaml" "${RUNTIME_RELEASE}" .
+      - helm --namespace "cexiopay-test" history "${RUNTIME_RELEASE}" --max=3
   when: manual
   environment:
     name: test
