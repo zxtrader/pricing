@@ -1,0 +1,21 @@
+{{ if or (and (ne .Values.zone "test") (ne .Values.zone "production")) (ne .Release.Name "blue") }}
+# In "test" and "production" zones on "blue" release, the "board" is hosted on GitHub Pages:
+# - https://github.com/cexiolabs/cexiopay.board-production-hosting
+# - https://github.com/cexiolabs/cexiopay.board-test-hosting
+# so we deploy this conditionally
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: {{ template "prefix" . }}board
+  name: {{ template "prefix" . }}board
+spec:
+  ports:
+    - port: 8443
+      name: board
+      protocol: TCP
+      targetPort: 8443
+  type: ClusterIP
+  selector:
+    app: {{ template "prefix" . }}board
+{{ end }}

@@ -1,10 +1,31 @@
 zone: production
 
 application:
+
   api:
-    env:
-      WTFProviderConfigurationFile: /etc/cexiolabs/cexiopay.api/legacy-cpservice-config/WTF-prod.json
+    serviceImage: cexiolabs/http-https-echo
+    tag: latest
+    # env:
+    #   WTFProviderConfigurationFile: /etc/cexiolabs/cexiopay.api/legacy-cpservice-config/WTF-prod.json
+
+  echo:
+    replicas: 0
+
+  identity:
+    serviceImage: cexiolabs/http-https-echo
+    tag: latest
+    # env:
+    #   Emailer__SendGrid__senderEmail: "no-reply@cryptopay.band"
+
+  messengerbridge:
+    serviceImage: cexiolabs/http-https-echo
+    tag: latest
+
   processing:
+    serviceImage: cexiolabs/http-https-echo
+    tag: latest
+    # serviceImage: cexiolabs/http-https-echo
+    # tag: latest
     args:
       [
         "--config-file=/etc/cexiolabs/cexiopay.processing/service.config",
@@ -15,89 +36,126 @@ application:
         "--config-secrets-dir=/etc/cexiolabs/cexiopay/secrets-setup",
         "--config-env"
       ]
+    env:
+      runtime.aggregator.ssl.caCert: "/etc/cexiolabs/cexiopay/trusted-aggregator-ca.crt"
+      runtime.pss.messengerBridge.ssl.caCert: "/etc/cexiolabs/cexiopay/trusted-messenger-bridge-ca.crt"
+      runtime.pss.cryptoWalletHelper.ssl.caCert: "/etc/cexiolabs/cexiopay/trusted-psscryptowallethelper-ca.crt"
+      runtime.pss.providerWtf2.ssl.caCert: "/etc/cexiolabs/cexiopay/trusted-pss-provider-wtf2-ca.crt"
+      runtime.endpoint.gateUi.bindPath: "/"
 
-ingress:
-  API:
-    domain: api.cexiopay.band
-    certSecretName: ingress-gate-api-dashboard
-    nginxConfigurationSnippet: |
-      rewrite ^/$ /v2/time redirect;
-    paths:
-      "/":
-        backendServiceName: processing
-        backendServicePort: 8080
-      "/v3/":
-        backendServiceName: api
-        backendServicePort: 8443
-  API-Internal:
-    domain: api-cexiopay.prodcryptopay.kube
-    certSecretName: callback
-    nginxConfigurationSnippet: |
-      rewrite ^/$ /v2/time redirect;
-    paths:
-      "/":
-        backendServiceName: processing
-        backendServicePort: 8080
-      "/v3/":
-        backendServiceName: api
-        backendServicePort: 8443
-  Callbacks:
-    domain: callback.prodcryptopay.kube
-    certSecretName: callback
-    paths:
-      "/v2/callback/cryptoproviders/pss-provider-wtf2/":
-        backendServiceName: processing
-        backendServicePort: 8084
-      "/ws/":
-        backendServiceName: processing
-        backendServicePort: 8086
-  dashboardlegacy2:
-    domain: dashboard.cexiopay.band
-    certSecretName: ingress-gate-api-dashboard
-    nginxConfigurationSnippet: |
-      add_header Last-Modified $date_gmt;
-      add_header Cache-Control 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0';
-      if_modified_since off;
-      expires off;
-      etag off;
-    paths:
-      "/":
-        backendServiceName: dashboardlegacy2
-        backendServicePort: 8445
-      "/v2/dashboard/":
-        backendServiceName: processing
-        backendServicePort: 8082
-  # Gate:
-  #   domain: gate.cexiopay.band
-  #   certSecretName: ingress-gate-api-dashboard
-  #   nginxConfigurationSnippet: |
-  #     add_header Last-Modified $date_gmt;
-  #     add_header Cache-Control 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0';
-  #     if_modified_since off;
-  #     expires off;
-  #     etag off;
-  #   paths:
-  #     "/":
-  #       backendServiceName: gateuiserve
-  #       backendServicePort: 8080
-  #     "/v2/gate/":
-  #       backendServiceName: processing
-  #       backendServicePort: 8085
-  #     "/v2/gate-callback/":
-  #       backendServiceName: processing
-  #       backendServicePort: 8085
-  Identity:
-    domain: id.cexiopay.band
-    certSecretName: ingress-gate-api-dashboard
-    paths:
-      "/":
-        backendServiceName: identity
-        backendServicePort: 8443
-  MessengerBridge:
-    # THIS temporary endpoint just for testing purposes
-    domain: messengerbridge-cexiopay.prodcryptopay.kube
-    certSecretName: callback
-    paths:
-      "/":
-        backendServiceName: messengerbridge
-        backendServicePort: 8443
+
+# ingress:
+
+#   API:
+#     domain: api.pay-cex.io
+#     certSecretName: ingress-pay-cex-certificate
+#     nginxConfigurationSnippet: |
+#       rewrite ^/$ /v2/time redirect;
+#     paths:
+#       "/":
+#         backendServiceName: processing
+#         backendServicePort: 8080
+#       "/v3/":
+#         backendServiceName: api
+#         backendServicePort: 8443
+
+#   API-Obsolete:
+#     domain: api.cryptopay.band
+#     certSecretName: ingress-gate-api-dashboard
+#     nginxConfigurationSnippet: |
+#       rewrite ^/$ /v2/time redirect;
+#     paths:
+#       "/":
+#         backendServiceName: processing
+#         backendServicePort: 8080
+#       "/v2/gate/":
+#         backendServiceName: processing
+#         backendServicePort: 8085
+#       "/v3/":
+#         backendServiceName: api
+#         backendServicePort: 8443
+
+#   API-Internal:
+#     domain: api-cryptopay.prodcryptopay.kube
+#     certSecretName: callback
+#     nginxConfigurationSnippet: |
+#       rewrite ^/$ /v2/time redirect;
+#     paths:
+#       "/":
+#         backendServiceName: processing
+#         backendServicePort: 8080
+#       "/v2/gate/":
+#         backendServiceName: processing
+#         backendServicePort: 8085
+#       "/v3/":
+#         backendServiceName: api
+#         backendServicePort: 8443
+
+#   Callbacks:
+#     domain: callback.prodcryptopay.kube
+#     certSecretName: callback
+#     paths:
+#       "/v2/callback/cryptoproviders/pss-provider-wtf2/":
+#         backendServiceName: processing
+#         backendServicePort: 8084
+#       "/ws/":
+#         backendServiceName: processing
+#         backendServicePort: 8086
+
+#   dashboardlegacy2:
+#     domain: dashboard.cryptopay.band
+#     certSecretName: ingress-gate-api-dashboard
+#     nginxConfigurationSnippet: |
+#       add_header Last-Modified $date_gmt;
+#       add_header Cache-Control 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0';
+#       if_modified_since off;
+#       expires off;
+#       etag off;
+#     paths:
+#       "/":
+#         backendServiceName: dashboardlegacy2
+#         backendServicePort: 8445
+#       "/v2/dashboard/":
+#         backendServiceName: processing
+#         backendServicePort: 8082
+
+#    Gate:
+#     domain: gate.pay-cex.io
+#     certSecretName: ingress-pay-cex-certificate
+#     backendInsecure: false
+#     nginxConfigurationSnippet: |
+#       add_header Last-Modified $date_gmt;
+#       add_header Cache-Control 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0';
+#       if_modified_since off;
+#       expires off;
+#       etag off;
+#     paths:
+#       "/":
+#         backendServiceName: processing
+#         backendServicePort: 8085
+#   #     "/":
+#   #       backendServiceName: gateuiserve
+#   #       backendServicePort: 8080
+#   #     "/v2/gate/":
+#   #       backendServiceName: processing
+#   #       backendServicePort: 8085
+#   #     "/v2/gate-callback/":
+#   #       backendServiceName: processing
+#   #       backendServicePort: 8085
+
+#   Identity:
+#     domain: id.pay-cex.io
+#     certSecretName: ingress-pay-cex-certificate
+#     paths:
+#       "/":
+#         backendServiceName: identity
+#         backendServicePort: 8443
+
+#   MessengerBridge:
+#     # THIS temporary endpoint just for testing purposes
+#     domain: messengerbridge-cexiopay.prodcryptopay.kube
+#     certSecretName: callback
+#     paths:
+#       "/":
+#         backendServiceName: messengerbridge
+#         backendServicePort: 8443

@@ -14,11 +14,15 @@ application:
     env:
       WTFProviderConfigurationFile: /etc/cexiolabs/cexiopay.api/legacy-cpservice-config/WTF-dev.json
     replicas: 1
-  dashboard:
-    serviceImage: harbor.infra.kube/cexiopay/dashboard/snapshot
+  board:
+    serviceImage: harbor.infra.kube/cexiopay/board/snapshot
+    env:
+      BASE_PATH: /next/
     replicas: 1
   dashboardlegacy2:
     serviceImage: harbor.infra.kube/cexiopay/dashboard-react/snapshot
+    env:
+      BASE_PATH: /legacy2/
     replicas: 1
   demo:
     env:
@@ -100,7 +104,7 @@ ingress:
         backendServiceName: processing
         backendServicePort: 8082
       "/next/":
-        backendServiceName: dashboard
+        backendServiceName: board
         backendServicePort: 8443
   Echo:
     domain: echo-evolution-cexiopay.dev.kube

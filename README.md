@@ -73,7 +73,7 @@ NOTE! Перед созданием тега, вы должны убедитьс
 	$ cd_cexiopay
 	$ cd devops.kubernetes-deployment/runtime/
 	# Set "helm" docker alias if you does not have Helm locally. Choose one of following:
-	$ alias helm="docker run --interactive --tty --rm --volume \"${HOME}/.kube/config:/root/.kube/config\" --volume \"$(pwd):/apps\" --entrypoint /usr/bin/helm harbor.infra.kube/infra/helm:3"
+	$ alias helm="docker run --interactive --tty --rm --volume \"${HOME}/.kube/config:/root/.kube/config\" --volume \"$(pwd):/apps\" --entrypoint /usr/bin/helm devdocker.infra.kube/cexiolabs/docker/helm3/snapshot:master.dcb37861"
 	$ alias helm="docker run --interactive --tty --rm --volume \"${HOME}/.kube/config:/root/.kube/config\" --volume \"$(pwd):/apps\" alpine/helm:3.2.0"
 	```
 1. Set environment

@@ -1,4 +1,6 @@
 {{ if eq .Release.Name "blue" }}
+# Right now "processing" is not able to work in few process
+# so we deploy this conditionally
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
@@ -79,9 +81,9 @@ spec:
           readOnly: false
         envFrom:
         - configMapRef:
-            name: processing-envvars
+            name: {{ template "prefix" . }}processing-envvars
         - configMapRef:
-            name: processing-envvars-setup
+            name: {{ template "prefix" . }}processing-envvars-setup
         env:
         - name: LOG_LEVEL
           value: info
@@ -115,13 +117,13 @@ spec:
       volumes:
       - name: config-files
         configMap:
-          name: processing-files
+          name: {{ template "prefix" . }}processing-files
       - name: secret-files
         secret:
-          secretName: processing
+          secretName: {{ template "prefix" . }}processing
       - name: secret-setup-files
         secret:
-          secretName: processing-setup
+          secretName: {{ template "prefix" . }}processing-setup
       - name: secret-certificate
         secret:
           secretName: {{ template "prefix" . }}processing-certificate

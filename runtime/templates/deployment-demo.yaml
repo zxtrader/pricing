@@ -40,12 +40,12 @@ spec:
         - name: GATE_PASSPHRASE
           valueFrom:
             secretKeyRef:
-              name: processing
+              name: {{ template "prefix" . }}processing
               key: setup.createGateway.demo-gateway.passphrase
         - name: GATE_SECRET
           valueFrom:
             secretKeyRef:
-              name: processing
+              name: {{ template "prefix" . }}processing
               key: setup.createGateway.demo-gateway.secret
         ports:
         - containerPort: 8443

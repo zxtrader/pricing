@@ -50,8 +50,8 @@ stages:
 include:
   - local: /.gitlab-ci-infratest.yml
 
-# HELM 3 Runtime deployment TAGs
-Helm3:1EVO:install:runtime:
+# HELM 3 Runtime deployment
+1EVO:install:runtime:
   stage: deploy
   image:
     name: ${IMAGE_HELM3}
@@ -73,13 +73,11 @@ Helm3:1EVO:install:runtime:
     variables:
       - $CI_COMMIT_TAG =~ /-runtime$/
 
-Helm3:1EVO:rollback:runtime:
+1EVO:rollback:runtime:
   stage: rollback
   image:
     name: ${IMAGE_HELM3}
     entrypoint: [""]
-  variables:
-    GIT_STRATEGY: none
   script:
     - verify_runtime_version_helm3
     - kube_config_setup
@@ -97,14 +95,13 @@ Helm3:1EVO:rollback:runtime:
       - tags
     variables:
       - $CI_COMMIT_TAG =~ /-runtime$/
+      - $RUNTIME_RELEASE == "blue"
 
-Helm3:1EVO:delete:runtime:
+1EVO:delete:runtime:
   stage: delete
   image:
     name: ${IMAGE_HELM3}
     entrypoint: [""]
-  variables:
-    GIT_STRATEGY: none
   script:
     - verify_runtime_version_helm3
     - kube_config_setup
@@ -122,7 +119,7 @@ Helm3:1EVO:delete:runtime:
     variables:
       - $CI_COMMIT_TAG =~ /-runtime$/
 
-Helm3:2PRSN:install:runtime:
+2PRSN:install:runtime:
   stage: deploy
   image:
     name: ${IMAGE_HELM3}
@@ -144,13 +141,11 @@ Helm3:2PRSN:install:runtime:
     variables:
       - $CI_COMMIT_TAG =~ /-runtime$/
 
-Helm3:2PRSN:rollback:runtime:
+2PRSN:rollback:runtime:
   stage: rollback
   image:
     name: ${IMAGE_HELM3}
     entrypoint: [""]
-  variables:
-    GIT_STRATEGY: none
   script:
     - verify_runtime_version_helm3
     - kube_config_setup
@@ -168,14 +163,13 @@ Helm3:2PRSN:rollback:runtime:
       - tags
     variables:
       - $CI_COMMIT_TAG =~ /-runtime$/
+      - $RUNTIME_RELEASE == "blue"
 
-Helm3:2PRSN:delete:runtime:
+2PRSN:delete:runtime:
   stage: delete
   image:
     name: ${IMAGE_HELM3}
     entrypoint: [""]
-  variables:
-    GIT_STRATEGY: none
   script:
     - verify_runtime_version_helm3
     - kube_config_setup
@@ -193,7 +187,7 @@ Helm3:2PRSN:delete:runtime:
     variables:
       - $CI_COMMIT_TAG =~ /-runtime$/
 
-Helm3:3TEST:install:runtime:
+3TEST:install:runtime:
   stage: deploy
   image:
     name: ${IMAGE_HELM3}
@@ -202,15 +196,15 @@ Helm3:3TEST:install:runtime:
       - verify_runtime_version_helm3
       - kube_config_setup
       - cd runtime
-      - "kubectl --namespace 'cexiopay-test-admin' get --output=json ConfigMap/cpservice                 | jq -r '{ apiVersion: .apiVersion, kind: .kind, metadata: { name: .metadata.name }, data: .data }' | yq eval -P  > templates/config-cpservice.yaml"
-      - "kubectl --namespace 'cexiopay-test-admin' get --output=json ConfigMap/messengerbridge-files     | jq -r '{ apiVersion: .apiVersion, kind: .kind, metadata: { name: .metadata.name }, data: .data }' | yq eval -P  > templates/config-messengerbridge.yaml"
-      - "kubectl --namespace 'cexiopay-test-admin' get --output=json ConfigMap/processing-envvars-setup  | jq -r '{ apiVersion: .apiVersion, kind: .kind, metadata: { name: .metadata.name }, data: .data }' | yq eval -P  > templates/config-processing-envvars-setup.yaml"
-      - "kubectl --namespace 'cexiopay-test-admin' get --output=json ConfigMap/processing-envvars        | jq -r '{ apiVersion: .apiVersion, kind: .kind, metadata: { name: .metadata.name }, data: .data }' | yq eval -P  > templates/config-processing-envvars.yaml"
-      - "kubectl --namespace 'cexiopay-test-admin' get --output=json ConfigMap/processing-files          | jq -r '{ apiVersion: .apiVersion, kind: .kind, metadata: { name: .metadata.name }, data: .data }' | yq eval -P  > templates/config-processing-files.yaml"
-      - "kubectl --namespace 'cexiopay-test-admin' get --output=json Secrets/api                         | jq -r '{ apiVersion: .apiVersion, kind: .kind, metadata: { name: .metadata.name }, data: .data }' | yq eval -P  > templates/secret-api.yaml"
-      - "kubectl --namespace 'cexiopay-test-admin' get --output=json Secrets/identity                    | jq -r '{ apiVersion: .apiVersion, kind: .kind, metadata: { name: .metadata.name }, data: .data }' | yq eval -P  > templates/secret-identity.yaml"
-      - "kubectl --namespace 'cexiopay-test-admin' get --output=json Secrets/processing                  | jq -r '{ apiVersion: .apiVersion, kind: .kind, metadata: { name: .metadata.name }, data: .data }' | yq eval -P  > templates/secret-processing.yaml"
-      - "kubectl --namespace 'cexiopay-test-admin' get --output=json Secrets/processing-setup            | jq -r '{ apiVersion: .apiVersion, kind: .kind, metadata: { name: .metadata.name }, data: .data }' | yq eval -P  > templates/secret-processing-setup.yaml"
+      - "kubectl --namespace 'cexiopay-test-admin' get --output=json ConfigMap/cpservice                 | jq -r \"{ apiVersion: .apiVersion, kind: .kind, metadata: { name: (\\\"${RUNTIME_RELEASE}-\\\" + .metadata.name) }, data: .data }\" | yq eval -P  > templates/config-cpservice.yaml"
+      - "kubectl --namespace 'cexiopay-test-admin' get --output=json ConfigMap/messengerbridge-files     | jq -r \"{ apiVersion: .apiVersion, kind: .kind, metadata: { name: (\\\"${RUNTIME_RELEASE}-\\\" + .metadata.name) }, data: .data }\" | yq eval -P  > templates/config-messengerbridge.yaml"
+      - "kubectl --namespace 'cexiopay-test-admin' get --output=json ConfigMap/processing-envvars-setup  | jq -r \"{ apiVersion: .apiVersion, kind: .kind, metadata: { name: (\\\"${RUNTIME_RELEASE}-\\\" + .metadata.name) }, data: .data }\" | yq eval -P  > templates/config-processing-envvars-setup.yaml"
+      - "kubectl --namespace 'cexiopay-test-admin' get --output=json ConfigMap/processing-envvars        | jq -r \"{ apiVersion: .apiVersion, kind: .kind, metadata: { name: (\\\"${RUNTIME_RELEASE}-\\\" + .metadata.name) }, data: .data }\" | yq eval -P  > templates/config-processing-envvars.yaml"
+      - "kubectl --namespace 'cexiopay-test-admin' get --output=json ConfigMap/processing-files          | jq -r \"{ apiVersion: .apiVersion, kind: .kind, metadata: { name: (\\\"${RUNTIME_RELEASE}-\\\" + .metadata.name) }, data: .data }\" | yq eval -P  > templates/config-processing-files.yaml"
+      - "kubectl --namespace 'cexiopay-test-admin' get --output=json Secrets/api                         | jq -r \"{ apiVersion: .apiVersion, kind: .kind, metadata: { name: (\\\"${RUNTIME_RELEASE}-\\\" + .metadata.name) }, data: .data }\" | yq eval -P  > templates/secret-api.yaml"
+      - "kubectl --namespace 'cexiopay-test-admin' get --output=json Secrets/identity                    | jq -r \"{ apiVersion: .apiVersion, kind: .kind, metadata: { name: (\\\"${RUNTIME_RELEASE}-\\\" + .metadata.name) }, data: .data }\" | yq eval -P  > templates/secret-identity.yaml"
+      - "kubectl --namespace 'cexiopay-test-admin' get --output=json Secrets/processing                  | jq -r \"{ apiVersion: .apiVersion, kind: .kind, metadata: { name: (\\\"${RUNTIME_RELEASE}-\\\" + .metadata.name) }, data: .data }\" | yq eval -P  > templates/secret-processing.yaml"
+      - "kubectl --namespace 'cexiopay-test-admin' get --output=json Secrets/processing-setup            | jq -r \"{ apiVersion: .apiVersion, kind: .kind, metadata: { name: (\\\"${RUNTIME_RELEASE}-\\\" + .metadata.name) }, data: .data }\" | yq eval -P  > templates/secret-processing-setup.yaml"
       - helm --namespace "cexiopay-test" list
       - helm --namespace "cexiopay-test" upgrade --install --history-max 3 --values "values-base.yaml" --values "values.test.yaml" "${RUNTIME_RELEASE}" .
       - helm --namespace "cexiopay-test" history "${RUNTIME_RELEASE}" --max=3
@@ -224,13 +218,11 @@ Helm3:3TEST:install:runtime:
     variables:
       - $CI_COMMIT_TAG =~ /-runtime$/
 
-Helm3:3TEST:rollback:runtime:
+3TEST:rollback:runtime:
   stage: rollback
   image:
     name: ${IMAGE_HELM3}
     entrypoint: [""]
-  variables:
-    GIT_STRATEGY: none
   script:
     - verify_runtime_version_helm3
     - kube_config_setup
@@ -248,14 +240,13 @@ Helm3:3TEST:rollback:runtime:
       - tags
     variables:
       - $CI_COMMIT_TAG =~ /-runtime$/
+      - $RUNTIME_RELEASE == "blue"
 
-Helm3:3TEST:delete:runtime:
+3TEST:delete:runtime:
   stage: delete
   image:
     name: ${IMAGE_HELM3}
     entrypoint: [""]
-  variables:
-    GIT_STRATEGY: none
   script:
     - verify_runtime_version_helm3
     - kube_config_setup
@@ -273,7 +264,7 @@ Helm3:3TEST:delete:runtime:
     variables:
       - $CI_COMMIT_TAG =~ /-runtime$/
 
-Helm3:4PROD:install:runtime:
+4PROD:install:runtime:
   stage: deploy
   image:
     name: ${IMAGE_HELM3}
@@ -297,13 +288,11 @@ Helm3:4PROD:install:runtime:
     variables:
       - $CI_COMMIT_TAG =~ /-runtime$/
 
-Helm3:4PROD:rollback:runtime:
+4PROD:rollback:runtime:
   stage: rollback
   image:
     name: ${IMAGE_HELM3}
     entrypoint: [""]
-  variables:
-    GIT_STRATEGY: none
   script:
     - verify_runtime_version_helm3
     - kube_config_setup
@@ -323,14 +312,13 @@ Helm3:4PROD:rollback:runtime:
       - tags
     variables:
       - $CI_COMMIT_TAG =~ /-runtime$/
+      - $RUNTIME_RELEASE == "blue"
 
-Helm3:4PROD:delete:runtime:
+4PROD:delete:runtime:
   stage: delete
   image:
     name: ${IMAGE_HELM3}
     entrypoint: [""]
-  variables:
-    GIT_STRATEGY: none
   script:
     - verify_runtime_version_helm3
     - kube_config_setup
@@ -349,7 +337,6 @@ Helm3:4PROD:delete:runtime:
       - tags
     variables:
       - $CI_COMMIT_TAG =~ /-runtime$/
-
 
 
 # HELM 2 Runtime deployment TAGs

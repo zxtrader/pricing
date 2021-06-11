@@ -1,6 +1,7 @@
 infra.secrets/
 infra.secrets
-runtime/templates/secret*.yaml
+runtime/templates/configmap-*.yaml
+runtime/templates/secret-*.yaml
 runtime.secrets/
 runtime.secrets
 .DS_Store

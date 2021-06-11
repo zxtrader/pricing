@@ -1,0 +1,8 @@
+# kubectl --namespace cexiopay-test-admin get --output=yaml ConfigMap/messengerbridge-files
+# kubectl --namespace cexiopay-test-admin apply --filename=runtime.configmaps/test/messengerbridge-files.yaml
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: messengerbridge-files
+  namespace: cexiopay-test-admin

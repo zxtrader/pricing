@@ -1,41 +1,42 @@
-{{ if or (eq .Values.zone "evolution") (eq .Values.zone "presentation") }}
-# In prodution "dashboard" is hosted on GitHub Pages:
-# - https://github.com/cexiolabs/cexiopay.dashboard
-# - https://github.com/cexiolabs/cexiopay.dashboard-next
+{{ if or (and (ne .Values.zone "test") (ne .Values.zone "production")) (ne .Release.Name "blue") }}
+# In "test" and "production" zones on "blue" release, the "board" is hosted on GitHub Pages:
+# - https://github.com/cexiolabs/cexiopay.board-production-hosting
+# - https://github.com/cexiolabs/cexiopay.board-test-hosting
+# so we deploy this conditionally
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   labels:
-    app: {{ template "prefix" . }}dashboard
-  name: {{ template "prefix" . }}dashboard
+    app: {{ template "prefix" . }}board
+  name: {{ template "prefix" . }}board
 spec:
-  replicas: {{ .Values.application.dashboard.replicas | default 0 }}
+  replicas: {{ .Values.application.board.replicas | default 0 }}
   strategy:
     type: RollingUpdate
   revisionHistoryLimit: 3
   template:
     metadata:
       labels:
-        app: {{ template "prefix" . }}dashboard
+        app: {{ template "prefix" . }}board
     spec:
       containers:
-      - name: dashboard
-        image: {{ .Values.application.dashboard.serviceImage }}:{{ .Values.application.dashboard.tag }}
-{{- if .Values.application.dashboard.command }}
+      - name: board
+        image: {{ .Values.application.board.serviceImage }}:{{ .Values.application.board.tag }}
+{{- if .Values.application.board.command }}
         command:
-{{ range .Values.application.dashboard.command }}
+{{ range .Values.application.board.command }}
         - {{ . }}
 {{ end }}
 {{- end }}
-{{- if .Values.application.dashboard.args }}
+{{- if .Values.application.board.args }}
         args:
-{{ range .Values.application.dashboard.args }}
+{{ range .Values.application.board.args }}
         - {{ . }}
 {{ end }}
 {{- end }}
         env:
-{{- if .Values.application.dashboard.env }}
-{{ range $key, $value := .Values.application.dashboard.env }}
+{{- if .Values.application.board.env }}
+{{ range $key, $value := .Values.application.board.env }}
         - name: "{{ $key }}"
           value: "{{ $value }}"
 {{ end }}
@@ -66,9 +67,9 @@ spec:
             memory: 32Mi
         volumeMounts:
         - name: secret-certificate
-          mountPath: /etc/cexiolabs/cexiopay.dashboard/ssl/
+          mountPath: /etc/cexiolabs/cexiopay.board/ssl/
       volumes:
       - name: secret-certificate
         secret:
-          secretName: {{ template "prefix" . }}dashboard-certificate
+          secretName: {{ template "prefix" . }}board-certificate
 {{ end }}

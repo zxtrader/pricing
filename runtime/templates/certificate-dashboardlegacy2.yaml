@@ -1,4 +1,6 @@
-{{ if or (eq .Values.zone "evolution") (eq .Values.zone "presentation") }}
+#
+#  FOR REMOVAL (after Anular Dashboard will be staged and tested)
+#
 apiVersion: certmanager.k8s.io/v1alpha1
 kind: Certificate
 metadata:
@@ -11,4 +13,3 @@ spec:
     # The default value is Issuer (i.e. a locally namespaced Issuer)
     kind: ClusterIssuer
   commonName: {{ template "prefix" . }}dashboardlegacy2
-{{ end }}

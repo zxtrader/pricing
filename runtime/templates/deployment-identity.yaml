@@ -14,26 +14,6 @@ spec:
       labels:
         app: {{ template "prefix" . }}identity
     spec:
-      # initContainers:
-      # - name: secret-copier
-      #   image: busybox:latest
-      #   imagePullPolicy: Always
-      #   command:
-      #   - sh
-      #   - -c
-      #   args:
-      #   - 'echo "Copying ssl and secrets files into temporary emptyDir-based volume (to be able to erase sensetive data after read it)."
-      #     && cp /etc/cexiolabs/cexiopay.identity/ssl/* /tmp/cexiolabs/cexiopay.identity/ssl/
-      #     && cp /etc/cexiolabs/cexiopay.identity/secrets/* /tmp/cexiolabs/cexiopay.identity/secrets/'
-      #   volumeMounts:
-      #   - name: secret-certificate
-      #     mountPath: /etc/cexiolabs/cexiopay.identity/ssl/
-      #   - name: secret-files
-      #     mountPath: /etc/cexiolabs/cexiopay.identity/secrets/
-      #   - name: secret-certificate-copy
-      #     mountPath: /tmp/cexiolabs/cexiopay.identity/ssl/
-      #   - name: secret-files-copy
-      #     mountPath: /tmp/cexiolabs/cexiopay.identity/secrets/
       containers:
       - name: identity
         image: {{ .Values.application.identity.serviceImage }}:{{ .Values.application.identity.tag }}
@@ -51,10 +31,10 @@ spec:
 {{- end }}
         # envFrom:
         # - configMapRef:
-        #     name: identity
+        #     name: {{ template "prefix" . }}identity
         # envFrom:
         # - secretRef:
-        #     name: identity
+        #     name: {{ template "prefix" . }}identity
         env:
         - name: Serilog__MinimumLevel__Default
           value: Information
@@ -64,10 +44,6 @@ spec:
           value: "{{ $value }}"
 {{ end }}
 {{- end }}
-        # lifecycle:
-        #   postStart:
-        #     exec:
-        #       command: ["rm", "/etc/cexiolabs/cexiopay.identity/ssl/tls.key"]
         livenessProbe:
           httpGet:
             path: /info
@@ -105,23 +81,15 @@ spec:
         #   readOnly: true
         - name: secret-certificate
           mountPath: /etc/cexiolabs/cexiopay.identity/ssl/
-      #   - name: secret-certificate-copy
-      #     mountPath: /tmp/cexiolabs/cexiopay.identity/ssl/
         - name: secret-files
           mountPath: /etc/cexiolabs/cexiopay.identity/secrets/
-      #   - name: secret-files-copy
-      #     mountPath: /tmp/cexiolabs/cexiopay.identity/secrets/
       volumes:
       # - name: config-files
       #   configMap:
-      #     name: identity-files
+      #     name: {{ template "prefix" . }}identity-files
       - name: secret-certificate
         secret:
           secretName: {{ template "prefix" . }}identity-certificate
       - name: secret-files
         secret:
-          secretName: identity
-      # - name: secret-certificate-copy
-      #   emptyDir: {}
-      # - name: secret-files-copy
-      #   emptyDir: {}
+          secretName: {{ template "prefix" . }}identity

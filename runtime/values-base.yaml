@@ -1,32 +1,39 @@
 application:
+
   api:
     serviceImage: harbor.infra.kube/cexiopay/api
-    tag: 0.1.17
+    tag: 0.1.18
     replicas: 1
-  dashboard:
-    serviceImage: harbor.infra.kube/cexiopay/dashboard
-    tag: 2.4.7
+
+  board:
+    serviceImage: harbor.infra.kube/cexiopay/board
+    tag: 2.4.9
     env:
-      BASE_PATH: /next/
+      BASE_PATH: /
     replicas: 1
+
   dashboardlegacy2:
     serviceImage: harbor.infra.kube/cexiopay/dashboard-react
     tag: 2.2.2
     env:
-      BASE_PATH: /legacy2/
+      BASE_PATH: /
     replicas: 1
+
   demo:
     serviceImage: cexiolabs/cexiopay.demo
     tag: latest
     replicas: 1
+
   echo:
     serviceImage: cexiolabs/http-https-echo
     tag: latest
     replicas: 2
+
   identity:
     serviceImage: harbor.infra.kube/cexiopay/identity
     tag: 0.1.8
     replicas: 1
+
   messengerbridge:
     serviceImage: zxteamorg/messenger-bridge
     tag: 0.0.4
@@ -37,6 +44,7 @@ application:
         "--config-env",
       ]
     replicas: 1
+
   processing:
     serviceImage: harbor.infra.kube/cexiopay/processing
     tag: 2.2.26

@@ -1,0 +1,18 @@
+{{ if or (and (ne .Values.zone "test") (ne .Values.zone "production")) (ne .Release.Name "blue") }}
+# In "test" and "production" zones on "blue" release, the "board" is hosted on GitHub Pages:
+# - https://github.com/cexiolabs/cexiopay.board-production-hosting
+# - https://github.com/cexiolabs/cexiopay.board-test-hosting
+# so we deploy this conditionally
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: Certificate
+metadata:
+  name: {{ template "prefix" . }}board-certificate
+spec:
+  secretName: {{ template "prefix" . }}board-certificate
+  issuerRef:
+    name: ca-issuer
+    # We can reference ClusterIssuers by changing the kind here.
+    # The default value is Issuer (i.e. a locally namespaced Issuer)
+    kind: ClusterIssuer
+  commonName: {{ template "prefix" . }}board
+{{ end }}

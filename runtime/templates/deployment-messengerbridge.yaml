@@ -77,11 +77,11 @@ spec:
       volumes:
       - name: messengerbridge-files
         configMap:
-          name: messengerbridge-files
+          name: {{ template "prefix" . }}messengerbridge-files
       - name: secret-certificate
         secret:
           secretName: {{ template "prefix" . }}messengerbridge-certificate
       - name: secret-files
         secret:
-          secretName: messengerbridge
+          secretName: {{ template "prefix" . }}messengerbridge
 {{ end }}
