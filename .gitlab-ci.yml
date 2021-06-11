@@ -94,8 +94,7 @@ include:
     refs:
       - tags
     variables:
-      - $CI_COMMIT_TAG =~ /-runtime$/
-      - $RUNTIME_RELEASE == "blue"
+      - $CI_COMMIT_TAG =~ /-runtime$/ && $RUNTIME_RELEASE == "blue"
 
 1EVO:delete:runtime:
   stage: delete
@@ -162,8 +161,7 @@ include:
     refs:
       - tags
     variables:
-      - $CI_COMMIT_TAG =~ /-runtime$/
-      - $RUNTIME_RELEASE == "blue"
+      - $CI_COMMIT_TAG =~ /-runtime$/ && $RUNTIME_RELEASE == "blue"
 
 2PRSN:delete:runtime:
   stage: delete
@@ -239,8 +237,7 @@ include:
     refs:
       - tags
     variables:
-      - $CI_COMMIT_TAG =~ /-runtime$/
-      - $RUNTIME_RELEASE == "blue"
+      - $CI_COMMIT_TAG =~ /-runtime$/ && $RUNTIME_RELEASE == "blue"
 
 3TEST:delete:runtime:
   stage: delete
@@ -311,8 +308,7 @@ include:
     refs:
       - tags
     variables:
-      - $CI_COMMIT_TAG =~ /-runtime$/
-      - $RUNTIME_RELEASE == "blue"
+      - $CI_COMMIT_TAG =~ /-runtime$/ && $RUNTIME_RELEASE == "blue"
 
 4PROD:delete:runtime:
   stage: delete
