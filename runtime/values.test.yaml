@@ -90,10 +90,12 @@ ingress:
           backendServicePort: 8080
 
     Callbacks:
-      # TEMPORARY USE presentation REGARDS TO WTF2 CALLBACKS CONFIGURATION
-      domain: callback-presentation-cexiopay.dev.kube
+      domain: callback-test-cexiopay.dev.kube
       certSecretName: dev
       paths:
+        "/v2/callback/cryptoproviders/pss-provider-wtf2/":
+          backendServiceName: processing
+          backendServicePort: 8084
         "/ws/":
           backendServiceName: processing
           backendServicePort: 8086
@@ -110,7 +112,7 @@ ingress:
       paths:
         "/":
           backendServiceName: dashboardlegacy2
-          backendServicePort: 8445
+          backendServicePort: 8443
         "/v2/dashboard/":
           backendServiceName: processing
           backendServicePort: 8082
@@ -214,21 +216,32 @@ ingress:
       certSecretName: dev
       backendInsecure: false
       nginxConfigurationSnippet: |
-        rewrite ^/$ /next/ redirect;
         add_header Last-Modified $date_gmt;
         add_header Cache-Control 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0';
         if_modified_since off;
         expires off;
         etag off;
       paths:
-        "/legacy2/":
-          backendServiceName: dashboardlegacy2
+        "/":
+          backendServiceName: board
           backendServicePort: 8443
-        "/v2/dashboard/":
-          backendServiceName: processing
-          backendServicePort: 8082
-        "/next/":
-          backendServiceName: dashboard
+
+    DashboardLegacy2:
+      # Make final domain "dashboard-<HelmReleaseName>-test-cexiopay.dev.kube" like a:
+      #   dashboard-green-test-cexiopay.dev.kube
+      #   dashboard-master-test-cexiopay.dev.kube
+      domainPerfix: dashboard-
+      domainSuffix: -test-cexiopay.dev.kube
+      certSecretName: dev
+      nginxConfigurationSnippet: |
+        add_header Last-Modified $date_gmt;
+        add_header Cache-Control 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0';
+        if_modified_since off;
+        expires off;
+        etag off;
+      paths:
+        "/":
+          backendServiceName: dashboardlegacy2
           backendServicePort: 8443
 
     Echo:

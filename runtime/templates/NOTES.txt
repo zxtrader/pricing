@@ -5,7 +5,14 @@ App Version {{ .Chart.AppVersion }}
 Application daemon should be up. Hopefully.
 
 {{ $rootScope := . }}
-{{- range $key, $value := .Values.ingress }}
+{{- if eq .Release.Name "blue" }}
+{{- range $key, $value := .Values.ingress.blue }}
 {{ $key }}: https://{{ $value.domain }}
+{{- end }}
+{{- end }}
+{{- if ne .Release.Name "blue" }}
+{{- range $key, $value := .Values.ingress.nonblue }}
+{{ $key }}: https://{{ $value.domainPerfix }}{{ $rootScope.Release.Name }}{{ $value.domainSuffix }}
+{{- end }}
 {{- end }}
 

@@ -1,6 +1,7 @@
 zone: evolution
 
 application:
+
   api:
     serviceImage: harbor.infra.kube/cexiopay/api/snapshot
     args:
@@ -14,16 +15,15 @@ application:
     env:
       WTFProviderConfigurationFile: /etc/cexiolabs/cexiopay.api/legacy-cpservice-config/WTF-dev.json
     replicas: 1
+
   board:
     serviceImage: harbor.infra.kube/cexiopay/board/snapshot
-    env:
-      BASE_PATH: /next/
     replicas: 1
+
   dashboardlegacy2:
     serviceImage: harbor.infra.kube/cexiopay/dashboard-react/snapshot
-    env:
-      BASE_PATH: /legacy2/
     replicas: 1
+
   demo:
     env:
       BASE_PATH: /widget-demo/
@@ -32,6 +32,7 @@ application:
       GATE_URL: https://gate-evolution-cexiopay.dev.kube
       NODE_TLS_REJECT_UNAUTHORIZED: 0
     replicas: 0
+
   identity:
     serviceImage: devdocker.infra.kube/cexiopay/identity/snapshot
     args:
@@ -43,6 +44,7 @@ application:
         "--log-json"
       ]
     replicas: 1
+
   processing:
     serviceImage: harbor.infra.kube/cexiopay/processing/snapshot
     args:
@@ -64,95 +66,117 @@ application:
       LOG_LEVEL: "debug"
       GATE_URL: https://gate-evolution-cexiopay.dev.kube
     replicas: 1
+
+
 ingress:
-  API:
-    domain: api-evolution-cexiopay.dev.kube
-    certSecretName: dev
-    backendInsecure: false
-    nginxConfigurationSnippet: |
-      rewrite ^/$ /v2/time redirect;
-    paths:
-      "/":
-        backendServiceName: api
-        backendServicePort: 8443
-      "/v2/":
-        backendServiceName: processing
-        backendServicePort: 8080
-  Callbacks:
-    domain: callback-evolution-cexiopay.dev.kube
-    certSecretName: dev
-    paths:
-      "/ws/":
-        backendServiceName: processing
-        backendServicePort: 8086
-  Board:
-    domain: board-evolution-cexiopay.dev.kube
-    certSecretName: dev
-    backendInsecure: false
-    nginxConfigurationSnippet: |
-      rewrite ^/$ /next/ redirect;
-      add_header Last-Modified $date_gmt;
-      add_header Cache-Control 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0';
-      if_modified_since off;
-      expires off;
-      etag off;
-    paths:
-      "/legacy2/":
-        backendServiceName: dashboardlegacy2
-        backendServicePort: 8443
-      "/v2/dashboard/":
-        backendServiceName: processing
-        backendServicePort: 8082
-      "/next/":
-        backendServiceName: board
-        backendServicePort: 8443
-  Echo:
-    domain: echo-evolution-cexiopay.dev.kube
-    certSecretName: dev
-    backendInsecure: false
-    paths:
-      "/":
-        backendServiceName: echo
-        backendServicePort: 8443
-  Gate:
-    domain: gate-evolution-cexiopay.dev.kube
-    certSecretName: dev
-    backendInsecure: false
-    nginxConfigurationSnippet: |
-      add_header Last-Modified $date_gmt;
-      add_header Cache-Control 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0';
-      if_modified_since off;
-      expires off;
-      etag off;
-    paths:
-      "/":
-        backendServiceName: processing
-        backendServicePort: 8085
-  Identity:
-    domain: id-evolution-cexiopay.dev.kube
-    certSecretName: dev
-    backendInsecure: false
-    paths:
-      "/":
-        backendServiceName: identity
-        backendServicePort: 8443
-  MessengerBridge:
-    # THIS endpoint just for development purposes
-    domain: messengerbridge-evolution-cexiopay.dev.kube
-    certSecretName: dev
-    backendInsecure: false
-    paths:
-      "/":
-        backendServiceName: messengerbridge
-        backendServicePort: 8443
-  Welcome:
-    domain: evolution-cexiopay.dev.kube
-    certSecretName: dev
-    backendInsecure: false
-    paths:
-      "/":
-        backendServiceName: processing
-        backendServicePort: 8083
-      "/widget-demo/":
-        backendServiceName: demo
-        backendServicePort: 8443
+
+  blue:
+
+    API:
+      domain: api-evolution-cexiopay.dev.kube
+      certSecretName: dev
+      backendInsecure: false
+      nginxConfigurationSnippet: |
+        rewrite ^/$ /v2/time redirect;
+      paths:
+        "/":
+          backendServiceName: api
+          backendServicePort: 8443
+        "/v2/":
+          backendServiceName: processing
+          backendServicePort: 8080
+
+    Board:
+      domain: board-evolution-cexiopay.dev.kube
+      certSecretName: dev
+      backendInsecure: false
+      nginxConfigurationSnippet: |
+        add_header Last-Modified $date_gmt;
+        add_header Cache-Control 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0';
+        if_modified_since off;
+        expires off;
+        etag off;
+      paths:
+        "/":
+          backendServiceName: board
+          backendServicePort: 8443
+
+    Callbacks:
+      domain: callback-evolution-cexiopay.dev.kube
+      certSecretName: dev
+      paths:
+        "/ws/":
+          backendServiceName: processing
+          backendServicePort: 8086
+
+    Dashboard:
+      domain: dashboard-evolution-cexiopay.dev.kube
+      certSecretName: dev
+      backendInsecure: false
+      nginxConfigurationSnippet: |
+        add_header Last-Modified $date_gmt;
+        add_header Cache-Control 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0';
+        if_modified_since off;
+        expires off;
+        etag off;
+      paths:
+        "/":
+          backendServiceName: dashboardlegacy2
+          backendServicePort: 8443
+        "/v2/dashboard/":
+          backendServiceName: processing
+          backendServicePort: 8082
+
+    Echo:
+      domain: echo-evolution-cexiopay.dev.kube
+      certSecretName: dev
+      backendInsecure: false
+      paths:
+        "/":
+          backendServiceName: echo
+          backendServicePort: 8443
+
+    Gate:
+      domain: gate-evolution-cexiopay.dev.kube
+      certSecretName: dev
+      backendInsecure: false
+      nginxConfigurationSnippet: |
+        add_header Last-Modified $date_gmt;
+        add_header Cache-Control 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0';
+        if_modified_since off;
+        expires off;
+        etag off;
+      paths:
+        "/":
+          backendServiceName: processing
+          backendServicePort: 8085
+
+    Identity:
+      domain: id-evolution-cexiopay.dev.kube
+      certSecretName: dev
+      backendInsecure: false
+      paths:
+        "/":
+          backendServiceName: identity
+          backendServicePort: 8443
+    MessengerBridge:
+      # THIS endpoint just for development purposes
+      domain: messengerbridge-evolution-cexiopay.dev.kube
+      certSecretName: dev
+      backendInsecure: false
+      paths:
+        "/":
+          backendServiceName: messengerbridge
+          backendServicePort: 8443
+
+    Welcome:
+      domain: evolution-cexiopay.dev.kube
+      certSecretName: dev
+      backendInsecure: false
+      paths:
+        "/":
+          backendServiceName: processing
+          backendServicePort: 8083
+        "/widget-demo/":
+          backendServiceName: demo
+          backendServicePort: 8443
