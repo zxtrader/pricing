@@ -1,11 +1,11 @@
-# kubectl --namespace cexiopay-evolution get --output=yaml ConfigMap/cpservice
-# kubectl --namespace cexiopay-evolution apply --filename=runtime.configmaps/evolution/cpservice.yaml
+# kubectl --namespace cexiopay-evolution-admin get --output=yaml ConfigMap/cpservice
+# kubectl --namespace cexiopay-evolution-admin apply --filename=runtime.configmaps/evolution/cpservice.yaml
 
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: cpservice
-  namespace: cexiopay-evolution
+  namespace: cexiopay-evolution-admin
 data:
   Aggregator-dev.json: "{\n\t\"user\": {\n\t\t\"username\": \"Processing-Service_1\",\n\t\t\"password\":
     \"PS_VCJ13hr7WBh*R\"\n\t},\n\t\"external\": {\n\t\t\"rejectUnauthorized\": false,\n\t\t\"url\":

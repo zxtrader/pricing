@@ -60,6 +60,17 @@ include:
     - verify_runtime_version_helm3
     - kube_config_setup
     - cd runtime
+    - mkdir tmp
+    - "kubectl --namespace 'cexiopay-evolution-admin' get --output=json ConfigMap/cpservice                 | q -r ".data" | yq eval -P  > tmp/configmap-cpservice.yaml"
+    - "kubectl --namespace 'cexiopay-evolution-admin' get --output=json ConfigMap/messengerbridge-files     | q -r ".data" | yq eval -P  > tmp/configmap-messengerbridge.yaml"
+    - "kubectl --namespace 'cexiopay-evolution-admin' get --output=json ConfigMap/processing-envvars-setup  | q -r ".data" | yq eval -P  > tmp/configmap-processing-envvars-setup.yaml"
+    - "kubectl --namespace 'cexiopay-evolution-admin' get --output=json ConfigMap/processing-envvars        | q -r ".data" | yq eval -P  > tmp/configmap-processing-envvars.yaml"
+    - "kubectl --namespace 'cexiopay-evolution-admin' get --output=json ConfigMap/processing-files          | q -r ".data" | yq eval -P  > tmp/configmap-processing-files.yaml"
+    - "kubectl --namespace 'cexiopay-evolution-admin' get --output=json Secrets/api                         | q -r ".data" | yq eval -P  > tmp/secret-api.yaml"
+    - "kubectl --namespace 'cexiopay-evolution-admin' get --output=json Secrets/identity                    | q -r ".data" | yq eval -P  > tmp/secret-identity.yaml"
+    - "kubectl --namespace 'cexiopay-evolution-admin' get --output=json Secrets/messengerbridge             | q -r ".data" | yq eval -P  > tmp/secret-messengerbridge.yaml"
+    - "kubectl --namespace 'cexiopay-evolution-admin' get --output=json Secrets/processing                  | q -r ".data" | yq eval -P  > tmp/secret-processing.yaml"
+    - "kubectl --namespace 'cexiopay-evolution-admin' get --output=json Secrets/processing-setup            | q -r ".data" | yq eval -P  > tmp/secret-processing-setup.yaml"
     - helm --namespace "cexiopay-evolution" list
     - helm --namespace "cexiopay-evolution" upgrade --install --history-max 3 --values "values-base.yaml" --values "values.evolution.yaml" "${RUNTIME_RELEASE}" .
     - helm --namespace "cexiopay-evolution" history "${RUNTIME_RELEASE}" --max=3
@@ -127,6 +138,17 @@ include:
     - verify_runtime_version_helm3
     - kube_config_setup
     - cd runtime
+    - mkdir tmp
+    - "kubectl --namespace 'cexiopay-presentation-admin' get --output=json ConfigMap/cpservice                 | q -r ".data" | yq eval -P  > tmp/configmap-cpservice.yaml"
+    - "kubectl --namespace 'cexiopay-presentation-admin' get --output=json ConfigMap/messengerbridge-files     | q -r ".data" | yq eval -P  > tmp/configmap-messengerbridge.yaml"
+    - "kubectl --namespace 'cexiopay-presentation-admin' get --output=json ConfigMap/processing-envvars-setup  | q -r ".data" | yq eval -P  > tmp/configmap-processing-envvars-setup.yaml"
+    - "kubectl --namespace 'cexiopay-presentation-admin' get --output=json ConfigMap/processing-envvars        | q -r ".data" | yq eval -P  > tmp/configmap-processing-envvars.yaml"
+    - "kubectl --namespace 'cexiopay-presentation-admin' get --output=json ConfigMap/processing-files          | q -r ".data" | yq eval -P  > tmp/configmap-processing-files.yaml"
+    - "kubectl --namespace 'cexiopay-presentation-admin' get --output=json Secrets/api                         | q -r ".data" | yq eval -P  > tmp/secret-api.yaml"
+    - "kubectl --namespace 'cexiopay-presentation-admin' get --output=json Secrets/identity                    | q -r ".data" | yq eval -P  > tmp/secret-identity.yaml"
+    - "kubectl --namespace 'cexiopay-presentation-admin' get --output=json Secrets/messengerbridge             | q -r ".data" | yq eval -P  > tmp/secret-messengerbridge.yaml"
+    - "kubectl --namespace 'cexiopay-presentation-admin' get --output=json Secrets/processing                  | q -r ".data" | yq eval -P  > tmp/secret-processing.yaml"
+    - "kubectl --namespace 'cexiopay-presentation-admin' get --output=json Secrets/processing-setup            | q -r ".data" | yq eval -P  > tmp/secret-processing-setup.yaml"
     - helm --namespace "cexiopay-presentation" list
     - helm --namespace "cexiopay-presentation" upgrade --install --history-max 3 --values "values-base.yaml" --values "values.presentation.yaml" "${RUNTIME_RELEASE}" .
     - helm --namespace "cexiopay-presentation" history "${RUNTIME_RELEASE}" --max=3
@@ -194,15 +216,17 @@ include:
     - verify_runtime_version_helm3
     - kube_config_setup
     - cd runtime
-    - "kubectl --namespace 'cexiopay-test-admin' get --output=json ConfigMap/cpservice                 | jq -r \"{ apiVersion: .apiVersion, kind: .kind, metadata: { name: (\\\"${RUNTIME_RELEASE}-\\\" + .metadata.name) }, data: .data }\" | yq eval -P  > templates/config-cpservice.yaml"
-    - "kubectl --namespace 'cexiopay-test-admin' get --output=json ConfigMap/messengerbridge-files     | jq -r \"{ apiVersion: .apiVersion, kind: .kind, metadata: { name: (\\\"${RUNTIME_RELEASE}-\\\" + .metadata.name) }, data: .data }\" | yq eval -P  > templates/config-messengerbridge.yaml"
-    - "kubectl --namespace 'cexiopay-test-admin' get --output=json ConfigMap/processing-envvars-setup  | jq -r \"{ apiVersion: .apiVersion, kind: .kind, metadata: { name: (\\\"${RUNTIME_RELEASE}-\\\" + .metadata.name) }, data: .data }\" | yq eval -P  > templates/config-processing-envvars-setup.yaml"
-    - "kubectl --namespace 'cexiopay-test-admin' get --output=json ConfigMap/processing-envvars        | jq -r \"{ apiVersion: .apiVersion, kind: .kind, metadata: { name: (\\\"${RUNTIME_RELEASE}-\\\" + .metadata.name) }, data: .data }\" | yq eval -P  > templates/config-processing-envvars.yaml"
-    - "kubectl --namespace 'cexiopay-test-admin' get --output=json ConfigMap/processing-files          | jq -r \"{ apiVersion: .apiVersion, kind: .kind, metadata: { name: (\\\"${RUNTIME_RELEASE}-\\\" + .metadata.name) }, data: .data }\" | yq eval -P  > templates/config-processing-files.yaml"
-    - "kubectl --namespace 'cexiopay-test-admin' get --output=json Secrets/api                         | jq -r \"{ apiVersion: .apiVersion, kind: .kind, metadata: { name: (\\\"${RUNTIME_RELEASE}-\\\" + .metadata.name) }, data: .data }\" | yq eval -P  > templates/secret-api.yaml"
-    - "kubectl --namespace 'cexiopay-test-admin' get --output=json Secrets/identity                    | jq -r \"{ apiVersion: .apiVersion, kind: .kind, metadata: { name: (\\\"${RUNTIME_RELEASE}-\\\" + .metadata.name) }, data: .data }\" | yq eval -P  > templates/secret-identity.yaml"
-    - "kubectl --namespace 'cexiopay-test-admin' get --output=json Secrets/processing                  | jq -r \"{ apiVersion: .apiVersion, kind: .kind, metadata: { name: (\\\"${RUNTIME_RELEASE}-\\\" + .metadata.name) }, data: .data }\" | yq eval -P  > templates/secret-processing.yaml"
-    - "kubectl --namespace 'cexiopay-test-admin' get --output=json Secrets/processing-setup            | jq -r \"{ apiVersion: .apiVersion, kind: .kind, metadata: { name: (\\\"${RUNTIME_RELEASE}-\\\" + .metadata.name) }, data: .data }\" | yq eval -P  > templates/secret-processing-setup.yaml"
+    - mkdir tmp
+    - "kubectl --namespace 'cexiopay-test-admin' get --output=json ConfigMap/cpservice                 | q -r ".data" | yq eval -P  > tmp/configmap-cpservice.yaml"
+    - "kubectl --namespace 'cexiopay-test-admin' get --output=json ConfigMap/messengerbridge-files     | q -r ".data" | yq eval -P  > tmp/configmap-messengerbridge.yaml"
+    - "kubectl --namespace 'cexiopay-test-admin' get --output=json ConfigMap/processing-envvars-setup  | q -r ".data" | yq eval -P  > tmp/configmap-processing-envvars-setup.yaml"
+    - "kubectl --namespace 'cexiopay-test-admin' get --output=json ConfigMap/processing-envvars        | q -r ".data" | yq eval -P  > tmp/configmap-processing-envvars.yaml"
+    - "kubectl --namespace 'cexiopay-test-admin' get --output=json ConfigMap/processing-files          | q -r ".data" | yq eval -P  > tmp/configmap-processing-files.yaml"
+    - "kubectl --namespace 'cexiopay-test-admin' get --output=json Secrets/api                         | q -r ".data" | yq eval -P  > tmp/secret-api.yaml"
+    - "kubectl --namespace 'cexiopay-test-admin' get --output=json Secrets/identity                    | q -r ".data" | yq eval -P  > tmp/secret-identity.yaml"
+    - "kubectl --namespace 'cexiopay-test-admin' get --output=json Secrets/messengerbridge             | q -r ".data" | yq eval -P  > tmp/secret-messengerbridge.yaml"
+    - "kubectl --namespace 'cexiopay-test-admin' get --output=json Secrets/processing                  | q -r ".data" | yq eval -P  > tmp/secret-processing.yaml"
+    - "kubectl --namespace 'cexiopay-test-admin' get --output=json Secrets/processing-setup            | q -r ".data" | yq eval -P  > tmp/secret-processing-setup.yaml"
     - helm --namespace "cexiopay-test" list
     - helm --namespace "cexiopay-test" upgrade --install --history-max 3 --values "values-base.yaml" --values "values.test.yaml" "${RUNTIME_RELEASE}" .
     - helm --namespace "cexiopay-test" history "${RUNTIME_RELEASE}" --max=3
@@ -270,15 +294,17 @@ include:
     - verify_runtime_version_helm3
     - kube_config_setup
     - cd runtime
-    - "kubectl --namespace 'cryptopay' get --output=json ConfigMap/cpservice                 | jq -r \"{ apiVersion: .apiVersion, kind: .kind, metadata: { name: (\\\"${RUNTIME_RELEASE}-\\\" + .metadata.name) }, data: .data }\" | yq eval -P  > templates/config-cpservice.yaml"
-    - "kubectl --namespace 'cryptopay' get --output=json ConfigMap/messengerbridge-files     | jq -r \"{ apiVersion: .apiVersion, kind: .kind, metadata: { name: (\\\"${RUNTIME_RELEASE}-\\\" + .metadata.name) }, data: .data }\" | yq eval -P  > templates/config-messengerbridge.yaml"
-    - "kubectl --namespace 'cryptopay' get --output=json ConfigMap/processing-envvars-setup  | jq -r \"{ apiVersion: .apiVersion, kind: .kind, metadata: { name: (\\\"${RUNTIME_RELEASE}-\\\" + .metadata.name) }, data: .data }\" | yq eval -P  > templates/config-processing-envvars-setup.yaml"
-    - "kubectl --namespace 'cryptopay' get --output=json ConfigMap/processing-envvars        | jq -r \"{ apiVersion: .apiVersion, kind: .kind, metadata: { name: (\\\"${RUNTIME_RELEASE}-\\\" + .metadata.name) }, data: .data }\" | yq eval -P  > templates/config-processing-envvars.yaml"
-    - "kubectl --namespace 'cryptopay' get --output=json ConfigMap/processing-files          | jq -r \"{ apiVersion: .apiVersion, kind: .kind, metadata: { name: (\\\"${RUNTIME_RELEASE}-\\\" + .metadata.name) }, data: .data }\" | yq eval -P  > templates/config-processing-files.yaml"
-    - "kubectl --namespace 'cryptopay' get --output=json Secrets/api                         | jq -r \"{ apiVersion: .apiVersion, kind: .kind, metadata: { name: (\\\"${RUNTIME_RELEASE}-\\\" + .metadata.name) }, data: .data }\" | yq eval -P  > templates/secret-api.yaml"
-    - "kubectl --namespace 'cryptopay' get --output=json Secrets/identity                    | jq -r \"{ apiVersion: .apiVersion, kind: .kind, metadata: { name: (\\\"${RUNTIME_RELEASE}-\\\" + .metadata.name) }, data: .data }\" | yq eval -P  > templates/secret-identity.yaml"
-    - "kubectl --namespace 'cryptopay' get --output=json Secrets/processing                  | jq -r \"{ apiVersion: .apiVersion, kind: .kind, metadata: { name: (\\\"${RUNTIME_RELEASE}-\\\" + .metadata.name) }, data: .data }\" | yq eval -P  > templates/secret-processing.yaml"
-    - "kubectl --namespace 'cryptopay' get --output=json Secrets/processing-setup            | jq -r \"{ apiVersion: .apiVersion, kind: .kind, metadata: { name: (\\\"${RUNTIME_RELEASE}-\\\" + .metadata.name) }, data: .data }\" | yq eval -P  > templates/secret-processing-setup.yaml"
+    - mkdir tmp
+    - "kubectl --namespace 'cryptopay' get --output=json ConfigMap/cpservice                 | q -r ".data" | yq eval -P  > tmp/configmap-cpservice.yaml"
+    - "kubectl --namespace 'cryptopay' get --output=json ConfigMap/messengerbridge-files     | q -r ".data" | yq eval -P  > tmp/configmap-messengerbridge.yaml"
+    - "kubectl --namespace 'cryptopay' get --output=json ConfigMap/processing-envvars-setup  | q -r ".data" | yq eval -P  > tmp/configmap-processing-envvars-setup.yaml"
+    - "kubectl --namespace 'cryptopay' get --output=json ConfigMap/processing-envvars        | q -r ".data" | yq eval -P  > tmp/configmap-processing-envvars.yaml"
+    - "kubectl --namespace 'cryptopay' get --output=json ConfigMap/processing-files          | q -r ".data" | yq eval -P  > tmp/configmap-processing-files.yaml"
+    - "kubectl --namespace 'cryptopay' get --output=json Secrets/api                         | q -r ".data" | yq eval -P  > tmp/secret-api.yaml"
+    - "kubectl --namespace 'cryptopay' get --output=json Secrets/identity                    | q -r ".data" | yq eval -P  > tmp/secret-identity.yaml"
+    - "kubectl --namespace 'cryptopay' get --output=json Secrets/messengerbridge             | q -r ".data" | yq eval -P  > tmp/secret-messengerbridge.yaml"
+    - "kubectl --namespace 'cryptopay' get --output=json Secrets/processing                  | q -r ".data" | yq eval -P  > tmp/secret-processing.yaml"
+    - "kubectl --namespace 'cryptopay' get --output=json Secrets/processing-setup            | q -r ".data" | yq eval -P  > tmp/secret-processing-setup.yaml"
     - helm --namespace "cexiopay" list
     - helm --namespace "cexiopay" upgrade --install --history-max 3 --values "values-base.yaml" --values "values.production.yaml" "${RUNTIME_RELEASE}" .
     - helm --namespace "cexiopay" history "${RUNTIME_RELEASE}" --max=3

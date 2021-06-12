@@ -1,11 +1,11 @@
-# kubectl --namespace cexiopay-presentation get --output=yaml ConfigMap/processing-files
-# kubectl --namespace cexiopay-presentation apply --filename=runtime.configmaps/presentation/processing-files.yaml
+# kubectl --namespace cexiopay-presentation-admin get --output=yaml ConfigMap/processing-files
+# kubectl --namespace cexiopay-presentation-admin apply --filename=runtime.configmaps/presentation/processing-files.yaml
 
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: processing-files
-  namespace: cexiopay-presentation
+  namespace: cexiopay-presentation-admin
 data:
   trusted-aggregator-ca.crt: |-
     -----BEGIN CERTIFICATE-----

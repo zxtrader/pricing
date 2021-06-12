@@ -1,10 +1,10 @@
-# kubectl --namespace cexiopay-evolution get --output=yaml ConfigMap/messengerbridge-files
-# kubectl --namespace cexiopay-evolution apply --filename=runtime.configmaps/evolution/messengerbridge-files.yaml
+# kubectl --namespace cexiopay-evolution-admin get --output=yaml ConfigMap/messengerbridge-files
+# kubectl --namespace cexiopay-evolution-admin apply --filename=runtime.configmaps/evolution/messengerbridge-files.yaml
 
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  namespace: cexiopay-evolution
+  namespace: cexiopay-evolution-admin
   name: messengerbridge-files
 data:
   messenger-bridge.toml: |-

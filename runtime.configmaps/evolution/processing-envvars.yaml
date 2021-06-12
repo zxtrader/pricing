@@ -1,17 +1,17 @@
-# kubectl --namespace cexiopay-evolution get --output=yaml ConfigMap/processing-envvars
-# kubectl --namespace cexiopay-evolution apply --filename=runtime.configmaps/evolution/processing-envvars.yaml
+# kubectl --namespace cexiopay-evolution-admin get --output=yaml ConfigMap/processing-envvars
+# kubectl --namespace cexiopay-evolution-admin apply --filename=runtime.configmaps/evolution/processing-envvars.yaml
 
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: processing-envvars
-  namespace: cexiopay-evolution
+  namespace: cexiopay-evolution-admin
 data:
   runtime.aggregator.url: wss://external-api-aggr-demo.dev.kube/ws
-  runtime.dashboardAuth.apiKey: AKIA5YOJLJKEIFAKNWBV
-  runtime.dashboardAuth.cognitoClientId: 6jusd0r1854j4aksj34dkuhuh
-  runtime.dashboardAuth.cognitoUserPool: us-east-1_QNzFm4L9A
-  runtime.dashboardAuth.region: us-east-1
+  # runtime.dashboardAuth.apiKey: AKIA5YOJLJKEIFAKNWBV
+  # runtime.dashboardAuth.cognitoClientId: 6jusd0r1854j4aksj34dkuhuh
+  # runtime.dashboardAuth.cognitoUserPool: us-east-1_QNzFm4L9A
+  # runtime.dashboardAuth.region: us-east-1
   runtime.endpoint.account.cors.allowedHeaders: '*'
   runtime.endpoint.account.cors.methods: GET, POST, PUT, DELETE
   runtime.endpoint.account.cors.whiteList: https://evolution-cexiopay.dev.kube

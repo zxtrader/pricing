@@ -1,11 +1,11 @@
-# kubectl --namespace cexiopay-evolution get --output=yaml ConfigMap/processing-files
-# kubectl --namespace cexiopay-evolution apply --filename=runtime.configmaps/evolution/processing-files.yaml
+# kubectl --namespace cexiopay-evolution-admin get --output=yaml ConfigMap/processing-files
+# kubectl --namespace cexiopay-evolution-admin apply --filename=runtime.configmaps/evolution/processing-files.yaml
 
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: processing-files
-  namespace: cexiopay-evolution
+  namespace: cexiopay-evolution-admin
 data:
   trusted-aggregator-ca.crt: |-
     -----BEGIN CERTIFICATE-----

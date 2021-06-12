@@ -1,10 +1,10 @@
-# kubectl --namespace cexiopay-presentation get --output=yaml ConfigMap/messengerbridge-files
-# kubectl --namespace cexiopay-presentation apply --filename=runtime.configmaps/presentation/messengerbridge-files.yaml
+# kubectl --namespace cexiopay-presentation-admin get --output=yaml ConfigMap/messengerbridge-files
+# kubectl --namespace cexiopay-presentation-admin apply --filename=runtime.configmaps/presentation/messengerbridge-files.yaml
 
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  namespace: cexiopay-presentation
+  namespace: cexiopay-presentation-admin
   name: messengerbridge-files
 data:
   messenger-bridge.toml: |-
