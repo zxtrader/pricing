@@ -1,6 +1,6 @@
 {{ if eq .Release.Name "blue" }}
 {{ $rootScope := . }}
-{{- range $key, $value := .Values.ingress -}}
+{{- range $key, $value := .Values.ingress.blue -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:

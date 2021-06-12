@@ -16,12 +16,6 @@ spec:
       name: processing-api
       protocol: TCP
       targetPort: 8080
-{{- if ne .Values.zone "production" }}
-    - port: 8081
-      name: sysadmin-api
-      protocol: TCP
-      targetPort: 8081
-{{- end }}
     - port: 8082
       name: dashboard-api
       protocol: TCP
@@ -32,7 +26,7 @@ spec:
       protocol: TCP
       targetPort: 8083
 {{ end }}
-{{ if or (eq .Values.zone "preproduction") (eq .Values.zone "production") }}
+{{ if or (eq .Values.zone "test") (eq .Values.zone "production") }}
     - port: 8084
       name: pss-provider-wtf2-callbacks
       protocol: TCP

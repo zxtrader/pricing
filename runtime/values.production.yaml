@@ -102,7 +102,7 @@ application:
 #         backendServiceName: processing
 #         backendServicePort: 8086
 
-#   dashboardlegacy2:
+#   DashboardLegacy2:
 #     domain: dashboard.cryptopay.band
 #     certSecretName: ingress-gate-api-dashboard
 #     nginxConfigurationSnippet: |

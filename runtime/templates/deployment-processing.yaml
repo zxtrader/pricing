@@ -36,11 +36,6 @@ spec:
         # Main Web server
         - containerPort: 8080
           protocol: TCP
-{{- if ne .Values.zone "production" }}
-        # Sysadmin should not exposed outside production container
-        - containerPort: 8081
-          protocol: TCP
-{{- end }}
         # Dashboard API Web server
         - containerPort: 8082
           protocol: TCP
@@ -49,9 +44,10 @@ spec:
         - containerPort: 8083
           protocol: TCP
 {{ end }}
-{{ if not (or (eq .Values.zone "evolution") (eq .Values.zone "presentation")) }}
+{{ if or (eq .Values.zone "test") (eq .Values.zone "production") }}
         # In "evolution" and "presentation" we use proxy-service called "notifier", 
-        # to handle callbacks via WebSocket, so we do not need this port
+        # to handle callbacks via WebSocket, so we do need this port
+        # for "test" and "production" only
         - containerPort: 8084
           protocol: TCP
 {{ end }}
