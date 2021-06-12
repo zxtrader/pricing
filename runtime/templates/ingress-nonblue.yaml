@@ -1,5 +1,6 @@
 {{ if ne .Release.Name "blue" }}
 {{ $rootScope := . }}
+{{ if .Values.ingress }}
 {{- range $key, $value := .Values.ingress.nonblue -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
@@ -43,4 +44,5 @@ spec:
 {{ end }}
 ---
 {{- end -}}
+{{ end }}
 {{ end }}
