@@ -2,6 +2,7 @@
 {{ $rootScope := . }}
 {{ if .Values.ingress }}
 {{- range $key, $value := .Values.ingress.nonblue -}}
+{{ if $value.nonblue }}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
@@ -28,12 +29,12 @@ metadata:
 spec:
   tls:
     - hosts:
-        - "{{ $value.domainPerfix }}{{ $rootScope.Release.Name }}{{ $value.domainSuffix }}"
-{{ if $value.certSecretName }}
-      secretName: "{{ $value.certSecretName }}"
+        - "{{ $value.nonblue.domainPerfix }}{{ $rootScope.Release.Name }}{{ $value.nonblue.domainSuffix }}"
+{{ if $value.nonblue.certSecretName }}
+      secretName: "{{ $value.nonblue.certSecretName }}"
 {{ end }}
   rules:
-    - host: "{{ $value.domainPerfix }}{{ $rootScope.Release.Name }}{{ $value.domainSuffix }}"
+    - host: "{{ $value.nonblue.domainPerfix }}{{ $rootScope.Release.Name }}{{ $value.nonblue.domainSuffix }}"
       http:
         paths:
 {{ range $bindPath, $serviceConnectivity := $value.paths }}
@@ -43,6 +44,7 @@ spec:
             path: {{ $bindPath }}
 {{ end }}
 ---
+{{ end }}
 {{- end -}}
 {{ end }}
 {{ end }}

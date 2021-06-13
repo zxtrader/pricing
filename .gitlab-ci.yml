@@ -61,7 +61,7 @@ include:
     - cd runtime
     - mkdir tmp
     - "kubectl --namespace 'cexiopay-evolution-admin' get --output=json ConfigMap/cpservice                 | jq -r \".data\" | yq eval -P  > tmp/configmap-cpservice.yaml"
-    - "kubectl --namespace 'cexiopay-evolution-admin' get --output=json ConfigMap/messengerbridge-files     | jq -r \".data\" | yq eval -P  > tmp/configmap-messengerbridge.yaml"
+    - "kubectl --namespace 'cexiopay-evolution-admin' get --output=json ConfigMap/messengerbridge-files     | jq -r \".data\" | yq eval -P  > tmp/configmap-messengerbridge-files.yaml"
     - "kubectl --namespace 'cexiopay-evolution-admin' get --output=json ConfigMap/processing-envvars-setup  | jq -r \".data\" | yq eval -P  > tmp/configmap-processing-envvars-setup.yaml"
     - "kubectl --namespace 'cexiopay-evolution-admin' get --output=json ConfigMap/processing-envvars        | jq -r \".data\" | yq eval -P  > tmp/configmap-processing-envvars.yaml"
     - "kubectl --namespace 'cexiopay-evolution-admin' get --output=json ConfigMap/processing-files          | jq -r \".data\" | yq eval -P  > tmp/configmap-processing-files.yaml"
@@ -139,7 +139,7 @@ include:
     - cd runtime
     - mkdir tmp
     - "kubectl --namespace 'cexiopay-presentation-admin' get --output=json ConfigMap/cpservice                 | jq -r \".data\" | yq eval -P  > tmp/configmap-cpservice.yaml"
-    - "kubectl --namespace 'cexiopay-presentation-admin' get --output=json ConfigMap/messengerbridge-files     | jq -r \".data\" | yq eval -P  > tmp/configmap-messengerbridge.yaml"
+    - "kubectl --namespace 'cexiopay-presentation-admin' get --output=json ConfigMap/messengerbridge-files     | jq -r \".data\" | yq eval -P  > tmp/configmap-messengerbridge-files.yaml"
     - "kubectl --namespace 'cexiopay-presentation-admin' get --output=json ConfigMap/processing-envvars-setup  | jq -r \".data\" | yq eval -P  > tmp/configmap-processing-envvars-setup.yaml"
     - "kubectl --namespace 'cexiopay-presentation-admin' get --output=json ConfigMap/processing-envvars        | jq -r \".data\" | yq eval -P  > tmp/configmap-processing-envvars.yaml"
     - "kubectl --namespace 'cexiopay-presentation-admin' get --output=json ConfigMap/processing-files          | jq -r \".data\" | yq eval -P  > tmp/configmap-processing-files.yaml"
@@ -217,7 +217,7 @@ include:
     - cd runtime
     - mkdir tmp
     - "kubectl --namespace 'cexiopay-test-admin' get --output=json ConfigMap/cpservice                 | jq -r \".data\" | yq eval -P  > tmp/configmap-cpservice.yaml"
-    - "kubectl --namespace 'cexiopay-test-admin' get --output=json ConfigMap/messengerbridge-files     | jq -r \".data\" | yq eval -P  > tmp/configmap-messengerbridge.yaml"
+    - "kubectl --namespace 'cexiopay-test-admin' get --output=json ConfigMap/messengerbridge-files     | jq -r \".data\" | yq eval -P  > tmp/configmap-messengerbridge-files.yaml"
     - "kubectl --namespace 'cexiopay-test-admin' get --output=json ConfigMap/processing-envvars-setup  | jq -r \".data\" | yq eval -P  > tmp/configmap-processing-envvars-setup.yaml"
     - "kubectl --namespace 'cexiopay-test-admin' get --output=json ConfigMap/processing-envvars        | jq -r \".data\" | yq eval -P  > tmp/configmap-processing-envvars.yaml"
     - "kubectl --namespace 'cexiopay-test-admin' get --output=json ConfigMap/processing-files          | jq -r \".data\" | yq eval -P  > tmp/configmap-processing-files.yaml"
@@ -250,7 +250,7 @@ include:
     - cd runtime
     - mkdir tmp
     - "kubectl --namespace 'cexiopay-test-admin' get --output=json ConfigMap/cpservice                 | jq -r \".data\" | yq eval -P  > tmp/configmap-cpservice.yaml"
-    - "kubectl --namespace 'cexiopay-test-admin' get --output=json ConfigMap/messengerbridge-files     | jq -r \".data\" | yq eval -P  > tmp/configmap-messengerbridge.yaml"
+    - "kubectl --namespace 'cexiopay-test-admin' get --output=json ConfigMap/messengerbridge-files     | jq -r \".data\" | yq eval -P  > tmp/configmap-messengerbridge-files.yaml"
     - "kubectl --namespace 'cexiopay-test-admin' get --output=json ConfigMap/processing-envvars-setup  | jq -r \".data\" | yq eval -P  > tmp/configmap-processing-envvars-setup.yaml"
     - "kubectl --namespace 'cexiopay-test-admin' get --output=json ConfigMap/processing-envvars        | jq -r \".data\" | yq eval -P  > tmp/configmap-processing-envvars.yaml"
     - "kubectl --namespace 'cexiopay-test-admin' get --output=json ConfigMap/processing-files          | jq -r \".data\" | yq eval -P  > tmp/configmap-processing-files.yaml"
@@ -350,7 +350,7 @@ include:
     - cd runtime
     - mkdir tmp
     - "kubectl --namespace 'cryptopay' get --output=json ConfigMap/cpservice                 | jq -r \".data\" | yq eval -P  > tmp/configmap-cpservice.yaml"
-    - "kubectl --namespace 'cryptopay' get --output=json ConfigMap/messengerbridge-files     | jq -r \".data\" | yq eval -P  > tmp/configmap-messengerbridge.yaml"
+    - "kubectl --namespace 'cryptopay' get --output=json ConfigMap/messengerbridge-files     | jq -r \".data\" | yq eval -P  > tmp/configmap-messengerbridge-files.yaml"
     - "kubectl --namespace 'cryptopay' get --output=json ConfigMap/processing-envvars-setup  | jq -r \".data\" | yq eval -P  > tmp/configmap-processing-envvars-setup.yaml"
     - "kubectl --namespace 'cryptopay' get --output=json ConfigMap/processing-envvars        | jq -r \".data\" | yq eval -P  > tmp/configmap-processing-envvars.yaml"
     - "kubectl --namespace 'cryptopay' get --output=json ConfigMap/processing-files          | jq -r \".data\" | yq eval -P  > tmp/configmap-processing-files.yaml"
@@ -385,7 +385,7 @@ include:
     - cd runtime
     - mkdir tmp
     - "kubectl --namespace 'cryptopay' get --output=json ConfigMap/cpservice                 | jq -r \".data\" | yq eval -P  > tmp/configmap-cpservice.yaml"
-    - "kubectl --namespace 'cryptopay' get --output=json ConfigMap/messengerbridge-files     | jq -r \".data\" | yq eval -P  > tmp/configmap-messengerbridge.yaml"
+    - "kubectl --namespace 'cryptopay' get --output=json ConfigMap/messengerbridge-files     | jq -r \".data\" | yq eval -P  > tmp/configmap-messengerbridge-files.yaml"
     - "kubectl --namespace 'cryptopay' get --output=json ConfigMap/processing-envvars-setup  | jq -r \".data\" | yq eval -P  > tmp/configmap-processing-envvars-setup.yaml"
     - "kubectl --namespace 'cryptopay' get --output=json ConfigMap/processing-envvars        | jq -r \".data\" | yq eval -P  > tmp/configmap-processing-envvars.yaml"
     - "kubectl --namespace 'cryptopay' get --output=json ConfigMap/processing-files          | jq -r \".data\" | yq eval -P  > tmp/configmap-processing-files.yaml"

@@ -1,7 +1,8 @@
 {{ if eq .Release.Name "blue" }}
 {{ $rootScope := . }}
 {{ if .Values.ingress }}
-{{- range $key, $value := .Values.ingress.blue -}}
+{{- range $key, $value := .Values.ingress -}}
+{{ if $value.blue }}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
@@ -28,12 +29,12 @@ metadata:
 spec:
   tls:
     - hosts:
-        - "{{ $value.domain }}"
-{{ if $value.certSecretName }}
-      secretName: "{{ $value.certSecretName }}"
+        - "{{ $value.blue.domain }}"
+{{ if $value.blue.certSecretName }}
+      secretName: "{{ $value.bluecertSecretName }}"
 {{ end }}
   rules:
-    - host: "{{ $value.domain }}"
+    - host: "{{ $value.blue.domain }}"
       http:
         paths:
 {{ range $bindPath, $serviceConnectivity := $value.paths }}
@@ -43,6 +44,7 @@ spec:
             path: {{ $bindPath }}
 {{ end }}
 ---
+{{ end }}
 {{- end -}}
 {{ end }}
 {{ end }}

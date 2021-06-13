@@ -3,29 +3,17 @@ zone: production
 application:
 
   api:
-    serviceImage: cexiolabs/http-https-echo
-    tag: latest
-    # env:
-    #   WTFProviderConfigurationFile: /etc/cexiolabs/cexiopay.api/legacy-cpservice-config/WTF-prod.json
+    env:
+      WTFProviderConfigurationFile: /etc/cexiolabs/cexiopay.api/legacy-cpservice-config/WTF-prod.json
 
   echo:
     replicas: 0
 
   identity:
-    serviceImage: cexiolabs/http-https-echo
-    tag: latest
-    # env:
-    #   Emailer__SendGrid__senderEmail: "no-reply@cryptopay.band"
-
-  messengerbridge:
-    serviceImage: cexiolabs/http-https-echo
-    tag: latest
+    env:
+      Emailer__SendGrid__senderEmail: "no-reply@cryptopay.band"
 
   processing:
-    serviceImage: cexiolabs/http-https-echo
-    tag: latest
-    # serviceImage: cexiolabs/http-https-echo
-    # tag: latest
     args:
       [
         "--config-file=/etc/cexiolabs/cexiopay.processing/service.config",
@@ -44,118 +32,156 @@ application:
       runtime.endpoint.gateUi.bindPath: "/"
 
 
-# ingress:
+ingress:
 
-#   API:
-#     domain: api.pay-cex.io
-#     certSecretName: ingress-pay-cex-certificate
-#     nginxConfigurationSnippet: |
-#       rewrite ^/$ /v2/time redirect;
-#     paths:
-#       "/":
-#         backendServiceName: processing
-#         backendServicePort: 8080
-#       "/v3/":
-#         backendServiceName: api
-#         backendServicePort: 8443
+  API:
+    blue:
+      domain: api.pay-cex.io
+      certSecretName: ingress-pay-cex-certificate
+    nginxConfigurationSnippet: |
+      rewrite ^/$ /v2/time redirect;
+    paths:
+      "/":
+        backendServiceName: processing
+        backendServicePort: 8080
+      "/v3/":
+        backendServiceName: api
+        backendServicePort: 8443
 
-#   API-Obsolete:
-#     domain: api.cryptopay.band
-#     certSecretName: ingress-gate-api-dashboard
-#     nginxConfigurationSnippet: |
-#       rewrite ^/$ /v2/time redirect;
-#     paths:
-#       "/":
-#         backendServiceName: processing
-#         backendServicePort: 8080
-#       "/v2/gate/":
-#         backendServiceName: processing
-#         backendServicePort: 8085
-#       "/v3/":
-#         backendServiceName: api
-#         backendServicePort: 8443
+  API-Obsolete:
+    blue:
+      domain: api.cryptopay.band
+      certSecretName: ingress-gate-api-dashboard
+    nginxConfigurationSnippet: |
+      rewrite ^/$ /v2/time redirect;
+    paths:
+      "/":
+        backendServiceName: processing
+        backendServicePort: 8080
+      "/v2/gate/":
+        backendServiceName: processing
+        backendServicePort: 8085
+      "/v3/":
+        backendServiceName: api
+        backendServicePort: 8443
 
-#   API-Internal:
-#     domain: api-cryptopay.prodcryptopay.kube
-#     certSecretName: callback
-#     nginxConfigurationSnippet: |
-#       rewrite ^/$ /v2/time redirect;
-#     paths:
-#       "/":
-#         backendServiceName: processing
-#         backendServicePort: 8080
-#       "/v2/gate/":
-#         backendServiceName: processing
-#         backendServicePort: 8085
-#       "/v3/":
-#         backendServiceName: api
-#         backendServicePort: 8443
+  API-Internal:
+    blue:
+      domain: api-cexiopay.prodcryptopay.kube
+      certSecretName: callback
+    nonblue:
+      # Make final domain "api-<HelmReleaseName>-cexiopay.prodcryptopay.kube" like a:
+      #   api-green-cexiopay.prodcryptopay.kube
+      domainPerfix: api-
+      domainSuffix: -cexiopay.prodcryptopay.kube
+      certSecretName: ingress-wildcard-prodcexd-kube
+    nginxConfigurationSnippet: |
+      rewrite ^/$ /v2/time redirect;
+    paths:
+      "/":
+        backendServiceName: processing
+        backendServicePort: 8080
+      "/v2/gate/":
+        backendServiceName: processing
+        backendServicePort: 8085
+      "/v3/":
+        backendServiceName: api
+        backendServicePort: 8443
 
-#   Callbacks:
-#     domain: callback.prodcryptopay.kube
-#     certSecretName: callback
-#     paths:
-#       "/v2/callback/cryptoproviders/pss-provider-wtf2/":
-#         backendServiceName: processing
-#         backendServicePort: 8084
-#       "/ws/":
-#         backendServiceName: processing
-#         backendServicePort: 8086
+  Callbacks:
+    blue:
+      domain: callback.prodcryptopay.kube
+      certSecretName: callback
+    paths:
+      "/v2/callback/cryptoproviders/pss-provider-wtf2/":
+        backendServiceName: processing
+        backendServicePort: 8084
+      "/ws/":
+        backendServiceName: processing
+        backendServicePort: 8086
 
-#   DashboardLegacy2:
-#     domain: dashboard.cryptopay.band
-#     certSecretName: ingress-gate-api-dashboard
-#     nginxConfigurationSnippet: |
-#       add_header Last-Modified $date_gmt;
-#       add_header Cache-Control 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0';
-#       if_modified_since off;
-#       expires off;
-#       etag off;
-#     paths:
-#       "/":
-#         backendServiceName: dashboardlegacy2
-#         backendServicePort: 8445
-#       "/v2/dashboard/":
-#         backendServiceName: processing
-#         backendServicePort: 8082
+  DashboardLegacy2:
+    blue:
+      domain: dashboard.cryptopay.band
+      certSecretName: ingress-gate-api-dashboard
+    nonblue:
+      # Make final domain "dashboard-<HelmReleaseName>-cexiopay.prodcryptopay.kube" like a:
+      #   dashboard-green-cexiopay.prodcryptopay.kube
+      domainPerfix: dashboard-
+      domainSuffix: -cexiopay.prodcryptopay.kube
+      certSecretName: ingress-wildcard-prodcexd-kube
+    nginxConfigurationSnippet: |
+      add_header Last-Modified $date_gmt;
+      add_header Cache-Control 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0';
+      if_modified_since off;
+      expires off;
+      etag off;
+    paths:
+      "/":
+        backendServiceName: dashboardlegacy2
+        backendServicePort: 8445
+      "/v2/dashboard/":
+        backendServiceName: processing
+        backendServicePort: 8082
 
-#    Gate:
-#     domain: gate.pay-cex.io
-#     certSecretName: ingress-pay-cex-certificate
-#     backendInsecure: false
-#     nginxConfigurationSnippet: |
-#       add_header Last-Modified $date_gmt;
-#       add_header Cache-Control 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0';
-#       if_modified_since off;
-#       expires off;
-#       etag off;
-#     paths:
-#       "/":
-#         backendServiceName: processing
-#         backendServicePort: 8085
-#   #     "/":
-#   #       backendServiceName: gateuiserve
-#   #       backendServicePort: 8080
-#   #     "/v2/gate/":
-#   #       backendServiceName: processing
-#   #       backendServicePort: 8085
-#   #     "/v2/gate-callback/":
-#   #       backendServiceName: processing
-#   #       backendServicePort: 8085
+   Gate:
+    blue:
+      domain: gate.pay-cex.io
+      certSecretName: ingress-pay-cex-certificate
+    nonblue:
+      # Make final domain "gate-<HelmReleaseName>-cexiopay.prodcryptopay.kube" like a:
+      #   gate-green-cexiopay.prodcryptopay.kube
+      domainPerfix: gate-
+      domainSuffix: -cexiopay.prodcryptopay.kube
+      certSecretName: ingress-wildcard-prodcexd-kube
+    backendInsecure: false
+    nginxConfigurationSnippet: |
+      add_header Last-Modified $date_gmt;
+      add_header Cache-Control 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0';
+      if_modified_since off;
+      expires off;
+      etag off;
+    paths:
+      "/":
+        backendServiceName: processing
+        backendServicePort: 8085
+  #     "/":
+  #       backendServiceName: gateuiserve
+  #       backendServicePort: 8080
+  #     "/v2/gate/":
+  #       backendServiceName: processing
+  #       backendServicePort: 8085
+  #     "/v2/gate-callback/":
+  #       backendServiceName: processing
+  #       backendServicePort: 8085
 
-#   Identity:
-#     domain: id.pay-cex.io
-#     certSecretName: ingress-pay-cex-certificate
-#     paths:
-#       "/":
-#         backendServiceName: identity
-#         backendServicePort: 8443
+  Identity:
+    blue:
+      domain: id.pay-cex.io
+      certSecretName: ingress-pay-cex-certificate
+    nonblue:
+      # Make final domain "id-<HelmReleaseName>-cexiopay.prodcryptopay.kube" like a:
+      #   id-green-cexiopay.prodcryptopay.kube
+      domainPerfix: id-
+      domainSuffix: -cexiopay.prodcryptopay.kube
+      certSecretName: ingress-wildcard-prodcexd-kube
+    paths:
+      "/":
+        backendServiceName: identity
+        backendServicePort: 8443
 
-#   MessengerBridge:
-#     # THIS temporary endpoint just for testing purposes
-#     domain: messengerbridge-cexiopay.prodcryptopay.kube
-#     certSecretName: callback
-#     paths:
-#       "/":
-#         backendServiceName: messengerbridge
-#         backendServicePort: 8443
+  MessengerBridge:
+    # THIS temporary endpoint just for testing purposes
+    blue:
+      domain: messengerbridge-cexiopay.prodcryptopay.kube
+      certSecretName: callback
+    nonblue:
+      # Make final domain "messengerbridge-<HelmReleaseName>-cexiopay.prodcryptopay.kube" like a:
+      #   messengerbridge-green-cexiopay.prodcryptopay.kube
+      domainPerfix: messengerbridge-
+      domainSuffix: -cexiopay.prodcryptopay.kube
+      certSecretName: ingress-wildcard-prodcexd-kube
+    paths:
+      "/":
+        backendServiceName: messengerbridge
+        backendServicePort: 8443

@@ -70,226 +70,158 @@ application:
 
 ingress:
 
-  blue:
-
-    API:
+  API:
+    blue:
       domain: api.pay-cex-test.net
       certSecretName: ingress-pay-cex-test-certificate
-      backendInsecure: false
-      nginxConfigurationSnippet: |
-        rewrite ^/$ /v2/time redirect;
-      paths:
-        "/":
-          backendServiceName: api
-          backendServicePort: 8443
-        "/emulator-crypto":
-          backendServiceName: processing
-          backendServicePort: 8080
-        "/v2/":
-          backendServiceName: processing
-          backendServicePort: 8080
-
-    Callbacks:
-      domain: callback-test-cexiopay.dev.kube
-      certSecretName: dev
-      paths:
-        "/v2/callback/cryptoproviders/pss-provider-wtf2/":
-          backendServiceName: processing
-          backendServicePort: 8084
-        "/ws/":
-          backendServiceName: processing
-          backendServicePort: 8086
-
-    DashboardLegacy2:
-      domain: dashboard-testnet.cryptopay.band
-      certSecretName: cryptopay-band
-      nginxConfigurationSnippet: |
-        add_header Last-Modified $date_gmt;
-        add_header Cache-Control 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0';
-        if_modified_since off;
-        expires off;
-        etag off;
-      paths:
-        "/":
-          backendServiceName: dashboardlegacy2
-          backendServicePort: 8443
-        "/v2/dashboard/":
-          backendServiceName: processing
-          backendServicePort: 8082
-
-    Echo:
-      domain: echo.pay-cex-test.net
-      certSecretName: ingress-pay-cex-test-certificate
-      backendInsecure: false
-      paths:
-        "/":
-          backendServiceName: echo
-          backendServicePort: 8443
-
-    Gate:
-      domain: gate.pay-cex-test.net
-      certSecretName: ingress-pay-cex-test-certificate
-      backendInsecure: false
-      nginxConfigurationSnippet: |
-        add_header Last-Modified $date_gmt;
-        add_header Cache-Control 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0';
-        if_modified_since off;
-        expires off;
-        etag off;
-      paths:
-        "/":
-          backendServiceName: processing
-          backendServicePort: 8085
-
-    Identity:
-      domain: id.pay-cex-test.net
-      certSecretName: ingress-pay-cex-test-certificate
-      backendInsecure: false
-      paths:
-        "/":
-          backendServiceName: identity
-          backendServicePort: 8443
-
-    MessengerBridge:
-      # THIS endpoint just for development purposes
-      domain: messengerbridge-test-cexiopay.dev.kube
-      certSecretName: dev
-      backendInsecure: false
-      paths:
-        "/":
-          backendServiceName: messengerbridge
-          backendServicePort: 8443
-
-    Welcome:
-      domain: pay-cex-test.net
-      certSecretName: ingress-pay-cex-test-certificate
-      backendInsecure: false
-      paths:
-        "/":
-          backendServiceName: processing
-          backendServicePort: 8083
-        "/widget-demo/":
-          backendServiceName: demo
-          backendServicePort: 8443
-
-  nonblue:
-
-    API:
+    nonblue:
       # Make final domain "api-<HelmReleaseName>-test-cexiopay.dev.kube" like a:
       #   api-green-test-cexiopay.dev.kube
       #   api-master-test-cexiopay.dev.kube
       domainPerfix: api-
       domainSuffix: -test-cexiopay.dev.kube
       certSecretName: dev
-      backendInsecure: false
-      nginxConfigurationSnippet: |
-        rewrite ^/$ /v2/time redirect;
-      paths:
-        "/":
-          backendServiceName: api
-          backendServicePort: 8443
-        "/emulator-crypto":
-          backendServiceName: processing
-          backendServicePort: 8080
-        "/v2/":
-          backendServiceName: processing
-          backendServicePort: 8080
+    backendInsecure: false
+    nginxConfigurationSnippet: |
+      rewrite ^/$ /v2/time redirect;
+    paths:
+      "/":
+        backendServiceName: api
+        backendServicePort: 8443
+      "/emulator-crypto":
+        backendServiceName: processing
+        backendServicePort: 8080
+      "/v2/":
+        backendServiceName: processing
+        backendServicePort: 8080
 
-    Callbacks:
-      # Make final domain "callback-<HelmReleaseName>-test-cexiopay.dev.kube" like a:
-      #   callback-green-test-cexiopay.dev.kube
-      #   callback-master-test-cexiopay.dev.kube
-      domainPerfix: callback-
-      domainSuffix: -test-cexiopay.dev.kube
-      certSecretName: dev
-      paths:
-        "/ws/":
-          backendServiceName: processing
-          backendServicePort: 8086
-
-    Board:
+  Board:
+    nonblue:
       # Make final domain "board-<HelmReleaseName>-test-cexiopay.dev.kube" like a:
       #   board-green-test-cexiopay.dev.kube
       #   board-master-test-cexiopay.dev.kube
       domainPerfix: board-
       domainSuffix: -test-cexiopay.dev.kube
       certSecretName: dev
-      backendInsecure: false
-      nginxConfigurationSnippet: |
-        add_header Last-Modified $date_gmt;
-        add_header Cache-Control 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0';
-        if_modified_since off;
-        expires off;
-        etag off;
-      paths:
-        "/":
-          backendServiceName: board
-          backendServicePort: 8443
+    backendInsecure: false
+    nginxConfigurationSnippet: |
+      add_header Last-Modified $date_gmt;
+      add_header Cache-Control 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0';
+      if_modified_since off;
+      expires off;
+      etag off;
+    paths:
+      "/":
+        backendServiceName: board
+        backendServicePort: 8443
 
-    DashboardLegacy2:
+  Callbacks:
+    blue:
+      domain: callback-test-cexiopay.dev.kube
+      certSecretName: dev
+    nonblue:
+      # Make final domain "callback-<HelmReleaseName>-test-cexiopay.dev.kube" like a:
+      #   callback-green-test-cexiopay.dev.kube
+      #   callback-master-test-cexiopay.dev.kube
+      domainPerfix: callback-
+      domainSuffix: -test-cexiopay.dev.kube
+      certSecretName: dev
+    paths:
+      "/v2/callback/cryptoproviders/pss-provider-wtf2/":
+        backendServiceName: processing
+        backendServicePort: 8084
+      "/ws/":
+        backendServiceName: processing
+        backendServicePort: 8086
+
+  DashboardLegacy2:
+    blue:
+      domain: dashboard-testnet.cryptopay.band
+      certSecretName: cryptopay-band
+    nonblue:
       # Make final domain "dashboard-<HelmReleaseName>-test-cexiopay.dev.kube" like a:
       #   dashboard-green-test-cexiopay.dev.kube
       #   dashboard-master-test-cexiopay.dev.kube
       domainPerfix: dashboard-
       domainSuffix: -test-cexiopay.dev.kube
       certSecretName: dev
-      nginxConfigurationSnippet: |
-        add_header Last-Modified $date_gmt;
-        add_header Cache-Control 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0';
-        if_modified_since off;
-        expires off;
-        etag off;
-      paths:
-        "/":
-          backendServiceName: dashboardlegacy2
-          backendServicePort: 8443
+    nginxConfigurationSnippet: |
+      add_header Last-Modified $date_gmt;
+      add_header Cache-Control 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0';
+      if_modified_since off;
+      expires off;
+      etag off;
+    paths:
+      "/":
+        backendServiceName: dashboardlegacy2
+        backendServicePort: 8443
+      "/v2/dashboard/":
+        backendServiceName: processing
+        backendServicePort: 8082
 
-    Echo:
+  Echo:
+    blue:
+      domain: echo.pay-cex-test.net
+      certSecretName: ingress-pay-cex-test-certificate
+    nonblue:
       # Make final domain "echo-<HelmReleaseName>-test-cexiopay.dev.kube" like a:
       #   echo-green-test-cexiopay.dev.kube
       #   echo-master-test-cexiopay.dev.kube
       domainPerfix: echo-
       domainSuffix: -test-cexiopay.dev.kube
       certSecretName: dev
-      backendInsecure: false
-      paths:
-        "/":
-          backendServiceName: echo
-          backendServicePort: 8443
+    backendInsecure: false
+    paths:
+      "/":
+        backendServiceName: echo
+        backendServicePort: 8443
 
-    Gate:
+  Gate:
+    blue:
+      domain: gate.pay-cex-test.net
+      certSecretName: ingress-pay-cex-test-certificate
+    nonblue:
       # Make final domain "gate-<HelmReleaseName>-test-cexiopay.dev.kube" like a:
       #   gate-green-test-cexiopay.dev.kube
       #   gate-master-test-cexiopay.dev.kube
       domainPerfix: gate-
       domainSuffix: -test-cexiopay.dev.kube
       certSecretName: dev
-      backendInsecure: false
-      nginxConfigurationSnippet: |
-        add_header Last-Modified $date_gmt;
-        add_header Cache-Control 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0';
-        if_modified_since off;
-        expires off;
-        etag off;
-      paths:
-        "/":
-          backendServiceName: processing
-          backendServicePort: 8085
+    backendInsecure: false
+    nginxConfigurationSnippet: |
+      add_header Last-Modified $date_gmt;
+      add_header Cache-Control 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0';
+      if_modified_since off;
+      expires off;
+      etag off;
+    paths:
+      "/":
+        backendServiceName: processing
+        backendServicePort: 8085
 
-    Identity:
+  Identity:
+    blue:
+      domain: id.pay-cex-test.net
+      certSecretName: ingress-pay-cex-test-certificate
+    nonblue:
       # Make final domain "id-<HelmReleaseName>-test-cexiopay.dev.kube" like a:
       #   id-green-test-cexiopay.dev.kube
       #   id-master-test-cexiopay.dev.kube
       domainPerfix: id-
       domainSuffix: -test-cexiopay.dev.kube
       certSecretName: dev
-      backendInsecure: false
-      paths:
-        "/":
-          backendServiceName: identity
-          backendServicePort: 8443
+    backendInsecure: false
+    paths:
+      "/":
+        backendServiceName: identity
+        backendServicePort: 8443
 
-    MessengerBridge:
+  MessengerBridge:
+    blue:
+      # THIS endpoint just for development purposes
+      domain: messengerbridge-test-cexiopay.dev.kube
+      certSecretName: dev
+    nonblue:
       # THIS endpoint just for development purposes
       # Make final domain "messengerbridge-<HelmReleaseName>-test-cexiopay.dev.kube" like a:
       #   messengerbridge-green-test-cexiopay.dev.kube
@@ -297,24 +229,28 @@ ingress:
       domainPerfix: messengerbridge-
       domainSuffix: -test-cexiopay.dev.kube
       certSecretName: dev
-      backendInsecure: false
-      paths:
-        "/":
-          backendServiceName: messengerbridge
-          backendServicePort: 8443
+    backendInsecure: false
+    paths:
+      "/":
+        backendServiceName: messengerbridge
+        backendServicePort: 8443
 
-    Welcome:
+  Welcome:
+    blue:
+      domain: pay-cex-test.net
+      certSecretName: ingress-pay-cex-test-certificate
+    nonblue:
       # Make final domain "<HelmReleaseName>-test-cexiopay.dev.kube" like a:
       #   green-test-cexiopay.dev.kube
       #   master-test-cexiopay.dev.kube
       domainPerfix: ""
       domainSuffix: test-cexiopay.dev.kube
       certSecretName: dev
-      backendInsecure: false
-      paths:
-        "/":
-          backendServiceName: processing
-          backendServicePort: 8083
-        "/widget-demo/":
-          backendServiceName: demo
-          backendServicePort: 8443
+    backendInsecure: false
+    paths:
+      "/":
+        backendServiceName: processing
+        backendServicePort: 8083
+      "/widget-demo/":
+        backendServiceName: demo
+        backendServicePort: 8443
