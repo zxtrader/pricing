@@ -74,7 +74,7 @@ ingress:
       #   api-green.prodcryptopay.kube
       domainPerfix: api-
       domainSuffix: .prodcryptopay.kube
-      certSecretName: ingress-wildcard-prodcryptopay-kube
+      certSecretName: wildcard-prodcryptopay-kube
     nginxConfigurationSnippet: |
       rewrite ^/$ /v2/time redirect;
     paths:
@@ -94,7 +94,7 @@ ingress:
       #   board-green.prodcryptopay.kube
       domainPerfix: board-
       domainSuffix: .prodcryptopay.kube
-      certSecretName: ingress-wildcard-prodcryptopay-kube
+      certSecretName: wildcard-prodcryptopay-kube
     backendInsecure: false
     nginxConfigurationSnippet: |
       add_header Last-Modified $date_gmt;
@@ -128,7 +128,7 @@ ingress:
       #   dashboard-green.prodcryptopay.kube
       domainPerfix: dashboard-
       domainSuffix: .prodcryptopay.kube
-      certSecretName: ingress-wildcard-prodcryptopay-kube
+      certSecretName: wildcard-prodcryptopay-kube
     nginxConfigurationSnippet: |
       add_header Last-Modified $date_gmt;
       add_header Cache-Control 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0';
@@ -152,7 +152,7 @@ ingress:
       #   gate-green.prodcryptopay.kube
       domainPerfix: gate-
       domainSuffix: .prodcryptopay.kube
-      certSecretName: ingress-wildcard-prodcryptopay-kube
+      certSecretName: wildcard-prodcryptopay-kube
     backendInsecure: false
     nginxConfigurationSnippet: |
       add_header Last-Modified $date_gmt;
@@ -183,7 +183,7 @@ ingress:
       #   id-green.prodcryptopay.kube
       domainPerfix: id-
       domainSuffix: .prodcryptopay.kube
-      certSecretName: ingress-wildcard-prodcryptopay-kube
+      certSecretName: wildcard-prodcryptopay-kube
     paths:
       "/":
         backendServiceName: identity
@@ -199,7 +199,7 @@ ingress:
       #   messengerbridge-green.prodcryptopay.kube
       domainPerfix: messengerbridge-
       domainSuffix: .prodcryptopay.kube
-      certSecretName: ingress-wildcard-prodcryptopay-kube
+      certSecretName: wildcard-prodcryptopay-kube
     paths:
       "/":
         backendServiceName: messengerbridge
