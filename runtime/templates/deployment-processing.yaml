@@ -71,15 +71,19 @@ spec:
           mountPath: /etc/cexiolabs/cexiopay/secrets/
           # The service will delete all files after read its. So need write access.
           readOnly: false
+{{ if ne .Values.zone "production" }}
         - name: secret-setup-files
           mountPath: /etc/cexiolabs/cexiopay/secrets-setup/
           # The service will delete all files after read its. So need write access.
           readOnly: false
+{{ end }}
         envFrom:
         - configMapRef:
             name: {{ template "prefix" . }}processing-envvars
+{{ if ne .Values.zone "production" }}
         - configMapRef:
             name: {{ template "prefix" . }}processing-envvars-setup
+{{ end }}
         env:
         - name: LOG_LEVEL
           value: info
@@ -117,9 +121,11 @@ spec:
       - name: secret-files
         secret:
           secretName: {{ template "prefix" . }}processing
+{{ if ne .Values.zone "production" }}
       - name: secret-setup-files
         secret:
           secretName: {{ template "prefix" . }}processing-setup
+{{ end }}
       - name: secret-certificate
         secret:
           secretName: {{ template "prefix" . }}processing-certificate
