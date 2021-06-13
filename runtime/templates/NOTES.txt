@@ -6,15 +6,20 @@ Application daemon should be up. Hopefully.
 
 {{ $rootScope := . }}
 {{- if .Values.ingress }}
-{{- if eq .Release.Name "blue" }}
-{{- range $key, $value := .Values.ingress.blue }}
-{{ $key }}: https://{{ $value.domain }}
+{{- range $key, $value := .Values.ingress }}
+{{- if eq $rootScope.Release.Name "blue" }}
+{{- if $value.blue }}
+{{ $key }}: https://{{ $value.blue.domain }}
 {{- end }}
 {{- end }}
-{{- if ne .Release.Name "blue" }}
-{{- range $key, $value := .Values.ingress.nonblue }}
-{{ $key }}: https://{{ $value.domainPerfix }}{{ $rootScope.Release.Name }}{{ $value.domainSuffix }}
+{{- end }}
+{{- range $key, $value := .Values.ingress }}
+{{- if ne $rootScope.Release.Name "blue" }}
+{{- if $value.nonblue }}
+{{ $key }}: https://{{ $value.nonblue.domainPerfix }}{{ $rootScope.Release.Name }}{{ $value.nonblue.domainSuffix }}
+{{- end }}
 {{- end }}
 {{- end }}
 {{- end }}
 
+Have a nice day! :)
