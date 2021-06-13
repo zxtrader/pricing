@@ -114,7 +114,7 @@ ingress:
   Callbacks:
     blue:
       domain: callback.prodcryptopay.kube
-      certSecretName: callback
+      certSecretName: wildcard-prodcryptopay-kube
     paths:
       "/v2/callback/cryptoproviders/pss-provider-wtf2/":
         backendServiceName: processing
@@ -197,7 +197,7 @@ ingress:
     # THIS temporary endpoint just for testing purposes
     blue:
       domain: messengerbridge.prodcryptopay.kube
-      certSecretName: callback
+      certSecretName: wildcard-prodcryptopay-kube
     nonblue:
       # Make final domain "messengerbridge-<HelmReleaseName>.prodcryptopay.kube" like a:
       #   messengerbridge-green.prodcryptopay.kube
