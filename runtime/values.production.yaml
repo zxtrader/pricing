@@ -67,14 +67,14 @@ ingress:
 
   API-Internal:
     blue:
-      domain: api-cexiopay.prodcryptopay.kube
+      domain: api.prodcryptopay.kube
       certSecretName: callback
     nonblue:
-      # Make final domain "api-<HelmReleaseName>-cexiopay.prodcryptopay.kube" like a:
-      #   api-green-cexiopay.prodcryptopay.kube
+      # Make final domain "api-<HelmReleaseName>.prodcryptopay.kube" like a:
+      #   api-green.prodcryptopay.kube
       domainPerfix: api-
-      domainSuffix: -cexiopay.prodcryptopay.kube
-      certSecretName: ingress-wildcard-prodcexd-kube
+      domainSuffix: .prodcryptopay.kube
+      certSecretName: ingress-wildcard-prodcryptopay-kube
     nginxConfigurationSnippet: |
       rewrite ^/$ /v2/time redirect;
     paths:
@@ -86,6 +86,25 @@ ingress:
         backendServicePort: 8085
       "/v3/":
         backendServiceName: api
+        backendServicePort: 8443
+
+  Board:
+    nonblue:
+      # Make final domain "board-<HelmReleaseName>.prodcryptopay.kube" like a:
+      #   board-green.prodcryptopay.kube
+      domainPerfix: board-
+      domainSuffix: .prodcryptopay.kube
+      certSecretName: ingress-wildcard-prodcryptopay-kube
+    backendInsecure: false
+    nginxConfigurationSnippet: |
+      add_header Last-Modified $date_gmt;
+      add_header Cache-Control 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0';
+      if_modified_since off;
+      expires off;
+      etag off;
+    paths:
+      "/":
+        backendServiceName: board
         backendServicePort: 8443
 
   Callbacks:
@@ -105,11 +124,11 @@ ingress:
       domain: dashboard.cryptopay.band
       certSecretName: ingress-gate-api-dashboard
     nonblue:
-      # Make final domain "dashboard-<HelmReleaseName>-cexiopay.prodcryptopay.kube" like a:
-      #   dashboard-green-cexiopay.prodcryptopay.kube
+      # Make final domain "dashboard-<HelmReleaseName>.prodcryptopay.kube" like a:
+      #   dashboard-green.prodcryptopay.kube
       domainPerfix: dashboard-
-      domainSuffix: -cexiopay.prodcryptopay.kube
-      certSecretName: ingress-wildcard-prodcexd-kube
+      domainSuffix: .prodcryptopay.kube
+      certSecretName: ingress-wildcard-prodcryptopay-kube
     nginxConfigurationSnippet: |
       add_header Last-Modified $date_gmt;
       add_header Cache-Control 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0';
@@ -119,7 +138,7 @@ ingress:
     paths:
       "/":
         backendServiceName: dashboardlegacy2
-        backendServicePort: 8445
+        backendServicePort: 8443
       "/v2/dashboard/":
         backendServiceName: processing
         backendServicePort: 8082
@@ -129,11 +148,11 @@ ingress:
       domain: gate.pay-cex.io
       certSecretName: ingress-pay-cex-certificate
     nonblue:
-      # Make final domain "gate-<HelmReleaseName>-cexiopay.prodcryptopay.kube" like a:
-      #   gate-green-cexiopay.prodcryptopay.kube
+      # Make final domain "gate-<HelmReleaseName>.prodcryptopay.kube" like a:
+      #   gate-green.prodcryptopay.kube
       domainPerfix: gate-
-      domainSuffix: -cexiopay.prodcryptopay.kube
-      certSecretName: ingress-wildcard-prodcexd-kube
+      domainSuffix: .prodcryptopay.kube
+      certSecretName: ingress-wildcard-prodcryptopay-kube
     backendInsecure: false
     nginxConfigurationSnippet: |
       add_header Last-Modified $date_gmt;
@@ -160,11 +179,11 @@ ingress:
       domain: id.pay-cex.io
       certSecretName: ingress-pay-cex-certificate
     nonblue:
-      # Make final domain "id-<HelmReleaseName>-cexiopay.prodcryptopay.kube" like a:
-      #   id-green-cexiopay.prodcryptopay.kube
+      # Make final domain "id-<HelmReleaseName>.prodcryptopay.kube" like a:
+      #   id-green.prodcryptopay.kube
       domainPerfix: id-
-      domainSuffix: -cexiopay.prodcryptopay.kube
-      certSecretName: ingress-wildcard-prodcexd-kube
+      domainSuffix: .prodcryptopay.kube
+      certSecretName: ingress-wildcard-prodcryptopay-kube
     paths:
       "/":
         backendServiceName: identity
@@ -173,14 +192,14 @@ ingress:
   MessengerBridge:
     # THIS temporary endpoint just for testing purposes
     blue:
-      domain: messengerbridge-cexiopay.prodcryptopay.kube
+      domain: messengerbridge.prodcryptopay.kube
       certSecretName: callback
     nonblue:
-      # Make final domain "messengerbridge-<HelmReleaseName>-cexiopay.prodcryptopay.kube" like a:
-      #   messengerbridge-green-cexiopay.prodcryptopay.kube
+      # Make final domain "messengerbridge-<HelmReleaseName>.prodcryptopay.kube" like a:
+      #   messengerbridge-green.prodcryptopay.kube
       domainPerfix: messengerbridge-
-      domainSuffix: -cexiopay.prodcryptopay.kube
-      certSecretName: ingress-wildcard-prodcexd-kube
+      domainSuffix: .prodcryptopay.kube
+      certSecretName: ingress-wildcard-prodcryptopay-kube
     paths:
       "/":
         backendServiceName: messengerbridge
