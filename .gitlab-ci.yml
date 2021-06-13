@@ -356,8 +356,8 @@ include:
     - "kubectl --namespace 'cryptopay' get --output=json ConfigMap/processing-files          | jq -r \".data\" | yq eval -P  > tmp/configmap-processing-files.yaml"
     - "kubectl --namespace 'cryptopay' get --output=json Secrets/api                         | jq -r \".data\" | yq eval -P  > tmp/secret-api.yaml"
     - "kubectl --namespace 'cryptopay' get --output=json Secrets/identity                    | jq -r \".data\" | yq eval -P  > tmp/secret-identity.yaml"
-    - "kubectl --namespace 'cryptopay' get --output=json Secrets/messengerbridge             | jq -r \".data\" | yq eval -P  > tmp/secret-messengerbridge.yaml"
-    - "kubectl --namespace 'cryptopay' get --output=json Secrets/processing                  | jq -r \".data\" | yq eval -P  > tmp/secret-processing.yaml"
+    - "kubectl --namespace 'cryptopay' get --output=json Secrets/messengerbridge             | jq -r \".data\" | yq eval -P | sed -i 's~/etc/cexiolabs/cryptopay/ssl/tls.~/etc/cexiolabs/cexiopay/ssl/tls.~g' > tmp/secret-messengerbridge.yaml"
+    - "kubectl --namespace 'cryptopay' get --output=json Secrets/processing                  | jq -r \".data\" | yq eval -P | sed -i 's/redis-processing/redis-processing.cryptopay/g' | sed -i 's/rabbitmq/rabbitmq.cryptopay/g'  > tmp/secret-processing.yaml"
     - "kubectl --namespace 'cryptopay' get --output=json Secrets/processing-setup            | jq -r \".data\" | yq eval -P  > tmp/secret-processing-setup.yaml"
     - helm --namespace "cexiopay" list
     - helm --namespace "cexiopay" upgrade --install --history-max 3 --values "values-base.yaml" --values "values.production.yaml" "blue" .
@@ -391,8 +391,8 @@ include:
     - "kubectl --namespace 'cryptopay' get --output=json ConfigMap/processing-files          | jq -r \".data\" | yq eval -P  > tmp/configmap-processing-files.yaml"
     - "kubectl --namespace 'cryptopay' get --output=json Secrets/api                         | jq -r \".data\" | yq eval -P  > tmp/secret-api.yaml"
     - "kubectl --namespace 'cryptopay' get --output=json Secrets/identity                    | jq -r \".data\" | yq eval -P  > tmp/secret-identity.yaml"
-    - "kubectl --namespace 'cryptopay' get --output=json Secrets/messengerbridge             | jq -r \".data\" | yq eval -P  > tmp/secret-messengerbridge.yaml"
-    - "kubectl --namespace 'cryptopay' get --output=json Secrets/processing                  | jq -r \".data\" | yq eval -P  > tmp/secret-processing.yaml"
+    - "kubectl --namespace 'cryptopay' get --output=json Secrets/messengerbridge             | jq -r \".data\" | yq eval -P | sed -i 's~/etc/cexiolabs/cryptopay/ssl/tls.~/etc/cexiolabs/cexiopay/ssl/tls.~g' > tmp/secret-messengerbridge.yaml"
+    - "kubectl --namespace 'cryptopay' get --output=json Secrets/processing                  | jq -r \".data\" | yq eval -P | sed -i 's/redis-processing/redis-processing.cryptopay/g' | sed -i 's/rabbitmq/rabbitmq.cryptopay/g'  > tmp/secret-processing.yaml"
     - "kubectl --namespace 'cryptopay' get --output=json Secrets/processing-setup            | jq -r \".data\" | yq eval -P  > tmp/secret-processing-setup.yaml"
     - helm --namespace "cexiopay" list
     - helm --namespace "cexiopay" upgrade --install --history-max 3 --values "values-base.yaml" --values "values.production.yaml" "green" .
