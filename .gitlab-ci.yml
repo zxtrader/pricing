@@ -3,7 +3,6 @@ variables:
   # IMAGE_HELM3: harbor.infra.kube/infra/helm:3
   IMAGE_HELM3: devdocker.infra.kube/cexiolabs/docker/helm3/snapshot:master.dcb37861
   IMAGE_KUBECTL: bitnami/kubectl:1.20.2
-  RUNTIME_RELEASE: blue # blue/green  (in DEV we are able to deploy from the branch, using branch name as RUNTIME_RELEASE)
 
 .functions: &functions |
   function verify_runtime_version_helm2() {
@@ -72,8 +71,8 @@ include:
     - "kubectl --namespace 'cexiopay-evolution-admin' get --output=json Secrets/processing                  | jq -r \".data\" | yq eval -P  > tmp/secret-processing.yaml"
     - "kubectl --namespace 'cexiopay-evolution-admin' get --output=json Secrets/processing-setup            | jq -r \".data\" | yq eval -P  > tmp/secret-processing-setup.yaml"
     - helm --namespace "cexiopay-evolution" list
-    - helm --namespace "cexiopay-evolution" upgrade --install --history-max 3 --values "values-base.yaml" --values "values.evolution.yaml" "${RUNTIME_RELEASE}" .
-    - helm --namespace "cexiopay-evolution" history "${RUNTIME_RELEASE}" --max=3
+    - helm --namespace "cexiopay-evolution" upgrade --install --history-max 3 --values "values-base.yaml" --values "values.evolution.yaml" "blue" .
+    - helm --namespace "cexiopay-evolution" history "blue" --max=3
   when: manual
   environment:
     name: evolution
@@ -94,9 +93,9 @@ include:
     - kube_config_setup
     - cd runtime
     - helm --namespace "cexiopay-evolution" list
-    - helm --namespace "cexiopay-evolution" history "${RUNTIME_RELEASE}" --max=3
-    - helm --namespace "cexiopay-evolution" rollback --recreate-pods "${RUNTIME_RELEASE}" 0
-    - helm --namespace "cexiopay-evolution" history "${RUNTIME_RELEASE}" --max=3
+    - helm --namespace "cexiopay-evolution" history "blue" --max=3
+    - helm --namespace "cexiopay-evolution" rollback --recreate-pods "blue" 0
+    - helm --namespace "cexiopay-evolution" history "blue" --max=3
   when: manual
   environment:
     name: evolution
@@ -105,7 +104,7 @@ include:
     refs:
       - tags
     variables:
-      - $CI_COMMIT_TAG =~ /-runtime$/ && $RUNTIME_RELEASE == "blue"
+      - $CI_COMMIT_TAG =~ /-runtime$/
 
 1EVO:delete:runtime:
   stage: delete
@@ -117,8 +116,8 @@ include:
     - kube_config_setup
     - cd runtime
     - helm --namespace "cexiopay-evolution" list
-    - helm --namespace "cexiopay-evolution" history "${RUNTIME_RELEASE}" --max=3
-    - helm --namespace "cexiopay-evolution" uninstall  "${RUNTIME_RELEASE}"
+    - helm --namespace "cexiopay-evolution" history "blue" --max=3
+    - helm --namespace "cexiopay-evolution" uninstall  "blue"
   when: manual
   environment:
     name: evolution
@@ -150,8 +149,8 @@ include:
     - "kubectl --namespace 'cexiopay-presentation-admin' get --output=json Secrets/processing                  | jq -r \".data\" | yq eval -P  > tmp/secret-processing.yaml"
     - "kubectl --namespace 'cexiopay-presentation-admin' get --output=json Secrets/processing-setup            | jq -r \".data\" | yq eval -P  > tmp/secret-processing-setup.yaml"
     - helm --namespace "cexiopay-presentation" list
-    - helm --namespace "cexiopay-presentation" upgrade --install --history-max 3 --values "values-base.yaml" --values "values.presentation.yaml" "${RUNTIME_RELEASE}" .
-    - helm --namespace "cexiopay-presentation" history "${RUNTIME_RELEASE}" --max=3
+    - helm --namespace "cexiopay-presentation" upgrade --install --history-max 3 --values "values-base.yaml" --values "values.presentation.yaml" "blue" .
+    - helm --namespace "cexiopay-presentation" history "blue" --max=3
   when: manual
   environment:
     name: presentation
@@ -172,9 +171,9 @@ include:
     - kube_config_setup
     - cd runtime
     - helm --namespace "cexiopay-presentation" list
-    - helm --namespace "cexiopay-presentation" history "${RUNTIME_RELEASE}" --max=3
-    - helm --namespace "cexiopay-presentation" rollback --recreate-pods "${RUNTIME_RELEASE}" 0
-    - helm --namespace "cexiopay-presentation" history "${RUNTIME_RELEASE}" --max=3
+    - helm --namespace "cexiopay-presentation" history "blue" --max=3
+    - helm --namespace "cexiopay-presentation" rollback --recreate-pods "blue" 0
+    - helm --namespace "cexiopay-presentation" history "blue" --max=3
   when: manual
   environment:
     name: presentation
@@ -183,7 +182,7 @@ include:
     refs:
       - tags
     variables:
-      - $CI_COMMIT_TAG =~ /-runtime$/ && $RUNTIME_RELEASE == "blue"
+      - $CI_COMMIT_TAG =~ /-runtime$/
 
 2PRSN:delete:runtime:
   stage: delete
@@ -195,8 +194,8 @@ include:
     - kube_config_setup
     - cd runtime
     - helm --namespace "cexiopay-presentation" list
-    - helm --namespace "cexiopay-presentation" history "${RUNTIME_RELEASE}" --max=3
-    - helm --namespace "cexiopay-presentation" uninstall  "${RUNTIME_RELEASE}"
+    - helm --namespace "cexiopay-presentation" history "blue" --max=3
+    - helm --namespace "cexiopay-presentation" uninstall  "blue"
   when: manual
   environment:
     name: presentation
@@ -207,7 +206,7 @@ include:
     variables:
       - $CI_COMMIT_TAG =~ /-runtime$/
 
-3TEST:install:runtime:
+3TEST:blue:install:runtime:
   stage: deploy
   image:
     name: ${IMAGE_HELM3}
@@ -228,8 +227,8 @@ include:
     - "kubectl --namespace 'cexiopay-test-admin' get --output=json Secrets/processing                  | jq -r \".data\" | yq eval -P  > tmp/secret-processing.yaml"
     - "kubectl --namespace 'cexiopay-test-admin' get --output=json Secrets/processing-setup            | jq -r \".data\" | yq eval -P  > tmp/secret-processing-setup.yaml"
     - helm --namespace "cexiopay-test" list
-    - helm --namespace "cexiopay-test" upgrade --install --history-max 3 --values "values-base.yaml" --values "values.test.yaml" "${RUNTIME_RELEASE}" .
-    - helm --namespace "cexiopay-test" history "${RUNTIME_RELEASE}" --max=3
+    - helm --namespace "cexiopay-test" upgrade --install --history-max 3 --values "values-base.yaml" --values "values.test.yaml" "blue" .
+    - helm --namespace "cexiopay-test" history "blue" --max=3
   when: manual
   environment:
     name: test
@@ -240,7 +239,40 @@ include:
     variables:
       - $CI_COMMIT_TAG =~ /-runtime$/
 
-3TEST:rollback:runtime:
+3TEST:green:install:runtime:
+  stage: deploy
+  image:
+    name: ${IMAGE_HELM3}
+    entrypoint: [""]
+  script:
+    - verify_runtime_version_helm3
+    - kube_config_setup
+    - cd runtime
+    - mkdir tmp
+    - "kubectl --namespace 'cexiopay-test-admin' get --output=json ConfigMap/cpservice                 | jq -r \".data\" | yq eval -P  > tmp/configmap-cpservice.yaml"
+    - "kubectl --namespace 'cexiopay-test-admin' get --output=json ConfigMap/messengerbridge-files     | jq -r \".data\" | yq eval -P  > tmp/configmap-messengerbridge.yaml"
+    - "kubectl --namespace 'cexiopay-test-admin' get --output=json ConfigMap/processing-envvars-setup  | jq -r \".data\" | yq eval -P  > tmp/configmap-processing-envvars-setup.yaml"
+    - "kubectl --namespace 'cexiopay-test-admin' get --output=json ConfigMap/processing-envvars        | jq -r \".data\" | yq eval -P  > tmp/configmap-processing-envvars.yaml"
+    - "kubectl --namespace 'cexiopay-test-admin' get --output=json ConfigMap/processing-files          | jq -r \".data\" | yq eval -P  > tmp/configmap-processing-files.yaml"
+    - "kubectl --namespace 'cexiopay-test-admin' get --output=json Secrets/api                         | jq -r \".data\" | yq eval -P  > tmp/secret-api.yaml"
+    - "kubectl --namespace 'cexiopay-test-admin' get --output=json Secrets/identity                    | jq -r \".data\" | yq eval -P  > tmp/secret-identity.yaml"
+    - "kubectl --namespace 'cexiopay-test-admin' get --output=json Secrets/messengerbridge             | jq -r \".data\" | yq eval -P  > tmp/secret-messengerbridge.yaml"
+    - "kubectl --namespace 'cexiopay-test-admin' get --output=json Secrets/processing                  | jq -r \".data\" | yq eval -P  > tmp/secret-processing.yaml"
+    - "kubectl --namespace 'cexiopay-test-admin' get --output=json Secrets/processing-setup            | jq -r \".data\" | yq eval -P  > tmp/secret-processing-setup.yaml"
+    - helm --namespace "cexiopay-test" list
+    - helm --namespace "cexiopay-test" upgrade --install --history-max 3 --values "values-base.yaml" --values "values.test.yaml" "green" .
+    - helm --namespace "cexiopay-test" history "green" --max=3
+  when: manual
+  environment:
+    name: test
+    url: https://board.pay-cex-test.net/
+  only:
+    refs:
+      - tags
+    variables:
+      - $CI_COMMIT_TAG =~ /-runtime$/
+
+3TEST:blue:rollback:runtime:
   stage: rollback
   image:
     name: ${IMAGE_HELM3}
@@ -250,31 +282,9 @@ include:
     - kube_config_setup
     - cd runtime
     - helm --namespace "cexiopay-test" list
-    - helm --namespace "cexiopay-test" history "${RUNTIME_RELEASE}" --max=3
-    - helm --namespace "cexiopay-test" rollback --recreate-pods "${RUNTIME_RELEASE}" 0
-    - helm --namespace "cexiopay-test" history "${RUNTIME_RELEASE}" --max=3
-  when: manual
-  environment:
-    name: test
-    url: https://board.pay-cex-test.net/
-  only:
-    refs:
-      - tags
-    variables:
-      - $CI_COMMIT_TAG =~ /-runtime$/ && $RUNTIME_RELEASE == "blue"
-
-3TEST:delete:runtime:
-  stage: delete
-  image:
-    name: ${IMAGE_HELM3}
-    entrypoint: [""]
-  script:
-    - verify_runtime_version_helm3
-    - kube_config_setup
-    - cd runtime
-    - helm --namespace "cexiopay-test" list
-    - helm --namespace "cexiopay-test" history "${RUNTIME_RELEASE}" --max=3
-    - helm --namespace "cexiopay-test" uninstall  "${RUNTIME_RELEASE}"
+    - helm --namespace "cexiopay-test" history "blue" --max=3
+    - helm --namespace "cexiopay-test" rollback --recreate-pods "blue" 0
+    - helm --namespace "cexiopay-test" history "blue" --max=3
   when: manual
   environment:
     name: test
@@ -285,7 +295,51 @@ include:
     variables:
       - $CI_COMMIT_TAG =~ /-runtime$/
 
-4PROD:install:runtime:
+3TEST:blue:delete:runtime:
+  stage: delete
+  image:
+    name: ${IMAGE_HELM3}
+    entrypoint: [""]
+  script:
+    - verify_runtime_version_helm3
+    - kube_config_setup
+    - cd runtime
+    - helm --namespace "cexiopay-test" list
+    - helm --namespace "cexiopay-test" history "blue" --max=3
+    - helm --namespace "cexiopay-test" uninstall  "blue"
+  when: manual
+  environment:
+    name: test
+    url: https://board.pay-cex-test.net/
+  only:
+    refs:
+      - tags
+    variables:
+      - $CI_COMMIT_TAG =~ /-runtime$/
+
+3TEST:green:delete:runtime:
+  stage: delete
+  image:
+    name: ${IMAGE_HELM3}
+    entrypoint: [""]
+  script:
+    - verify_runtime_version_helm3
+    - kube_config_setup
+    - cd runtime
+    - helm --namespace "cexiopay-test" list
+    - helm --namespace "cexiopay-test" history "green" --max=3
+    - helm --namespace "cexiopay-test" uninstall  "green"
+  when: manual
+  environment:
+    name: test
+    url: https://board.pay-cex-test.net/
+  only:
+    refs:
+      - tags
+    variables:
+      - $CI_COMMIT_TAG =~ /-runtime$/
+
+4PROD:blue:install:runtime:
   stage: deploy
   image:
     name: ${IMAGE_HELM3}
@@ -306,8 +360,8 @@ include:
     - "kubectl --namespace 'cryptopay' get --output=json Secrets/processing                  | jq -r \".data\" | yq eval -P  > tmp/secret-processing.yaml"
     - "kubectl --namespace 'cryptopay' get --output=json Secrets/processing-setup            | jq -r \".data\" | yq eval -P  > tmp/secret-processing-setup.yaml"
     - helm --namespace "cexiopay" list
-    - helm --namespace "cexiopay" upgrade --install --history-max 3 --values "values-base.yaml" --values "values.production.yaml" "${RUNTIME_RELEASE}" .
-    - helm --namespace "cexiopay" history "${RUNTIME_RELEASE}" --max=3
+    - helm --namespace "cexiopay" upgrade --install --history-max 3 --values "values-base.yaml" --values "values.production.yaml" "blue" .
+    - helm --namespace "cexiopay" history "blue" --max=3
   when: manual
   environment:
     name: production
@@ -318,9 +372,44 @@ include:
     refs:
       - tags
     variables:
-      - $CI_COMMIT_TAG =~ /-runtime$/ && ($RUNTIME_RELEASE == "blue" || $RUNTIME_RELEASE == "green")
+      - $CI_COMMIT_TAG =~ /-runtime$/
 
-4PROD:rollback:runtime:
+4PROD:green:install:runtime:
+  stage: deploy
+  image:
+    name: ${IMAGE_HELM3}
+    entrypoint: [""]
+  script:
+    - verify_runtime_version_helm3
+    - kube_config_setup
+    - cd runtime
+    - mkdir tmp
+    - "kubectl --namespace 'cryptopay' get --output=json ConfigMap/cpservice                 | jq -r \".data\" | yq eval -P  > tmp/configmap-cpservice.yaml"
+    - "kubectl --namespace 'cryptopay' get --output=json ConfigMap/messengerbridge-files     | jq -r \".data\" | yq eval -P  > tmp/configmap-messengerbridge.yaml"
+    - "kubectl --namespace 'cryptopay' get --output=json ConfigMap/processing-envvars-setup  | jq -r \".data\" | yq eval -P  > tmp/configmap-processing-envvars-setup.yaml"
+    - "kubectl --namespace 'cryptopay' get --output=json ConfigMap/processing-envvars        | jq -r \".data\" | yq eval -P  > tmp/configmap-processing-envvars.yaml"
+    - "kubectl --namespace 'cryptopay' get --output=json ConfigMap/processing-files          | jq -r \".data\" | yq eval -P  > tmp/configmap-processing-files.yaml"
+    - "kubectl --namespace 'cryptopay' get --output=json Secrets/api                         | jq -r \".data\" | yq eval -P  > tmp/secret-api.yaml"
+    - "kubectl --namespace 'cryptopay' get --output=json Secrets/identity                    | jq -r \".data\" | yq eval -P  > tmp/secret-identity.yaml"
+    - "kubectl --namespace 'cryptopay' get --output=json Secrets/messengerbridge             | jq -r \".data\" | yq eval -P  > tmp/secret-messengerbridge.yaml"
+    - "kubectl --namespace 'cryptopay' get --output=json Secrets/processing                  | jq -r \".data\" | yq eval -P  > tmp/secret-processing.yaml"
+    - "kubectl --namespace 'cryptopay' get --output=json Secrets/processing-setup            | jq -r \".data\" | yq eval -P  > tmp/secret-processing-setup.yaml"
+    - helm --namespace "cexiopay" list
+    - helm --namespace "cexiopay" upgrade --install --history-max 3 --values "values-base.yaml" --values "values.production.yaml" "green" .
+    - helm --namespace "cexiopay" history "green" --max=3
+  when: manual
+  environment:
+    name: production
+    url: https://pay-cex.io/
+  tags:
+    - crtpdpl
+  only:
+    refs:
+      - tags
+    variables:
+      - $CI_COMMIT_TAG =~ /-runtime$/
+
+4PROD:blue:rollback:runtime:
   stage: rollback
   image:
     name: ${IMAGE_HELM3}
@@ -330,9 +419,9 @@ include:
     - kube_config_setup
     - cd runtime
     - helm --namespace "cexiopay" list
-    - helm --namespace "cexiopay" history "${RUNTIME_RELEASE}" --max=3
-    - helm --namespace "cexiopay" rollback --recreate-pods "${RUNTIME_RELEASE}" 0
-    - helm --namespace "cexiopay" history "${RUNTIME_RELEASE}" --max=3
+    - helm --namespace "cexiopay" history "blue" --max=3
+    - helm --namespace "cexiopay" rollback --recreate-pods "blue" 0
+    - helm --namespace "cexiopay" history "blue" --max=3
   when: manual
   environment:
     name: production
@@ -343,9 +432,9 @@ include:
     refs:
       - tags
     variables:
-      - $CI_COMMIT_TAG =~ /-runtime$/ && $RUNTIME_RELEASE == "blue"
+      - $CI_COMMIT_TAG =~ /-runtime$/
 
-4PROD:delete:runtime:
+4PROD:blue:delete:runtime:
   stage: delete
   image:
     name: ${IMAGE_HELM3}
@@ -355,8 +444,8 @@ include:
     - kube_config_setup
     - cd runtime
     - helm --namespace "cexiopay" list
-    - helm --namespace "cexiopay" history "${RUNTIME_RELEASE}" --max=3
-    - helm --namespace "cexiopay" uninstall  "${RUNTIME_RELEASE}"
+    - helm --namespace "cexiopay" history "blue" --max=3
+    - helm --namespace "cexiopay" uninstall  "blue"
   when: manual
   environment:
     name: production
@@ -367,216 +456,34 @@ include:
     refs:
       - tags
     variables:
-      - $CI_COMMIT_TAG =~ /-runtime$/ && ($RUNTIME_RELEASE == "blue" || $RUNTIME_RELEASE == "green")
+      - $CI_COMMIT_TAG =~ /-runtime$/
+
+4PROD:green:delete:runtime:
+  stage: delete
+  image:
+    name: ${IMAGE_HELM3}
+    entrypoint: [""]
+  script:
+    - verify_runtime_version_helm3
+    - kube_config_setup
+    - cd runtime
+    - helm --namespace "cexiopay" list
+    - helm --namespace "cexiopay" history "green" --max=3
+    - helm --namespace "cexiopay" uninstall  "green"
+  when: manual
+  environment:
+    name: production
+    url: https://pay-cex.io/
+  tags:
+    - crtpdpl
+  only:
+    refs:
+      - tags
+    variables:
+      - $CI_COMMIT_TAG =~ /-runtime$/
 
 
-# HELM 2 Runtime deployment TAGs
-# Helm2:1EVO:install:runtime:
-#   stage: deploy
-#   image:
-#     name: ${IMAGE_HELM2}
-#     entrypoint: [""]
-#   script:
-#     - verify_runtime_version_helm2
-#     - kube_config_setup
-#     - cd runtime
-#     - helm --tiller-namespace "cexiopay-evolution" list
-#     - helm --tiller-namespace "cexiopay-evolution" upgrade --install --namespace "cexiopay-evolution"  --values "values-base.yaml" --values "values.evolution.yaml" "${RUNTIME_RELEASE}" .
-#     - helm --tiller-namespace "cexiopay-evolution" history "${RUNTIME_RELEASE}" --max=3
-#   when: manual
-#   environment:
-#     name: evolution
-#     url: https://evolution-cexiopay.dev.kube
-#   only:
-#     refs:
-#       - tags
-#     variables:
-#       - $CI_COMMIT_TAG =~ /-runtime-helm2$/
 
-# Helm2:1EVO:rollback:runtime:
-#   stage: rollback
-#   image:
-#     name: ${IMAGE_HELM2}
-#     entrypoint: [""]
-#   script:
-#     - verify_runtime_version_helm2
-#     - kube_config_setup
-#     - cd runtime
-#     - helm --tiller-namespace "cexiopay-evolution" list
-#     - helm --tiller-namespace "cexiopay-evolution" history "${RUNTIME_RELEASE}" --max=3
-#     - helm --tiller-namespace "cexiopay-evolution" rollback --recreate-pods "${RUNTIME_RELEASE}" 0
-#     - helm --tiller-namespace "cexiopay-evolution" history "${RUNTIME_RELEASE}" --max=3
-#   when: manual
-#   environment:
-#     name: evolution
-#     url: https://evolution-cexiopay.dev.kube
-#   only:
-#     refs:
-#       - tags
-#     variables:
-#       - $CI_COMMIT_TAG =~ /-runtime-helm2$/
-
-# Helm2:1EVO:delete:runtime:
-#   stage: delete
-#   image:
-#     name: ${IMAGE_HELM2}
-#     entrypoint: [""]
-#   script:
-#     - verify_runtime_version_helm2
-#     - kube_config_setup
-#     - cd runtime
-#     - helm --tiller-namespace "cexiopay-evolution" list
-#     - helm --tiller-namespace "cexiopay-evolution" history "${RUNTIME_RELEASE}" --max=3
-#     - helm --tiller-namespace "cexiopay-evolution" delete --purge "${RUNTIME_RELEASE}"
-#   when: manual
-#   environment:
-#     name: evolution
-#     url: https://evolution-cexiopay.dev.kube
-#   only:
-#     refs:
-#       - tags
-#     variables:
-#       - $CI_COMMIT_TAG =~ /-runtime-helm2$/
-
-# Helm2:2PRSN:install:runtime:
-#   stage: deploy
-#   image:
-#     name: ${IMAGE_HELM2}
-#     entrypoint: [""]
-#   script:
-#     - verify_runtime_version_helm2
-#     - kube_config_setup
-#     - cd runtime
-#     - helm --tiller-namespace "cexiopay-presentation" list
-#     - helm --tiller-namespace "cexiopay-presentation" upgrade --install --namespace "cexiopay-presentation"  --values "values-base.yaml" --values "values.presentation.yaml" "${RUNTIME_RELEASE}" .
-#     - helm --tiller-namespace "cexiopay-presentation" history "${RUNTIME_RELEASE}" --max=3
-#   when: manual
-#   environment:
-#     name: presentation
-#     url: https://presentation-cexiopay.dev.kube
-#   only:
-#     refs:
-#       - tags
-#     variables:
-#       - $CI_COMMIT_TAG =~ /-runtime-helm2$/
-
-# Helm2:2PRSN:rollback:runtime:
-#   stage: rollback
-#   image:
-#     name: ${IMAGE_HELM2}
-#     entrypoint: [""]
-#   script:
-#     - verify_runtime_version_helm2
-#     - kube_config_setup
-#     - cd runtime
-#     - helm --tiller-namespace "cexiopay-presentation" list
-#     - helm --tiller-namespace "cexiopay-presentation" history "${RUNTIME_RELEASE}" --max=3
-#     - helm --tiller-namespace "cexiopay-presentation" rollback --recreate-pods "${RUNTIME_RELEASE}" 0
-#     - helm --tiller-namespace "cexiopay-presentation" history "${RUNTIME_RELEASE}" --max=3
-#   when: manual
-#   environment:
-#     name: presentation
-#     url: https://presentation-cexiopay.dev.kube
-#   only:
-#     refs:
-#       - tags
-#     variables:
-#       - $CI_COMMIT_TAG =~ /-runtime-helm2$/
-
-# Helm2:2PRSN:delete:runtime:
-#   stage: delete
-#   image:
-#     name: ${IMAGE_HELM2}
-#     entrypoint: [""]
-#   script:
-#     - verify_runtime_version_helm2
-#     - kube_config_setup
-#     - cd runtime
-#     - helm --tiller-namespace "cexiopay-presentation" list
-#     - helm --tiller-namespace "cexiopay-presentation" history "${RUNTIME_RELEASE}" --max=3
-#     - helm --tiller-namespace "cexiopay-presentation" delete --purge "${RUNTIME_RELEASE}"
-#   when: manual
-#   environment:
-#     name: presentation
-#     url: https://presentation-cexiopay.dev.kube
-#   only:
-#     refs:
-#       - tags
-#     variables:
-#       - $CI_COMMIT_TAG =~ /-runtime-helm2$/
-
-# Helm2:4PROD:install:runtime:
-#   stage: deploy
-#   image:
-#     name: ${IMAGE_HELM2}
-#     entrypoint: [""]
-#   script:
-#     - verify_runtime_version_helm2
-#     - kube_config_setup
-#     - cd runtime
-#     - helm --tiller-namespace "cexiopay" list
-#     - helm --tiller-namespace "cexiopay" upgrade --install --namespace "cexiopay"  --values "values-base.yaml" --values "values.production.yaml" "${RUNTIME_RELEASE}" .
-#     - helm --tiller-namespace "cexiopay" history "${RUNTIME_RELEASE}" --max=3
-#   when: manual
-#   environment:
-#     name: production
-#     url: https://pay-cex.io/
-#   tags:
-#     - crtpdpl
-#   only:
-#     refs:
-#       - tags
-#     variables:
-#       - $CI_COMMIT_TAG =~ /-runtime-helm2$/
-
-# Helm2:4PROD:rollback:runtime:
-#   stage: rollback
-#   image:
-#     name: ${IMAGE_HELM2}
-#     entrypoint: [""]
-#   script:
-#     - verify_runtime_version_helm2
-#     - kube_config_setup
-#     - cd runtime
-#     - helm --tiller-namespace "cexiopay" list
-#     - helm --tiller-namespace "cexiopay" history "${RUNTIME_RELEASE}" --max=3
-#     - helm --tiller-namespace "cexiopay" rollback --recreate-pods "${RUNTIME_RELEASE}" 0
-#     - helm --tiller-namespace "cexiopay" history "${RUNTIME_RELEASE}" --max=3
-#   when: manual
-#   environment:
-#     name: production
-#     url: https://pay-cex.io/
-#   tags:
-#     - crtpdpl
-#   only:
-#     refs:
-#       - tags
-#     variables:
-#       - $CI_COMMIT_TAG =~ /-runtime-helm2$/
-
-# Helm2:4PROD:delete:runtime:
-#   stage: delete
-#   image:
-#     name: ${IMAGE_HELM2}
-#     entrypoint: [""]
-#   script:
-#     - verify_runtime_version_helm2
-#     - kube_config_setup
-#     - cd runtime
-#     - helm --tiller-namespace "cexiopay" list
-#     - helm --tiller-namespace "cexiopay" history "${RUNTIME_RELEASE}" --max=3
-#     - helm --tiller-namespace "cexiopay" delete --purge "${RUNTIME_RELEASE}"
-#   when: manual
-#   environment:
-#     name: production
-#     url: https://pay-cex.io/
-#   tags:
-#     - crtpdpl
-#   only:
-#     refs:
-#       - tags
-#     variables:
-#       - $CI_COMMIT_TAG =~ /-runtime-helm2$/
 
 #
 #
