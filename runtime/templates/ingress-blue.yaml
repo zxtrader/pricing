@@ -31,7 +31,7 @@ spec:
     - hosts:
         - "{{ $value.blue.domain }}"
 {{ if $value.blue.certSecretName }}
-      secretName: "{{ $value.bluecertSecretName }}"
+      secretName: "{{ $value.blue.certSecretName }}"
 {{ end }}
   rules:
     - host: "{{ $value.blue.domain }}"
