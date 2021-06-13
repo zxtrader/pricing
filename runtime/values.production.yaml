@@ -124,36 +124,36 @@ ingress:
         backendServiceName: processing
         backendServicePort: 8082
 
-   Gate:
-    blue:
-      domain: gate.pay-cex.io
-      certSecretName: ingress-pay-cex-certificate
-    nonblue:
-      # Make final domain "gate-<HelmReleaseName>-cexiopay.prodcryptopay.kube" like a:
-      #   gate-green-cexiopay.prodcryptopay.kube
-      domainPerfix: gate-
-      domainSuffix: -cexiopay.prodcryptopay.kube
-      certSecretName: ingress-wildcard-prodcexd-kube
-    backendInsecure: false
-    nginxConfigurationSnippet: |
-      add_header Last-Modified $date_gmt;
-      add_header Cache-Control 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0';
-      if_modified_since off;
-      expires off;
-      etag off;
-    paths:
-      "/":
-        backendServiceName: processing
-        backendServicePort: 8085
-  #     "/":
-  #       backendServiceName: gateuiserve
-  #       backendServicePort: 8080
-  #     "/v2/gate/":
-  #       backendServiceName: processing
-  #       backendServicePort: 8085
-  #     "/v2/gate-callback/":
-  #       backendServiceName: processing
-  #       backendServicePort: 8085
+  Gate:
+  blue:
+    domain: gate.pay-cex.io
+    certSecretName: ingress-pay-cex-certificate
+  nonblue:
+    # Make final domain "gate-<HelmReleaseName>-cexiopay.prodcryptopay.kube" like a:
+    #   gate-green-cexiopay.prodcryptopay.kube
+    domainPerfix: gate-
+    domainSuffix: -cexiopay.prodcryptopay.kube
+    certSecretName: ingress-wildcard-prodcexd-kube
+  backendInsecure: false
+  nginxConfigurationSnippet: |
+    add_header Last-Modified $date_gmt;
+    add_header Cache-Control 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0';
+    if_modified_since off;
+    expires off;
+    etag off;
+  paths:
+    "/":
+      backendServiceName: processing
+      backendServicePort: 8085
+#     "/":
+#       backendServiceName: gateuiserve
+#       backendServicePort: 8080
+#     "/v2/gate/":
+#       backendServiceName: processing
+#       backendServicePort: 8085
+#     "/v2/gate-callback/":
+#       backendServiceName: processing
+#       backendServicePort: 8085
 
   Identity:
     blue:
