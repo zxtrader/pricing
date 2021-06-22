@@ -512,7 +512,7 @@ include:
     - echo "$KUBECONF_BASE64" | base64 -d > "${KUBECONFIG}"
     - DATABASE_IMAGE_TAG=$(grep -e '^DATABASE_IMAGE_TAG:' migration/MANIFEST | cut -d ':' -f 2 | tr -d '[:space:]')
     - INSTALL_VERSION=$(grep -e '^INSTALL_VERSION:' migration/MANIFEST | cut -d ':' -f 2 | tr -d '[:space:]')
-    - ./migration/migration-exec.sh --kube-namespace=cexiopay-evolution --kube-admin-namespace=cexiopay-evolution-admin --image=harbor.infra.kube/cexiopay/database-evolution --tag="${DATABASE_IMAGE_TAG}" --target-version="${INSTALL_VERSION}" --install
+    - ./migration/migration-exec.sh --kube-context=evolution --kube-namespace=cexiopay-evolution --kube-admin-namespace=cexiopay-evolution-admin --image=harbor.infra.kube/cexiopay/database-evolution --tag="${DATABASE_IMAGE_TAG}" --target-version="${INSTALL_VERSION}" --install
   when: manual
   environment:
     name: evolution
@@ -534,7 +534,7 @@ include:
     - echo "$KUBECONF_BASE64" | base64 -d > "${KUBECONFIG}"
     - DATABASE_IMAGE_TAG=$(grep -e '^DATABASE_IMAGE_TAG:' migration/MANIFEST | cut -d ':' -f 2 | tr -d '[:space:]')
     - ROLLBACK_VERSION=$(grep -e '^ROLLBACK_VERSION:' migration/MANIFEST | cut -d ':' -f 2 | tr -d '[:space:]')
-    - ./migration/migration-exec.sh --kube-namespace=cexiopay-evolution --kube-admin-namespace=cexiopay-evolution-admin --image=harbor.infra.kube/cexiopay/database-evolution --tag="${DATABASE_IMAGE_TAG}" --target-version="${ROLLBACK_VERSION}" --rollback
+    - ./migration/migration-exec.sh --kube-context=evolution --kube-namespace=cexiopay-evolution --kube-admin-namespace=cexiopay-evolution-admin --image=harbor.infra.kube/cexiopay/database-evolution --tag="${DATABASE_IMAGE_TAG}" --target-version="${ROLLBACK_VERSION}" --rollback
   when: manual
   environment:
     name: evolution
@@ -556,7 +556,7 @@ include:
     - echo "$KUBECONF_BASE64" | base64 -d > "${KUBECONFIG}"
     - DATABASE_IMAGE_TAG=$(grep -e '^DATABASE_IMAGE_TAG:' migration/MANIFEST | cut -d ':' -f 2 | tr -d '[:space:]')
     - INSTALL_VERSION=$(grep -e '^INSTALL_VERSION:' migration/MANIFEST | cut -d ':' -f 2 | tr -d '[:space:]')
-    - ./migration/migration-exec.sh --kube-namespace=cexiopay-presentation --kube-admin-namespace=cexiopay-presentation-admin --image=harbor.infra.kube/cexiopay/database-presentation --tag="${DATABASE_IMAGE_TAG}" --target-version="${INSTALL_VERSION}" --install
+    - ./migration/migration-exec.sh --kube-context=presentation --kube-namespace=cexiopay-presentation --kube-admin-namespace=cexiopay-presentation-admin --image=harbor.infra.kube/cexiopay/database-presentation --tag="${DATABASE_IMAGE_TAG}" --target-version="${INSTALL_VERSION}" --install
   when: manual
   environment:
     name: presentation
@@ -578,7 +578,7 @@ include:
     - echo "$KUBECONF_BASE64" | base64 -d > "${KUBECONFIG}"
     - DATABASE_IMAGE_TAG=$(grep -e '^DATABASE_IMAGE_TAG:' migration/MANIFEST | cut -d ':' -f 2 | tr -d '[:space:]')
     - ROLLBACK_VERSION=$(grep -e '^ROLLBACK_VERSION:' migration/MANIFEST | cut -d ':' -f 2 | tr -d '[:space:]')
-    - ./migration/migration-exec.sh --kube-namespace=cexiopay-presentation --kube-admin-namespace=cexiopay-presentation-admin --image=harbor.infra.kube/cexiopay/database-presentation --tag="${DATABASE_IMAGE_TAG}" --target-version="${ROLLBACK_VERSION}" --rollback
+    - ./migration/migration-exec.sh --kube-context=presentation --kube-namespace=cexiopay-presentation --kube-admin-namespace=cexiopay-presentation-admin --image=harbor.infra.kube/cexiopay/database-presentation --tag="${DATABASE_IMAGE_TAG}" --target-version="${ROLLBACK_VERSION}" --rollback
   when: manual
   environment:
     name: presentation
@@ -623,7 +623,6 @@ include:
     - DATABASE_IMAGE_TAG=$(grep -e '^DATABASE_IMAGE_TAG:' migration/MANIFEST | cut -d ':' -f 2 | tr -d '[:space:]')
     - ROLLBACK_VERSION=$(grep -e '^ROLLBACK_VERSION:' migration/MANIFEST | cut -d ':' -f 2 | tr -d '[:space:]')
     - ./migration/migration-exec.sh --kube-context=test --kube-namespace=cexiopay-test --kube-admin-namespace=cexiopay-test-admin --image=harbor.infra.kube/cexiopay/database-test --tag="${DATABASE_IMAGE_TAG}" --target-version="${ROLLBACK_VERSION}" --rollback
-    - ./migration/migration-exec.sh --kube-context=test --image=harbor.infra.kube/cexiopay/database-test --tag="$(echo $CI_COMMIT_TAG | rev | cut -d- -f2- | rev)" --rollback
   when: manual
   environment:
     name: test
