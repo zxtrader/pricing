@@ -60,6 +60,7 @@ Tag name format: `<RELEASE_TAG>-database`
 1. Создаем тег в таком формате, создаст pipeline с набором задач для деплоймента базы версии `RELEASE_TAG`.
 	Например:
 	* [20210622-00-database](https://gitlab.wnb:28443/cexiopay/devops/kubernetes-deployment/-/tags/20210622-00-database)
+	* [20210622-01-database](https://gitlab.wnb:28443/cexiopay/devops/kubernetes-deployment/-/tags/20210622-01-database)
 	* etc
 	NOTE! Перед созданием тега, вы должны убедиться, что [релизные контейнеры](https://gitlab.wnb:28443/cexiopay/database/pipelines) с версией [`DATABASE_IMAGE_TAG`](https://gitlab.wnb:28443/cexiopay/database/-/tags) выложены в репозитории контейнеров.
 
