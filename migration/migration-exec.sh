@@ -10,7 +10,7 @@ if [ $# -eq 0 ]; then
 	echo
 	echo "	Usage example:"
 	echo
-	echo "		$0 [--kube-context=evolution] --image=devdocker.infra.kube/cexiopay/database-evolution --tag=vXX.YY <--install|--rollback>"
+	echo "		$0 --kube-context=evolution --kube-namespace=cexiopay-evolution --kube-admin-namespace=cexiopay-evolution-admin --image=devdocker.infra.kube/cexiopay/database-evolution --tag=vXX.YY [--target-version=v42] <--install|--rollback>"
 	echo
 	exit 1
 fi
@@ -24,11 +24,17 @@ while [ "$1" != "" ]; do
 		--kube-namespace=*)
 			ARG_KUBE_NAMESPACE=$(echo "$1" | cut -d= -f2)
 			;;
+		--kube-admin-namespace=*)
+			ARG_KUBE_ADMIN_NAMESPACE=$(echo "$1" | cut -d= -f2)
+			;;
 		--image=*)
 			ARG_IMAGE=$(echo "$1" | cut -d= -f2)
 			;;
 		--tag=*)
 			ARG_TAG=$(echo "$1" | cut -d= -f2)
+			;;
+		--target-version=*)
+			ARG_TARGET_VERSION=$(echo "$1" | cut -d= -f2)
 			;;
 		--install)
 			ARG_ACTION=install
@@ -58,15 +64,15 @@ validateArg() {
 validateArg "$ARG_IMAGE" "--image"
 validateArg "$ARG_TAG" "--tag"
 validateArg "$ARG_ACTION" "--install|--rollback"
+validateArg "$ARG_KUBE_CONTEXT" "--kube-context"
+validateArg "$ARG_KUBE_NAMESPACE" "--kube-namespace"
+validateArg "$ARG_KUBE_ADMIN_NAMESPACE" "--kube-admin-namespace"
+
 
 ARG_TIMESTAMP="$(date '+%Y%m%d%H%M%S')"
-if [ -z "${ARG_KUBE_NAMESPACE}" ]; then
-	if [ -n "${ARG_KUBE_CONTEXT}" ]; then
-		ARG_KUBE_NAMESPACE="cexiopay-${ARG_KUBE_CONTEXT}"
-	else
-		ARG_KUBE_NAMESPACE="cexiopay"
-	fi
-fi
+
+[ -z "${ARG_TARGET_VERSION}" ] && ARG_TARGET_VERSION="${ARG_TAG}"
+
 
 # Normalize SCRIPT_DIR
 SCRIPT_DIR=$(dirname "$0")
@@ -79,21 +85,24 @@ JOB_NAME="migration-${ARG_TIMESTAMP}-${ARG_ACTION}"
 TEMP_FILE=$(mktemp)
 
 cat "${SCRIPT_DIR}/migration-job-template.yaml" \
-	| sed "s!JOB_NAME!${JOB_NAME}!g" \
+	| sed "s!ARG_JOB_NAME!${JOB_NAME}!g" \
 	| sed "s!ARG_IMAGE!${ARG_IMAGE}!g" \
 	| sed "s!ARG_ACTION!${ARG_ACTION}!g" \
 	| sed "s!ARG_TAG!${ARG_TAG}!g" \
 	| sed "s!ARG_TIMESTAMP!${ARG_TIMESTAMP}!g" \
+	| sed "s!ARG_TARGET_VERSION!${ARG_TARGET_VERSION}!g" \
 	| sed "s!ARG_KUBE_NAMESPACE!${ARG_KUBE_NAMESPACE}!g" > "${TEMP_FILE}"
 
 echo
 echo "# Job definition YAML"
 cat "${TEMP_FILE}"
 
-KUBE_OPTS="--namespace ${ARG_KUBE_NAMESPACE}"
-[ -n "${ARG_KUBE_CONTEXT}" ] && KUBE_OPTS="${KUBE_OPTS} --context ${ARG_KUBE_CONTEXT}"
+KUBE_OPTS="--namespace ${ARG_KUBE_NAMESPACE} --context ${ARG_KUBE_CONTEXT}"
+KUBE_ADMIN_OPTS="--namespace ${ARG_KUBE_ADMIN_NAMESPACE} --context ${ARG_KUBE_CONTEXT}"
 
 echo "# KUBE_OPTS is: ${KUBE_OPTS}"
+
+kubectl ${KUBE_ADMIN_OPTS} get --output=json Secrets/migration   | jq -r "{ apiVersion: .apiVersion, kind: .kind, metadata: { name: \"${ARG_TIMESTAMP}-migration\" }, data: .data }" | kubectl ${KUBE_OPTS} apply --filename=-
 
 echo "# Checking ${JOB_NAME} for existence..."
 IS_EXIST_PREV_JOB=$(kubectl ${KUBE_OPTS} get --ignore-not-found jobs "${JOB_NAME}")

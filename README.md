@@ -54,15 +54,14 @@ NOTE! Во время переходной фазы на `Helm 3` остаютс
 
 ### Database Releases
 
-Tag name format: `<DB_VERSION>-database`
+Tag name format: `<RELEASE_TAG>-database`
 
-Создание тега в таком формате, создаст pipeline с набором задач для деплоймента базы версии `DB_VERSION`.
-Например:
-* [v02.32-database](https://gitlab.wnb:28443/cexiopay/devops/kubernetes-deployment/-/tags/v02.32-database)
-* [v02.33-database](https://gitlab.wnb:28443/cexiopay/devops/kubernetes-deployment/-/tags/v02.33-database)
-* etc
-
-NOTE! Перед созданием тега, вы должны убедиться, что [релизные контейнеры](https://gitlab.wnb:28443/cexiopay/database/pipelines) с версией [`DB_VERSION`](https://gitlab.wnb:28443/cexiopay/database/-/tags) выложены в репозитории контейнеров (прод контейнер в продовский репозиторий)
+1. Вносим коректные версии в файл [migration/MANIFEST](./migration/MANIFEST)
+1. Создаем тег в таком формате, создаст pipeline с набором задач для деплоймента базы версии `RELEASE_TAG`.
+	Например:
+	* [20210622-00-database](https://gitlab.wnb:28443/cexiopay/devops/kubernetes-deployment/-/tags/20210622-00-database)
+	* etc
+	NOTE! Перед созданием тега, вы должны убедиться, что [релизные контейнеры](https://gitlab.wnb:28443/cexiopay/database/pipelines) с версией [`DATABASE_IMAGE_TAG`](https://gitlab.wnb:28443/cexiopay/database/-/tags) выложены в репозитории контейнеров.
 
 ## HELM Notes
 

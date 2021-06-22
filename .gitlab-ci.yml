@@ -29,6 +29,18 @@ variables:
       exit 255
     fi
   }
+  function verify_migration_version() {
+    if [ -z "${CI_COMMIT_TAG}" ]; then
+      echo "The function verify_migration_version() is able to use for tags only. Variable CI_COMMIT_TAG is not set." >&2
+      exit 127
+    fi
+    local EXPECTED_VERSION=$(echo "${CI_COMMIT_TAG}" | cut -d- -f1)
+    local DATABASE_RELEASE_VERSION=$(grep -e '^RELEASE_TAG:' migration/MANIFEST | cut -d ':' -f 2 | tr -d '[:space:]')
+    if [ "$DATABASE_RELEASE_VERSION-database" != "$CI_COMMIT_TAG" ]; then
+      echo "Helm Chart appVersion '${DATABASE_RELEASE_VERSION}' is not same as tag version '${EXPECTED_VERSION}'. Your tag should named as '$DATABASE_RELEASE_VERSION-database' for the case." >&2
+      exit 255
+    fi
+  }
   function kube_config_setup() {
     if [ -z "${KUBECONF_BASE64}" ]; then
       echo "kube_deploy_dev_image() wrong arguments. Expected environment variable KUBECONF_BASE64" >&2
@@ -484,7 +496,6 @@ include:
 
 
 
-
 #
 #
 # Database migration TAGs
@@ -496,9 +507,12 @@ include:
     entrypoint: [""]
   stage: deploy
   script:
+    - verify_migration_version
     - export KUBECONFIG=/tmp/.kube-config
     - echo "$KUBECONF_BASE64" | base64 -d > "${KUBECONFIG}"
-    - ./migration/migration-exec.sh --kube-context=evolution --image=devdocker.infra.kube/cexiopay/database-evolution --tag="$(echo $CI_COMMIT_TAG | rev | cut -d- -f2- | rev)" --install
+    - DATABASE_IMAGE_TAG=$(grep -e '^DATABASE_IMAGE_TAG:' migration/MANIFEST | cut -d ':' -f 2 | tr -d '[:space:]')
+    - INSTALL_VERSION=$(grep -e '^INSTALL_VERSION:' migration/MANIFEST | cut -d ':' -f 2 | tr -d '[:space:]')
+    - ./migration/migration-exec.sh --kube-namespace=cexiopay-evolution --kube-admin-namespace=cexiopay-evolution-admin --image=harbor.infra.kube/cexiopay/database-evolution --tag="${DATABASE_IMAGE_TAG}" --target-version="${INSTALL_VERSION}" --install
   when: manual
   environment:
     name: evolution
@@ -515,9 +529,12 @@ include:
     entrypoint: [""]
   stage: rollback
   script:
+    - verify_migration_version
     - export KUBECONFIG=/tmp/.kube-config
     - echo "$KUBECONF_BASE64" | base64 -d > "${KUBECONFIG}"
-    - ./migration/migration-exec.sh --kube-context=evolution --image=devdocker.infra.kube/cexiopay/database-evolution --tag="$(echo $CI_COMMIT_TAG | rev | cut -d- -f2- | rev)" --rollback
+    - DATABASE_IMAGE_TAG=$(grep -e '^DATABASE_IMAGE_TAG:' migration/MANIFEST | cut -d ':' -f 2 | tr -d '[:space:]')
+    - ROLLBACK_VERSION=$(grep -e '^ROLLBACK_VERSION:' migration/MANIFEST | cut -d ':' -f 2 | tr -d '[:space:]')
+    - ./migration/migration-exec.sh --kube-namespace=cexiopay-evolution --kube-admin-namespace=cexiopay-evolution-admin --image=harbor.infra.kube/cexiopay/database-evolution --tag="${DATABASE_IMAGE_TAG}" --target-version="${ROLLBACK_VERSION}" --rollback
   when: manual
   environment:
     name: evolution
@@ -534,9 +551,12 @@ include:
     entrypoint: [""]
   stage: deploy
   script:
+    - verify_migration_version
     - export KUBECONFIG=/tmp/.kube-config
     - echo "$KUBECONF_BASE64" | base64 -d > "${KUBECONFIG}"
-    - ./migration/migration-exec.sh --kube-context=presentation --image=devdocker.infra.kube/cexiopay/database-presentation --tag="$(echo $CI_COMMIT_TAG | rev | cut -d- -f2- | rev)" --install
+    - DATABASE_IMAGE_TAG=$(grep -e '^DATABASE_IMAGE_TAG:' migration/MANIFEST | cut -d ':' -f 2 | tr -d '[:space:]')
+    - INSTALL_VERSION=$(grep -e '^INSTALL_VERSION:' migration/MANIFEST | cut -d ':' -f 2 | tr -d '[:space:]')
+    - ./migration/migration-exec.sh --kube-namespace=cexiopay-presentation --kube-admin-namespace=cexiopay-presentation-admin --image=harbor.infra.kube/cexiopay/database-presentation --tag="${DATABASE_IMAGE_TAG}" --target-version="${INSTALL_VERSION}" --install
   when: manual
   environment:
     name: presentation
@@ -553,9 +573,12 @@ include:
     entrypoint: [""]
   stage: rollback
   script:
+    - verify_migration_version
     - export KUBECONFIG=/tmp/.kube-config
     - echo "$KUBECONF_BASE64" | base64 -d > "${KUBECONFIG}"
-    - ./migration/migration-exec.sh --kube-context=presentation --image=devdocker.infra.kube/cexiopay/database-presentation --tag="$(echo $CI_COMMIT_TAG | rev | cut -d- -f2- | rev)" --rollback
+    - DATABASE_IMAGE_TAG=$(grep -e '^DATABASE_IMAGE_TAG:' migration/MANIFEST | cut -d ':' -f 2 | tr -d '[:space:]')
+    - ROLLBACK_VERSION=$(grep -e '^ROLLBACK_VERSION:' migration/MANIFEST | cut -d ':' -f 2 | tr -d '[:space:]')
+    - ./migration/migration-exec.sh --kube-namespace=cexiopay-presentation --kube-admin-namespace=cexiopay-presentation-admin --image=harbor.infra.kube/cexiopay/database-presentation --tag="${DATABASE_IMAGE_TAG}" --target-version="${ROLLBACK_VERSION}" --rollback
   when: manual
   environment:
     name: presentation
@@ -572,9 +595,12 @@ include:
     entrypoint: [""]
   stage: deploy
   script:
+    - verify_migration_version
     - export KUBECONFIG=/tmp/.kube-config
     - echo "$KUBECONF_BASE64" | base64 -d > "${KUBECONFIG}"
-    - ./migration/migration-exec.sh --kube-context=test --image=devdocker.infra.kube/cexiopay/database-test --tag="$(echo $CI_COMMIT_TAG | rev | cut -d- -f2- | rev)" --install
+    - DATABASE_IMAGE_TAG=$(grep -e '^DATABASE_IMAGE_TAG:' migration/MANIFEST | cut -d ':' -f 2 | tr -d '[:space:]')
+    - INSTALL_VERSION=$(grep -e '^INSTALL_VERSION:' migration/MANIFEST | cut -d ':' -f 2 | tr -d '[:space:]')
+    - ./migration/migration-exec.sh --kube-context=test --kube-namespace=cexiopay-test --kube-admin-namespace=cexiopay-test-admin --image=harbor.infra.kube/cexiopay/database-test --tag="${DATABASE_IMAGE_TAG}" --target-version="${INSTALL_VERSION}" --install
   when: manual
   environment:
     name: test
@@ -591,9 +617,13 @@ include:
     entrypoint: [""]
   stage: rollback
   script:
+    - verify_migration_version
     - export KUBECONFIG=/tmp/.kube-config
     - echo "$KUBECONF_BASE64" | base64 -d > "${KUBECONFIG}"
-    - ./migration/migration-exec.sh --kube-context=test --image=devdocker.infra.kube/cexiopay/database-test --tag="$(echo $CI_COMMIT_TAG | rev | cut -d- -f2- | rev)" --rollback
+    - DATABASE_IMAGE_TAG=$(grep -e '^DATABASE_IMAGE_TAG:' migration/MANIFEST | cut -d ':' -f 2 | tr -d '[:space:]')
+    - ROLLBACK_VERSION=$(grep -e '^ROLLBACK_VERSION:' migration/MANIFEST | cut -d ':' -f 2 | tr -d '[:space:]')
+    - ./migration/migration-exec.sh --kube-context=test --kube-namespace=cexiopay-test --kube-admin-namespace=cexiopay-test-admin --image=harbor.infra.kube/cexiopay/database-test --tag="${DATABASE_IMAGE_TAG}" --target-version="${ROLLBACK_VERSION}" --rollback
+    - ./migration/migration-exec.sh --kube-context=test --image=harbor.infra.kube/cexiopay/database-test --tag="$(echo $CI_COMMIT_TAG | rev | cut -d- -f2- | rev)" --rollback
   when: manual
   environment:
     name: test
@@ -610,9 +640,12 @@ include:
     entrypoint: [""]
   stage: deploy
   script:
+    - verify_migration_version
     - export KUBECONFIG=/tmp/.kube-config
     - echo "$KUBECONF_BASE64" | base64 -d > "${KUBECONFIG}"
-    - ./migration/migration-exec.sh --kube-context=prod --kube-namespace=cexiopay --image=harbor.infra.kube/cexiopay/database-production --tag="$(echo $CI_COMMIT_TAG | rev | cut -d- -f2- | rev)" --install
+    - DATABASE_IMAGE_TAG=$(grep -e '^DATABASE_IMAGE_TAG:' migration/MANIFEST | cut -d ':' -f 2 | tr -d '[:space:]')
+    - INSTALL_VERSION=$(grep -e '^INSTALL_VERSION:' migration/MANIFEST | cut -d ':' -f 2 | tr -d '[:space:]')
+    - ./migration/migration-exec.sh --kube-context=prod --kube-namespace=cexiopay --kube-admin-namespace=cryptopay --image=harbor.infra.kube/cexiopay/database-production --tag="${DATABASE_IMAGE_TAG}" --target-version="${INSTALL_VERSION}" --install
   when: manual
   environment:
     name: production
@@ -631,9 +664,12 @@ include:
     entrypoint: [""]
   stage: rollback
   script:
+    - verify_migration_version
     - export KUBECONFIG=/tmp/.kube-config
     - echo "$KUBECONF_BASE64" | base64 -d > "${KUBECONFIG}"
-    - ./migration/migration-exec.sh --kube-context=prod --kube-namespace=cexiopay --image=harbor.infra.kube/cexiopay/database-production --tag="$(echo $CI_COMMIT_TAG | rev | cut -d- -f2- | rev)" --rollback
+    - DATABASE_IMAGE_TAG=$(grep -e '^DATABASE_IMAGE_TAG:' migration/MANIFEST | cut -d ':' -f 2 | tr -d '[:space:]')
+    - ROLLBACK_VERSION=$(grep -e '^ROLLBACK_VERSION:' migration/MANIFEST | cut -d ':' -f 2 | tr -d '[:space:]')
+    - ./migration/migration-exec.sh --kube-context=prod --kube-namespace=cexiopay --kube-admin-namespace=cryptopay --image=harbor.infra.kube/cexiopay/database-production --tag="${DATABASE_IMAGE_TAG}" --target-version="${ROLLBACK_VERSION}" --rollback
   when: manual
   environment:
     name: production
