@@ -2,12 +2,12 @@ application:
 
   api:
     serviceImage: harbor.infra.kube/cexiopay/api
-    tag: 0.1.18
+    tag: 0.2.1
     replicas: 1
 
   board:
     serviceImage: harbor.infra.kube/cexiopay/board
-    tag: 2.4.9
+    tag: 2.4.11
     env:
       BASE_PATH: /
     replicas: 1
@@ -31,7 +31,7 @@ application:
 
   identity:
     serviceImage: harbor.infra.kube/cexiopay/identity
-    tag: 0.1.8
+    tag: 0.1.9
     replicas: 1
 
   messengerbridge:
@@ -47,5 +47,5 @@ application:
 
   processing:
     serviceImage: harbor.infra.kube/cexiopay/processing
-    tag: 2.2.26
+    tag: 2.2.27
     replicas: 1
