@@ -31,7 +31,7 @@ application:
 
   identity:
     serviceImage: harbor.infra.kube/cexiopay/identity
-    tag: 0.1.10
+    tag: 0.1.11
     replicas: 1
 
   messengerbridge:
