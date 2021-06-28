@@ -62,7 +62,7 @@ include:
   - local: /.gitlab-ci-infratest.yml
 
 # HELM 3 Runtime deployment
-1EVO:install:runtime:
+1EVO:runtime:install:
   stage: deploy
   image:
     name: ${IMAGE_HELM3}
@@ -95,7 +95,7 @@ include:
     variables:
       - $CI_COMMIT_TAG =~ /-runtime$/
 
-1EVO:rollback:runtime:
+1EVO:runtime:rollback:
   stage: rollback
   image:
     name: ${IMAGE_HELM3}
@@ -118,7 +118,7 @@ include:
     variables:
       - $CI_COMMIT_TAG =~ /-runtime$/
 
-1EVO:delete:runtime:
+1EVO:runtime:delete:
   stage: delete
   image:
     name: ${IMAGE_HELM3}
@@ -140,7 +140,7 @@ include:
     variables:
       - $CI_COMMIT_TAG =~ /-runtime$/
 
-2PRSN:install:runtime:
+2PRSN:runtime:install:
   stage: deploy
   image:
     name: ${IMAGE_HELM3}
@@ -173,7 +173,7 @@ include:
     variables:
       - $CI_COMMIT_TAG =~ /-runtime$/
 
-2PRSN:rollback:runtime:
+2PRSN:runtime:rollback:
   stage: rollback
   image:
     name: ${IMAGE_HELM3}
@@ -196,7 +196,7 @@ include:
     variables:
       - $CI_COMMIT_TAG =~ /-runtime$/
 
-2PRSN:delete:runtime:
+2PRSN:runtime:delete:
   stage: delete
   image:
     name: ${IMAGE_HELM3}
@@ -218,7 +218,7 @@ include:
     variables:
       - $CI_COMMIT_TAG =~ /-runtime$/
 
-3TEST:blue:install:runtime:
+3TEST:blue:runtime:install:
   stage: deploy
   image:
     name: ${IMAGE_HELM3}
@@ -251,7 +251,52 @@ include:
     variables:
       - $CI_COMMIT_TAG =~ /-runtime$/
 
-3TEST:green:install:runtime:
+3TEST:blue:board:install:
+  stage: deploy
+  image: 
+    name: docker:20.10
+  script:
+    - apk add --no-cache git gnupg yq
+    - DOCKER_IMAGE_REPOSITORY=$(yq r runtime/values-base.yaml 'application.board.serviceImage')
+    - VERSION_TAG=$(yq r runtime/values-base.yaml 'application.board.tag')
+    # - API_SERVICE_URL=$(yq r runtime/values.production.yaml 'application.board.env.API_SERVICE_URL')
+    # - IDENTITY_SERVICE_URL=$(yq r runtime/values.production.yaml 'application.board.env.IDENTITY_SERVICE_URL')
+    # Login to PROD registry
+    - mkdir -p "/etc/docker/certs.d/$RELEASE_REGISTRY_HOST"
+    - echo "${RELEASE_REGISTRY_CA}" > "/etc/docker/certs.d/${RELEASE_REGISTRY_HOST}/ca.crt"
+    - echo "${RELEASE_REGISTRY_PASSWORD}" | docker login --username "${RELEASE_REGISTRY_USER}" --password-stdin "${RELEASE_REGISTRY_HOST}"
+    # Cleanup
+    - test -d .github-data && rm -rf .github-data
+    # Checkout GitHub Pages repo
+    - git clone "https://${GITHUB_LOGIN}:${GITHUB_TOKEN}@github.com/cexiolabs/cexiopay.board-test-hosting.git" .github-data
+    # Remove old data
+    - (cd .github-data && rm -rf * && git add -A)
+    # Grab image content
+    - IMAGE="${DOCKER_IMAGE_REPOSITORY}:${VERSION_TAG}"
+    - echo "Create a container to grab content of image '${IMAGE}'"
+    - docker pull "${IMAGE}"
+    - CONTAINER_ID=$(docker create ${IMAGE})
+    - docker cp "${CONTAINER_ID}:/usr/local/cexiolabs/cexiopay.board/." .github-data
+    - docker rm -v "${CONTAINER_ID}"
+    # - find .github-data/ -type f -exec sed -i "s~/PLACEHOLDER_BASE_PATH~~g" {} \;
+    # - find .github-data/ -type f -exec sed -i "s~PLACEHOLDER_API_SERVICE_URL~${API_SERVICE_URL}~g" {} \;
+    # - find .github-data/ -type f -exec sed -i "s~PLACEHOLDER_IDENTITY_SERVICE_URL~${IDENTITY_SERVICE_URL}~g" {} \;
+    - echo -n "board.pay-cex.io" > .github-data/CNAME
+    - touch .github-data/.nojekyll
+    - (cd .github-data && git config --local user.name "${GITHUB_USER}" && git config --local user.email "${GITHUB_EMAIL}" && git add -A && git commit --amend --message "${VERSION_TAG}" && git push --force)
+  when: manual
+  environment:
+    name: production
+    url: https://pay-cex.io/
+  # tags:
+  #   - cexiolabs-github-pages
+  only:
+    refs:
+      - tags
+    variables:
+      - $CI_COMMIT_TAG =~ /-runtime$/
+
+3TEST:green:runtime:install:
   stage: deploy
   image:
     name: ${IMAGE_HELM3}
@@ -284,7 +329,7 @@ include:
     variables:
       - $CI_COMMIT_TAG =~ /-runtime$/
 
-3TEST:blue:rollback:runtime:
+3TEST:blue:runtime:rollback:
   stage: rollback
   image:
     name: ${IMAGE_HELM3}
@@ -307,7 +352,7 @@ include:
     variables:
       - $CI_COMMIT_TAG =~ /-runtime$/
 
-3TEST:blue:delete:runtime:
+3TEST:blue:runtime:delete:
   stage: delete
   image:
     name: ${IMAGE_HELM3}
@@ -329,7 +374,7 @@ include:
     variables:
       - $CI_COMMIT_TAG =~ /-runtime$/
 
-3TEST:green:delete:runtime:
+3TEST:green:runtime:delete:
   stage: delete
   image:
     name: ${IMAGE_HELM3}
@@ -351,7 +396,7 @@ include:
     variables:
       - $CI_COMMIT_TAG =~ /-runtime$/
 
-4PROD:blue:install:runtime:
+4PROD:blue:runtime:install:
   stage: deploy
   image:
     name: ${IMAGE_HELM3}
@@ -386,7 +431,52 @@ include:
     variables:
       - $CI_COMMIT_TAG =~ /-runtime$/
 
-4PROD:green:install:runtime:
+4PROD:blue:board:install:
+  stage: deploy
+  image: 
+    name: docker:20.10
+  script:
+    - apk add --no-cache git gnupg yq
+    - DOCKER_IMAGE_REPOSITORY=$(yq r runtime/values-base.yaml 'application.board.serviceImage')
+    - VERSION_TAG=$(yq r runtime/values-base.yaml 'application.board.tag')
+    # - API_SERVICE_URL=$(yq r runtime/values.production.yaml 'application.board.env.API_SERVICE_URL')
+    # - IDENTITY_SERVICE_URL=$(yq r runtime/values.production.yaml 'application.board.env.IDENTITY_SERVICE_URL')
+    # Login to PROD registry
+    - mkdir -p "/etc/docker/certs.d/$RELEASE_REGISTRY_HOST"
+    - echo "${RELEASE_REGISTRY_CA}" > "/etc/docker/certs.d/${RELEASE_REGISTRY_HOST}/ca.crt"
+    - echo "${RELEASE_REGISTRY_PASSWORD}" | docker login --username "${RELEASE_REGISTRY_USER}" --password-stdin "${RELEASE_REGISTRY_HOST}"
+    # Cleanup
+    - test -d .github-data && rm -rf .github-data
+    # Checkout GitHub Pages repo
+    - git clone "https://${GITHUB_LOGIN}:${GITHUB_TOKEN}@github.com/cexiolabs/cexiopay.board-production-hosting.git" .github-data
+    # Remove old data
+    - (cd .github-data && rm -rf * && git add -A)
+    # Grab image content
+    - IMAGE="${DOCKER_IMAGE_REPOSITORY}:${VERSION_TAG}"
+    - echo "Create a container to grab content of image '${IMAGE}'"
+    - docker pull "${IMAGE}"
+    - CONTAINER_ID=$(docker create ${IMAGE})
+    - docker cp "${CONTAINER_ID}:/usr/local/cexiolabs/cexiopay.board/." .github-data
+    - docker rm -v "${CONTAINER_ID}"
+    # - find .github-data/ -type f -exec sed -i "s~/PLACEHOLDER_BASE_PATH~~g" {} \;
+    # - find .github-data/ -type f -exec sed -i "s~PLACEHOLDER_API_SERVICE_URL~${API_SERVICE_URL}~g" {} \;
+    # - find .github-data/ -type f -exec sed -i "s~PLACEHOLDER_IDENTITY_SERVICE_URL~${IDENTITY_SERVICE_URL}~g" {} \;
+    - echo -n "board.pay-cex.io" > .github-data/CNAME
+    - touch .github-data/.nojekyll
+    - (cd .github-data && git config --local user.name "${GITHUB_USER}" && git config --local user.email "${GITHUB_EMAIL}" && git add -A && git commit --amend --message "${VERSION_TAG}" && git push --force)
+  when: manual
+  environment:
+    name: production
+    url: https://pay-cex.io/
+  # tags:
+  #   - cexiolabs-github-pages
+  only:
+    refs:
+      - tags
+    variables:
+      - $CI_COMMIT_TAG =~ /-runtime$/
+
+4PROD:green:runtime:install:
   stage: deploy
   image:
     name: ${IMAGE_HELM3}
@@ -421,7 +511,7 @@ include:
     variables:
       - $CI_COMMIT_TAG =~ /-runtime$/
 
-4PROD:blue:rollback:runtime:
+4PROD:blue:runtime:rollback:
   stage: rollback
   image:
     name: ${IMAGE_HELM3}
@@ -446,7 +536,7 @@ include:
     variables:
       - $CI_COMMIT_TAG =~ /-runtime$/
 
-4PROD:blue:delete:runtime:
+4PROD:blue:runtime:delete:
   stage: delete
   image:
     name: ${IMAGE_HELM3}
@@ -470,7 +560,7 @@ include:
     variables:
       - $CI_COMMIT_TAG =~ /-runtime$/
 
-4PROD:green:delete:runtime:
+4PROD:green:runtime:delete:
   stage: delete
   image:
     name: ${IMAGE_HELM3}
