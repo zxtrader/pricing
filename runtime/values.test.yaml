@@ -15,8 +15,8 @@ application:
     env:
       WTFProviderConfigurationFile: /etc/cexiolabs/cexiopay.api/legacy-cpservice-config/WTF-dev.json
 
-  dashboard:
-    serviceImage: harbor.infra.kube/cexiopay/dashboard/snapshot
+  board:
+    serviceImage: harbor.infra.kube/cexiopay/board/snapshot
     replicas: 1
 
   dashboardlegacy2:
