@@ -37,7 +37,7 @@ variables:
     local EXPECTED_VERSION=$(echo "${CI_COMMIT_TAG}" | cut -d- -f1)
     local DATABASE_RELEASE_VERSION=$(grep -e '^RELEASE_TAG:' migration/MANIFEST | cut -d ':' -f 2 | tr -d '[:space:]')
     if [ "$DATABASE_RELEASE_VERSION-database" != "$CI_COMMIT_TAG" ]; then
-      echo "Helm Chart appVersion '${DATABASE_RELEASE_VERSION}' is not same as tag version '${EXPECTED_VERSION}'. Your tag should named as '$DATABASE_RELEASE_VERSION-database' for the case." >&2
+      echo "Migration manifest RELEASE_TAG '${DATABASE_RELEASE_VERSION}' is not same as tag version '${EXPECTED_VERSION}'. Your tag should named as '$DATABASE_RELEASE_VERSION-database' for the case." >&2
       exit 255
     fi
   }
