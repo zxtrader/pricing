@@ -711,7 +711,7 @@ include:
     - export KUBECONFIG=/tmp/.kube-config
     - echo "$KUBECONF_BASE64" | base64 -d > "${KUBECONFIG}"
     - DATABASE_IMAGE_TAG=$(grep -e '^DATABASE_IMAGE_TAG:' migration/MANIFEST | cut -d ':' -f 2 | tr -d '[:space:]')
-    - ROLLBACK_VERSION=$(grep -e '^ROLLBACK_VERSION:' migration/MANIFEST | cut -d ':' -f 2 | tr -d '[:space:]')
+    - test -z "${ROLLBACK_VERSION}" && ROLLBACK_VERSION=$(grep -e '^ROLLBACK_VERSION:' migration/MANIFEST | cut -d ':' -f 2 | tr -d '[:space:]')
     - ./migration/migration-exec.sh --kube-context=test --kube-namespace=cexiopay-test --kube-admin-namespace=cexiopay-test-admin --image=harbor.infra.kube/cexiopay/database-test --tag="${DATABASE_IMAGE_TAG}" --target-version="${ROLLBACK_VERSION}" --rollback
   when: manual
   environment:
