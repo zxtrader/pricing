@@ -623,7 +623,7 @@ include:
     - export KUBECONFIG=/tmp/.kube-config
     - echo "$KUBECONF_BASE64" | base64 -d > "${KUBECONFIG}"
     - DATABASE_IMAGE_TAG=$(grep -e '^DATABASE_IMAGE_TAG:' migration/MANIFEST | cut -d ':' -f 2 | tr -d '[:space:]')
-    - ROLLBACK_VERSION=$(grep -e '^ROLLBACK_VERSION:' migration/MANIFEST | cut -d ':' -f 2 | tr -d '[:space:]')
+    - test -z "${ROLLBACK_VERSION}" && ROLLBACK_VERSION=$(grep -e '^ROLLBACK_VERSION:' migration/MANIFEST | cut -d ':' -f 2 | tr -d '[:space:]')
     - ./migration/migration-exec.sh --kube-context=evolution --kube-namespace=cexiopay-evolution --kube-admin-namespace=cexiopay-evolution-admin --image=harbor.infra.kube/cexiopay/database-evolution --tag="${DATABASE_IMAGE_TAG}" --target-version="${ROLLBACK_VERSION}" --rollback
   when: manual
   environment:
@@ -667,7 +667,7 @@ include:
     - export KUBECONFIG=/tmp/.kube-config
     - echo "$KUBECONF_BASE64" | base64 -d > "${KUBECONFIG}"
     - DATABASE_IMAGE_TAG=$(grep -e '^DATABASE_IMAGE_TAG:' migration/MANIFEST | cut -d ':' -f 2 | tr -d '[:space:]')
-    - ROLLBACK_VERSION=$(grep -e '^ROLLBACK_VERSION:' migration/MANIFEST | cut -d ':' -f 2 | tr -d '[:space:]')
+    - test -z "${ROLLBACK_VERSION}" && ROLLBACK_VERSION=$(grep -e '^ROLLBACK_VERSION:' migration/MANIFEST | cut -d ':' -f 2 | tr -d '[:space:]')
     - ./migration/migration-exec.sh --kube-context=presentation --kube-namespace=cexiopay-presentation --kube-admin-namespace=cexiopay-presentation-admin --image=harbor.infra.kube/cexiopay/database-presentation --tag="${DATABASE_IMAGE_TAG}" --target-version="${ROLLBACK_VERSION}" --rollback
   when: manual
   environment:
