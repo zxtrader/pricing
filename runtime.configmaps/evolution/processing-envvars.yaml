@@ -29,9 +29,9 @@ data:
   runtime.endpoint.network.cors.allowedHeaders: '*'
   runtime.endpoint.network.cors.methods: GET, POST, PUT, DELETE
   runtime.endpoint.network.cors.whiteList: https://evolution-cexiopay.dev.kube
-  runtime.endpoint.notification.cors.allowedHeaders: '*'
-  runtime.endpoint.notification.cors.methods: GET, POST, PUT, DELETE
-  runtime.endpoint.notification.cors.whiteList: https://evolution-cexiopay.dev.kube
+  # runtime.endpoint.notification.cors.allowedHeaders: '*'
+  # runtime.endpoint.notification.cors.methods: GET, POST, PUT, DELETE
+  # runtime.endpoint.notification.cors.whiteList: https://evolution-cexiopay.dev.kube
   runtime.endpoint.order.cors.allowedHeaders: '*'
   runtime.endpoint.order.cors.methods: GET, POST, PUT, DELETE
   runtime.endpoint.order.cors.whiteList: https://evolution-cexiopay.dev.kube
@@ -52,7 +52,7 @@ data:
   runtime.endpoint.time.cors.allowedHeaders: '*'
   runtime.endpoint.time.cors.methods: GET, POST, PUT, DELETE
   runtime.endpoint.time.cors.whiteList: https://evolution-cexiopay.dev.kube
-  runtime.endpoint_indexer: account dashboard info instrument internalInfo gateApi gateCallback gateUi merchant monitoring network notification order rate risk sysadmin swaggerUi time
+  runtime.endpoint_indexer: account dashboard info instrument internalInfo gateApi gateCallback gateUi merchant monitoring network order rate risk sysadmin swaggerUi time
   runtime.gate.CPService.url: http://127.0.0.1:7999
   runtime.gate.smtpGmail.user: service@zxteam.net
   runtime.notifier.subscriber.kind: web-socket-client

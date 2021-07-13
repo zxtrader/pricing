@@ -12,7 +12,7 @@ data:
   runtime.endpoint.paymentGateway.cors.allowedHeaders: '*'
   runtime.endpoint.paymentGateway.cors.methods: GET, POST, PUT, DELETE
   runtime.endpoint.paymentGateway.cors.whiteList: https://api.pay-cex-test.net https://gate.pay-cex-test.net
-  runtime.endpoint_indexer: account dashboard info instrument internalInfo gateApi gateCallback gateUi merchant monitoring network notification order rate risk sysadmin time
+  runtime.endpoint_indexer: account dashboard info instrument internalInfo gateApi gateCallback gateUi merchant monitoring network order rate risk sysadmin time
   runtime.gate.CPService.url: http://127.0.0.1:7999
   runtime.gate.smtpGmail.user: service@zxteam.net
   # runtime.aggregator.url: wss://external-api-aggr-demo.dev.kube/ws
