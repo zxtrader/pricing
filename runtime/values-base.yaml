@@ -7,7 +7,7 @@ application:
 
   board:
     serviceImage: harbor.infra.kube/cexiopay/board
-    tag: 2.5.0
+    tag: 2.5.1
     env:
       BASE_PATH: /
     replicas: 1
@@ -47,5 +47,5 @@ application:
 
   processing:
     serviceImage: harbor.infra.kube/cexiopay/processing
-    tag: 2.3.0
+    tag: 2.3.1
     replicas: 1

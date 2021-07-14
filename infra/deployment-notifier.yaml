@@ -29,7 +29,7 @@ spec:
       - env:
         - name: endpoint.subscriber.bindPath
           value: /subscriber
-        image: docker.registry.zxteam.net/pub/notifier/service:master.90c7365f
+        image: docker.registry.zxteam.net/pub/notifier/service:master.6d36f8ce
         imagePullPolicy: IfNotPresent
         name: notifier
         ports:
