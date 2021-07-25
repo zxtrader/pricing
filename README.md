@@ -96,6 +96,7 @@ kubectl --namespace "cexiopay-${ENV}-admin" get --output=json ConfigMap/processi
 kubectl --namespace "cexiopay-${ENV}-admin" get --output=json Secrets/api                         | jq -r ".data" | yq eval -P  > tmp/secret-api.yaml
 kubectl --namespace "cexiopay-${ENV}-admin" get --output=json Secrets/identity                    | jq -r ".data" | yq eval -P  > tmp/secret-identity.yaml
 kubectl --namespace "cexiopay-${ENV}-admin" get --output=json Secrets/messengerbridge             | jq -r ".data" | yq eval -P  > tmp/secret-messengerbridge.yaml
+kubectl --namespace "cexiopay-${ENV}-admin" get --output=json Secrets/notifier                    | jq -r ".data" | yq eval -P  > tmp/secret-notifier.yaml
 kubectl --namespace "cexiopay-${ENV}-admin" get --output=json Secrets/processing                  | jq -r ".data" | yq eval -P  > tmp/secret-processing.yaml
 kubectl --namespace "cexiopay-${ENV}-admin" get --output=json Secrets/processing-setup            | jq -r ".data" | yq eval -P  > tmp/secret-processing-setup.yaml
 ```
@@ -116,7 +117,7 @@ Full delete `tag` for example
 $ helm --namespace "cexiopay-${ENV}" uninstall blue
 ```
 
-#### Deploy the service into cluster
+#### Deploy the chart into cluster
 ```bash
 $ helm --namespace "cexiopay-${ENV}" upgrade --install --history-max 3 --values "values-base.yaml" --values "values.${ENV}.yaml" blue .
 ```

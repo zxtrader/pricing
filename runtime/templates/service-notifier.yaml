@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: {{ template "prefix" . }}notifier
+  name: {{ template "prefix" . }}notifier
+spec:
+  ports:
+    - port: 8443
+      name: notifier
+      protocol: TCP
+      targetPort: 8443
+  type: ClusterIP
+  selector:
+    app: {{ template "prefix" . }}notifier

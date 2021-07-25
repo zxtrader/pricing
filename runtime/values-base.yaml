@@ -45,6 +45,11 @@ application:
       ]
     replicas: 1
 
+  notifier:
+    serviceImage: devdocker.infra.kube/cexiolabs/communitysoft/notifier/csharp.lib/snapshot
+    tag: dev.7c6b9968
+    replicas: 1
+
   processing:
     serviceImage: harbor.infra.kube/cexiopay/processing
     tag: 2.3.1
