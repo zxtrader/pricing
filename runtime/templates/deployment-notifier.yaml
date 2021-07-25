@@ -19,6 +19,8 @@ spec:
         image: zxteamorg/devel.postgres-13:20210515
       - name: notifier
         image: {{ .Values.application.notifier.serviceImage }}:{{ .Values.application.notifier.tag }}
+        # command: [ "/bin/sh", "-c", "--" ]
+        # args: [ "while true; do echo -n '.'; sleep 30; done;" ]
 {{- if .Values.application.notifier.command }}
         command:
 {{ range .Values.application.notifier.command }}
@@ -31,12 +33,11 @@ spec:
         - {{ . }}
 {{ end }}
 {{- end }}
-        # envFrom:
-        # - configMapRef:
-        #     name: {{ template "prefix" . }}notifier
-        # envFrom:
-        # - secretRef:
-        #     name: {{ template "prefix" . }}notifier
+        envFrom:
+        - configMapRef:
+            name: {{ template "prefix" . }}notifier
+        - secretRef:
+            name: {{ template "prefix" . }}notifier
         env:
         - name: Serilog__MinimumLevel__Default
           value: Information
@@ -46,13 +47,13 @@ spec:
           value: "{{ $value }}"
 {{ end }}
 {{- end }}
-        livenessProbe:
-          httpGet:
-            path: /info
-            port: 8443
-            scheme: HTTPS
-          initialDelaySeconds: 180
-          periodSeconds: 60
+        # livenessProbe:
+        #   httpGet:
+        #     path: /info
+        #     port: 8443
+        #     scheme: HTTPS
+        #   initialDelaySeconds: 180
+        #   periodSeconds: 60
         ports:
         - containerPort: 8443
           protocol: TCP
@@ -77,20 +78,20 @@ spec:
         #     port: 8443
         #   failureThreshold: 60
         #   periodSeconds: 5
-        volumeMounts:
-        - name: config-files
-          mountPath: /etc/cexiolabs/cexiopay.notifier/
-          readOnly: true
+        # volumeMounts:
+        # - name: config-files
+        #   mountPath: /etc/cexiolabs/cexiopay.notifier/
+        #   readOnly: true
         # - name: secret-certificate
         #   mountPath: /etc/cexiolabs/cexiopay.notifier/ssl/
         # - name: ca-certificates-stub
         #   mountPath: /etc/cexiolabs/cexiopay.notifier/ssl/ca-certificates
         # - name: secret-files
         #   mountPath: /etc/cexiolabs/cexiopay.notifier/secrets/
-      volumes:
-      - name: config-files
-        configMap:
-          name: {{ template "prefix" . }}notifier-files
+      # volumes:
+      # - name: config-files
+      #   configMap:
+      #     name: {{ template "prefix" . }}notifier-files
       # - name: secret-certificate
       #   secret:
       #     secretName: {{ template "prefix" . }}notifier-certificate
