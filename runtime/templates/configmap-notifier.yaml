@@ -11,7 +11,7 @@ data:
   notifierData__topics__0__maintainer__email: v.lantsov@wnb.com.ua
   notifierData__topics__0__maintainer__name: Vova Lantsov
   notifierData__topics__0__topicId: my-topic-1
-  notifierData__topics__subscribers__0__description: Subscriber description
-  notifierData__topics__subscribers__0__listeners__0__type: webhook
-  notifierData__topics__subscribers__0__listeners__0__webhookUrl: https://launch-sample-0-notifier-cexiolabs.requestcatcher.com/
-  notifierData__topics__subscribers__0__subscriberId: subscriber-1
+  notifierData__topics__0__subscribers__0__description: Subscriber description
+  notifierData__topics__0__subscribers__0__listeners__0__type: webhook
+  notifierData__topics__0__subscribers__0__listeners__0__webhookUrl: https://launch-sample-0-notifier-cexiolabs.requestcatcher.com/
+  notifierData__topics__0__subscribers__0__subscriberId: subscriber-1

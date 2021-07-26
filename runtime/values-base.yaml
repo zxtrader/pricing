@@ -47,7 +47,7 @@ application:
 
   notifier:
     serviceImage: devdocker.infra.kube/cexiolabs/communitysoft/notifier/csharp.lib/snapshot
-    tag: dev.1ddfa3fc
+    tag: dev.f0fa5ebb
     replicas: 1
 
   processing:

@@ -15,8 +15,6 @@ spec:
         app: {{ template "prefix" . }}notifier
     spec:
       containers:
-      - name: postgres
-        image: zxteamorg/devel.postgres-13:20210515
       - name: notifier
         image: {{ .Values.application.notifier.serviceImage }}:{{ .Values.application.notifier.tag }}
         # command: [ "/bin/sh", "-c", "--" ]
@@ -100,4 +98,5 @@ spec:
       #     secretName: {{ template "prefix" . }}notifier
       # - name: ca-certificates-stub
       #   emptyDir: {}
-
+      - name: postgres
+        image: zxteamorg/devel.postgres-13:20210515
