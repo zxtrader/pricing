@@ -1,13 +1,16 @@
 {{ if eq .Release.Name "blue" }}
 # Right now "processing" is not able to work in few process
 # so we deploy this conditionally
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
     app: {{ template "prefix" . }}processing
   name: {{ template "prefix" . }}processing
 spec:
+  selector:
+    matchLabels:
+      app: {{ template "prefix" . }}processing
   replicas: {{ .Values.application.processing.replicas | default 0 }}
   strategy:
     type: RollingUpdate

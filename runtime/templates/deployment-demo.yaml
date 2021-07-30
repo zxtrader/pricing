@@ -1,11 +1,14 @@
 {{- if ne .Values.zone "production" }}
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
     app: {{ template "prefix" . }}demo
   name: {{ template "prefix" . }}demo
 spec:
+  selector:
+    matchLabels:
+      app: {{ template "prefix" . }}demo
   replicas: {{ .Values.application.demo.replicas | default 0 }}
   strategy:
     type: RollingUpdate

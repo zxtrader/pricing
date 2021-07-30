@@ -3,13 +3,16 @@
 # - https://github.com/cexiolabs/cexiopay.board-production-hosting
 # - https://github.com/cexiolabs/cexiopay.board-test-hosting
 # so we deploy this conditionally
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
     app: {{ template "prefix" . }}board
   name: {{ template "prefix" . }}board
 spec:
+  selector:
+    matchLabels:
+      app: {{ template "prefix" . }}board
   replicas: {{ .Values.application.board.replicas | default 0 }}
   strategy:
     type: RollingUpdate

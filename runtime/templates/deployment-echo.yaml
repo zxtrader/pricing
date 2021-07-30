@@ -1,10 +1,13 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
     app: {{ template "prefix" . }}echo
   name: {{ template "prefix" . }}echo
 spec:
+  selector:
+    matchLabels:
+      app: {{ template "prefix" . }}echo
   replicas: {{ .Values.application.echo.replicas | default 0 }}
   strategy:
     type: RollingUpdate

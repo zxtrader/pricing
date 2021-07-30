@@ -1,13 +1,16 @@
 #
 #  FOR REMOVAL (after Anular Dashboard will be staged and tested)
 #
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
     app: {{ template "prefix" . }}dashboardlegacy2
   name: {{ template "prefix" . }}dashboardlegacy2
 spec:
+  selector:
+    matchLabels:
+      app: {{ template "prefix" . }}dashboardlegacy2
   replicas: {{ .Values.application.dashboardlegacy2.replicas | default 0 }}
   strategy:
     type: RollingUpdate
