@@ -116,7 +116,12 @@ fi
 echo
 echo "# Apply the Job"
 kubectl ${KUBE_OPTS} apply -f "${TEMP_FILE}"
-echo
+sleep 3
+echo "# Awaiting for the job completition"
+kubectl ${KUBE_OPTS} wait --for=condition=complete --timeout=300s "job/${JOB_NAME}"
+sleep 3
+echo "# Job log"
+kubectl ${KUBE_OPTS} logs "job/${JOB_NAME}"
 
 echo "# Cleanuping oldest jobs..."
 
