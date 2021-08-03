@@ -45,8 +45,22 @@ application:
       ]
     replicas: 1
 
+  notifier:
+    serviceImage: devdocker.infra.kube/cexiolabs/communitysoft/notifier/csharp/snapshot
+    tag: dev.11033573
+    args:
+      [
+        "--config-json-file=/etc/cexiolabs/communitysoft.notifier/appsettings.json",
+        "--config-keyperfile-directory=/etc/cexiolabs/communitysoft.notifier/secrets",
+        "--config-toml-file=/etc/cexiolabs/communitysoft.notifier/extra/setup.toml",
+        "--config-env",
+        "--log-json"
+      ]
+    replicas: 1
+
   processing:
-    serviceImage: harbor.infra.kube/cexiopay/processing/snapshot
+    serviceImage: devdocker.infra.kube/cexiopay/processing/snapshot
+    tag: dev.2e57a4f3
     args:
       [
         "--config-file=/etc/cexiolabs/cexiopay.processing/service.config",
@@ -57,7 +71,7 @@ application:
         "--config-secrets-dir=/etc/cexiolabs/cexiopay/secrets-setup",
         "--config-env",
         "--runtime-gate-email-sender=nodemailer",
-        "--runtime-use-notifier-service",
+        "--runtime-use-notifier-service"
       ]
     env:
       CMDBIN: "devel"

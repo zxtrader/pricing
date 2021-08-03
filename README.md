@@ -89,6 +89,8 @@ rm -rf tmp
 mkdir tmp
 kubectl --namespace "cexiopay-${ENV}-admin" get --output=json ConfigMap/cpservice                 | jq -r ".data" | yq eval -P  > tmp/configmap-cpservice.yaml
 kubectl --namespace "cexiopay-${ENV}-admin" get --output=json ConfigMap/messengerbridge-files     | jq -r ".data" | yq eval -P  > tmp/configmap-messengerbridge-files.yaml
+kubectl --namespace "cexiopay-${ENV}-admin" get --output=json ConfigMap/notifier-envvars          | jq -r ".data" | yq eval -P  > tmp/configmap-notifier-envvars.yaml
+kubectl --namespace "cexiopay-${ENV}-admin" get --output=json ConfigMap/notifier-files            | jq -r ".data" | yq eval -P  > tmp/configmap-notifier-files.yaml
 kubectl --namespace "cexiopay-${ENV}-admin" get --output=json ConfigMap/processing-envvars-setup  | jq -r ".data" | yq eval -P  > tmp/configmap-processing-envvars-setup.yaml
 kubectl --namespace "cexiopay-${ENV}-admin" get --output=json ConfigMap/processing-envvars        | jq -r ".data" | yq eval -P  > tmp/configmap-processing-envvars.yaml
 kubectl --namespace "cexiopay-${ENV}-admin" get --output=json ConfigMap/processing-files          | jq -r ".data" | yq eval -P  > tmp/configmap-processing-files.yaml

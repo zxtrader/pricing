@@ -1,10 +1,13 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
     app: {{ template "prefix" . }}notifier
   name: {{ template "prefix" . }}notifier
 spec:
+  selector:
+    matchLabels:
+      app: {{ template "prefix" . }}notifier
   replicas: {{ .Values.application.notifier.replicas | default 0 }}
   strategy:
     type: RollingUpdate
@@ -17,8 +20,6 @@ spec:
       containers:
       - name: notifier
         image: {{ .Values.application.notifier.serviceImage }}:{{ .Values.application.notifier.tag }}
-        # command: [ "/bin/sh", "-c", "--" ]
-        # args: [ "while true; do echo -n '.'; sleep 30; done;" ]
 {{- if .Values.application.notifier.command }}
         command:
 {{ range .Values.application.notifier.command }}
@@ -33,9 +34,10 @@ spec:
 {{- end }}
         envFrom:
         - configMapRef:
-            name: {{ template "prefix" . }}notifier
-        - secretRef:
-            name: {{ template "prefix" . }}notifier
+            name: {{ template "prefix" . }}notifier-envvars
+        # envFrom:
+        # - secretRef:
+        #     name: {{ template "prefix" . }}notifier-envvars
         env:
         - name: Serilog__MinimumLevel__Default
           value: Information
@@ -76,27 +78,27 @@ spec:
         #     port: 8443
         #   failureThreshold: 60
         #   periodSeconds: 5
-        # volumeMounts:
-        # - name: config-files
-        #   mountPath: /etc/cexiolabs/cexiopay.notifier/
-        #   readOnly: true
-        # - name: secret-certificate
-        #   mountPath: /etc/cexiolabs/cexiopay.notifier/ssl/
-        # - name: ca-certificates-stub
-        #   mountPath: /etc/cexiolabs/cexiopay.notifier/ssl/ca-certificates
-        # - name: secret-files
-        #   mountPath: /etc/cexiolabs/cexiopay.notifier/secrets/
-      # volumes:
-      # - name: config-files
-      #   configMap:
-      #     name: {{ template "prefix" . }}notifier-files
-      # - name: secret-certificate
-      #   secret:
-      #     secretName: {{ template "prefix" . }}notifier-certificate
-      # - name: secret-files
-      #   secret:
-      #     secretName: {{ template "prefix" . }}notifier
-      # - name: ca-certificates-stub
-      #   emptyDir: {}
-      - name: postgres
+        volumeMounts:
+        - name: config-files
+          mountPath: /etc/cexiolabs/communitysoft.notifier/extra
+          readOnly: true
+        - name: secret-certificate
+          mountPath: /etc/cexiolabs/communitysoft.notifier/ssl/
+        - name: ca-certificates-stub
+          mountPath: /etc/cexiolabs/communitysoft.notifier/ssl/ca-certificates
+        - name: secret-files
+          mountPath: /etc/cexiolabs/communitysoft.notifier/secrets/
+      - name: local-temporary-postgres
         image: zxteamorg/devel.postgres-13:20210515
+      volumes:
+      - name: config-files
+        configMap:
+          name: {{ template "prefix" . }}notifier-files
+      - name: secret-certificate
+        secret:
+          secretName: {{ template "prefix" . }}notifier-certificate
+      - name: secret-files
+        secret:
+          secretName: {{ template "prefix" . }}notifier
+      - name: ca-certificates-stub
+        emptyDir: {}

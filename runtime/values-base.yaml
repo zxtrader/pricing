@@ -8,6 +8,10 @@ application:
   board:
     serviceImage: harbor.infra.kube/cexiopay/board
     tag: 2.6.0
+    args:
+      [
+        "--use-ssl"
+      ]
     env:
       BASE_PATH: /
     replicas: 1
@@ -15,6 +19,10 @@ application:
   dashboardlegacy2:
     serviceImage: harbor.infra.kube/cexiopay/dashboard-react
     tag: 2.2.2
+    args:
+      [
+        "--use-ssl"
+      ]
     env:
       BASE_PATH: /
     replicas: 1
@@ -46,8 +54,8 @@ application:
     replicas: 1
 
   notifier:
-    serviceImage: devdocker.infra.kube/cexiolabs/communitysoft/notifier/csharp.lib/snapshot
-    tag: dev.f0fa5ebb
+    serviceImage: devdocker.infra.kube/cexiolabs/communitysoft/notifier/csharp
+    tag: 0.0.2
     replicas: 1
 
   processing:
