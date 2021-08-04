@@ -118,11 +118,19 @@ echo "# Apply the Job"
 kubectl ${KUBE_OPTS} apply -f "${TEMP_FILE}"
 sleep 3
 echo "# Awaiting for the job completition"
+set +e
 kubectl ${KUBE_OPTS} wait --for=condition=complete --timeout=300s "job/${JOB_NAME}"
+APPLY_JOB_EXIT_CODE=$?
 sleep 3
 echo "# Job log"
 kubectl ${KUBE_OPTS} logs "job/${JOB_NAME}"
 
+if [ ${APPLY_JOB_EXIT_CODE} -ne 0 ]; then
+	echo "# Failure Apply Job" >&2
+	exit ${APPLY_JOB_EXIT_CODE}
+fi
+
+set -e
 echo "# Cleanuping oldest jobs..."
 
 if [ "$(uname)" = "Darwin" ]; then
