@@ -1,0 +1,104 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: {{ template "prefix" . }}gate
+  name: {{ template "prefix" . }}gate
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "prefix" . }}gate
+  replicas: {{ .Values.application.gate.replicas | default 0 }}
+  strategy:
+    type: RollingUpdate
+  revisionHistoryLimit: 3
+  template:
+    metadata:
+      labels:
+        app: {{ template "prefix" . }}gate
+    spec:
+      containers:
+      - name: gate
+        image: {{ .Values.application.gate.serviceImage }}:{{ .Values.application.gate.tag }}
+{{- if .Values.application.gate.command }}
+        command:
+{{ range .Values.application.gate.command }}
+        - {{ . }}
+{{ end }}
+{{- end }}
+{{- if .Values.application.gate.args }}
+        args:
+{{ range .Values.application.gate.args }}
+        - {{ . }}
+{{ end }}
+{{- end }}
+        envFrom:
+        - configMapRef:
+            name: {{ template "prefix" . }}gate-envvars
+        # envFrom:
+        # - secretRef:
+        #     name: {{ template "prefix" . }}gate-envvars
+        env:
+        - name: Serilog__MinimumLevel__Default
+          value: Information
+{{- if .Values.application.gate.env }}
+{{ range $key, $value := .Values.application.gate.env }}
+        - name: "{{ $key }}"
+          value: "{{ $value }}"
+{{ end }}
+{{- end }}
+        # livenessProbe:
+        #   httpGet:
+        #     path: /info
+        #     port: 8443
+        #     scheme: HTTPS
+        #   initialDelaySeconds: 180
+        #   periodSeconds: 60
+        ports:
+        - containerPort: 8443
+          protocol: TCP
+        # readinessProbe:
+        #   httpGet:
+        #     path: /info
+        #     port: 8443
+        #     scheme: HTTPS
+        #   initialDelaySeconds: 60
+        #   periodSeconds: 30
+        resources:
+          limits:
+            cpu: 512m
+            memory: 512Mi
+          requests:
+            cpu: 128m
+            memory: 128Mi
+        # # Will be available with Kubernetes 1.20
+        # startupProbe:
+        #   httpGet:
+        #     path: /info
+        #     port: 8443
+        #   failureThreshold: 60
+        #   periodSeconds: 5
+        volumeMounts:
+        - name: config-files
+          mountPath: /etc/cexiolabs/communitysoft.gate/extra
+          readOnly: true
+        - name: secret-certificate
+          mountPath: /etc/cexiolabs/communitysoft.gate/ssl/
+        - name: ca-certificates-stub
+          mountPath: /etc/cexiolabs/communitysoft.gate/ssl/ca-certificates
+        - name: secret-files
+          mountPath: /etc/cexiolabs/communitysoft.gate/secrets/
+      # - name: local-temporary-postgres
+      #   image: zxteamorg/devel.postgres-13:20210515
+      volumes:
+      - name: config-files
+        configMap:
+          name: {{ template "prefix" . }}gate-files
+      - name: secret-certificate
+        secret:
+          secretName: {{ template "prefix" . }}gate-certificate
+      - name: secret-files
+        secret:
+          secretName: {{ template "prefix" . }}gate
+      - name: ca-certificates-stub
+        emptyDir: {}
