@@ -1,6 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: {{ template "prefix" . }}gate-envvars
-data:
-{{ .Files.Get "tmp/configmap-gate-envvars.yaml" | indent 2 }}

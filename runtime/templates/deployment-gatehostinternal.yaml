@@ -2,47 +2,47 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: {{ template "prefix" . }}gate
-  name: {{ template "prefix" . }}gate
+    app: {{ template "prefix" . }}gatehostinternal
+  name: {{ template "prefix" . }}gatehostinternal
 spec:
   selector:
     matchLabels:
-      app: {{ template "prefix" . }}gate
-  replicas: {{ .Values.application.gate.replicas | default 0 }}
+      app: {{ template "prefix" . }}gatehostinternal
+  replicas: {{ .Values.application.gatehostinternal.replicas | default 0 }}
   strategy:
     type: RollingUpdate
   revisionHistoryLimit: 3
   template:
     metadata:
       labels:
-        app: {{ template "prefix" . }}gate
+        app: {{ template "prefix" . }}gatehostinternal
     spec:
       containers:
-      - name: gate
-        image: {{ .Values.application.gate.serviceImage }}:{{ .Values.application.gate.tag }}
-{{- if .Values.application.gate.command }}
+      - name: gatehostinternal
+        image: {{ .Values.application.gatehostinternal.serviceImage }}:{{ .Values.application.gatehostinternal.tag }}
+{{- if .Values.application.gatehostinternal.command }}
         command:
-{{ range .Values.application.gate.command }}
+{{ range .Values.application.gatehostinternal.command }}
         - {{ . }}
 {{ end }}
 {{- end }}
-{{- if .Values.application.gate.args }}
+{{- if .Values.application.gatehostinternal.args }}
         args:
-{{ range .Values.application.gate.args }}
+{{ range .Values.application.gatehostinternal.args }}
         - {{ . }}
 {{ end }}
 {{- end }}
         envFrom:
         - configMapRef:
-            name: {{ template "prefix" . }}gate-envvars
+            name: {{ template "prefix" . }}gatehostinternal-envvars
         # envFrom:
         # - secretRef:
-        #     name: {{ template "prefix" . }}gate-envvars
+        #     name: {{ template "prefix" . }}gatehostinternal-envvars
         env:
         - name: Serilog__MinimumLevel__Default
           value: Information
-{{- if .Values.application.gate.env }}
-{{ range $key, $value := .Values.application.gate.env }}
+{{- if .Values.application.gatehostinternal.env }}
+{{ range $key, $value := .Values.application.gatehostinternal.env }}
         - name: "{{ $key }}"
           value: "{{ $value }}"
 {{ end }}
@@ -80,25 +80,25 @@ spec:
         #   periodSeconds: 5
         volumeMounts:
         - name: config-files
-          mountPath: /etc/cexiolabs/communitysoft.gate/extra
+          mountPath: /etc/cexiolabs/cexiopay.gate.hostinternal/extra
           readOnly: true
         - name: secret-certificate
-          mountPath: /etc/cexiolabs/communitysoft.gate/ssl/
+          mountPath: /etc/cexiolabs/cexiopay.gate.hostinternal/ssl/
         - name: ca-certificates-stub
-          mountPath: /etc/cexiolabs/communitysoft.gate/ssl/ca-certificates
+          mountPath: /etc/cexiolabs/cexiopay.gate.hostinternal/ssl/ca-certificates
         - name: secret-files
-          mountPath: /etc/cexiolabs/communitysoft.gate/secrets/
+          mountPath: /etc/cexiolabs/cexiopay.gate.hostinternal/secrets/
       # - name: local-temporary-postgres
       #   image: zxteamorg/devel.postgres-13:20210515
       volumes:
       - name: config-files
         configMap:
-          name: {{ template "prefix" . }}gate-files
+          name: {{ template "prefix" . }}gatehostinternal-files
       - name: secret-certificate
         secret:
-          secretName: {{ template "prefix" . }}gate-certificate
+          secretName: {{ template "prefix" . }}gatehostinternal-certificate
       - name: secret-files
         secret:
-          secretName: {{ template "prefix" . }}gate
+          secretName: {{ template "prefix" . }}gatehostinternal
       - name: ca-certificates-stub
         emptyDir: {}

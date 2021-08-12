@@ -37,9 +37,9 @@ application:
     tag: latest
     replicas: 2
 
-  gate:
-    serviceImage: devdocker.infra.kube/cexiopay/gate-service/snapshot
-    tag: dev.7ca37a63
+  gatehostinternal:
+    serviceImage: devdocker.infra.kube/cexiopay/gate/hostinternal/snapshot
+    tag: dev.667e0462
     replicas: 1
 
   identity:
