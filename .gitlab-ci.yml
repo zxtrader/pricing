@@ -286,8 +286,8 @@ include:
     - (cd .github-data && git config --local user.name "${GITHUB_USER}" && git config --local user.email "${GITHUB_EMAIL}" && git add -A && git commit --amend --message "${VERSION_TAG}" && git push --force)
   when: manual
   environment:
-    name: production
-    url: https://pay-cex.io/
+    name: test
+    url: https://pay-cex-test.net/
   # tags:
   #   - cexiolabs-github-pages
   only:

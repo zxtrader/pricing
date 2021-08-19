@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: {{ template "prefix" . }}gatehostinternal
+  name: {{ template "prefix" . }}gatehostinternal
+spec:
+  ports:
+    - port: 8443
+      name: gatehostinternal
+      protocol: TCP
+      targetPort: 8443
+  type: ClusterIP
+  selector:
+    app: {{ template "prefix" . }}gatehostinternal
