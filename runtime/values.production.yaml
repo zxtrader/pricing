@@ -4,6 +4,7 @@ application:
 
   api:
     env:
+      IdentityServerAuthentication__ValidIssuers: https://id.pay-cex.io
       WTFProviderConfigurationFile: /etc/cexiolabs/cexiopay.api/legacy-cpservice-config/WTF-prod.json
 
   echo:
@@ -11,7 +12,11 @@ application:
 
   identity:
     env:
-      Emailer__SendGrid__senderEmail: "no-reply@cryptopay.band"
+      Emailer__SendGrid__senderEmail: "no-reply@pay-cex.io"
+
+  notifier:
+    serviceImage: harbor.infra.kube/cexiolabs/communitysoft/notifier/csharp/snapshot
+    replicas: 1
 
   processing:
     args:

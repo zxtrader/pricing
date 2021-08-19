@@ -41,6 +41,8 @@ spec:
         env:
         - name: Serilog__MinimumLevel__Default
           value: Information
+        - name: IdentityServerAuthentication__BearerAuthority
+          value: https://{{ template "prefix" . }}identity:8443/
         - name: IdentityHttpClient__Url
           value: https://{{ template "prefix" . }}identity:8443/
         - name: GatewayOrderHttpClient__Url
@@ -71,10 +73,10 @@ spec:
         resources:
           limits:
             cpu: 512m
-            memory: 512Mi
+            memory: 4096Mi
           requests:
             cpu: 128m
-            memory: 128Mi
+            memory: 2048Mi
         # # Will be available with Kubernetes 1.20
         # startupProbe:
         #   httpGet:

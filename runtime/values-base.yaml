@@ -54,11 +54,21 @@ application:
     replicas: 1
 
   notifier:
-    serviceImage: devdocker.infra.kube/cexiolabs/communitysoft/notifier/csharp
-    tag: 0.0.2
+    serviceImage: harbor.infra.kube/cexiolabs/communitysoft/notifier/csharp
+    tag: 0.0.3
+    args:
+      [
+        "--config-json-file=/etc/cexiolabs/communitysoft.notifier/appsettings.json",
+        "--config-keyperfile-directory=/etc/cexiolabs/communitysoft.notifier/secrets",
+        "--config-toml-file=/etc/cexiolabs/communitysoft.notifier/extra/setup.toml",
+        "--config-env",
+        "--log-json"
+      ]
+    env:
+      ConnectionStrings__NotifierConnectionString: "Host=127.0.0.1;Port=5432;UserId=devadmin;Password=;Database=devdb;"
     replicas: 1
 
   processing:
     serviceImage: harbor.infra.kube/cexiopay/processing
-    tag: 2.3.1
+    tag: 2.4.0
     replicas: 1
