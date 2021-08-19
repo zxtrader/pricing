@@ -1,0 +1,104 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: {{ template "prefix" . }}notifier
+  name: {{ template "prefix" . }}notifier
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "prefix" . }}notifier
+  replicas: {{ .Values.application.notifier.replicas | default 0 }}
+  strategy:
+    type: RollingUpdate
+  revisionHistoryLimit: 3
+  template:
+    metadata:
+      labels:
+        app: {{ template "prefix" . }}notifier
+    spec:
+      containers:
+      - name: notifier
+        image: {{ .Values.application.notifier.serviceImage }}:{{ .Values.application.notifier.tag }}
+{{- if .Values.application.notifier.command }}
+        command:
+{{ range .Values.application.notifier.command }}
+        - {{ . }}
+{{ end }}
+{{- end }}
+{{- if .Values.application.notifier.args }}
+        args:
+{{ range .Values.application.notifier.args }}
+        - {{ . }}
+{{ end }}
+{{- end }}
+        envFrom:
+        - configMapRef:
+            name: {{ template "prefix" . }}notifier-envvars
+        # envFrom:
+        # - secretRef:
+        #     name: {{ template "prefix" . }}notifier-envvars
+        env:
+        - name: Serilog__MinimumLevel__Default
+          value: Information
+{{- if .Values.application.notifier.env }}
+{{ range $key, $value := .Values.application.notifier.env }}
+        - name: "{{ $key }}"
+          value: "{{ $value }}"
+{{ end }}
+{{- end }}
+        # livenessProbe:
+        #   httpGet:
+        #     path: /info
+        #     port: 8443
+        #     scheme: HTTPS
+        #   initialDelaySeconds: 180
+        #   periodSeconds: 60
+        ports:
+        - containerPort: 8443
+          protocol: TCP
+        # readinessProbe:
+        #   httpGet:
+        #     path: /info
+        #     port: 8443
+        #     scheme: HTTPS
+        #   initialDelaySeconds: 60
+        #   periodSeconds: 30
+        resources:
+          limits:
+            cpu: 512m
+            memory: 512Mi
+          requests:
+            cpu: 128m
+            memory: 128Mi
+        # # Will be available with Kubernetes 1.20
+        # startupProbe:
+        #   httpGet:
+        #     path: /info
+        #     port: 8443
+        #   failureThreshold: 60
+        #   periodSeconds: 5
+        volumeMounts:
+        - name: config-files
+          mountPath: /etc/cexiolabs/communitysoft.notifier/extra
+          readOnly: true
+        - name: secret-certificate
+          mountPath: /etc/cexiolabs/communitysoft.notifier/ssl/
+        - name: ca-certificates-stub
+          mountPath: /etc/cexiolabs/communitysoft.notifier/ssl/ca-certificates
+        - name: secret-files
+          mountPath: /etc/cexiolabs/communitysoft.notifier/secrets/
+      - name: local-temporary-postgres
+        image: zxteamorg/devel.postgres-13:20210515
+      volumes:
+      - name: config-files
+        configMap:
+          name: {{ template "prefix" . }}notifier-files
+      - name: secret-certificate
+        secret:
+          secretName: {{ template "prefix" . }}notifier-certificate
+      - name: secret-files
+        secret:
+          secretName: {{ template "prefix" . }}notifier
+      - name: ca-certificates-stub
+        emptyDir: {}

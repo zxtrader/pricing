@@ -13,6 +13,7 @@ application:
         "--log-json"
       ]
     env:
+      IdentityServerAuthentication__ValidIssuers: https://id-evolution-cexiopay.dev.kube
       WTFProviderConfigurationFile: /etc/cexiolabs/cexiopay.api/legacy-cpservice-config/WTF-dev.json
     replicas: 1
 
@@ -34,7 +35,7 @@ application:
     replicas: 0
 
   identity:
-    serviceImage: devdocker.infra.kube/cexiopay/identity/snapshot
+    serviceImage: harbor.infra.kube/cexiopay/identity/snapshot
     args:
       [
         "--config-json-file=/etc/cexiolabs/cexiopay.identity/appsettings.json",
@@ -43,6 +44,10 @@ application:
         "--config-env",
         "--log-json"
       ]
+    replicas: 1
+
+  notifier:
+    serviceImage: harbor.infra.kube/cexiolabs/communitysoft/notifier/csharp/snapshot
     replicas: 1
 
   processing:
@@ -57,7 +62,7 @@ application:
         "--config-secrets-dir=/etc/cexiolabs/cexiopay/secrets-setup",
         "--config-env",
         "--runtime-gate-email-sender=nodemailer",
-        "--runtime-use-notifier-service",
+        "--runtime-use-notifier-service"
       ]
     env:
       CMDBIN: "devel"

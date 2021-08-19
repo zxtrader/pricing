@@ -89,6 +89,8 @@ rm -rf tmp
 mkdir tmp
 kubectl --namespace "cexiopay-${ENV}-admin" get --output=json ConfigMap/cpservice                 | jq -r ".data" | yq eval -P  > tmp/configmap-cpservice.yaml
 kubectl --namespace "cexiopay-${ENV}-admin" get --output=json ConfigMap/messengerbridge-files     | jq -r ".data" | yq eval -P  > tmp/configmap-messengerbridge-files.yaml
+kubectl --namespace "cexiopay-${ENV}-admin" get --output=json ConfigMap/notifier-envvars          | jq -r ".data" | yq eval -P  > tmp/configmap-notifier-envvars.yaml
+kubectl --namespace "cexiopay-${ENV}-admin" get --output=json ConfigMap/notifier-files            | jq -r ".data" | yq eval -P  > tmp/configmap-notifier-files.yaml
 kubectl --namespace "cexiopay-${ENV}-admin" get --output=json ConfigMap/processing-envvars-setup  | jq -r ".data" | yq eval -P  > tmp/configmap-processing-envvars-setup.yaml
 kubectl --namespace "cexiopay-${ENV}-admin" get --output=json ConfigMap/processing-envvars        | jq -r ".data" | yq eval -P  > tmp/configmap-processing-envvars.yaml
 kubectl --namespace "cexiopay-${ENV}-admin" get --output=json ConfigMap/processing-files          | jq -r ".data" | yq eval -P  > tmp/configmap-processing-files.yaml
@@ -96,6 +98,7 @@ kubectl --namespace "cexiopay-${ENV}-admin" get --output=json ConfigMap/processi
 kubectl --namespace "cexiopay-${ENV}-admin" get --output=json Secrets/api                         | jq -r ".data" | yq eval -P  > tmp/secret-api.yaml
 kubectl --namespace "cexiopay-${ENV}-admin" get --output=json Secrets/identity                    | jq -r ".data" | yq eval -P  > tmp/secret-identity.yaml
 kubectl --namespace "cexiopay-${ENV}-admin" get --output=json Secrets/messengerbridge             | jq -r ".data" | yq eval -P  > tmp/secret-messengerbridge.yaml
+kubectl --namespace "cexiopay-${ENV}-admin" get --output=json Secrets/notifier                    | jq -r ".data" | yq eval -P  > tmp/secret-notifier.yaml
 kubectl --namespace "cexiopay-${ENV}-admin" get --output=json Secrets/processing                  | jq -r ".data" | yq eval -P  > tmp/secret-processing.yaml
 kubectl --namespace "cexiopay-${ENV}-admin" get --output=json Secrets/processing-setup            | jq -r ".data" | yq eval -P  > tmp/secret-processing-setup.yaml
 ```
@@ -116,7 +119,7 @@ Full delete `tag` for example
 $ helm --namespace "cexiopay-${ENV}" uninstall blue
 ```
 
-#### Deploy the service into cluster
+#### Deploy the chart into cluster
 ```bash
 $ helm --namespace "cexiopay-${ENV}" upgrade --install --history-max 3 --values "values-base.yaml" --values "values.${ENV}.yaml" blue .
 ```
