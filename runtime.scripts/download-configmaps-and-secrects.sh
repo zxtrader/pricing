@@ -30,6 +30,8 @@ if [ ! -d "${TARGET_DIRECTORY}" ]; then
 fi
 
 kubectl --namespace "${KUBE_NAMESPACE}" get --output=json ConfigMap/cpservice                 | jq -r ".data" | yq eval -P  > "${TARGET_DIRECTORY}/configmap-cpservice.yaml"
+kubectl --namespace "${KUBE_NAMESPACE}" get --output=json ConfigMap/gatehostinternal-envvars  | jq -r ".data" | yq eval -P  > "${TARGET_DIRECTORY}/configmap-gatehostinternal-envvars.yaml"
+kubectl --namespace "${KUBE_NAMESPACE}" get --output=json ConfigMap/gatehostinternal-files    | jq -r ".data" | yq eval -P  > "${TARGET_DIRECTORY}/configmap-gatehostinternal-files.yaml"
 kubectl --namespace "${KUBE_NAMESPACE}" get --output=json ConfigMap/messengerbridge-files     | jq -r ".data" | yq eval -P  > "${TARGET_DIRECTORY}/configmap-messengerbridge-files.yaml"
 kubectl --namespace "${KUBE_NAMESPACE}" get --output=json ConfigMap/notifier-envvars          | jq -r ".data" | yq eval -P  > "${TARGET_DIRECTORY}/configmap-notifier-envvars.yaml"
 kubectl --namespace "${KUBE_NAMESPACE}" get --output=json ConfigMap/notifier-files            | jq -r ".data" | yq eval -P  > "${TARGET_DIRECTORY}/configmap-notifier-files.yaml"
@@ -37,6 +39,7 @@ kubectl --namespace "${KUBE_NAMESPACE}" get --output=json ConfigMap/processing-e
 kubectl --namespace "${KUBE_NAMESPACE}" get --output=json ConfigMap/processing-envvars        | jq -r ".data" | yq eval -P  > "${TARGET_DIRECTORY}/configmap-processing-envvars.yaml"
 kubectl --namespace "${KUBE_NAMESPACE}" get --output=json ConfigMap/processing-files          | jq -r ".data" | yq eval -P  > "${TARGET_DIRECTORY}/configmap-processing-files.yaml"
 kubectl --namespace "${KUBE_NAMESPACE}" get --output=json Secrets/api                         | jq -r ".data" | yq eval -P  > "${TARGET_DIRECTORY}/secret-api.yaml"
+kubectl --namespace "${KUBE_NAMESPACE}" get --output=json Secrets/gatehostinternal            | jq -r ".data" | yq eval -P  > "${TARGET_DIRECTORY}/secret-gatehostinternal.yaml"
 kubectl --namespace "${KUBE_NAMESPACE}" get --output=json Secrets/identity                    | jq -r ".data" | yq eval -P  > "${TARGET_DIRECTORY}/secret-identity.yaml"
 kubectl --namespace "${KUBE_NAMESPACE}" get --output=json Secrets/messengerbridge             | jq -r ".data" | yq eval -P  > "${TARGET_DIRECTORY}/secret-messengerbridge.yaml"
 kubectl --namespace "${KUBE_NAMESPACE}" get --output=json Secrets/notifier                    | jq -r ".data" | yq eval -P  > "${TARGET_DIRECTORY}/secret-notifier.yaml"

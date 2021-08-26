@@ -37,6 +37,11 @@ application:
     tag: latest
     replicas: 2
 
+  gatehostinternal:
+    serviceImage: devdocker.infra.kube/cexiopay/gate/hostinternal/snapshot
+    tag: dev.57d0ad37
+    replicas: 1
+
   identity:
     serviceImage: harbor.infra.kube/cexiopay/identity
     tag: 0.1.11
