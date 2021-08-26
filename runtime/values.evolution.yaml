@@ -159,20 +159,7 @@ ingress:
       "/":
         backendServiceName: processing
         backendServicePort: 8085
-
-  Gatehostinternal:
-    blue:
-      domain: gatehostinternal-evolution-cexiopay.dev.kube
-      certSecretName: dev
-    backendInsecure: false
-    nginxConfigurationSnippet: |
-      add_header Last-Modified $date_gmt;
-      add_header Cache-Control 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0';
-      if_modified_since off;
-      expires off;
-      etag off;
-    paths:
-      "/":
+      "/v3/":
         backendServiceName: gatehostinternal
         backendServicePort: 8443
 

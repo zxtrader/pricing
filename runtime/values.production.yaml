@@ -10,6 +10,9 @@ application:
   echo:
     replicas: 0
 
+  gatehostinternal:
+    replicas: 0
+
   identity:
     env:
       Emailer__SendGrid__senderEmail: "no-reply@pay-cex.io"
@@ -173,6 +176,9 @@ ingress:
       "/":
         backendServiceName: processing
         backendServicePort: 8085
+      "/v3/":
+        backendServiceName: gatehostinternal
+        backendServicePort: 8443
       # "/":
       #   backendServiceName: gateuiserve
       #   backendServicePort: 8080

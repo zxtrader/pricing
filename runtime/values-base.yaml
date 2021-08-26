@@ -2,7 +2,7 @@ application:
 
   api:
     serviceImage: harbor.infra.kube/cexiopay/api
-    tag: 0.4.1
+    tag: 0.5.0
     replicas: 1
 
   board:
@@ -39,7 +39,7 @@ application:
 
   gatehostinternal:
     serviceImage: devdocker.infra.kube/cexiopay/gate/hostinternal/snapshot
-    tag: dev.627f923b
+    tag: dev.57d0ad37
     replicas: 1
 
   identity:
@@ -75,5 +75,5 @@ application:
 
   processing:
     serviceImage: harbor.infra.kube/cexiopay/processing
-    tag: 2.4.0
+    tag: 2.4.2
     replicas: 1
