@@ -86,29 +86,6 @@ Tag name format: `<RELEASE_TAG>-database`
 	$ ../runtime.scripts/download-configmaps-and-secrects.sh "cexiopay-${ENV}-admin"
 	```
 
-```shell
-export RUNTIME_RELEASE=blue
-rm -rf tmp
-mkdir tmp
-kubectl --namespace "cexiopay-${ENV}-admin" get --output=json ConfigMap/cpservice                 | jq -r ".data" | yq eval -P  > tmp/configmap-cpservice.yaml
-kubectl --namespace "cexiopay-${ENV}-admin" get --output=json ConfigMap/gatehostinternal-envvars  | jq -r ".data" | yq eval -P  > tmp/configmap-gatehostinternal-envvars.yaml
-kubectl --namespace "cexiopay-${ENV}-admin" get --output=json ConfigMap/gatehostinternal-files    | jq -r ".data" | yq eval -P  > tmp/configmap-gatehostinternal-files.yaml
-kubectl --namespace "cexiopay-${ENV}-admin" get --output=json ConfigMap/messengerbridge-files     | jq -r ".data" | yq eval -P  > tmp/configmap-messengerbridge-files.yaml
-kubectl --namespace "cexiopay-${ENV}-admin" get --output=json ConfigMap/notifier-envvars          | jq -r ".data" | yq eval -P  > tmp/configmap-notifier-envvars.yaml
-kubectl --namespace "cexiopay-${ENV}-admin" get --output=json ConfigMap/notifier-files            | jq -r ".data" | yq eval -P  > tmp/configmap-notifier-files.yaml
-kubectl --namespace "cexiopay-${ENV}-admin" get --output=json ConfigMap/processing-envvars-setup  | jq -r ".data" | yq eval -P  > tmp/configmap-processing-envvars-setup.yaml
-kubectl --namespace "cexiopay-${ENV}-admin" get --output=json ConfigMap/processing-envvars        | jq -r ".data" | yq eval -P  > tmp/configmap-processing-envvars.yaml
-kubectl --namespace "cexiopay-${ENV}-admin" get --output=json ConfigMap/processing-files          | jq -r ".data" | yq eval -P  > tmp/configmap-processing-files.yaml
-
-kubectl --namespace "cexiopay-${ENV}-admin" get --output=json Secrets/api                         | jq -r ".data" | yq eval -P  > tmp/secret-api.yaml
-kubectl --namespace "cexiopay-${ENV}-admin" get --output=json Secrets/gatehostinternal            | jq -r ".data" | yq eval -P  > tmp/secret-gatehostinternal.yaml
-kubectl --namespace "cexiopay-${ENV}-admin" get --output=json Secrets/identity                    | jq -r ".data" | yq eval -P  > tmp/secret-identity.yaml
-kubectl --namespace "cexiopay-${ENV}-admin" get --output=json Secrets/messengerbridge             | jq -r ".data" | yq eval -P  > tmp/secret-messengerbridge.yaml
-kubectl --namespace "cexiopay-${ENV}-admin" get --output=json Secrets/notifier                    | jq -r ".data" | yq eval -P  > tmp/secret-notifier.yaml
-kubectl --namespace "cexiopay-${ENV}-admin" get --output=json Secrets/processing                  | jq -r ".data" | yq eval -P  > tmp/secret-processing.yaml
-kubectl --namespace "cexiopay-${ENV}-admin" get --output=json Secrets/processing-setup            | jq -r ".data" | yq eval -P  > tmp/secret-processing-setup.yaml
-```
-
 ### Useful commands
 See full doc https://v3.helm.sh/docs/helm
 
