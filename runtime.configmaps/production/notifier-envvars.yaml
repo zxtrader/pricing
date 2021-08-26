@@ -7,7 +7,7 @@ metadata:
   name: notifier-envvars
   namespace: cryptopay
 data:
-  RabbitMQ__Hosts__0__Host: prodcryptopayrmq.cryptopay
+  RabbitMQ__Hosts__0__Host: rabbitmq.cryptopay
   RabbitMQ__Hosts__0__Port: "5672"
   RabbitMQ__UserName: cexiopay-notifier
   RabbitMQ__VirtualHost: merchant-notifications
