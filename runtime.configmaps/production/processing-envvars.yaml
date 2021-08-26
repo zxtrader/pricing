@@ -10,4 +10,3 @@ data:
   runtime.aggregator.url: wss://externalapi.aggrprod.kube/ws
   runtime.pss.cryptoWalletHelper.url: https://rpc.prodpss.kube/cryptopay
   runtime.wtf2pss.url: https://provider-wtf2.prodpss.kube
-  NODE_TLS_REJECT_UNAUTHORIZED: "0"
