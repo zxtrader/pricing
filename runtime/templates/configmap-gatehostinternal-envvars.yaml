@@ -1,0 +1,6 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "prefix" . }}gatehostinternal-envvars
+data:
+{{ .Files.Get "tmp/configmap-gatehostinternal-envvars.yaml" | indent 2 }}
