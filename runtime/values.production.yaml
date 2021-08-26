@@ -15,7 +15,6 @@ application:
       Emailer__SendGrid__senderEmail: "no-reply@pay-cex.io"
 
   notifier:
-    serviceImage: harbor.infra.kube/cexiolabs/communitysoft/notifier/csharp/snapshot
     replicas: 1
 
   processing:
