@@ -1,3 +1,6 @@
+# kubectl --namespace cryptopay get --output=yaml ConfigMap/messengerbridge-files
+# kubectl --namespace cryptopay apply --filename=runtime.configmaps/production/messengerbridge-files.yaml
+
 apiVersion: v1
 kind: ConfigMap
 metadata:

@@ -1,0 +1,12 @@
+# kubectl --namespace cryptopay get --output=yaml ConfigMap/processing-envvars
+# kubectl --namespace cryptopay apply --filename=runtime.configmaps/production/processing-envvars.yaml
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: processing-envvars
+  namespace: cryptopay
+data:
+  runtime.aggregator.url: wss://externalapi.aggrprod.kube/ws
+  runtime.pss.cryptoWalletHelper.url: https://rpc.prodpss.kube/cryptopay
+  runtime.wtf2pss.url: https://provider-wtf2.prodpss.kube
