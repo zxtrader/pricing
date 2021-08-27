@@ -175,6 +175,9 @@ ingress:
       "/":
         backendServiceName: processing
         backendServicePort: 8085
+      "/v3/":
+        backendServiceName: gatehostinternal
+        backendServicePort: 8443
       # "/":
       #   backendServiceName: gateuiserve
       #   backendServicePort: 8080

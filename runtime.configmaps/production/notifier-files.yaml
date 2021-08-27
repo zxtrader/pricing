@@ -1,0 +1,155 @@
+# kubectl --namespace cryptopay get --output=yaml ConfigMap/notifier-files
+# kubectl --namespace cryptopay apply --filename=runtime.configmaps/production/notifier-files.yaml
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: notifier-files
+  namespace: cryptopay
+data:
+  setup.toml: |-
+    [setup]
+
+      [[setup.topics]]
+        topicId = "GOLDENPAYDMCCROOT:ORDER"
+        description = "Topic GOLDENPAYDMCCROOT:ORDER"
+        isDisabled = false
+
+        [setup.topics.maintainer]
+          name = "System"
+          email = "cexiopay@wnb.com.ua"
+
+        [[setup.topics.subscribers]]
+          subscriberId = "subscriber-GOLDENPAYDMCCROOT:ORDER"
+          description = "Subscriber GOLDENPAYDMCCROOT:ORDER"
+
+          [[setup.topics.subscribers.listeners]]
+            type = "webhook"
+            webhookUrl = "https://nplus.ecommpay.com/dachv2/callback/purchase"
+
+
+      [[setup.topics]]
+        topicId = "GOLDENPAYDMCCROOT:ORDER-AUTO"
+        description = "Topic GOLDENPAYDMCCROOT:ORDER-AUTO"
+        isDisabled = false
+
+        [setup.topics.maintainer]
+          name = "System"
+          email = "cexiopay@wnb.com.ua"
+
+        [[setup.topics.subscribers]]
+          subscriberId = "subscriber-GOLDENPAYDMCCROOT:ORDER-AUTO"
+          description = "Subscriber GOLDENPAYDMCCROOT:ORDER-AUTO"
+
+          [[setup.topics.subscribers.listeners]]
+            type = "webhook"
+            webhookUrl = "https://nplus.ecommpay.com/callback/dachv2/inverse"
+
+
+      [[setup.topics]]
+        topicId = "GOLDENPAYDMCCROOT:ORDER-CRYPTO_SELL"
+        description = "Topic GOLDENPAYDMCCROOT:ORDER-CRYPTO_SELL"
+        isDisabled = false
+
+        [setup.topics.maintainer]
+          name = "System"
+          email = "cexiopay@wnb.com.ua"
+
+        [[setup.topics.subscribers]]
+          subscriberId = "subscriber-GOLDENPAYDMCCROOT:ORDER-CRYPTO_SELL"
+          description = "Subscriber GOLDENPAYDMCCROOT:ORDER-CRYPTO_SELL"
+
+          [[setup.topics.subscribers.listeners]]
+            type = "webhook"
+            webhookUrl = "https://nplus.ecommpay.com/dachv2/callback/purchase"
+
+
+      [[setup.topics]]
+        topicId = "GOLDENPAYDMCCROOT:ORDER-PAID_STATUS"
+        description = "Topic GOLDENPAYDMCCROOT:ORDER-PAID_STATUS"
+        isDisabled = false
+
+        [setup.topics.maintainer]
+          name = "System"
+          email = "cexiopay@wnb.com.ua"
+
+        [[setup.topics.subscribers]]
+          subscriberId = "subscriber-GOLDENPAYDMCCROOT:ORDER-PAID_STATUS"
+          description = "Subscriber GOLDENPAYDMCCROOT:ORDER-PAID_STATUS"
+
+          [[setup.topics.subscribers.listeners]]
+            type = "webhook"
+            webhookUrl = "https://nplus.ecommpay.com/dachv2/callback/purchase"
+
+
+
+      [[setup.topics]]
+        topicId = "DACH:ORDER"
+        description = "Topic DACH:ORDER"
+        isDisabled = false
+
+        [setup.topics.maintainer]
+          name = "System"
+          email = "cexiopay@wnb.com.ua"
+
+        [[setup.topics.subscribers]]
+          subscriberId = "subscriber-DACH:ORDER"
+          description = "Subscriber DACH:ORDER"
+
+          [[setup.topics.subscribers.listeners]]
+            type = "webhook"
+            webhookUrl = "https://nplus.ecommpay.com/dachv2/callback/purchase"
+
+
+      [[setup.topics]]
+        topicId = "DACH:ORDER-AUTO"
+        description = "Topic DACH:ORDER-AUTO"
+        isDisabled = false
+
+        [setup.topics.maintainer]
+          name = "System"
+          email = "cexiopay@wnb.com.ua"
+
+        [[setup.topics.subscribers]]
+          subscriberId = "subscriber-DACH:ORDER-AUTO"
+          description = "Subscriber DACH:ORDER-AUTO"
+
+          [[setup.topics.subscribers.listeners]]
+            type = "webhook"
+            webhookUrl = "https://nplus.ecommpay.com/callback/dachv2/inverse"
+
+
+      [[setup.topics]]
+        topicId = "DACH:ORDER-CRYPTO_SELL"
+        description = "Topic DACH:ORDER-CRYPTO_SELL"
+        isDisabled = false
+
+        [setup.topics.maintainer]
+          name = "System"
+          email = "cexiopay@wnb.com.ua"
+
+        [[setup.topics.subscribers]]
+          subscriberId = "subscriber-DACH:ORDER-CRYPTO_SELL"
+          description = "Subscriber DACH:ORDER-CRYPTO_SELL"
+
+          [[setup.topics.subscribers.listeners]]
+            type = "webhook"
+            webhookUrl = "https://nplus.ecommpay.com/dachv2/callback/purchase"
+
+
+      [[setup.topics]]
+        topicId = "DACH:ORDER-PAID_STATUS"
+        description = "Topic DACH:ORDER-PAID_STATUS"
+        isDisabled = false
+
+        [setup.topics.maintainer]
+          name = "System"
+          email = "cexiopay@wnb.com.ua"
+
+        [[setup.topics.subscribers]]
+          subscriberId = "subscriber-DACH:ORDER-PAID_STATUS"
+          description = "Subscriber DACH:ORDER-PAID_STATUS"
+
+          [[setup.topics.subscribers.listeners]]
+            type = "webhook"
+            webhookUrl = "https://nplus.ecommpay.com/dachv2/callback/purchase"

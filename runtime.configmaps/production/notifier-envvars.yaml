@@ -1,0 +1,13 @@
+# kubectl --namespace cryptopay get --output=yaml ConfigMap/notifier-envvars
+# kubectl --namespace cryptopay apply --filename=runtime.configmaps/production/notifier-envvars.yaml
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: notifier-envvars
+  namespace: cryptopay
+data:
+  RabbitMQ__Hosts__0__Host: rabbitmq.cryptopay
+  RabbitMQ__Hosts__0__Port: "5672"
+  RabbitMQ__UserName: cexiopay-notifier
+  RabbitMQ__VirtualHost: merchant-notifications
