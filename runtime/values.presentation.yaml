@@ -220,6 +220,9 @@ ingress:
       "/":
         backendServiceName: landing
         backendServicePort: 8443
+      "/widget-demo/":
+        backendServiceName: demo
+        backendServicePort: 8443
 
   MessengerBridge:
     blue:
@@ -230,17 +233,4 @@ ingress:
     paths:
       "/":
         backendServiceName: messengerbridge
-        backendServicePort: 8443
-
-  Welcome:
-    blue:
-      domain: presentation-cexiopay.dev.kube
-      certSecretName: dev
-    backendInsecure: false
-    paths:
-      "/":
-        backendServiceName: processing
-        backendServicePort: 8083
-      "/widget-demo/":
-        backendServiceName: demo
         backendServicePort: 8443

@@ -227,16 +227,6 @@ ingress:
       "/":
         backendServiceName: landing
         backendServicePort: 8443
-
-  Welcome:
-    blue:
-      domain: evolution-cexiopay.dev.kube
-      certSecretName: dev
-    backendInsecure: false
-    paths:
-      "/":
-        backendServiceName: processing
-        backendServicePort: 8083
       "/widget-demo/":
         backendServiceName: demo
         backendServicePort: 8443

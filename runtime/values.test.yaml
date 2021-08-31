@@ -255,7 +255,7 @@ ingress:
       # Make final domain "id-<HelmReleaseName>-test-cexiopay.dev.kube" like a:
       #   id-green-test-cexiopay.dev.kube
       #   id-master-test-cexiopay.dev.kube
-      domainPerfix: landing-
+      domainPerfix: ""
       domainSuffix: -test-cexiopay.dev.kube
       certSecretName: dev
     backendInsecure: false
@@ -269,6 +269,10 @@ ingress:
       "/":
         backendServiceName: landing
         backendServicePort: 8443
+      "/widget-demo/":
+        backendServiceName: demo
+        backendServicePort: 8443
+
 
   MessengerBridge:
     blue:
@@ -287,24 +291,4 @@ ingress:
     paths:
       "/":
         backendServiceName: messengerbridge
-        backendServicePort: 8443
-
-  Welcome:
-    blue:
-      domain: pay-cex-test.net
-      certSecretName: ingress-pay-cex-test-certificate
-    nonblue:
-      # Make final domain "<HelmReleaseName>-test-cexiopay.dev.kube" like a:
-      #   green-test-cexiopay.dev.kube
-      #   master-test-cexiopay.dev.kube
-      domainPerfix: ""
-      domainSuffix: test-cexiopay.dev.kube
-      certSecretName: dev
-    backendInsecure: false
-    paths:
-      "/":
-        backendServiceName: processing
-        backendServicePort: 8083
-      "/widget-demo/":
-        backendServiceName: demo
         backendServicePort: 8443
