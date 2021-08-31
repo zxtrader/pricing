@@ -47,6 +47,17 @@ application:
     tag: 0.1.11
     replicas: 1
 
+  landing:
+    serviceImage: devdocker.infra.kube/cexiopay/landing/snapshot
+    tag: master
+    args:
+      [
+        "--use-ssl"
+      ]
+    env:
+      BASE_PATH: /
+    replicas: 1
+
   messengerbridge:
     serviceImage: zxteamorg/messenger-bridge
     tag: 0.0.4

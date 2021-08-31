@@ -1,0 +1,21 @@
+{{ if and (ne .Values.zone "production") (eq .Release.Name "blue") }}
+# In "test" and "production" zones on "blue" release, the "landing" is hosted on GitHub Pages:
+# - https://github.com/cexiolabs/cexiopay.landing-production-hosting
+# - https://github.com/cexiolabs/cexiopay.landing-test-hosting
+# so we deploy this conditionally
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: {{ template "prefix" . }}landing
+  name: {{ template "prefix" . }}landing
+spec:
+  ports:
+    - port: 8443
+      name: landing
+      protocol: TCP
+      targetPort: 8443
+  type: ClusterIP
+  selector:
+    app: {{ template "prefix" . }}landing
+{{ end }}

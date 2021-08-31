@@ -192,6 +192,22 @@ ingress:
         backendServiceName: identity
         backendServicePort: 8443
 
+  Landing:
+    blue:
+      domain: presentation-cexiopay.dev.kube
+      certSecretName: dev
+    backendInsecure: false
+    nginxConfigurationSnippet: |
+      add_header Last-Modified $date_gmt;
+      add_header Cache-Control 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0';
+      if_modified_since off;
+      expires off;
+      etag off;
+    paths:
+      "/":
+        backendServiceName: landing
+        backendServicePort: 8443
+
   MessengerBridge:
     blue:
       # THIS endpoint just for development purposes

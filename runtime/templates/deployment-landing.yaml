@@ -1,0 +1,78 @@
+{{ if and (ne .Values.zone "production") (eq .Release.Name "blue") }}
+# In "test" and "production" zones on "blue" release, the "landing" is hosted on GitHub Pages:
+# - https://github.com/cexiolabs/cexiopay.landing-production-hosting
+# - https://github.com/cexiolabs/cexiopay.landing-test-hosting
+# so we deploy this conditionally
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: {{ template "prefix" . }}landing
+  name: {{ template "prefix" . }}landing
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "prefix" . }}landing
+  replicas: {{ .Values.application.landing.replicas | default 0 }}
+  strategy:
+    type: RollingUpdate
+  revisionHistoryLimit: 3
+  template:
+    metadata:
+      labels:
+        app: {{ template "prefix" . }}landing
+    spec:
+      containers:
+      - name: landing
+        image: {{ .Values.application.landing.serviceImage }}:{{ .Values.application.landing.tag }}
+{{- if .Values.application.landing.command }}
+        command:
+{{ range .Values.application.landing.command }}
+        - {{ . }}
+{{ end }}
+{{- end }}
+{{- if .Values.application.landing.args }}
+        args:
+{{ range .Values.application.landing.args }}
+        - {{ . }}
+{{ end }}
+{{- end }}
+        env:
+{{- if .Values.application.landing.env }}
+{{ range $key, $value := .Values.application.landing.env }}
+        - name: "{{ $key }}"
+          value: "{{ $value }}"
+{{ end }}
+{{- end }}
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 8443
+            scheme: HTTPS
+          initialDelaySeconds: 180
+          periodSeconds: 60
+        ports:
+        - containerPort: 8443
+          protocol: TCP
+        # readinessProbe:
+        #   httpGet:
+        #     path: /
+        #     port: 8443
+        #     scheme: HTTPS
+        #   initialDelaySeconds: 10
+        #   periodSeconds: 60
+        resources:
+          limits:
+            cpu: 256m
+            memory: 256Mi
+          requests:
+            cpu: 32m
+            memory: 32Mi
+        volumeMounts:
+        - name: secret-certificate
+          mountPath: /etc/cexiolabs/cexiopay.landing/ssl/
+      volumes:
+      - name: secret-certificate
+        secret:
+          secretName: {{ template "prefix" . }}landing-certificate
+{{ end }}
