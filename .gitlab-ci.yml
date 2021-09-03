@@ -372,7 +372,7 @@ include:
   when: manual
   environment:
     name: production
-    url: https://pay-cex.io/
+    url: https://cexpay.io/
   tags:
     - crtpdpl
   only:
@@ -411,13 +411,13 @@ include:
     # - find .github-data/ -type f -exec sed -i "s~/PLACEHOLDER_BASE_PATH~~g" {} \;
     # - find .github-data/ -type f -exec sed -i "s~PLACEHOLDER_API_SERVICE_URL~${API_SERVICE_URL}~g" {} \;
     # - find .github-data/ -type f -exec sed -i "s~PLACEHOLDER_IDENTITY_SERVICE_URL~${IDENTITY_SERVICE_URL}~g" {} \;
-    - echo -n "board.pay-cex.io" > .github-data/CNAME
+    - echo -n "board.cexpay.io" > .github-data/CNAME
     - touch .github-data/.nojekyll
     - (cd .github-data && git config --local user.name "${GITHUB_USER}" && git config --local user.email "${GITHUB_EMAIL}" && git add -A && git commit --amend --message "${VERSION_TAG}" && git push --force)
   when: manual
   environment:
     name: production
-    url: https://pay-cex.io/
+    url: https://cexpay.io/
   # tags:
   #   - cexiolabs-github-pages
   only:
@@ -456,13 +456,13 @@ include:
     # - find .github-data/ -type f -exec sed -i "s~/PLACEHOLDER_BASE_PATH~~g" {} \;
     # - find .github-data/ -type f -exec sed -i "s~PLACEHOLDER_API_SERVICE_URL~${API_SERVICE_URL}~g" {} \;
     # - find .github-data/ -type f -exec sed -i "s~PLACEHOLDER_IDENTITY_SERVICE_URL~${IDENTITY_SERVICE_URL}~g" {} \;
-    - echo -n "pay-cex.io" > .github-data/CNAME
+    - echo -n "cexpay.io" > .github-data/CNAME
     - touch .github-data/.nojekyll
     - (cd .github-data && git config --local user.name "${GITHUB_USER}" && git config --local user.email "${GITHUB_EMAIL}" && git add -A && git commit --amend --message "${VERSION_TAG}" && git push --force)
   when: manual
   environment:
     name: production
-    url: https://pay-cex.io/
+    url: https://cexpay.io/
   # tags:
   #   - cexiolabs-github-pages
   only:
@@ -487,7 +487,7 @@ include:
   when: manual
   environment:
     name: production
-    url: https://pay-cex.io/
+    url: https://cexpay.io/
   tags:
     - crtpdpl
   only:
@@ -512,7 +512,7 @@ include:
   when: manual
   environment:
     name: production
-    url: https://pay-cex.io/
+    url: https://cexpay.io/
   tags:
     - crtpdpl
   only:
@@ -536,7 +536,7 @@ include:
   when: manual
   environment:
     name: production
-    url: https://pay-cex.io/
+    url: https://cexpay.io/
   tags:
     - crtpdpl
   only:
@@ -560,7 +560,7 @@ include:
   when: manual
   environment:
     name: production
-    url: https://pay-cex.io/
+    url: https://cexpay.io/
   tags:
     - crtpdpl
   only:
@@ -723,7 +723,7 @@ include:
   when: manual
   environment:
     name: production
-    url: https://pay-cex.io/
+    url: https://cexpay.io/
   tags:
     - crtpdpl
   only:
@@ -747,7 +747,7 @@ include:
   when: manual
   environment:
     name: production
-    url: https://pay-cex.io/
+    url: https://cexpay.io/
   tags:
     - crtpdpl
   only:
@@ -779,7 +779,7 @@ include:
   when: manual
   environment:
     name: production
-    url: https://pay-cex.io/
+    url: https://cexpay.io/
   tags:
     - crtpdpl
   only:

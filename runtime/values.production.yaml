@@ -47,10 +47,8 @@ ingress:
 
   API:
     blue:
-      domain: api.pay-cex.io
-      certSecretName: ingress-pay-cex-certificate
-    nginxConfigurationSnippet: |
-      rewrite ^/$ /v2/time redirect;
+      domain: api.cexpay.io
+      certSecretName: ingress-cexpayio-certificate
     paths:
       "/":
         backendServiceName: processing
@@ -59,12 +57,22 @@ ingress:
         backendServiceName: api
         backendServicePort: 8443
 
-  API-Obsolete:
+  API-Obsolete-1:
+    blue:
+      domain: api.pay-cex.io
+      certSecretName: ingress-pay-cex-certificate
+    paths:
+      "/":
+        backendServiceName: processing
+        backendServicePort: 8080
+      "/v3/":
+        backendServiceName: api
+        backendServicePort: 8443
+
+  API-Obsolete-2:
     blue:
       domain: api.cryptopay.band
       certSecretName: ingress-gate-api-dashboard
-    nginxConfigurationSnippet: |
-      rewrite ^/$ /v2/time redirect;
     paths:
       "/":
         backendServiceName: processing
@@ -99,7 +107,7 @@ ingress:
         backendServiceName: api
         backendServicePort: 8443
 
-  Board:
+  Board-Internal:
     nonblue:
       # Make final domain "board-<HelmReleaseName>.prodcryptopay.kube" like a:
       #   board-green.prodcryptopay.kube
@@ -118,7 +126,7 @@ ingress:
         backendServiceName: board
         backendServicePort: 8443
 
-  Callbacks:
+  Callbacks-Internal:
     blue:
       domain: callback.prodcryptopay.kube
       certSecretName: wildcard-prodcryptopay-kube
@@ -156,8 +164,8 @@ ingress:
 
   Gate:
     blue:
-      domain: gate.pay-cex.io
-      certSecretName: ingress-pay-cex-certificate
+      domain: gate.cexpay.io
+      certSecretName: ingress-cexpayio-certificate
     nonblue:
       # Make final domain "gate-<HelmReleaseName>.prodcryptopay.kube" like a:
       #   gate-green.prodcryptopay.kube
@@ -165,12 +173,6 @@ ingress:
       domainSuffix: .prodcryptopay.kube
       certSecretName: wildcard-prodcryptopay-kube
     backendInsecure: false
-    nginxConfigurationSnippet: |
-      add_header Last-Modified $date_gmt;
-      add_header Cache-Control 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0';
-      if_modified_since off;
-      expires off;
-      etag off;
     paths:
       "/":
         backendServiceName: processing
@@ -184,6 +186,16 @@ ingress:
       # "/v2/gate-callback/":
       #   backendServiceName: processing
       #   backendServicePort: 8085
+
+  Gate-Obsolete-1:
+    blue:
+      domain: gate.pay-cex.io
+      certSecretName: ingress-pay-cex-certificate
+    backendInsecure: false
+    paths:
+      "/":
+        backendServiceName: processing
+        backendServicePort: 8085
 
   Gatehostinternal:
     blue:
@@ -209,8 +221,8 @@ ingress:
 
   Identity:
     blue:
-      domain: id.pay-cex.io
-      certSecretName: ingress-pay-cex-certificate
+      domain: id.cexpay.io
+      certSecretName: ingress-cexpayio-certificate
     nonblue:
       # Make final domain "id-<HelmReleaseName>.prodcryptopay.kube" like a:
       #   id-green.prodcryptopay.kube
@@ -222,7 +234,16 @@ ingress:
         backendServiceName: identity
         backendServicePort: 8443
 
-  MessengerBridge:
+  Identity-Obsolete-1:
+    blue:
+      domain: id.pay-cex.io
+      certSecretName: ingress-pay-cex-certificate
+    paths:
+      "/":
+        backendServiceName: identity
+        backendServicePort: 8443
+
+  MessengerBridge-Internal:
     # THIS temporary endpoint just for testing purposes
     blue:
       domain: messengerbridge.prodcryptopay.kube
