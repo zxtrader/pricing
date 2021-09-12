@@ -271,8 +271,8 @@ include:
     entrypoint: [""]
   script:
     - verify_runtime_version_helm3
-    - ./runtime.scripts/download-configmaps-and-secrects.sh cexiopay-test-admin
     - kube_config_setup
+    - ./runtime.scripts/download-configmaps-and-secrects.sh cexiopay-test-admin
     - cd runtime
     - helm --namespace "cexiopay-test" list
     - helm --namespace "cexiopay-test" upgrade --install --history-max 3 --values "values-base.yaml" --values "values.test.yaml" "green" .
