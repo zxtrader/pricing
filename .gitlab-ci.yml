@@ -227,10 +227,8 @@ include:
     name: docker:20.10
   script:
     - apk add --no-cache git gnupg yq
-    - DOCKER_IMAGE_REPOSITORY=$(yq r runtime/values.test.yaml 'application.board.serviceImage')
-    - VERSION_TAG=$(yq r runtime/values-base.yaml 'application.board.tag')
-    # - API_SERVICE_URL=$(yq r runtime/values.production.yaml 'application.board.env.API_SERVICE_URL')
-    # - IDENTITY_SERVICE_URL=$(yq r runtime/values.production.yaml 'application.board.env.IDENTITY_SERVICE_URL')
+    - DOCKER_IMAGE_REPOSITORY=$(yq eval '.application.board.serviceImage' runtime/values.test.yaml)
+    - VERSION_TAG=$(yq eval '.application.board.tag' runtime/values-base.yaml)
     # Login to PROD registry
     - mkdir -p "/etc/docker/certs.d/$RELEASE_REGISTRY_HOST"
     - echo "${RELEASE_REGISTRY_CA}" > "/etc/docker/certs.d/${RELEASE_REGISTRY_HOST}/ca.crt"
@@ -387,10 +385,8 @@ include:
     name: docker:20.10
   script:
     - apk add --no-cache git gnupg yq
-    - DOCKER_IMAGE_REPOSITORY=$(yq r runtime/values-base.yaml 'application.board.serviceImage')
-    - VERSION_TAG=$(yq r runtime/values-base.yaml 'application.board.tag')
-    # - API_SERVICE_URL=$(yq r runtime/values.production.yaml 'application.board.env.API_SERVICE_URL')
-    # - IDENTITY_SERVICE_URL=$(yq r runtime/values.production.yaml 'application.board.env.IDENTITY_SERVICE_URL')
+    - DOCKER_IMAGE_REPOSITORY=$(yq eval '.application.board.serviceImage' runtime/values-base.yaml)
+    - VERSION_TAG=$(yq eval '.application.board.tag' runtime/values-base.yaml)
     # Login to PROD registry
     - mkdir -p "/etc/docker/certs.d/$RELEASE_REGISTRY_HOST"
     - echo "${RELEASE_REGISTRY_CA}" > "/etc/docker/certs.d/${RELEASE_REGISTRY_HOST}/ca.crt"
@@ -432,10 +428,8 @@ include:
     name: docker:20.10
   script:
     - apk add --no-cache git gnupg yq
-    - DOCKER_IMAGE_REPOSITORY=$(yq r runtime/values-base.yaml 'application.landing.serviceImage')
-    - VERSION_TAG=$(yq r runtime/values-base.yaml 'application.landing.tag')
-    # - API_SERVICE_URL=$(yq r runtime/values.production.yaml 'application.landing.env.API_SERVICE_URL')
-    # - IDENTITY_SERVICE_URL=$(yq r runtime/values.production.yaml 'application.landing.env.IDENTITY_SERVICE_URL')
+    - DOCKER_IMAGE_REPOSITORY=$(yq eval '.application.landing.serviceImage' runtime/values-base.yaml)
+    - VERSION_TAG=$(yq eval '.application.landing.tag' runtime/values-base.yaml)
     # Login to PROD registry
     - mkdir -p "/etc/docker/certs.d/$RELEASE_REGISTRY_HOST"
     - echo "${RELEASE_REGISTRY_CA}" > "/etc/docker/certs.d/${RELEASE_REGISTRY_HOST}/ca.crt"
