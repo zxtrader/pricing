@@ -35,6 +35,7 @@ application:
     replicas: 0
 
   gatehostinternal:
+    serviceImage: devdocker.infra.kube/cexiopay/gate/hostinternal/snapshot
     replicas: 0
 
   identity:
@@ -47,6 +48,10 @@ application:
         "--config-env",
         "--log-json"
       ]
+    replicas: 1
+
+  landing:
+    serviceImage: devdocker.infra.kube/cexiopay/landing/snapshot
     replicas: 1
 
   notifier:

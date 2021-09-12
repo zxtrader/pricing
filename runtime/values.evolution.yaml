@@ -34,6 +34,10 @@ application:
       NODE_TLS_REJECT_UNAUTHORIZED: 0
     replicas: 0
 
+  gatehostinternal:
+    serviceImage: devdocker.infra.kube/cexiopay/gate/hostinternal/snapshot
+    replicas: 1
+
   identity:
     serviceImage: harbor.infra.kube/cexiopay/identity/snapshot
     args:
@@ -44,6 +48,10 @@ application:
         "--config-env",
         "--log-json"
       ]
+    replicas: 1
+
+  landing:
+    serviceImage: devdocker.infra.kube/cexiopay/landing/snapshot
     replicas: 1
 
   notifier:

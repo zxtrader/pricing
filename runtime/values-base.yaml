@@ -38,8 +38,8 @@ application:
     replicas: 2
 
   gatehostinternal:
-    serviceImage: devdocker.infra.kube/cexiopay/gate/hostinternal/snapshot
-    tag: dev.ee742083
+    serviceImage: devdocker.infra.kube/cexiopay/gate/hostinternal
+    tag: latest
     replicas: 1
 
   identity:
@@ -48,8 +48,8 @@ application:
     replicas: 1
 
   landing:
-    serviceImage: devdocker.infra.kube/cexiopay/landing/snapshot
-    tag: master
+    serviceImage: harbor.infra.kube/cexiopay/landing
+    tag: 0.1.0
     args:
       [
         "--use-ssl"
