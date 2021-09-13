@@ -86,5 +86,5 @@ application:
 
   processing:
     serviceImage: harbor.infra.kube/cexiopay/processing
-    tag: 2.4.10
+    tag: 2.4.11
     replicas: 1
