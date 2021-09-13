@@ -1,6 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: {{ template "prefix" . }}processing-envvars-setup
-data:
-{{ .Files.Get "tmp/configmap-processing-envvars-setup.yaml" | indent 2 }}

@@ -31,12 +31,12 @@ application:
         "--config-env"
       ]
     env:
-      runtime.aggregator.ssl.caCert: "/etc/cexiolabs/cexiopay/trusted-aggregator-ca.crt"
-      runtime.pss.messengerBridge.ssl.caCert: "/etc/cexiolabs/cexiopay/trusted-messenger-bridge-ca.crt"
-      runtime.pss.cryptoWalletHelper.ssl.caCert: "/etc/cexiolabs/cexiopay/trusted-psscryptowallethelper-ca.crt"
-      runtime.pss.providerWtf2.ssl.caCert: "/etc/cexiolabs/cexiopay/trusted-pss-provider-wtf2-ca.crt"
+      # runtime.aggregator.ssl.caCert: "/etc/cexiolabs/cexiopay/trusted-aggregator-ca.crt"
+      # runtime.pss.messengerBridge.ssl.caCert: "/etc/cexiolabs/cexiopay/trusted-messenger-bridge-ca.crt"
+      # runtime.pss.cryptoWalletHelper.ssl.caCert: "/etc/cexiolabs/cexiopay/trusted-psscryptowallethelper-ca.crt"
+      # runtime.pss.providerWtf2.ssl.caCert: "/etc/cexiolabs/cexiopay/trusted-pss-provider-wtf2-ca.crt"
       runtime.endpoint.gateUi.bindPath: "/"
-      setup.createCryptoWallet_indexer: ""
+      # setup.createCryptoWallet_indexer: ""
       setup.createExchange_indexer: ""
       setup.setMissingDepositTransaction_indexer: ""
       setup.setMissingWithdrawalTransaction_indexer: ""
