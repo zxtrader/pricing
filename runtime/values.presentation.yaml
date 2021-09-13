@@ -67,7 +67,6 @@ application:
         "--config-toml-file=/etc/cexiolabs/cexiopay.processing/service-setup.toml",
         "--config-toml-file=/etc/cexiolabs/cexiopay.processing/service-presentation.toml",
         "--config-secrets-dir=/etc/cexiolabs/cexiopay/secrets",
-        "--config-secrets-dir=/etc/cexiolabs/cexiopay/secrets-setup",
         "--config-env",
         "--runtime-gate-email-sender=nodemailer",
         "--runtime-use-notifier-service",
