@@ -4,7 +4,7 @@ application:
 
   api:
     env:
-      IdentityServerAuthentication__ValidIssuers: https://id.pay-cex.io
+      IdentityServerAuthentication__ValidIssuers: https://id.cexpay.io
       WTFProviderConfigurationFile: /etc/cexiolabs/cexiopay.api/legacy-cpservice-config/WTF-prod.json
 
   echo:
@@ -15,10 +15,7 @@ application:
 
   identity:
     env:
-      Emailer__SendGrid__senderEmail: "no-reply@pay-cex.io"
-
-  notifier:
-    replicas: 1
+      Emailer__SendGrid__senderEmail: "no-reply@cexpay.io"
 
   processing:
     args:
@@ -31,10 +28,6 @@ application:
         "--config-env"
       ]
     env:
-      # runtime.aggregator.ssl.caCert: "/etc/cexiolabs/cexiopay/trusted-aggregator-ca.crt"
-      # runtime.pss.messengerBridge.ssl.caCert: "/etc/cexiolabs/cexiopay/trusted-messenger-bridge-ca.crt"
-      # runtime.pss.cryptoWalletHelper.ssl.caCert: "/etc/cexiolabs/cexiopay/trusted-psscryptowallethelper-ca.crt"
-      # runtime.pss.providerWtf2.ssl.caCert: "/etc/cexiolabs/cexiopay/trusted-pss-provider-wtf2-ca.crt"
       runtime.endpoint.gateUi.bindPath: "/"
       setup.createCryptoWallet_indexer: ""
       setup.createExchange_indexer: ""
@@ -199,8 +192,8 @@ ingress:
 
   Gatehostinternal:
     blue:
-      domain: gate3.pay-cex.io
-      certSecretName: ingress-pay-cex-certificate
+      domain: gate3.cexpay.io
+      certSecretName: ingress-cexpayio-certificate
     nonblue:
       # Make final domain "gate3-<HelmReleaseName>.prodcryptopay.kube" like a:
       #   gate-green.prodcryptopay.kube
