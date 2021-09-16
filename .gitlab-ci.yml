@@ -404,9 +404,7 @@ include:
     - CONTAINER_ID=$(docker create ${IMAGE})
     - docker cp "${CONTAINER_ID}:/usr/local/cexiolabs/cexiopay.board/." .github-data
     - docker rm -v "${CONTAINER_ID}"
-    # - find .github-data/ -type f -exec sed -i "s~/PLACEHOLDER_BASE_PATH~~g" {} \;
-    # - find .github-data/ -type f -exec sed -i "s~PLACEHOLDER_API_SERVICE_URL~${API_SERVICE_URL}~g" {} \;
-    # - find .github-data/ -type f -exec sed -i "s~PLACEHOLDER_IDENTITY_SERVICE_URL~${IDENTITY_SERVICE_URL}~g" {} \;
+    - find .github-data/ -type f -exec sed -i "s~/PLACEHOLDER_PATH_PREFIX~~g" {} \;
     - echo -n "board.cexpay.io" > .github-data/CNAME
     - touch .github-data/.nojekyll
     - (cd .github-data && git config --local user.name "${GITHUB_USER}" && git config --local user.email "${GITHUB_EMAIL}" && git add -A && git commit --amend --message "${VERSION_TAG}" && git push --force)

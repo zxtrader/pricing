@@ -49,7 +49,7 @@ application:
 
   landing:
     serviceImage: harbor.infra.kube/cexiopay/landing
-    tag: 0.1.0
+    tag: 0.1.1
     args:
       [
         "--use-ssl"
