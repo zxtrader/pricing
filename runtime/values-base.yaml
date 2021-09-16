@@ -44,7 +44,7 @@ application:
 
   identity:
     serviceImage: harbor.infra.kube/cexiopay/identity
-    tag: 0.1.11
+    tag: 0.1.12
     replicas: 1
 
   landing:
