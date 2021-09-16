@@ -2,7 +2,7 @@ application:
 
   api:
     serviceImage: harbor.infra.kube/cexiopay/api
-    tag: 0.6.0
+    tag: 0.6.1
     replicas: 1
 
   board:
