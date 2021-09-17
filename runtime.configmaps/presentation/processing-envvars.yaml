@@ -35,7 +35,7 @@ data:
   # runtime.endpoint.notification.cors.allowedHeaders: "*"
   # runtime.endpoint.notification.cors.methods: GET, POST, PUT, DELETE
   # runtime.endpoint.notification.cors.whiteList: https://presentation-cexiopay.dev.kube https://pay-cex-test.net
-  # runtime.endpoint.order.cors.allowedHeaders: "*"
+  runtime.endpoint.order.cors.allowedHeaders: "*"
   runtime.endpoint.order.cors.methods: GET, POST, PUT, DELETE
   runtime.endpoint.order.cors.whiteList: https://presentation-cexiopay.dev.kube https://pay-cex-test.net
   runtime.endpoint.order.servers: processingApiSrv sysadminSrv
