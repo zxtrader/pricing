@@ -38,8 +38,8 @@ application:
     replicas: 2
 
   gatehostinternal:
-    serviceImage: devdocker.infra.kube/cexiopay/gate/hostinternal
-    tag: 0.0.2
+    serviceImage: 	harbor.infra.kube/cexiopay/gate/hostinternal
+    tag: 0.0.4
     replicas: 2
 
   identity:
