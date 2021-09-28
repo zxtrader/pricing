@@ -29,6 +29,7 @@ application:
       GATE_ID: 51c15da2-a79b-456d-8300-7d289bc97bc9
       GATE_URL: https://gate-testnet.cryptopay.band
       NODE_TLS_REJECT_UNAUTHORIZED: 0
+    replicas: 0
 
   gatehostinternal:
     serviceImage: devdocker.infra.kube/cexiopay/gate/hostinternal/snapshot

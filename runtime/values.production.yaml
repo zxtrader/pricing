@@ -11,7 +11,7 @@ application:
     replicas: 0
 
   gatehostinternal:
-    replicas: 0
+    replicas: 1
 
   identity:
     env:

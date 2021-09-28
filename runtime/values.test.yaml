@@ -188,7 +188,7 @@ ingress:
         backendServiceName: echo
         backendServicePort: 8443
 
-  Gate:
+  Gatehostinternal:
     blue:
       domain: gate.pay-cex-test.net
       certSecretName: ingress-pay-cex-test-certificate
@@ -197,29 +197,6 @@ ingress:
       #   gate-green-test-cexiopay.dev.kube
       #   gate-master-test-cexiopay.dev.kube
       domainPerfix: gate-
-      domainSuffix: -test-cexiopay.dev.kube
-      certSecretName: dev
-    backendInsecure: false
-    nginxConfigurationSnippet: |
-      add_header Last-Modified $date_gmt;
-      add_header Cache-Control 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0';
-      if_modified_since off;
-      expires off;
-      etag off;
-    paths:
-      "/":
-        backendServiceName: processing
-        backendServicePort: 8085
-
-  Gatehostinternal:
-    blue:
-      domain: gate3.pay-cex-test.net
-      certSecretName: ingress-pay-cex-test-certificate
-    nonblue:
-      # Make final domain "gate3-<HelmReleaseName>-test-cexiopay.dev.kube" like a:
-      #   gate-green-test-cexiopay.dev.kube
-      #   gate-master-test-cexiopay.dev.kube
-      domainPerfix: gate3-
       domainSuffix: -test-cexiopay.dev.kube
       certSecretName: dev
     backendInsecure: false
