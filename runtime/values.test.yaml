@@ -188,7 +188,7 @@ ingress:
         backendServiceName: echo
         backendServicePort: 8443
 
-  Gatehostinternal:
+  Gate:
     blue:
       domain: gate.pay-cex-test.net
       certSecretName: ingress-pay-cex-test-certificate

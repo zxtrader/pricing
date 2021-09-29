@@ -155,21 +155,21 @@ ingress:
         backendServiceName: processing
         backendServicePort: 8082
 
-  Gate:
-    blue:
-      domain: gate.cexpay.io
-      certSecretName: ingress-cexpayio-certificate
-    nonblue:
-      # Make final domain "gate-<HelmReleaseName>.prodcryptopay.kube" like a:
-      #   gate-green.prodcryptopay.kube
-      domainPerfix: gate-
-      domainSuffix: .prodcryptopay.kube
-      certSecretName: wildcard-prodcryptopay-kube
-    backendInsecure: false
-    paths:
-      "/":
-        backendServiceName: processing
-        backendServicePort: 8085
+  # Gate:
+  #   blue:
+  #     domain: gate.cexpay.io
+  #     certSecretName: ingress-cexpayio-certificate
+  #   nonblue:
+  #     # Make final domain "gate-<HelmReleaseName>.prodcryptopay.kube" like a:
+  #     #   gate-green.prodcryptopay.kube
+  #     domainPerfix: gate-
+  #     domainSuffix: .prodcryptopay.kube
+  #     certSecretName: wildcard-prodcryptopay-kube
+  #   backendInsecure: false
+  #   paths:
+  #     "/":
+  #       backendServiceName: processing
+  #       backendServicePort: 8085
       # "/":
       #   backendServiceName: gateuiserve
       #   backendServicePort: 8080
@@ -180,24 +180,24 @@ ingress:
       #   backendServiceName: processing
       #   backendServicePort: 8085
 
-  Gate-Obsolete-1:
-    blue:
-      domain: gate.pay-cex.io
-      certSecretName: ingress-pay-cex-certificate
-    backendInsecure: false
-    paths:
-      "/":
-        backendServiceName: processing
-        backendServicePort: 8085
+  # Gate-Obsolete-1:
+  #   blue:
+  #     domain: gate.pay-cex.io
+  #     certSecretName: ingress-pay-cex-certificate
+  #   backendInsecure: false
+  #   paths:
+  #     "/":
+  #       backendServiceName: processing
+  #       backendServicePort: 8085
 
-  Gatehostinternal:
+  Gate:
     blue:
-      domain: gate3.cexpay.io
+      domain: gate.cexpay.io
       certSecretName: ingress-cexpayio-certificate
     nonblue:
       # Make final domain "gate3-<HelmReleaseName>.prodcryptopay.kube" like a:
       #   gate-green.prodcryptopay.kube
-      domainPerfix: gate3-
+      domainPerfix: gate-
       domainSuffix: .prodcryptopay.kube
       certSecretName: wildcard-prodcryptopay-kube
     backendInsecure: false
