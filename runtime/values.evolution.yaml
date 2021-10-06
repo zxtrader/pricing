@@ -22,6 +22,10 @@ application:
   dashboardlegacy2:
     serviceImage: harbor.infra.kube/cexiopay/dashboard-react/snapshot
 
+  dashboards:
+    serviceImage: devdocker.infra.kube/cexiopay/dashboards/snapshot
+    replicas: 1
+
   demo:
     env:
       BASE_PATH: /widget-demo/
@@ -147,6 +151,22 @@ ingress:
       "/v2/dashboard/":
         backendServiceName: processing
         backendServicePort: 8082
+
+  Dashboards:
+    blue:
+      domain: dashboards-evolution-cexiopay.dev.kube
+      certSecretName: dev
+    backendInsecure: false
+    nginxConfigurationSnippet: |
+      add_header Last-Modified $date_gmt;
+      add_header Cache-Control 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0';
+      if_modified_since off;
+      expires off;
+      etag off;
+    paths:
+      "/":
+        backendServiceName: dashboards
+        backendServicePort: 8443
 
   Echo:
     blue:

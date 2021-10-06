@@ -27,6 +27,17 @@ application:
       BASE_PATH: /
     replicas: 1
 
+  dashboards:
+    serviceImage: devdocker.infra.kube/cexiopay/dashboards/snapshot
+    tag: main.e9fc4cf4
+    args:
+      [
+        "--use-ssl"
+      ]
+    env:
+      BASE_PATH: /
+    replicas: 1
+
   demo:
     serviceImage: cexiolabs/cexpay.gate.integration-demo
     tag: 20211129-3

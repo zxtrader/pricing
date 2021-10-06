@@ -1,7 +1,7 @@
 {{ if or (and (ne .Values.zone "test") (ne .Values.zone "production")) (ne .Release.Name "blue") }}
 # In "test" and "production" zones on "blue" release, the "board" is hosted on GitHub Pages:
-# - https://github.com/cexiolabs/cexiopay.board-production-hosting
-# - https://github.com/cexiolabs/cexiopay.board-test-hosting
+# - https://github.com/cexiolabs/cexpay.board-production-hosting
+# - https://github.com/cexiolabs/cexpay.board-test-hosting
 # so we deploy this conditionally
 apiVersion: certmanager.k8s.io/v1alpha1
 kind: Certificate

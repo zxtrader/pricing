@@ -1,7 +1,7 @@
 {{ if and (ne .Values.zone "production") (eq .Release.Name "blue") }}
-# In "test" and "production" zones on "blue" release, the "landing" is hosted on GitHub Pages:
-# - https://github.com/cexiolabs/cexiopay.landing-production-hosting
-# - https://github.com/cexiolabs/cexiopay.landing-test-hosting
+# 1) In "production" zone, the "landing" is hosted on GitHub Pages:
+# - https://github.com/cexiolabs/cexpay.landing-hosting
+# 2) In non "production" zones deploy for "blue" release ONLY
 # so we deploy this conditionally
 apiVersion: certmanager.k8s.io/v1alpha1
 kind: Certificate
