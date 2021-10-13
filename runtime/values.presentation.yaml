@@ -32,7 +32,7 @@ application:
     replicas: 0
 
   gatehostinternal:
-    serviceImage: devdocker.infra.kube/cexiopay/gate/hostinternal/snapshot
+    serviceImage: harbor.infra.kube/cexiopay/gate/hostinternal/snapshot
 
   identity:
     serviceImage: harbor.infra.kube/cexiopay/identity/snapshot
@@ -70,7 +70,6 @@ application:
       DEBUG_WAIT: "no"
       LOG_LEVEL: "debug"
       GATE_URL: https://gate-presentation-cexiopay.dev.kube
-
 
 ingress:
 

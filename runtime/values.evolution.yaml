@@ -15,15 +15,12 @@ application:
     env:
       IdentityServerAuthentication__ValidIssuers: https://id-evolution-cexiopay.dev.kube
       WTFProviderConfigurationFile: /etc/cexiolabs/cexiopay.api/legacy-cpservice-config/WTF-dev.json
-    replicas: 1
 
   board:
     serviceImage: harbor.infra.kube/cexiopay/board/snapshot
-    replicas: 1
 
   dashboardlegacy2:
     serviceImage: harbor.infra.kube/cexiopay/dashboard-react/snapshot
-    replicas: 1
 
   demo:
     env:
@@ -35,8 +32,7 @@ application:
     replicas: 0
 
   gatehostinternal:
-    serviceImage: devdocker.infra.kube/cexiopay/gate/hostinternal/snapshot
-    replicas: 1
+    serviceImage: harbor.infra.kube/cexiopay/gate/hostinternal/snapshot
 
   identity:
     serviceImage: harbor.infra.kube/cexiopay/identity/snapshot
@@ -48,15 +44,12 @@ application:
         "--config-env",
         "--log-json"
       ]
-    replicas: 1
 
   landing:
     serviceImage: devdocker.infra.kube/cexiopay/landing/snapshot
-    replicas: 1
 
   notifier:
     serviceImage: harbor.infra.kube/cexiolabs/communitysoft/notifier/csharp/snapshot
-    replicas: 1
 
   processing:
     serviceImage: harbor.infra.kube/cexiopay/processing/snapshot
@@ -77,7 +70,6 @@ application:
       DEBUG_WAIT: "no"
       LOG_LEVEL: "debug"
       GATE_URL: https://gate-evolution-cexiopay.dev.kube
-    replicas: 1
 
 
 ingress:

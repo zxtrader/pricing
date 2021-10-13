@@ -10,9 +10,6 @@ application:
   echo:
     replicas: 0
 
-  gatehostinternal:
-    replicas: 1
-
   identity:
     env:
       Emailer__SendGrid__senderEmail: "no-reply@cexpay.io"
@@ -34,7 +31,6 @@ application:
       setup.setMissingDepositTransaction_indexer: ""
       setup.setMissingWithdrawalTransaction_indexer: ""
       setup.subscribeNotification_indexer: ""
-
 
 ingress:
 

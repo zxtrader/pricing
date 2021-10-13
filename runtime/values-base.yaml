@@ -14,7 +14,7 @@ application:
       ]
     env:
       BASE_PATH: /
-    replicas: 2
+    replicas: 1
 
   dashboardlegacy2:
     serviceImage: harbor.infra.kube/cexiopay/dashboard-react
@@ -25,12 +25,12 @@ application:
       ]
     env:
       BASE_PATH: /
-    replicas: 2
+    replicas: 1
 
   demo:
     serviceImage: cexiolabs/cexiopay.demo
     tag: latest
-    replicas: 2
+    replicas: 0
 
   echo:
     serviceImage: cexiolabs/http-https-echo
@@ -38,8 +38,8 @@ application:
     replicas: 2
 
   gatehostinternal:
-    serviceImage: 	harbor.infra.kube/cexiopay/gate/hostinternal
-    tag: 0.0.4
+    serviceImage: harbor.infra.kube/cexiopay/gate/hostinternal
+    tag: 0.0.6
     replicas: 1
 
   identity:
@@ -56,10 +56,10 @@ application:
       ]
     env:
       BASE_PATH: /
-    replicas: 2
+    replicas: 1
 
   messengerbridge:
-    serviceImage: zxteamorg/messenger-bridge
+    serviceImage: cexiolabs/messenger-bridge
     tag: 0.0.4
     args:
       [
@@ -67,7 +67,7 @@ application:
         "--config-secrets-dir=/etc/cexiolabs/cexiopay/secrets",
         "--config-env",
       ]
-    replicas: 1
+    replicas: 0
 
   notifier:
     serviceImage: harbor.infra.kube/cexiolabs/communitysoft/notifier/csharp
@@ -86,5 +86,5 @@ application:
 
   processing:
     serviceImage: harbor.infra.kube/cexiopay/processing
-    tag: 2.5.1
+    tag: 2.6.0
     replicas: 1
