@@ -1,0 +1,8 @@
+# kubectl --namespace cryptopay get --output=yaml ConfigMap/gatehostinternal-files
+# kubectl --namespace cryptopay apply --filename=runtime.configmaps/production/gatehostinternal-files.yaml
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: cryptopay
+  name: gatehostinternal-files

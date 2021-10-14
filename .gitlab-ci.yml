@@ -759,6 +759,8 @@ include:
   script:
     - export KUBECONFIG=/tmp/.kube-config
     - echo "$KUBECONF_BASE64" | base64 -d > "${KUBECONFIG}"
+    - kubectl --namespace cryptopay apply --filename=runtime.configmaps/production/gatehostinternal-envvars.yaml
+    - kubectl --namespace cryptopay apply --filename=runtime.configmaps/production/gatehostinternal-files.yaml
     - kubectl --namespace cryptopay apply --filename=runtime.configmaps/production/messengerbridge-files.yaml
     - kubectl --namespace cryptopay apply --filename=runtime.configmaps/production/notifier-envvars.yaml
     - kubectl --namespace cryptopay apply --filename=runtime.configmaps/production/notifier-files.yaml

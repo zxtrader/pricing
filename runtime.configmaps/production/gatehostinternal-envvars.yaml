@@ -1,0 +1,11 @@
+# kubectl --namespace cryptopay get --output=yaml ConfigMap/gatehostinternal-envvars
+# kubectl --namespace cryptopay apply --filename=runtime.configmaps/production/gatehostinternal-envvars.yaml
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: gatehostinternal-envvars
+  namespace: cryptopay
+data:
+  GATE_BASE_URL: https://gate.cexpay.io
+  Processing__BaseUrl: https://api.cexpay.io/
