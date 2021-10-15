@@ -1,33 +1,67 @@
 # kubectl --namespace cexiopay-infra get --output=yaml Ingress
 # kubectl --namespace cexiopay-infra apply --filename=infra/ingress.yaml
 
-apiVersion: networking.k8s.io/v1beta1
-kind: Ingress
-metadata:
-  name: default
-  namespace: cexiopay-infra
-  annotations:
-    nginx.ingress.kubernetes.io/backend-protocol: HTTP
-    nginx.ingress.kubernetes.io/secure-backends: "false"
-spec:
-  tls:
-  - hosts:
-    - infra-cexiopay.dev.kube
-    secretName: dev
-  rules:
-  - host: infra-cexiopay.dev.kube
-    http:
-      paths:
-      - backend:
-          serviceName: notifier
-          servicePort: 8080
-        path: /v2
-      - backend:
-          serviceName: rabbitmq
-          servicePort: 15672
-        path: /rabbitmq
-      - backend:
-          serviceName: notifier
-          servicePort: 8080
-        path: /subscriber
-
+apiVersion: v1
+items:
+- apiVersion: extensions/v1beta1
+  kind: Ingress
+  metadata:
+    annotations:
+      nginx.ingress.kubernetes.io/backend-protocol: HTTP
+      nginx.ingress.kubernetes.io/proxy-add-original-uri-header: "true"
+      nginx.ingress.kubernetes.io/secure-backends: "false"
+      nginx.ingress.kubernetes.io/use-forwarded-headers: "true"
+    name: default
+    namespace: cexiopay-infra
+  spec:
+    rules:
+    - host: infra-cexiopay.dev.kube
+      http:
+        paths:
+        - backend:
+            serviceName: notifier
+            servicePort: 8080
+          path: /v2
+        - backend:
+            serviceName: rabbitmq
+            servicePort: 15672
+          path: /rabbitmq
+        - backend:
+            serviceName: redis-commander
+            servicePort: 8081
+          path: /redis
+        - backend:
+            serviceName: notifier
+            servicePort: 8080
+          path: /subscriber
+    tls:
+    - hosts:
+      - infra-cexiopay.dev.kube
+      secretName: dev
+- apiVersion: extensions/v1beta1
+  kind: Ingress
+  metadata:
+    annotations:
+      nginx.ingress.kubernetes.io/backend-protocol: HTTP
+      nginx.ingress.kubernetes.io/proxy-add-original-uri-header: "true"
+      nginx.ingress.kubernetes.io/proxy-body-size: "0"
+      nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
+      nginx.ingress.kubernetes.io/proxy-send-timeout: "600"
+      nginx.ingress.kubernetes.io/secure-backends: "false"
+      nginx.ingress.kubernetes.io/use-forwarded-headers: "true"
+    name: temporary-nuget
+    namespace: cexiopay-infra
+  spec:
+    rules:
+    - host: nuget-infra-cexiopay.dev.kube
+      http:
+        paths:
+        - backend:
+            serviceName: temporary-nuget
+            servicePort: nuget-nginx
+          path: /
+    tls:
+    - hosts:
+      - nuget-infra-cexiopay.dev.kube
+      secretName: dev
+kind: List
