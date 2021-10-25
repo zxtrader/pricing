@@ -39,7 +39,7 @@ application:
 
   gatehostinternal:
     serviceImage: harbor.infra.kube/cexiopay/gate/hostinternal
-    tag: 0.0.6
+    tag: 0.0.7
     replicas: 1
 
   identity:
