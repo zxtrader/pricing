@@ -61,6 +61,10 @@ spec:
           requests:
             cpu: 128m
             memory: 16Mi
+{{- if ne .Values.zone "production" }}
+      imagePullSecrets:
+      - name: cexpay-registry
+{{- end }}
       volumes:
       - name: secret-certificate
         secret:

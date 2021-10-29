@@ -107,6 +107,10 @@ spec:
           requests:
             cpu: 128m
             memory: 256Mi
+{{- if ne .Values.zone "production" }}
+      imagePullSecrets:
+      - name: cexpay-registry
+{{- end }}
       volumes:
       - name: config-files
         configMap:

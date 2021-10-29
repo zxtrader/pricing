@@ -86,6 +86,10 @@ spec:
           mountPath: /etc/cexiolabs/cexiopay.identity/ssl/
         - name: secret-files
           mountPath: /etc/cexiolabs/cexiopay.identity/secrets/
+{{- if ne .Values.zone "production" }}
+      imagePullSecrets:
+      - name: cexpay-registry
+{{- end }}
       volumes:
       # - name: config-files
       #   configMap:

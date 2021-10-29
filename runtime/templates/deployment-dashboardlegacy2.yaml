@@ -69,6 +69,10 @@ spec:
         volumeMounts:
         - name: secret-certificate
           mountPath: /etc/cexiolabs/cexiopay.dashboard-react/ssl/
+{{- if ne .Values.zone "production" }}
+      imagePullSecrets:
+      - name: cexpay-registry
+{{- end }}
       volumes:
       - name: secret-certificate
         secret:

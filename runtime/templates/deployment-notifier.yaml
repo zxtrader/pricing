@@ -90,6 +90,10 @@ spec:
           mountPath: /etc/cexiolabs/communitysoft.notifier/secrets/
       - name: local-temporary-postgres
         image: zxteamorg/devel.postgres-13:20210515
+{{- if ne .Values.zone "production" }}
+      imagePullSecrets:
+      - name: cexpay-registry
+{{- end }}
       volumes:
       - name: config-files
         configMap:
