@@ -84,6 +84,9 @@ ingress:
       "/":
         backendServiceName: api
         backendServicePort: 8443
+      "/emulator-crypto":
+        backendServiceName: processing
+        backendServicePort: 8080
       "/v2/":
         backendServiceName: processing
         backendServicePort: 8080
