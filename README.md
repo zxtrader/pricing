@@ -68,7 +68,7 @@ Tag name format: `<RELEASE_TAG>-database`
 	```bash
 	$ cd runtime
 	# Set "helm" docker alias if you does not have Helm locally. Choose one of following:
-	$ alias helm="docker run --interactive --tty --rm --volume \"${HOME}/.kube/config:/root/.kube/config\" --volume \"$(pwd):/apps\" --entrypoint /usr/bin/helm devdocker.infra.kube/cexiolabs/docker/helm3/snapshot:master.dcb37861"
+	$ alias helm="docker run --interactive --tty --rm --volume \"${HOME}/.kube/config:/root/.kube/config\" --volume \"$(pwd):/apps\" --entrypoint /usr/bin/helm docker-cexpay.infra.kube/cexiolabs/docker/helm3/snapshot:master.dcb37861"
 	$ alias helm="docker run --interactive --tty --rm --volume \"${HOME}/.kube/config:/root/.kube/config\" --volume \"$(pwd):/apps\" alpine/helm:3.2.0"
 	```
 1. Set environment
@@ -107,7 +107,7 @@ $ helm --namespace "cexiopay-${ENV}" upgrade --install --history-max 3 --values 
 ```
 
 ```bash
-$ helm --namespace "cexiopay-${ENV}" upgrade --install --history-max 3 --values "values-base.yaml" --values "values.${ENV}.yaml" --set "application.processing.serviceImage=devdocker.infra.kube/cexiopay/cpservice/snapshot" --set "application.processing.tag=2-1-38-hotfix" blue .
+$ helm --namespace "cexiopay-${ENV}" upgrade --install --history-max 3 --values "values-base.yaml" --values "values.${ENV}.yaml" --set "application.processing.serviceImage=docker-cexpay.infra.kube/cexiopay/cpservice/snapshot" --set "application.processing.tag=2-1-38-hotfix" blue .
 ```
 
 ```bash

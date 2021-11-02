@@ -46,7 +46,7 @@ application:
       ]
 
   landing:
-    serviceImage: devdocker.infra.kube/cexiopay/landing/snapshot
+    serviceImage: docker-cexpay.infra.kube/cexiopay/landing/snapshot
 
   notifier:
     serviceImage: harbor.infra.kube/cexiolabs/communitysoft/notifier/csharp/snapshot

@@ -1,7 +1,7 @@
 variables:
   IMAGE_HELM2: alpine/helm:2.14.0
   # IMAGE_HELM3: harbor.infra.kube/infra/helm:3
-  IMAGE_HELM3: devdocker.infra.kube/cexiolabs/docker/helm3/snapshot:master.dcb37861
+  IMAGE_HELM3: docker-cexpay.infra.kube/cexiolabs/docker/helm3/snapshot:master.dcb37861
   IMAGE_KUBECTL: bitnami/kubectl:1.20.2
 
 .functions: &functions |
