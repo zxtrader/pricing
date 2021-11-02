@@ -12,6 +12,7 @@ application:
 
   identity:
     env:
+      Authentication__indexer: ""
       Emailer__SendGrid__senderEmail: "no-reply@cexpay.io"
 
   processing:
