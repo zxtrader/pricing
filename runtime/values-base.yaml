@@ -85,6 +85,6 @@ application:
     replicas: 1
 
   processing:
-    serviceImage: harbor.infra.kube/cexiopay/processing
+    serviceImage: harbor.infra.kube/cexiopay/processing/amd64
     tag: 2.7.2
     replicas: 1

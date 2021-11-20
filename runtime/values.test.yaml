@@ -55,7 +55,7 @@ application:
     serviceImage: harbor.infra.kube/cexiolabs/communitysoft/notifier/csharp/snapshot
 
   processing:
-    serviceImage: harbor.infra.kube/cexiopay/processing/snapshot
+    serviceImage: harbor.infra.kube/cexiopay/processing/snapshot/amd64
     args:
       [
         "--config-file=/etc/cexiolabs/cexiopay.processing/service.config",
