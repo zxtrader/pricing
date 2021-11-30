@@ -1,13 +1,13 @@
 application:
 
   api:
-    serviceImage: harbor.infra.kube/cexiopay/api
-    tag: 0.6.2
+    serviceImage: harbor.infra.kube/cexiopay/api/amd64
+    tag: 0.8.4
     replicas: 1
 
   board:
     serviceImage: harbor.infra.kube/cexiopay/board
-    tag: 2.7.1
+    tag: 2.10.1
     args:
       [
         "--use-ssl"
@@ -28,9 +28,9 @@ application:
     replicas: 1
 
   demo:
-    serviceImage: cexiolabs/cexiopay.demo
-    tag: latest
-    replicas: 0
+    serviceImage: cexiolabs/cexpay.gate.integration-demo
+    tag: 20211129-3
+    replicas: 1
 
   echo:
     serviceImage: cexiolabs/http-https-echo
@@ -38,13 +38,13 @@ application:
     replicas: 2
 
   gatehostinternal:
-    serviceImage: harbor.infra.kube/cexiopay/gate/hostinternal
-    tag: 0.0.7
+    serviceImage: harbor.infra.kube/cexiopay/gate/hostinternal/amd64
+    tag: 0.2.4
     replicas: 1
 
   identity:
-    serviceImage: harbor.infra.kube/cexiopay/identity
-    tag: 0.1.16
+    serviceImage: harbor.infra.kube/cexiopay/identity/amd64
+    tag: 0.2.5
     replicas: 1
 
   landing:
