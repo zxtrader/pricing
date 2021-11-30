@@ -3,7 +3,7 @@ zone: test
 application:
 
   api:
-    serviceImage: harbor.infra.kube/cexiopay/api/snapshot
+    serviceImage: harbor.infra.kube/cexiopay/api/snapshot/amd64
     args:
       [
         "--config-json-file=/etc/cexiolabs/cexiopay.api/appsettings.json",
@@ -32,10 +32,10 @@ application:
     replicas: 0
 
   gatehostinternal:
-    serviceImage: harbor.infra.kube/cexiopay/gate/hostinternal/snapshot
+    serviceImage: harbor.infra.kube/cexiopay/gate/hostinternal/snapshot/amd64
 
   identity:
-    serviceImage: harbor.infra.kube/cexiopay/identity/snapshot
+    serviceImage: harbor.infra.kube/cexiopay/identity/snapshot/amd64
     args:
       [
         "--config-json-file=/etc/cexiolabs/cexiopay.identity/appsettings.json",
@@ -52,7 +52,7 @@ application:
     replicas: 0
 
   notifier:
-    serviceImage: harbor.infra.kube/cexiolabs/communitysoft/notifier/csharp/snapshot
+    serviceImage: harbor.infra.kube/cexiolabs/communitysoft/notifier/csharp/snapshot/amd64
 
   processing:
     serviceImage: harbor.infra.kube/cexiopay/processing/snapshot/amd64
