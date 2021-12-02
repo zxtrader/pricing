@@ -10,7 +10,7 @@ spec:
   type: ClusterIP
   sessionAffinity: None
   selector:
-    workloadID_notifier: "true"
+    app: notifier
   ports:
   - name: http
     port: 8080
