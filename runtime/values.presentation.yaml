@@ -128,25 +128,6 @@ ingress:
         backendServiceName: processing
         backendServicePort: 8086
 
-  Dashboard:
-    blue:
-      domain: dashboard-presentation-cexpay.dev.kube
-      certSecretName: dev
-    backendInsecure: false
-    nginxConfigurationSnippet: |
-      add_header Last-Modified $date_gmt;
-      add_header Cache-Control 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0';
-      if_modified_since off;
-      expires off;
-      etag off;
-    paths:
-      "/":
-        backendServiceName: dashboardlegacy2
-        backendServicePort: 8443
-      "/v2/dashboard/":
-        backendServiceName: processing
-        backendServicePort: 8082
-
   Echo:
     blue:
       domain: echo-presentation-cexpay.dev.kube

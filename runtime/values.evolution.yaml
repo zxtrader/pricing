@@ -4,6 +4,7 @@ application:
 
   api:
     serviceImage: harbor.infra.kube/cexpay/api/snapshot/amd64
+    tag: latest
     args:
       [
         "--config-json-file=/etc/cexiolabs/cexpay.api/appsettings.json",
@@ -18,15 +19,10 @@ application:
 
   board:
     serviceImage: harbor.infra.kube/cexpay/board/snapshot
-
-  dashboardlegacy2:
-    serviceImage: harbor.infra.kube/cexpay/dashboard-react/snapshot
-
-  dashboards:
-    serviceImage: devdocker.infra.kube/cexpay/dashboards/snapshot
-    replicas: 1
+    tag: latest
 
   demo:
+    tag: latest
     env:
       BASE_PATH: /widget-demo/
       GATE_API_ORIGIN: https://processing:8443
@@ -37,9 +33,11 @@ application:
 
   gatehostinternal:
     serviceImage: harbor.infra.kube/cexpay/gate/hostinternal/snapshot/amd64
+    tag: latest
 
   identity:
     serviceImage: harbor.infra.kube/cexpay/identity/snapshot/amd64
+    tag: latest
     args:
       [
         "--config-json-file=/etc/cexiolabs/cexpay.identity/appsettings.json",
@@ -51,6 +49,7 @@ application:
 
   invoice:
     serviceImage: harbor.infra.kube/cexpay/invoice/snapshot/amd64
+    tag: latest
     args:
       [
         "--config-json-file=/etc/cexiolabs/cexpay.invoice/appsettings.json",
@@ -63,12 +62,15 @@ application:
 
   landing:
     serviceImage: docker-cexpay.infra.kube/cexpay/landing/snapshot
+    tag: latest
 
   notifier:
     serviceImage: harbor.infra.kube/cexiolabs/communitysoft/notifier/csharp/snapshot/amd64
+    tag: latest
 
   processing:
     serviceImage: harbor.infra.kube/cexpay/processing/snapshot/amd64
+    tag: latest
     args:
       [
         "--config-file=/etc/cexiolabs/cexpay.processing/service.config",
@@ -133,41 +135,6 @@ ingress:
         backendServiceName: processing
         backendServicePort: 8086
 
-  Dashboard:
-    blue:
-      domain: dashboard-evolution-cexpay.dev.kube
-      certSecretName: dev
-    backendInsecure: false
-    nginxConfigurationSnippet: |
-      add_header Last-Modified $date_gmt;
-      add_header Cache-Control 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0';
-      if_modified_since off;
-      expires off;
-      etag off;
-    paths:
-      "/":
-        backendServiceName: dashboardlegacy2
-        backendServicePort: 8443
-      "/v2/dashboard/":
-        backendServiceName: processing
-        backendServicePort: 8082
-
-  Dashboards:
-    blue:
-      domain: dashboards-evolution-cexpay.dev.kube
-      certSecretName: dev
-    backendInsecure: false
-    nginxConfigurationSnippet: |
-      add_header Last-Modified $date_gmt;
-      add_header Cache-Control 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0';
-      if_modified_since off;
-      expires off;
-      etag off;
-    paths:
-      "/":
-        backendServiceName: dashboards
-        backendServicePort: 8443
-
   Echo:
     blue:
       domain: echo-evolution-cexpay.dev.kube
@@ -177,22 +144,6 @@ ingress:
       "/":
         backendServiceName: echo
         backendServicePort: 8443
-
-  # Gate:
-  #   blue:
-  #     domain: gate-evolution-cexpay.dev.kube
-  #     certSecretName: dev
-  #   backendInsecure: false
-  #   nginxConfigurationSnippet: |
-  #     add_header Last-Modified $date_gmt;
-  #     add_header Cache-Control 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0';
-  #     if_modified_since off;
-  #     expires off;
-  #     etag off;
-  #   paths:
-  #     "/":
-  #       backendServiceName: processing
-  #       backendServicePort: 8085
 
   Gate:
     blue:

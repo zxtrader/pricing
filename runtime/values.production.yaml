@@ -77,9 +77,6 @@ ingress:
       "/":
         backendServiceName: processing
         backendServicePort: 8080
-      "/v2/gate/":
-        backendServiceName: processing
-        backendServicePort: 8085
       "/v3/":
         backendServiceName: api
         backendServicePort: 8443
@@ -100,9 +97,6 @@ ingress:
       "/":
         backendServiceName: processing
         backendServicePort: 8080
-      "/v2/gate/":
-        backendServiceName: processing
-        backendServicePort: 8085
       "/v3/":
         backendServiceName: api
         backendServicePort: 8443
@@ -125,6 +119,9 @@ ingress:
       "/":
         backendServiceName: board
         backendServicePort: 8443
+      "/v2/dashboard/":
+        backendServiceName: processing
+        backendServicePort: 8082
 
   Callbacks-Internal:
     blue:
@@ -137,65 +134,6 @@ ingress:
       "/ws/":
         backendServiceName: processing
         backendServicePort: 8086
-
-  DashboardLegacy2:
-    blue:
-      domain: dashboard.cryptopay.band
-      certSecretName: ingress-gate-api-dashboard
-    nonblue:
-      # Make final domain "dashboard-<HelmReleaseName>.prodcryptopay.kube" like a:
-      #   dashboard-green.prodcryptopay.kube
-      domainPerfix: dashboard-
-      domainSuffix: .prodcryptopay.kube
-      certSecretName: wildcard-prodcryptopay-kube
-    nginxConfigurationSnippet: |
-      add_header Last-Modified $date_gmt;
-      add_header Cache-Control 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0';
-      if_modified_since off;
-      expires off;
-      etag off;
-    paths:
-      "/":
-        backendServiceName: dashboardlegacy2
-        backendServicePort: 8443
-      "/v2/dashboard/":
-        backendServiceName: processing
-        backendServicePort: 8082
-
-  # Gate:
-  #   blue:
-  #     domain: gate.cexpay.io
-  #     certSecretName: ingress-cexpayio-certificate
-  #   nonblue:
-  #     # Make final domain "gate-<HelmReleaseName>.prodcryptopay.kube" like a:
-  #     #   gate-green.prodcryptopay.kube
-  #     domainPerfix: gate-
-  #     domainSuffix: .prodcryptopay.kube
-  #     certSecretName: wildcard-prodcryptopay-kube
-  #   backendInsecure: false
-  #   paths:
-  #     "/":
-  #       backendServiceName: processing
-  #       backendServicePort: 8085
-      # "/":
-      #   backendServiceName: gateuiserve
-      #   backendServicePort: 8080
-      # "/v2/gate/":
-      #   backendServiceName: processing
-      #   backendServicePort: 8085
-      # "/v2/gate-callback/":
-      #   backendServiceName: processing
-      #   backendServicePort: 8085
-
-  # Gate-Obsolete-1:
-  #   blue:
-  #     domain: gate.pay-cex.io
-  #     certSecretName: ingress-pay-cex-certificate
-  #   backendInsecure: false
-  #   paths:
-  #     "/":
-  #       backendServiceName: processing
-  #       backendServicePort: 8085
 
   Gate:
     blue:
