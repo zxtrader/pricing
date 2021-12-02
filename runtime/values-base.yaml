@@ -42,7 +42,7 @@ application:
     replicas: 1
 
   landing:
-    serviceImage: harbor.infra.kube/cexpay/landing
+    serviceImage: harbor.infra.kube/cexpay/landing/amd64
     tag: 0.1.1
     args:
       [

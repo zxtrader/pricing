@@ -40,6 +40,7 @@ kubectl --namespace "${KUBE_NAMESPACE}" get --output=json ConfigMap/processing-f
 kubectl --namespace "${KUBE_NAMESPACE}" get --output=json Secrets/api                         | jq -r ".data" | yq eval -P  > "${TARGET_DIRECTORY}/secret-api.yaml"
 kubectl --namespace "${KUBE_NAMESPACE}" get --output=json Secrets/gatehostinternal            | jq -r ".data" | yq eval -P  > "${TARGET_DIRECTORY}/secret-gatehostinternal.yaml"
 kubectl --namespace "${KUBE_NAMESPACE}" get --output=json Secrets/identity                    | jq -r ".data" | yq eval -P  > "${TARGET_DIRECTORY}/secret-identity.yaml"
+kubectl --namespace "${KUBE_NAMESPACE}" get --output=json Secrets/invoice                     | jq -r ".data" | yq eval -P  > "${TARGET_DIRECTORY}/secret-invoice.yaml"
 kubectl --namespace "${KUBE_NAMESPACE}" get --output=json Secrets/messengerbridge             | jq -r ".data" | yq eval -P  > "${TARGET_DIRECTORY}/secret-messengerbridge.yaml"
 kubectl --namespace "${KUBE_NAMESPACE}" get --output=json Secrets/notifier                    | jq -r ".data" | yq eval -P  > "${TARGET_DIRECTORY}/secret-notifier.yaml"
 kubectl --namespace "${KUBE_NAMESPACE}" get --output=json Secrets/processing                  | jq -r ".data" | yq eval -P  > "${TARGET_DIRECTORY}/secret-processing.yaml"

@@ -25,13 +25,11 @@ application:
 
   demo:
     tag: latest
-    env:
-      BASE_PATH: /widget-demo/
-      GATE_API_ORIGIN: https://processing:8443
-      GATE_ID: 09635610-6109-4179-833b-8675fa709d9b
-      GATE_URL: https://gate-evolution-cexpay.dev.kube
-      NODE_TLS_REJECT_UNAUTHORIZED: 0
-    replicas: 0
+    # env:
+    #   BASE_PATH: /widget-demo/
+    #   GATE_API_ORIGIN: https://processing:8443
+    #   GATE_ID: 09635610-6109-4179-833b-8675fa709d9b
+    #   GATE_URL: https://gate-evolution-cexpay.dev.kube
 
   gatehostinternal:
     # serviceImage: harbor.infra.kube/cexpay/gate/hostinternal/snapshot/amd64
@@ -66,7 +64,7 @@ application:
     replicas: 1
 
   landing:
-    serviceImage: docker-cexpay.infra.kube/cexpay/landing/snapshot
+    serviceImage: docker-cexpay.infra.kube/cexpay/landing/snapshot/amd64
     tag: latest
 
   notifier:
