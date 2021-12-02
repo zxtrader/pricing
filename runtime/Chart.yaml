@@ -7,13 +7,13 @@ apiVersion: v1
 engine: gotpl
 
 # The name of the chart (required)
-name: cexiopay
+name: cexpay
 
 # A SemVer 2 version of the chart (required)
 version: 2.0.0
 
 # The version of the app that this contains (optional). This needn't be SemVer.
-appVersion: 2.11.0
+appVersion: 2.11.1
 
 # The URL of this project's home page (optional)
 home: https://www.cexpay.io/
@@ -23,11 +23,11 @@ description: CEX Pay
 
 # A list of keywords about this project (optional)
 keywords:
-  - cexiopay
+  - cexpay
 
 # A list of URLs to source code for this project (optional)
 sources:
-  - https://gitlab.wnb:28443/cexiopay/
+  - https://gitlab.wnb:28443/cexpay/
 
 # (optional)
 maintainers:

@@ -28,8 +28,8 @@ data:
       listenPort = 8443
       trustProxy = true
       clientCertificateMode = "none"
-      serverCertificate = "/etc/cexiolabs/cexiopay/ssl/tls.crt"
-      serverKey = "/etc/cexiolabs/cexiopay/ssl/tls.key"
+      serverCertificate = "/etc/cexiolabs/cexpay/ssl/tls.crt"
+      serverKey = "/etc/cexiolabs/cexpay/ssl/tls.key"
 
     [[endpoint]]
       # Declare REST endpoint and bound to the API HTTP server on path /v1

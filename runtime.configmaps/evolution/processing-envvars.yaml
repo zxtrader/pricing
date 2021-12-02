@@ -1,11 +1,11 @@
-# kubectl --namespace cexiopay-evolution-admin get --output=yaml ConfigMap/processing-envvars
-# kubectl --namespace cexiopay-evolution-admin apply --filename=runtime.configmaps/evolution/processing-envvars.yaml
+# kubectl --namespace cexpay-evolution-admin get --output=yaml ConfigMap/processing-envvars
+# kubectl --namespace cexpay-evolution-admin apply --filename=runtime.configmaps/evolution/processing-envvars.yaml
 
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: processing-envvars
-  namespace: cexiopay-evolution-admin
+  namespace: cexpay-evolution-admin
 data:
   runtime.aggregator.url: wss://external-api-aggr-demo.dev.kube/ws
   # runtime.dashboardAuth.apiKey: AKIA5YOJLJKEIFAKNWBV
@@ -14,64 +14,64 @@ data:
   # runtime.dashboardAuth.region: us-east-1
   runtime.endpoint.account.cors.allowedHeaders: '*'
   runtime.endpoint.account.cors.methods: GET, POST, PUT, DELETE
-  runtime.endpoint.account.cors.whiteList: https://evolution-cexiopay.dev.kube
+  runtime.endpoint.account.cors.whiteList: https://evolution-cexpay.dev.kube
   runtime.endpoint.dashboard.cors.allowedHeaders: '*'
   runtime.endpoint.dashboard.cors.methods: GET, POST, PUT, DELETE
-  runtime.endpoint.dashboard.cors.whiteList: https://evolution-cexiopay.dev.kube
+  runtime.endpoint.dashboard.cors.whiteList: https://evolution-cexpay.dev.kube
   runtime.endpoint.gateCallback.servers: sysadminSrv
   runtime.endpoint.gateUi.bindPath: /
   runtime.endpoint.instrument.cors.allowedHeaders: '*'
   runtime.endpoint.instrument.cors.methods: GET, POST, PUT, DELETE
-  runtime.endpoint.instrument.cors.whiteList: https://evolution-cexiopay.dev.kube
+  runtime.endpoint.instrument.cors.whiteList: https://evolution-cexpay.dev.kube
   runtime.endpoint.merchant.cors.allowedHeaders: '*'
   runtime.endpoint.merchant.cors.methods: GET, POST, PUT, DELETE
-  runtime.endpoint.merchant.cors.whiteList: https://evolution-cexiopay.dev.kube
+  runtime.endpoint.merchant.cors.whiteList: https://evolution-cexpay.dev.kube
   runtime.endpoint.network.cors.allowedHeaders: '*'
   runtime.endpoint.network.cors.methods: GET, POST, PUT, DELETE
-  runtime.endpoint.network.cors.whiteList: https://evolution-cexiopay.dev.kube
+  runtime.endpoint.network.cors.whiteList: https://evolution-cexpay.dev.kube
   # runtime.endpoint.notification.cors.allowedHeaders: '*'
   # runtime.endpoint.notification.cors.methods: GET, POST, PUT, DELETE
-  # runtime.endpoint.notification.cors.whiteList: https://evolution-cexiopay.dev.kube
+  # runtime.endpoint.notification.cors.whiteList: https://evolution-cexpay.dev.kube
   runtime.endpoint.order.cors.allowedHeaders: '*'
   runtime.endpoint.order.cors.methods: GET, POST, PUT, DELETE
-  runtime.endpoint.order.cors.whiteList: https://evolution-cexiopay.dev.kube
+  runtime.endpoint.order.cors.whiteList: https://evolution-cexpay.dev.kube
   runtime.endpoint.paymentGateway.cors.allowedHeaders: '*'
   runtime.endpoint.paymentGateway.cors.methods: GET, POST, PUT, DELETE
-  runtime.endpoint.paymentGateway.cors.whiteList: https://evolution-cexiopay.dev.kube
+  runtime.endpoint.paymentGateway.cors.whiteList: https://evolution-cexpay.dev.kube
   runtime.endpoint.risk.cors.allowedHeaders: '*'
   runtime.endpoint.risk.cors.methods: GET, POST, PUT, DELETE
-  runtime.endpoint.risk.cors.whiteList: https://evolution-cexiopay.dev.kube
+  runtime.endpoint.risk.cors.whiteList: https://evolution-cexpay.dev.kube
   runtime.endpoint.swaggerUi.bindPath: /specs
   runtime.endpoint.swaggerUi.servers: evolutionSrv
   runtime.endpoint.swaggerUi.specs.Cryptopay: /v2/cryptopay.v2.oas3.yaml
   runtime.endpoint.swaggerUi.specs.Gateway: /gateway/gateway.v2.oas3.yaml
   runtime.endpoint.swaggerUi.specsExtendServer.evolution.description: Evolution Environment
-  runtime.endpoint.swaggerUi.specsExtendServer.evolution.url: https://evolution-cexiopay.dev.kube
+  runtime.endpoint.swaggerUi.specsExtendServer.evolution.url: https://evolution-cexpay.dev.kube
   runtime.endpoint.swaggerUi.specsExtendServer_indexer: evolution
   runtime.endpoint.swaggerUi.type: swagger-ui
   runtime.endpoint.time.cors.allowedHeaders: '*'
   runtime.endpoint.time.cors.methods: GET, POST, PUT, DELETE
-  runtime.endpoint.time.cors.whiteList: https://evolution-cexiopay.dev.kube
+  runtime.endpoint.time.cors.whiteList: https://evolution-cexpay.dev.kube
   runtime.endpoint_indexer: account dashboard info instrument internalInfo gateApi gateCallback gateUi merchant monitoring network order rate risk sysadmin swaggerUi time
   runtime.gate.CPService.url: http://127.0.0.1:7999
   runtime.gate.smtpGmail.user: service@zxteam.net
   runtime.notifier.subscriber.kind: web-socket-client
-  runtime.notifier.subscriber.url: ws://notifier.cexiopay-infra:8080/subscriber/websockethost/evolution
+  runtime.notifier.subscriber.url: ws://notifier.cexpay-infra:8080/subscriber/websockethost/evolution
   runtime.pss.aggregator.url: https://pss-rpc.dev.kube/aggregator
-  runtime.pss.cexiopay.url: https://pss-rpc.dev.kube/cryptopay
+  runtime.pss.cexpay.url: https://pss-rpc.dev.kube/cryptopay
   runtime.pss.cryptoWalletHelper.url: https://pss-rpc.dev.kube/cryptopay
   runtime.pss.es.url: https://pss-rpc.dev.kube/cryptopay
   runtime.server.evolutionSrv.clientCertificateMode: none
   runtime.server.evolutionSrv.listenHost: 0.0.0.0
   runtime.server.evolutionSrv.listenPort: "8083"
-  runtime.server.evolutionSrv.serverCertificate: /etc/cexiolabs/cexiopay/ssl/tls.crt
-  runtime.server.evolutionSrv.serverKey: /etc/cexiolabs/cexiopay/ssl/tls.key
+  runtime.server.evolutionSrv.serverCertificate: /etc/cexiolabs/cexpay/ssl/tls.crt
+  runtime.server.evolutionSrv.serverKey: /etc/cexiolabs/cexpay/ssl/tls.key
   runtime.server.evolutionSrv.trustProxy: "true"
   runtime.server.evolutionSrv.type: https
   runtime.server.sysadminSrv.clientCertificateMode: none
   runtime.server.sysadminSrv.listenHost: 0.0.0.0
-  runtime.server.sysadminSrv.serverCertificate: /etc/cexiolabs/cexiopay/ssl/tls.crt
-  runtime.server.sysadminSrv.serverKey: /etc/cexiolabs/cexiopay/ssl/tls.key
+  runtime.server.sysadminSrv.serverCertificate: /etc/cexiolabs/cexpay/ssl/tls.crt
+  runtime.server.sysadminSrv.serverKey: /etc/cexiolabs/cexpay/ssl/tls.key
   runtime.server.sysadminSrv.trustProxy: "true"
   runtime.server.sysadminSrv.type: https
   runtime.server_indexer: evolutionSrv dashboardApiSrv gateApiSrv loopbackSrv monitoringSrv processingApiSrv sysadminSrv

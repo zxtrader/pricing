@@ -211,9 +211,9 @@ Helm3:4PROD:install:infratest:
   script:
     - kube_config_setup
     - cd infratest
-    - helm --namespace "cexiopay" list
-    - helm --namespace "cexiopay" upgrade --install --history-max 3 --values "values-base.yaml" --values "values.production.yaml" infratest .
-    - helm --namespace "cexiopay" history infratest --max=3
+    - helm --namespace "cexpay" list
+    - helm --namespace "cexpay" upgrade --install --history-max 3 --values "values-base.yaml" --values "values.production.yaml" infratest .
+    - helm --namespace "cexpay" history infratest --max=3
   when: manual
   environment:
     name: production
@@ -234,10 +234,10 @@ Helm3:4PROD:rollback:infratest:
   script:
     - kube_config_setup
     - cd infratest
-    - helm --namespace "cexiopay" list
-    - helm --namespace "cexiopay" history infratest --max=3
-    - helm --namespace "cexiopay" rollback --recreate-pods infratest 0
-    - helm --namespace "cexiopay" history infratest --max=3
+    - helm --namespace "cexpay" list
+    - helm --namespace "cexpay" history infratest --max=3
+    - helm --namespace "cexpay" rollback --recreate-pods infratest 0
+    - helm --namespace "cexpay" history infratest --max=3
   when: manual
   environment:
     name: production
@@ -258,9 +258,9 @@ Helm3:4PROD:delete:infratest:
   script:
     - kube_config_setup
     - cd infratest
-    - helm --namespace "cexiopay" list
-    - helm --namespace "cexiopay" history infratest --max=3
-    - helm --namespace "cexiopay" uninstall  infratest
+    - helm --namespace "cexpay" list
+    - helm --namespace "cexpay" history infratest --max=3
+    - helm --namespace "cexpay" uninstall  infratest
   when: manual
   environment:
     name: production

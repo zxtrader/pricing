@@ -1,5 +1,5 @@
-# kubectl --namespace cexiopay-infra get --output=yaml Ingress
-# kubectl --namespace cexiopay-infra apply --filename=infra/ingress.yaml
+# kubectl --namespace cexpay-infra get --output=yaml Ingress
+# kubectl --namespace cexpay-infra apply --filename=infra/ingress.yaml
 
 apiVersion: v1
 items:
@@ -12,10 +12,10 @@ items:
       nginx.ingress.kubernetes.io/secure-backends: "false"
       nginx.ingress.kubernetes.io/use-forwarded-headers: "true"
     name: default
-    namespace: cexiopay-infra
+    namespace: cexpay-infra
   spec:
     rules:
-    - host: infra-cexiopay.dev.kube
+    - host: infra-cexpay.dev.kube
       http:
         paths:
         - backend:
@@ -36,7 +36,7 @@ items:
           path: /subscriber
     tls:
     - hosts:
-      - infra-cexiopay.dev.kube
+      - infra-cexpay.dev.kube
       secretName: dev
 - apiVersion: extensions/v1beta1
   kind: Ingress
@@ -50,10 +50,10 @@ items:
       nginx.ingress.kubernetes.io/secure-backends: "false"
       nginx.ingress.kubernetes.io/use-forwarded-headers: "true"
     name: temporary-nuget
-    namespace: cexiopay-infra
+    namespace: cexpay-infra
   spec:
     rules:
-    - host: nuget-infra-cexiopay.dev.kube
+    - host: nuget-infra-cexpay.dev.kube
       http:
         paths:
         - backend:
@@ -62,6 +62,6 @@ items:
           path: /
     tls:
     - hosts:
-      - nuget-infra-cexiopay.dev.kube
+      - nuget-infra-cexpay.dev.kube
       secretName: dev
 kind: List

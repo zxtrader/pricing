@@ -1,11 +1,11 @@
-# kubectl --namespace cexiopay-test-admin get --output=yaml ConfigMap/processing-files
-# kubectl --namespace cexiopay-test-admin apply --filename=runtime.configmaps/test/processing-files.yaml
+# kubectl --namespace cexpay-test-admin get --output=yaml ConfigMap/processing-files
+# kubectl --namespace cexpay-test-admin apply --filename=runtime.configmaps/test/processing-files.yaml
 
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: processing-files
-  namespace: cexiopay-test-admin
+  namespace: cexpay-test-admin
 data:
   trusted-aggregator-ca.crt: |-
     -----BEGIN CERTIFICATE-----

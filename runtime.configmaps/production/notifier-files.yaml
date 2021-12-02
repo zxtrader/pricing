@@ -17,7 +17,7 @@ data:
 
         [setup.topics.maintainer]
           name = "System"
-          email = "cexiopay@wnb.com.ua"
+          email = "cexpay@wnb.com.ua"
 
         [[setup.topics.subscribers]]
           subscriberId = "subscriber-GOLDENPAYDMCCROOT:ORDER"
@@ -35,7 +35,7 @@ data:
 
         [setup.topics.maintainer]
           name = "System"
-          email = "cexiopay@wnb.com.ua"
+          email = "cexpay@wnb.com.ua"
 
         [[setup.topics.subscribers]]
           subscriberId = "subscriber-GOLDENPAYDMCCROOT:ORDER-AUTO"
@@ -53,7 +53,7 @@ data:
 
         [setup.topics.maintainer]
           name = "System"
-          email = "cexiopay@wnb.com.ua"
+          email = "cexpay@wnb.com.ua"
 
         [[setup.topics.subscribers]]
           subscriberId = "subscriber-GOLDENPAYDMCCROOT:ORDER-CRYPTO_SELL"
@@ -71,7 +71,7 @@ data:
 
         [setup.topics.maintainer]
           name = "System"
-          email = "cexiopay@wnb.com.ua"
+          email = "cexpay@wnb.com.ua"
 
         [[setup.topics.subscribers]]
           subscriberId = "subscriber-GOLDENPAYDMCCROOT:ORDER-PAID_STATUS"
@@ -90,7 +90,7 @@ data:
 
         [setup.topics.maintainer]
           name = "System"
-          email = "cexiopay@wnb.com.ua"
+          email = "cexpay@wnb.com.ua"
 
         [[setup.topics.subscribers]]
           subscriberId = "subscriber-DACH:ORDER"
@@ -108,7 +108,7 @@ data:
 
         [setup.topics.maintainer]
           name = "System"
-          email = "cexiopay@wnb.com.ua"
+          email = "cexpay@wnb.com.ua"
 
         [[setup.topics.subscribers]]
           subscriberId = "subscriber-DACH:ORDER-AUTO"
@@ -126,7 +126,7 @@ data:
 
         [setup.topics.maintainer]
           name = "System"
-          email = "cexiopay@wnb.com.ua"
+          email = "cexpay@wnb.com.ua"
 
         [[setup.topics.subscribers]]
           subscriberId = "subscriber-DACH:ORDER-CRYPTO_SELL"
@@ -144,7 +144,7 @@ data:
 
         [setup.topics.maintainer]
           name = "System"
-          email = "cexiopay@wnb.com.ua"
+          email = "cexpay@wnb.com.ua"
 
         [[setup.topics.subscribers]]
           subscriberId = "subscriber-DACH:ORDER-PAID_STATUS"

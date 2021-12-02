@@ -1,11 +1,11 @@
-# kubectl --namespace cexiopay-presentation-admin get --output=yaml ConfigMap/processing-envvars-setup
-# kubectl --namespace cexiopay-presentation-admin apply --filename=runtime.configmaps/presentation/processing-envvars-setup.yaml
+# kubectl --namespace cexpay-presentation-admin get --output=yaml ConfigMap/processing-envvars-setup
+# kubectl --namespace cexpay-presentation-admin apply --filename=runtime.configmaps/presentation/processing-envvars-setup.yaml
 
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: processing-envvars-setup
-  namespace: cexiopay-presentation-admin
+  namespace: cexpay-presentation-admin
 data:
   setup.accessKeyCreate.3e45e6e50b1ba24461e26e530cd27d24.merchantName: INTERNAL_DEBUG
   setup.accessKeyCreate.3e45e6e50b1ba24461e26e530cd27d24.passphrase: ud200659094

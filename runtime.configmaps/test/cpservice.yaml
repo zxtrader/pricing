@@ -1,11 +1,11 @@
-# kubectl --namespace cexiopay-test-admin get --output=yaml ConfigMap/cpservice
-# kubectl --namespace cexiopay-test-admin apply --filename=runtime.configmaps/test/cpservice.yaml
+# kubectl --namespace cexpay-test-admin get --output=yaml ConfigMap/cpservice
+# kubectl --namespace cexpay-test-admin apply --filename=runtime.configmaps/test/cpservice.yaml
 
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: cpservice
-  namespace: cexiopay-test-admin
+  namespace: cexpay-test-admin
 data:
   Aggregator-dev.json: "{\n\t\"user\": {\n\t\t\"username\": \"Processing-Service_1\",\n\t\t\"password\":
     \"PS_VCJ13hr7WBh*R\"\n\t},\n\t\"external\": {\n\t\t\"rejectUnauthorized\": false,\n\t\t\"url\":

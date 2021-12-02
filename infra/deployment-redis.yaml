@@ -1,5 +1,5 @@
-# kubectl --namespace cexiopay-infra get --output=yaml Deployment/redis
-# kubectl --namespace cexiopay-infra apply --filename=infra/deployment-redis.yaml
+# kubectl --namespace cexpay-infra get --output=yaml Deployment/redis
+# kubectl --namespace cexpay-infra apply --filename=infra/deployment-redis.yaml
 
 apiVersion: apps/v1
 kind: Deployment
@@ -7,7 +7,7 @@ metadata:
   labels:
     app: redis
   name: redis
-  namespace: cexiopay-infra
+  namespace: cexpay-infra
 spec:
   progressDeadlineSeconds: 600
   replicas: 1
@@ -53,7 +53,7 @@ spec:
             memory: 256Mi
       - env:
         - name: REDIS_ALIAS
-          value: cexiopay-infra-redis
+          value: cexpay-infra-redis
         - name: REDIS_PASSWORD
           valueFrom:
             secretKeyRef:

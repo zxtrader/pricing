@@ -80,12 +80,12 @@ spec:
         #   periodSeconds: 5
         volumeMounts:
         # - name: config-files
-        #   mountPath: /etc/cexiolabs/cexiopay.identity/
+        #   mountPath: /etc/cexiolabs/cexpay.identity/
         #   readOnly: true
         - name: secret-certificate
-          mountPath: /etc/cexiolabs/cexiopay.identity/ssl/
+          mountPath: /etc/cexiolabs/cexpay.identity/ssl/
         - name: secret-files
-          mountPath: /etc/cexiolabs/cexiopay.identity/secrets/
+          mountPath: /etc/cexiolabs/cexpay.identity/secrets/
 {{- if ne .Values.zone "production" }}
       imagePullSecrets:
       - name: cexpay-registry

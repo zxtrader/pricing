@@ -70,15 +70,15 @@ include:
   script:
     - verify_runtime_version_helm3
     - kube_config_setup
-    - ./runtime.scripts/download-configmaps-and-secrects.sh cexiopay-evolution-admin
+    - ./runtime.scripts/download-configmaps-and-secrects.sh cexpay-evolution-admin
     - cd runtime
-    - helm --namespace "cexiopay-evolution" list
-    - helm --namespace "cexiopay-evolution" upgrade --install --history-max 3 --values "values-base.yaml" --values "values.evolution.yaml" "blue" .
-    - helm --namespace "cexiopay-evolution" history "blue" --max=3
+    - helm --namespace "cexpay-evolution" list
+    - helm --namespace "cexpay-evolution" upgrade --install --history-max 3 --values "values-base.yaml" --values "values.evolution.yaml" "blue" .
+    - helm --namespace "cexpay-evolution" history "blue" --max=3
   when: manual
   environment:
     name: evolution
-    url: https://evolution-cexiopay.dev.kube
+    url: https://evolution-cexpay.dev.kube
   only:
     refs:
       - tags
@@ -94,14 +94,14 @@ include:
     - verify_runtime_version_helm3
     - kube_config_setup
     - cd runtime
-    - helm --namespace "cexiopay-evolution" list
-    - helm --namespace "cexiopay-evolution" history "blue" --max=3
-    - helm --namespace "cexiopay-evolution" rollback --recreate-pods "blue" 0
-    - helm --namespace "cexiopay-evolution" history "blue" --max=3
+    - helm --namespace "cexpay-evolution" list
+    - helm --namespace "cexpay-evolution" history "blue" --max=3
+    - helm --namespace "cexpay-evolution" rollback --recreate-pods "blue" 0
+    - helm --namespace "cexpay-evolution" history "blue" --max=3
   when: manual
   environment:
     name: evolution
-    url: https://evolution-cexiopay.dev.kube
+    url: https://evolution-cexpay.dev.kube
   only:
     refs:
       - tags
@@ -117,13 +117,13 @@ include:
     - verify_runtime_version_helm3
     - kube_config_setup
     - cd runtime
-    - helm --namespace "cexiopay-evolution" list
-    - helm --namespace "cexiopay-evolution" history "blue" --max=3
-    - helm --namespace "cexiopay-evolution" uninstall  "blue"
+    - helm --namespace "cexpay-evolution" list
+    - helm --namespace "cexpay-evolution" history "blue" --max=3
+    - helm --namespace "cexpay-evolution" uninstall  "blue"
   when: manual
   environment:
     name: evolution
-    url: https://evolution-cexiopay.dev.kube
+    url: https://evolution-cexpay.dev.kube
   only:
     refs:
       - tags
@@ -138,15 +138,15 @@ include:
   script:
     - verify_runtime_version_helm3
     - kube_config_setup
-    - ./runtime.scripts/download-configmaps-and-secrects.sh cexiopay-presentation-admin
+    - ./runtime.scripts/download-configmaps-and-secrects.sh cexpay-presentation-admin
     - cd runtime
-    - helm --namespace "cexiopay-presentation" list
-    - helm --namespace "cexiopay-presentation" upgrade --install --history-max 3 --values "values-base.yaml" --values "values.presentation.yaml" "blue" .
-    - helm --namespace "cexiopay-presentation" history "blue" --max=3
+    - helm --namespace "cexpay-presentation" list
+    - helm --namespace "cexpay-presentation" upgrade --install --history-max 3 --values "values-base.yaml" --values "values.presentation.yaml" "blue" .
+    - helm --namespace "cexpay-presentation" history "blue" --max=3
   when: manual
   environment:
     name: presentation
-    url: https://presentation-cexiopay.dev.kube
+    url: https://presentation-cexpay.dev.kube
   only:
     refs:
       - tags
@@ -162,14 +162,14 @@ include:
     - verify_runtime_version_helm3
     - kube_config_setup
     - cd runtime
-    - helm --namespace "cexiopay-presentation" list
-    - helm --namespace "cexiopay-presentation" history "blue" --max=3
-    - helm --namespace "cexiopay-presentation" rollback --recreate-pods "blue" 0
-    - helm --namespace "cexiopay-presentation" history "blue" --max=3
+    - helm --namespace "cexpay-presentation" list
+    - helm --namespace "cexpay-presentation" history "blue" --max=3
+    - helm --namespace "cexpay-presentation" rollback --recreate-pods "blue" 0
+    - helm --namespace "cexpay-presentation" history "blue" --max=3
   when: manual
   environment:
     name: presentation
-    url: https://presentation-cexiopay.dev.kube
+    url: https://presentation-cexpay.dev.kube
   only:
     refs:
       - tags
@@ -185,13 +185,13 @@ include:
     - verify_runtime_version_helm3
     - kube_config_setup
     - cd runtime
-    - helm --namespace "cexiopay-presentation" list
-    - helm --namespace "cexiopay-presentation" history "blue" --max=3
-    - helm --namespace "cexiopay-presentation" uninstall  "blue"
+    - helm --namespace "cexpay-presentation" list
+    - helm --namespace "cexpay-presentation" history "blue" --max=3
+    - helm --namespace "cexpay-presentation" uninstall  "blue"
   when: manual
   environment:
     name: presentation
-    url: https://presentation-cexiopay.dev.kube
+    url: https://presentation-cexpay.dev.kube
   only:
     refs:
       - tags
@@ -206,11 +206,11 @@ include:
   script:
     - verify_runtime_version_helm3
     - kube_config_setup
-    - ./runtime.scripts/download-configmaps-and-secrects.sh cexiopay-test-admin
+    - ./runtime.scripts/download-configmaps-and-secrects.sh cexpay-test-admin
     - cd runtime
-    - helm --namespace "cexiopay-test" list
-    - helm --namespace "cexiopay-test" upgrade --install --history-max 3 --values "values-base.yaml" --values "values.test.yaml" "blue" .
-    - helm --namespace "cexiopay-test" history "blue" --max=3
+    - helm --namespace "cexpay-test" list
+    - helm --namespace "cexpay-test" upgrade --install --history-max 3 --values "values-base.yaml" --values "values.test.yaml" "blue" .
+    - helm --namespace "cexpay-test" history "blue" --max=3
   when: manual
   environment:
     name: test
@@ -236,7 +236,7 @@ include:
     # Cleanup
     - test -d .github-data && rm -rf .github-data
     # Checkout GitHub Pages repo
-    - git clone "https://${GITHUB_LOGIN}:${GITHUB_TOKEN}@github.com/cexiolabs/cexiopay.board-test-hosting.git" .github-data
+    - git clone "https://${GITHUB_LOGIN}:${GITHUB_TOKEN}@github.com/cexiolabs/cexpay.board-test-hosting.git" .github-data
     # Remove old data
     - (cd .github-data && rm -rf * && git add -A)
     # Grab image content
@@ -244,7 +244,7 @@ include:
     - echo "Create a container to grab content of image '${IMAGE}'"
     - docker pull "${IMAGE}"
     - CONTAINER_ID=$(docker create ${IMAGE})
-    - docker cp "${CONTAINER_ID}:/usr/local/cexiolabs/cexiopay.board/." .github-data
+    - docker cp "${CONTAINER_ID}:/usr/local/cexiolabs/cexpay.board/." .github-data
     - docker rm -v "${CONTAINER_ID}"
     # - find .github-data/ -type f -exec sed -i "s~/PLACEHOLDER_BASE_PATH~~g" {} \;
     # - find .github-data/ -type f -exec sed -i "s~PLACEHOLDER_API_SERVICE_URL~${API_SERVICE_URL}~g" {} \;
@@ -272,11 +272,11 @@ include:
   script:
     - verify_runtime_version_helm3
     - kube_config_setup
-    - ./runtime.scripts/download-configmaps-and-secrects.sh cexiopay-test-admin
+    - ./runtime.scripts/download-configmaps-and-secrects.sh cexpay-test-admin
     - cd runtime
-    - helm --namespace "cexiopay-test" list
-    - helm --namespace "cexiopay-test" upgrade --install --history-max 3 --values "values-base.yaml" --values "values.test.yaml" "green" .
-    - helm --namespace "cexiopay-test" history "green" --max=3
+    - helm --namespace "cexpay-test" list
+    - helm --namespace "cexpay-test" upgrade --install --history-max 3 --values "values-base.yaml" --values "values.test.yaml" "green" .
+    - helm --namespace "cexpay-test" history "green" --max=3
   when: manual
   environment:
     name: test
@@ -296,10 +296,10 @@ include:
     - verify_runtime_version_helm3
     - kube_config_setup
     - cd runtime
-    - helm --namespace "cexiopay-test" list
-    - helm --namespace "cexiopay-test" history "blue" --max=3
-    - helm --namespace "cexiopay-test" rollback --recreate-pods "blue" 0
-    - helm --namespace "cexiopay-test" history "blue" --max=3
+    - helm --namespace "cexpay-test" list
+    - helm --namespace "cexpay-test" history "blue" --max=3
+    - helm --namespace "cexpay-test" rollback --recreate-pods "blue" 0
+    - helm --namespace "cexpay-test" history "blue" --max=3
   when: manual
   environment:
     name: test
@@ -319,9 +319,9 @@ include:
     - verify_runtime_version_helm3
     - kube_config_setup
     - cd runtime
-    - helm --namespace "cexiopay-test" list
-    - helm --namespace "cexiopay-test" history "blue" --max=3
-    - helm --namespace "cexiopay-test" uninstall  "blue"
+    - helm --namespace "cexpay-test" list
+    - helm --namespace "cexpay-test" history "blue" --max=3
+    - helm --namespace "cexpay-test" uninstall  "blue"
   when: manual
   environment:
     name: test
@@ -341,9 +341,9 @@ include:
     - verify_runtime_version_helm3
     - kube_config_setup
     - cd runtime
-    - helm --namespace "cexiopay-test" list
-    - helm --namespace "cexiopay-test" history "green" --max=3
-    - helm --namespace "cexiopay-test" uninstall  "green"
+    - helm --namespace "cexpay-test" list
+    - helm --namespace "cexpay-test" history "green" --max=3
+    - helm --namespace "cexpay-test" uninstall  "green"
   when: manual
   environment:
     name: test
@@ -364,9 +364,9 @@ include:
     - kube_config_setup
     - ./runtime.scripts/download-configmaps-and-secrects.sh cryptopay
     - cd runtime
-    - helm --namespace "cexiopay" list
-    - helm --namespace "cexiopay" upgrade --install --history-max 3 --values "values-base.yaml" --values "values.production.yaml" "blue" .
-    - helm --namespace "cexiopay" history "blue" --max=3
+    - helm --namespace "cexpay" list
+    - helm --namespace "cexpay" upgrade --install --history-max 3 --values "values-base.yaml" --values "values.production.yaml" "blue" .
+    - helm --namespace "cexpay" history "blue" --max=3
   when: manual
   environment:
     name: production
@@ -394,7 +394,7 @@ include:
     # Cleanup
     - test -d .github-data && rm -rf .github-data
     # Checkout GitHub Pages repo
-    - git clone "https://${GITHUB_LOGIN}:${GITHUB_TOKEN}@github.com/cexiolabs/cexiopay.board-production-hosting.git" .github-data
+    - git clone "https://${GITHUB_LOGIN}:${GITHUB_TOKEN}@github.com/cexiolabs/cexpay.board-production-hosting.git" .github-data
     # Remove old data
     - (cd .github-data && rm -rf * && git add -A)
     # Grab image content
@@ -402,7 +402,7 @@ include:
     - echo "Create a container to grab content of image '${IMAGE}'"
     - docker pull "${IMAGE}"
     - CONTAINER_ID=$(docker create ${IMAGE})
-    - docker cp "${CONTAINER_ID}:/usr/local/cexiolabs/cexiopay.board/." .github-data
+    - docker cp "${CONTAINER_ID}:/usr/local/cexiolabs/cexpay.board/." .github-data
     - docker rm -v "${CONTAINER_ID}"
     - echo -n "board.cexpay.io" > .github-data/CNAME
     - touch .github-data/.nojekyll
@@ -434,7 +434,7 @@ include:
     # Cleanup
     - test -d .github-data && rm -rf .github-data
     # Checkout GitHub Pages repo
-    - git clone "https://${GITHUB_LOGIN}:${GITHUB_TOKEN}@github.com/cexiolabs/cexiopay.landing-hosting.git" .github-data
+    - git clone "https://${GITHUB_LOGIN}:${GITHUB_TOKEN}@github.com/cexiolabs/cexpay.landing-hosting.git" .github-data
     # Remove old data
     - (cd .github-data && rm -rf * && git add -A)
     # Grab image content
@@ -442,7 +442,7 @@ include:
     - echo "Create a container to grab content of image '${IMAGE}'"
     - docker pull "${IMAGE}"
     - CONTAINER_ID=$(docker create ${IMAGE})
-    - docker cp "${CONTAINER_ID}:/usr/local/cexiolabs/cexiopay.landing/." .github-data
+    - docker cp "${CONTAINER_ID}:/usr/local/cexiolabs/cexpay.landing/." .github-data
     - docker rm -v "${CONTAINER_ID}"
     - find .github-data/ -type f -exec sed -i "s~/PLACEHOLDER_PATH_PREFIX~~g" {} \;
     - echo -n "cexpay.io" > .github-data/CNAME
@@ -470,9 +470,9 @@ include:
     - kube_config_setup
     - ./runtime.scripts/download-configmaps-and-secrects.sh cryptopay
     - cd runtime
-    - helm --namespace "cexiopay" list
-    - helm --namespace "cexiopay" upgrade --install --history-max 3 --values "values-base.yaml" --values "values.production.yaml" "green" .
-    - helm --namespace "cexiopay" history "green" --max=3
+    - helm --namespace "cexpay" list
+    - helm --namespace "cexpay" upgrade --install --history-max 3 --values "values-base.yaml" --values "values.production.yaml" "green" .
+    - helm --namespace "cexpay" history "green" --max=3
   when: manual
   environment:
     name: production
@@ -494,10 +494,10 @@ include:
     - verify_runtime_version_helm3
     - kube_config_setup
     - cd runtime
-    - helm --namespace "cexiopay" list
-    - helm --namespace "cexiopay" history "blue" --max=3
-    - helm --namespace "cexiopay" rollback --recreate-pods "blue" 0
-    - helm --namespace "cexiopay" history "blue" --max=3
+    - helm --namespace "cexpay" list
+    - helm --namespace "cexpay" history "blue" --max=3
+    - helm --namespace "cexpay" rollback --recreate-pods "blue" 0
+    - helm --namespace "cexpay" history "blue" --max=3
   when: manual
   environment:
     name: production
@@ -519,9 +519,9 @@ include:
     - verify_runtime_version_helm3
     - kube_config_setup
     - cd runtime
-    - helm --namespace "cexiopay" list
-    - helm --namespace "cexiopay" history "blue" --max=3
-    - helm --namespace "cexiopay" uninstall  "blue"
+    - helm --namespace "cexpay" list
+    - helm --namespace "cexpay" history "blue" --max=3
+    - helm --namespace "cexpay" uninstall "blue"
   when: manual
   environment:
     name: production
@@ -543,9 +543,9 @@ include:
     - verify_runtime_version_helm3
     - kube_config_setup
     - cd runtime
-    - helm --namespace "cexiopay" list
-    - helm --namespace "cexiopay" history "green" --max=3
-    - helm --namespace "cexiopay" uninstall  "green"
+    - helm --namespace "cexpay" list
+    - helm --namespace "cexpay" history "green" --max=3
+    - helm --namespace "cexpay" uninstall  "green"
   when: manual
   environment:
     name: production
@@ -576,11 +576,11 @@ include:
     - echo "$KUBECONF_BASE64" | base64 -d > "${KUBECONFIG}"
     - DATABASE_IMAGE_TAG=$(grep -e '^DATABASE_IMAGE_TAG:' migration/MANIFEST | cut -d ':' -f 2 | tr -d '[:space:]')
     - INSTALL_VERSION=$(grep -e '^INSTALL_VERSION:' migration/MANIFEST | cut -d ':' -f 2 | tr -d '[:space:]')
-    - ./migration/migration-exec.sh --kube-context=evolution --kube-namespace=cexiopay-evolution --kube-admin-namespace=cexiopay-evolution-admin --image=harbor.infra.kube/cexiopay/database-evolution --tag="${DATABASE_IMAGE_TAG}" --target-version="${INSTALL_VERSION}" --install
+    - ./migration/migration-exec.sh --kube-context=evolution --kube-namespace=cexpay-evolution --kube-admin-namespace=cexpay-evolution-admin --image=harbor.infra.kube/cexpay/database-evolution --tag="${DATABASE_IMAGE_TAG}" --target-version="${INSTALL_VERSION}" --install
   when: manual
   environment:
     name: evolution
-    url: https://evolution-cexiopay.dev.kube
+    url: https://evolution-cexpay.dev.kube
   only:
     refs:
       - tags
@@ -598,11 +598,11 @@ include:
     - echo "$KUBECONF_BASE64" | base64 -d > "${KUBECONFIG}"
     - DATABASE_IMAGE_TAG=$(grep -e '^DATABASE_IMAGE_TAG:' migration/MANIFEST | cut -d ':' -f 2 | tr -d '[:space:]')
     - test -z "${ROLLBACK_VERSION}" && ROLLBACK_VERSION=$(grep -e '^ROLLBACK_VERSION:' migration/MANIFEST | cut -d ':' -f 2 | tr -d '[:space:]')
-    - ./migration/migration-exec.sh --kube-context=evolution --kube-namespace=cexiopay-evolution --kube-admin-namespace=cexiopay-evolution-admin --image=harbor.infra.kube/cexiopay/database-evolution --tag="${DATABASE_IMAGE_TAG}" --target-version="${ROLLBACK_VERSION}" --rollback
+    - ./migration/migration-exec.sh --kube-context=evolution --kube-namespace=cexpay-evolution --kube-admin-namespace=cexpay-evolution-admin --image=harbor.infra.kube/cexpay/database-evolution --tag="${DATABASE_IMAGE_TAG}" --target-version="${ROLLBACK_VERSION}" --rollback
   when: manual
   environment:
     name: evolution
-    url: https://evolution-cexiopay.dev.kube
+    url: https://evolution-cexpay.dev.kube
   only:
     refs:
       - tags
@@ -620,11 +620,11 @@ include:
     - echo "$KUBECONF_BASE64" | base64 -d > "${KUBECONFIG}"
     - DATABASE_IMAGE_TAG=$(grep -e '^DATABASE_IMAGE_TAG:' migration/MANIFEST | cut -d ':' -f 2 | tr -d '[:space:]')
     - INSTALL_VERSION=$(grep -e '^INSTALL_VERSION:' migration/MANIFEST | cut -d ':' -f 2 | tr -d '[:space:]')
-    - ./migration/migration-exec.sh --kube-context=presentation --kube-namespace=cexiopay-presentation --kube-admin-namespace=cexiopay-presentation-admin --image=harbor.infra.kube/cexiopay/database-presentation --tag="${DATABASE_IMAGE_TAG}" --target-version="${INSTALL_VERSION}" --install
+    - ./migration/migration-exec.sh --kube-context=presentation --kube-namespace=cexpay-presentation --kube-admin-namespace=cexpay-presentation-admin --image=harbor.infra.kube/cexpay/database-presentation --tag="${DATABASE_IMAGE_TAG}" --target-version="${INSTALL_VERSION}" --install
   when: manual
   environment:
     name: presentation
-    url: https://presentation-cexiopay.dev.kube
+    url: https://presentation-cexpay.dev.kube
   only:
     refs:
       - tags
@@ -642,11 +642,11 @@ include:
     - echo "$KUBECONF_BASE64" | base64 -d > "${KUBECONFIG}"
     - DATABASE_IMAGE_TAG=$(grep -e '^DATABASE_IMAGE_TAG:' migration/MANIFEST | cut -d ':' -f 2 | tr -d '[:space:]')
     - test -z "${ROLLBACK_VERSION}" && ROLLBACK_VERSION=$(grep -e '^ROLLBACK_VERSION:' migration/MANIFEST | cut -d ':' -f 2 | tr -d '[:space:]')
-    - ./migration/migration-exec.sh --kube-context=presentation --kube-namespace=cexiopay-presentation --kube-admin-namespace=cexiopay-presentation-admin --image=harbor.infra.kube/cexiopay/database-presentation --tag="${DATABASE_IMAGE_TAG}" --target-version="${ROLLBACK_VERSION}" --rollback
+    - ./migration/migration-exec.sh --kube-context=presentation --kube-namespace=cexpay-presentation --kube-admin-namespace=cexpay-presentation-admin --image=harbor.infra.kube/cexpay/database-presentation --tag="${DATABASE_IMAGE_TAG}" --target-version="${ROLLBACK_VERSION}" --rollback
   when: manual
   environment:
     name: presentation
-    url: https://presentation-cexiopay.dev.kube
+    url: https://presentation-cexpay.dev.kube
   only:
     refs:
       - tags
@@ -664,7 +664,7 @@ include:
     - echo "$KUBECONF_BASE64" | base64 -d > "${KUBECONFIG}"
     - DATABASE_IMAGE_TAG=$(grep -e '^DATABASE_IMAGE_TAG:' migration/MANIFEST | cut -d ':' -f 2 | tr -d '[:space:]')
     - INSTALL_VERSION=$(grep -e '^INSTALL_VERSION:' migration/MANIFEST | cut -d ':' -f 2 | tr -d '[:space:]')
-    - ./migration/migration-exec.sh --kube-context=test --kube-namespace=cexiopay-test --kube-admin-namespace=cexiopay-test-admin --image=harbor.infra.kube/cexiopay/database-test --tag="${DATABASE_IMAGE_TAG}" --target-version="${INSTALL_VERSION}" --install
+    - ./migration/migration-exec.sh --kube-context=test --kube-namespace=cexpay-test --kube-admin-namespace=cexpay-test-admin --image=harbor.infra.kube/cexpay/database-test --tag="${DATABASE_IMAGE_TAG}" --target-version="${INSTALL_VERSION}" --install
   when: manual
   environment:
     name: test
@@ -686,7 +686,7 @@ include:
     - echo "$KUBECONF_BASE64" | base64 -d > "${KUBECONFIG}"
     - DATABASE_IMAGE_TAG=$(grep -e '^DATABASE_IMAGE_TAG:' migration/MANIFEST | cut -d ':' -f 2 | tr -d '[:space:]')
     - test -z "${ROLLBACK_VERSION}" && ROLLBACK_VERSION=$(grep -e '^ROLLBACK_VERSION:' migration/MANIFEST | cut -d ':' -f 2 | tr -d '[:space:]')
-    - ./migration/migration-exec.sh --kube-context=test --kube-namespace=cexiopay-test --kube-admin-namespace=cexiopay-test-admin --image=harbor.infra.kube/cexiopay/database-test --tag="${DATABASE_IMAGE_TAG}" --target-version="${ROLLBACK_VERSION}" --rollback
+    - ./migration/migration-exec.sh --kube-context=test --kube-namespace=cexpay-test --kube-admin-namespace=cexpay-test-admin --image=harbor.infra.kube/cexpay/database-test --tag="${DATABASE_IMAGE_TAG}" --target-version="${ROLLBACK_VERSION}" --rollback
   when: manual
   environment:
     name: test
@@ -708,7 +708,7 @@ include:
     - echo "$KUBECONF_BASE64" | base64 -d > "${KUBECONFIG}"
     - DATABASE_IMAGE_TAG=$(grep -e '^DATABASE_IMAGE_TAG:' migration/MANIFEST | cut -d ':' -f 2 | tr -d '[:space:]')
     - INSTALL_VERSION=$(grep -e '^INSTALL_VERSION:' migration/MANIFEST | cut -d ':' -f 2 | tr -d '[:space:]')
-    - ./migration/migration-exec.sh --kube-context=prod --kube-namespace=cexiopay --kube-admin-namespace=cryptopay --image=harbor.infra.kube/cexiopay/database-production --tag="${DATABASE_IMAGE_TAG}" --target-version="${INSTALL_VERSION}" --install
+    - ./migration/migration-exec.sh --kube-context=prod --kube-namespace=cexpay --kube-admin-namespace=cryptopay --image=harbor.infra.kube/cexpay/database-production --tag="${DATABASE_IMAGE_TAG}" --target-version="${INSTALL_VERSION}" --install
   when: manual
   environment:
     name: production
@@ -732,7 +732,7 @@ include:
     - echo "$KUBECONF_BASE64" | base64 -d > "${KUBECONFIG}"
     - DATABASE_IMAGE_TAG=$(grep -e '^DATABASE_IMAGE_TAG:' migration/MANIFEST | cut -d ':' -f 2 | tr -d '[:space:]')
     - ROLLBACK_VERSION=$(grep -e '^ROLLBACK_VERSION:' migration/MANIFEST | cut -d ':' -f 2 | tr -d '[:space:]')
-    - ./migration/migration-exec.sh --kube-context=prod --kube-namespace=cexiopay --kube-admin-namespace=cryptopay --image=harbor.infra.kube/cexiopay/database-production --tag="${DATABASE_IMAGE_TAG}" --target-version="${ROLLBACK_VERSION}" --rollback
+    - ./migration/migration-exec.sh --kube-context=prod --kube-namespace=cexpay --kube-admin-namespace=cryptopay --image=harbor.infra.kube/cexpay/database-production --tag="${DATABASE_IMAGE_TAG}" --target-version="${ROLLBACK_VERSION}" --rollback
   when: manual
   environment:
     name: production

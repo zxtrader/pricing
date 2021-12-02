@@ -70,7 +70,7 @@ spec:
             memory: 32Mi
         volumeMounts:
         - name: secret-certificate
-          mountPath: /etc/cexiolabs/cexiopay.landing/ssl/
+          mountPath: /etc/cexiolabs/cexpay.landing/ssl/
 {{- if ne .Values.zone "production" }}
       imagePullSecrets:
       - name: cexpay-registry

@@ -3,24 +3,24 @@ zone: presentation
 application:
 
   api:
-    serviceImage: harbor.infra.kube/cexiopay/api/snapshot/amd64
+    serviceImage: harbor.infra.kube/cexpay/api/snapshot/amd64
     args:
       [
-        "--config-json-file=/etc/cexiolabs/cexiopay.api/appsettings.json",
-        "--config-json-file=/etc/cexiolabs/cexiopay.api/appsettings.presentation.json",
-        "--config-keyperfile-directory=/etc/cexiolabs/cexiopay.api/secrets",
+        "--config-json-file=/etc/cexiolabs/cexpay.api/appsettings.json",
+        "--config-json-file=/etc/cexiolabs/cexpay.api/appsettings.presentation.json",
+        "--config-keyperfile-directory=/etc/cexiolabs/cexpay.api/secrets",
         "--config-env",
         "--log-json"
       ]
     env:
       IdentityServerAuthentication__ValidIssuers: https://id-presentation-cexpay.dev.kube
-      WTFProviderConfigurationFile: /etc/cexiolabs/cexiopay.api/legacy-cpservice-config/WTF-dev.json
+      WTFProviderConfigurationFile: /etc/cexiolabs/cexpay.api/legacy-cpservice-config/WTF-dev.json
 
   board:
-    serviceImage: harbor.infra.kube/cexiopay/board/snapshot
+    serviceImage: harbor.infra.kube/cexpay/board/snapshot
 
   dashboardlegacy2:
-    serviceImage: harbor.infra.kube/cexiopay/dashboard-react/snapshot
+    serviceImage: harbor.infra.kube/cexpay/dashboard-react/snapshot
 
   demo:
     env:
@@ -32,46 +32,46 @@ application:
     replicas: 0
 
   gatehostinternal:
-    serviceImage: harbor.infra.kube/cexiopay/gate/hostinternal/snapshot/amd64
+    serviceImage: harbor.infra.kube/cexpay/gate/hostinternal/snapshot/amd64
 
   identity:
-    serviceImage: harbor.infra.kube/cexiopay/identity/snapshot/amd64
+    serviceImage: harbor.infra.kube/cexpay/identity/snapshot/amd64
     args:
       [
-        "--config-json-file=/etc/cexiolabs/cexiopay.identity/appsettings.json",
-        "--config-json-file=/etc/cexiolabs/cexiopay.identity/appsettings.presentation.json",
-        "--config-keyperfile-directory=/etc/cexiolabs/cexiopay.identity/secrets",
+        "--config-json-file=/etc/cexiolabs/cexpay.identity/appsettings.json",
+        "--config-json-file=/etc/cexiolabs/cexpay.identity/appsettings.presentation.json",
+        "--config-keyperfile-directory=/etc/cexiolabs/cexpay.identity/secrets",
         "--config-env",
         "--log-json"
       ]
   
   invoice:
-    serviceImage: harbor.infra.kube/cexiopay/invoice/snapshot/amd64
+    serviceImage: harbor.infra.kube/cexpay/invoice/snapshot/amd64
     args:
       [
-        "--config-json-file=/etc/cexiolabs/cexiopay.invoice/appsettings.json",
-        "--config-json-file=/etc/cexiolabs/cexiopay.invoice/appsettings.presentation.json",
-        "--config-keyperfile-directory=/etc/cexiolabs/cexiopay.invoice/secrets",
+        "--config-json-file=/etc/cexiolabs/cexpay.invoice/appsettings.json",
+        "--config-json-file=/etc/cexiolabs/cexpay.invoice/appsettings.presentation.json",
+        "--config-keyperfile-directory=/etc/cexiolabs/cexpay.invoice/secrets",
         "--config-env",
         "--log-json"
       ]
     replicas: 1
 
   landing:
-    serviceImage: docker-cexpay.infra.kube/cexiopay/landing/snapshot
+    serviceImage: docker-cexpay.infra.kube/cexpay/landing/snapshot
 
   notifier:
     serviceImage: harbor.infra.kube/cexiolabs/communitysoft/notifier/csharp/snapshot/amd64
 
   processing:
-    serviceImage: harbor.infra.kube/cexiopay/processing/snapshot/amd64
+    serviceImage: harbor.infra.kube/cexpay/processing/snapshot/amd64
     args:
       [
-        "--config-file=/etc/cexiolabs/cexiopay.processing/service.config",
-        "--config-toml-file=/etc/cexiolabs/cexiopay.processing/service.toml",
-        "--config-toml-file=/etc/cexiolabs/cexiopay.processing/service-setup.toml",
-        "--config-toml-file=/etc/cexiolabs/cexiopay.processing/service-zone-presentation.toml",
-        "--config-secrets-dir=/etc/cexiolabs/cexiopay/secrets",
+        "--config-file=/etc/cexiolabs/cexpay.processing/service.config",
+        "--config-toml-file=/etc/cexiolabs/cexpay.processing/service.toml",
+        "--config-toml-file=/etc/cexiolabs/cexpay.processing/service-setup.toml",
+        "--config-toml-file=/etc/cexiolabs/cexpay.processing/service-zone-presentation.toml",
+        "--config-secrets-dir=/etc/cexiolabs/cexpay/secrets",
         "--config-env",
         "--runtime-gate-email-sender=nodemailer",
         "--runtime-use-notifier-service",

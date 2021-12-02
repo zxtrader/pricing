@@ -1,20 +1,20 @@
-# kubectl --namespace cexiopay-infra get --output=yaml Deployment/notifier
-# kubectl --namespace cexiopay-infra apply --filename=infra/deployment-notifier.yaml
+# kubectl --namespace cexpay-infra get --output=yaml Deployment/notifier
+# kubectl --namespace cexpay-infra apply --filename=infra/deployment-notifier.yaml
 
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    workload.user.cattle.io/workloadselector: deployment-cexiopay-infra-notifier
+    workload.user.cattle.io/workloadselector: deployment-cexpay-infra-notifier
   name: notifier
-  namespace: cexiopay-infra
+  namespace: cexpay-infra
 spec:
   progressDeadlineSeconds: 600
   replicas: 1
   revisionHistoryLimit: 10
   selector:
     matchLabels:
-      workload.user.cattle.io/workloadselector: deployment-cexiopay-infra-notifier
+      workload.user.cattle.io/workloadselector: deployment-cexpay-infra-notifier
   strategy:
     rollingUpdate:
       maxSurge: 1
@@ -23,7 +23,7 @@ spec:
   template:
     metadata:
       labels:
-        workload.user.cattle.io/workloadselector: deployment-cexiopay-infra-notifier
+        workload.user.cattle.io/workloadselector: deployment-cexpay-infra-notifier
     spec:
       containers:
       - env:

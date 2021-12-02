@@ -1,11 +1,11 @@
-# kubectl --namespace cexiopay-infra get --output=yaml Service/postgres
-# kubectl --namespace cexiopay-infra apply --filename=infra/service-postgres.yaml
+# kubectl --namespace cexpay-infra get --output=yaml Service/postgres
+# kubectl --namespace cexpay-infra apply --filename=infra/service-postgres.yaml
 
 apiVersion: v1
 kind: Service
 metadata:
   name: postgres
-  namespace: cexiopay-infra
+  namespace: cexpay-infra
   labels:
     app: postgres
 spec:

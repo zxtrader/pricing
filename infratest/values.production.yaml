@@ -2,7 +2,7 @@ zone: production
 
 ingress:
   Echo:
-    domain: echo-infratest-cexiopay.prodcryptopay.kube
+    domain: echo-infratest-cexpay.prodcryptopay.kube
     certSecretName: callback
     backendInsecure: false
     paths:

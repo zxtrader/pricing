@@ -80,14 +80,14 @@ spec:
         #   periodSeconds: 5
         volumeMounts:
         - name: config-files
-          mountPath: /etc/cexiolabs/cexiopay.gate.hostinternal/extra
+          mountPath: /etc/cexiolabs/cexpay.gate.hostinternal/extra
           readOnly: true
         - name: secret-certificate
-          mountPath: /etc/cexiolabs/cexiopay.gate.hostinternal/ssl/
+          mountPath: /etc/cexiolabs/cexpay.gate.hostinternal/ssl/
         - name: ca-certificates-stub
-          mountPath: /etc/cexiolabs/cexiopay.gate.hostinternal/ssl/ca-certificates
+          mountPath: /etc/cexiolabs/cexpay.gate.hostinternal/ssl/ca-certificates
         - name: secret-files
-          mountPath: /etc/cexiolabs/cexiopay.gate.hostinternal/secrets/
+          mountPath: /etc/cexiolabs/cexpay.gate.hostinternal/secrets/
       # - name: local-temporary-postgres
       #   image: zxteamorg/devel.postgres-13:20210515
 {{- if ne .Values.zone "production" }}

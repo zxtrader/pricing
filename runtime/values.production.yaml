@@ -5,7 +5,7 @@ application:
   api:
     env:
       IdentityServerAuthentication__ValidIssuers: https://id.cexpay.io
-      WTFProviderConfigurationFile: /etc/cexiolabs/cexiopay.api/legacy-cpservice-config/WTF-prod.json
+      WTFProviderConfigurationFile: /etc/cexiolabs/cexpay.api/legacy-cpservice-config/WTF-prod.json
 
   echo:
     replicas: 0
@@ -18,8 +18,8 @@ application:
   invoice:
     args:
       [
-        "--config-json-file=/etc/cexiolabs/cexiopay.invoice/appsettings.json",
-        "--config-keyperfile-directory=/etc/cexiolabs/cexiopay.invoice/secrets",
+        "--config-json-file=/etc/cexiolabs/cexpay.invoice/appsettings.json",
+        "--config-keyperfile-directory=/etc/cexiolabs/cexpay.invoice/secrets",
         "--config-env",
         "--log-json"
       ]
@@ -28,11 +28,11 @@ application:
   processing:
     args:
       [
-        "--config-file=/etc/cexiolabs/cexiopay.processing/service.config",
-        "--config-toml-file=/etc/cexiolabs/cexiopay.processing/service.toml",
-        "--config-toml-file=/etc/cexiolabs/cexiopay.processing/service-setup.toml",
-        "--config-toml-file=/etc/cexiolabs/cexiopay.processing/service-zone-production.toml",
-        "--config-secrets-dir=/etc/cexiolabs/cexiopay/secrets",
+        "--config-file=/etc/cexiolabs/cexpay.processing/service.config",
+        "--config-toml-file=/etc/cexiolabs/cexpay.processing/service.toml",
+        "--config-toml-file=/etc/cexiolabs/cexpay.processing/service-setup.toml",
+        "--config-toml-file=/etc/cexiolabs/cexpay.processing/service-zone-production.toml",
+        "--config-secrets-dir=/etc/cexiolabs/cexpay/secrets",
         "--config-env"
       ]
     env:

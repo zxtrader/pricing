@@ -10,7 +10,7 @@ if [ $# -eq 0 ]; then
 	echo
 	echo "	Usage example:"
 	echo
-	echo "		$0 --kube-context=evolution --kube-namespace=cexiopay-evolution --kube-admin-namespace=cexiopay-evolution-admin --image=docker-cexpay.infra.kube/cexiopay/database-evolution --tag=vXX.YY [--target-version=v42] <--install|--rollback>"
+	echo "		$0 --kube-context=evolution --kube-namespace=cexpay-evolution --kube-admin-namespace=cexpay-evolution-admin --image=docker-cexpay.infra.kube/cexpay/database-evolution --tag=vXX.YY [--target-version=v42] <--install|--rollback>"
 	echo
 	exit 1
 fi

@@ -82,17 +82,17 @@ spec:
         #   periodSeconds: 5
         volumeMounts:
         # - name: config-files
-        #   mountPath: /etc/cexiolabs/cexiopay.api/
+        #   mountPath: /etc/cexiolabs/cexpay.api/
         #   readOnly: true
         # - name: legacy-cpservice-config
-        #   mountPath: /etc/cexiolabs/cexiopay.invoice/legacy-cpservice-config/
+        #   mountPath: /etc/cexiolabs/cexpay.invoice/legacy-cpservice-config/
         #   readOnly: true
         - name: secret-certificate
-          mountPath: /etc/cexiolabs/cexiopay.invoice/ssl/
+          mountPath: /etc/cexiolabs/cexpay.invoice/ssl/
         - name: ca-certificates-stub
-          mountPath: /etc/cexiolabs/cexiopay.invoice/ssl/ca-certificates
+          mountPath: /etc/cexiolabs/cexpay.invoice/ssl/ca-certificates
         - name: secret-files
-          mountPath: /etc/cexiolabs/cexiopay.invoice/secrets/
+          mountPath: /etc/cexiolabs/cexpay.invoice/secrets/
       volumes:
       # - name: legacy-cpservice-config
       #   configMap:

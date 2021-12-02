@@ -19,7 +19,7 @@ Tag name format: `<APP_VERSION>-runtime`
 Создание тега в таком формате, создаст pipeline с набором задач для деплоймента сервисов. `APP_VERSION` это версия Chart.yaml `appVersion`.
 
 Например:
-* [2.3.2-runtime](https://gitlab.wnb:28443/cexiopay/devops/kubernetes-deployment/-/tags/2.3.2-runtime)
+* [2.3.2-runtime](https://gitlab.wnb:28443/cexpay/devops/kubernetes-deployment/-/tags/2.3.2-runtime)
 * etc
 
 NOTE! Перед созданием тега, вы должны убедиться, что релизные контейнеры сервисов выложены в репозитории контейнеров.
@@ -38,7 +38,7 @@ NOTE! Перед созданием тега, вы должны убедитьс
 1. Имеем работающую сборку `runtime vX.X.X` задеплоен под Helm релизом `Blue`. Helm релиза `Green` нет в кластере (имеем только `Blue`)
 1. Подготовили новую сборку `runtime vY.Y.Y` и выполняем деплой под Helm релизом `Green`. В этот период времени доступно следующее:
 	* Продуктивный трафик продолжает направляться ТОЛЬКО на Helm релиз `Blue`
-	* К Helm релизу `Green` есть подключение через внутренний домен `***-green-cexiopay.prodcryptopay.kube`(PROD) для проведения [Smoke testing](https://en.wikipedia.org/wiki/Smoke_testing_(software)) по новой функциональности.
+	* К Helm релизу `Green` есть подключение через внутренний домен `***-green-cexpay.prodcryptopay.kube`(PROD) для проведения [Smoke testing](https://en.wikipedia.org/wiki/Smoke_testing_(software)) по новой функциональности.
 	* Если в процессе тестирования обнаружены деффекты, Helm релиз `Green` удаляется и команда работает над исправлением деффектов. ТУТ КОНЕЦ (итого имеем состояние как на шаге 1).
 1. Переключаем продуктивный трафик (возможно постепенно 10%, 25%, 50%, 100%) на использование Helm релиза `Green`
 1. Ожидаем завершения всех фоновых задач процессинга на Helm релизе `Blue`
@@ -55,10 +55,10 @@ Tag name format: `<RELEASE_TAG>-database`
 1. Вносим коректные версии в файл [migration/MANIFEST](./migration/MANIFEST)
 1. Создаем тег в таком формате, создаст pipeline с набором задач для деплоймента базы версии `RELEASE_TAG`.
 	Например:
-	* [20210622-00-database](https://gitlab.wnb:28443/cexiopay/devops/kubernetes-deployment/-/tags/20210622-00-database)
-	* [20210622-01-database](https://gitlab.wnb:28443/cexiopay/devops/kubernetes-deployment/-/tags/20210622-01-database)
+	* [20210622-00-database](https://gitlab.wnb:28443/cexpay/devops/kubernetes-deployment/-/tags/20210622-00-database)
+	* [20210622-01-database](https://gitlab.wnb:28443/cexpay/devops/kubernetes-deployment/-/tags/20210622-01-database)
 	* etc
-	NOTE! Перед созданием тега, вы должны убедиться, что [релизные контейнеры](https://gitlab.wnb:28443/cexiopay/database/pipelines) с версией [`DATABASE_IMAGE_TAG`](https://gitlab.wnb:28443/cexiopay/database/-/tags) выложены в репозитории контейнеров.
+	NOTE! Перед созданием тега, вы должны убедиться, что [релизные контейнеры](https://gitlab.wnb:28443/cexpay/database/pipelines) с версией [`DATABASE_IMAGE_TAG`](https://gitlab.wnb:28443/cexpay/database/-/tags) выложены в репозитории контейнеров.
 
 ## HELM Notes
 
@@ -82,7 +82,7 @@ Tag name format: `<RELEASE_TAG>-database`
 1. Load configmaps and secrets
 	```shell
 	$ rm -rf tmp
-	$ ../runtime.scripts/download-configmaps-and-secrects.sh "cexiopay-${ENV}-admin"
+	$ ../runtime.scripts/download-configmaps-and-secrects.sh "cexpay-${ENV}-admin"
 	```
 
 ### Useful commands
@@ -90,7 +90,7 @@ See full doc https://v3.helm.sh/docs/helm
 
 #### List
 ```bash
-$ helm --namespace "cexiopay-${ENV}" list --all
+$ helm --namespace "cexpay-${ENV}" list --all
 NAME             	REVISION	UPDATED                 	STATUS  	CHART                  	APP VERSION	NAMESPACE
 ???
 ```
@@ -98,20 +98,20 @@ NAME             	REVISION	UPDATED                 	STATUS  	CHART              
 #### Delete the release from Kubernetes
 Full delete `tag` for example
 ```bash
-$ helm --namespace "cexiopay-${ENV}" uninstall blue
+$ helm --namespace "cexpay-${ENV}" uninstall blue
 ```
 
 #### Deploy the chart into cluster
 ```bash
-$ helm --namespace "cexiopay-${ENV}" upgrade --install --history-max 3 --values "values-base.yaml" --values "values.${ENV}.yaml" blue .
+$ helm --namespace "cexpay-${ENV}" upgrade --install --history-max 3 --values "values-base.yaml" --values "values.${ENV}.yaml" blue .
 ```
 
 ```bash
-$ helm --namespace "cexiopay-${ENV}" upgrade --install --history-max 3 --values "values-base.yaml" --values "values.${ENV}.yaml" --set "application.processing.serviceImage=docker-cexpay.infra.kube/cexiopay/cpservice/snapshot" --set "application.processing.tag=2-1-38-hotfix" blue .
+$ helm --namespace "cexpay-${ENV}" upgrade --install --history-max 3 --values "values-base.yaml" --values "values.${ENV}.yaml" --set "application.processing.serviceImage=docker-cexpay.infra.kube/cexpay/cpservice/snapshot" --set "application.processing.tag=2-1-38-hotfix" blue .
 ```
 
 ```bash
-$ helm --namespace "cexiopay-${ENV}" upgrade --install --history-max 3 --values "values-base.yaml" --values "values.${ENV}.yaml" --set "application.processing.tag=master" --set "application.api.tag=master" blue .
+$ helm --namespace "cexpay-${ENV}" upgrade --install --history-max 3 --values "values-base.yaml" --values "values.${ENV}.yaml" --set "application.processing.tag=master" --set "application.api.tag=master" blue .
 ```
 
 
@@ -123,17 +123,17 @@ $ helm --namespace "cexiopay-${ENV}" upgrade --install --history-max 3 --values 
 ### Backup all secrets
 
 ```bash
-kubectl --namespace=cexiopay-infra get --output=yaml secrets | tee "runtime.secrets/backup$(date '+%Y%m%d%H%M%S')-cexiopay-infra-secrets.yaml"
-kubectl --namespace=cexiopay-evolution get --output=yaml secrets | tee "runtime.secrets/backup$(date '+%Y%m%d%H%M%S')-cexiopay-evolution-secrets.yaml"
-kubectl --namespace=cexiopay-presentation get --output=yaml secrets | tee "runtime.secrets/backup$(date '+%Y%m%d%H%M%S')-cexiopay-presentation-secrets.yaml"
-kubectl --namespace=cexiopay-test get --output=yaml secrets | tee "runtime.secrets/backup$(date '+%Y%m%d%H%M%S')-cexiopay-test-secrets.yaml"
+kubectl --namespace=cexpay-infra get --output=yaml secrets | tee "runtime.secrets/backup$(date '+%Y%m%d%H%M%S')-cexpay-infra-secrets.yaml"
+kubectl --namespace=cexpay-evolution get --output=yaml secrets | tee "runtime.secrets/backup$(date '+%Y%m%d%H%M%S')-cexpay-evolution-secrets.yaml"
+kubectl --namespace=cexpay-presentation get --output=yaml secrets | tee "runtime.secrets/backup$(date '+%Y%m%d%H%M%S')-cexpay-presentation-secrets.yaml"
+kubectl --namespace=cexpay-test get --output=yaml secrets | tee "runtime.secrets/backup$(date '+%Y%m%d%H%M%S')-cexpay-test-secrets.yaml"
 ```
 
 ### Backup all configMaps
 
 ```bash
-kubectl --namespace=cexiopay-infra get --output=yaml configmaps | tee "runtime.configmaps/backup$(date '+%Y%m%d%H%M%S')-cexiopay-infra-configmaps.yaml"
-kubectl --namespace=cexiopay-evolution get --output=yaml configmaps | tee "runtime.configmaps/backup$(date '+%Y%m%d%H%M%S')-cexiopay-evolution-configmaps.yaml"
-kubectl --namespace=cexiopay-presentation get --output=yaml configmaps | tee "runtime.configmaps/backup$(date '+%Y%m%d%H%M%S')-cexiopay-presentation-configmaps.yaml"
-kubectl --namespace=cexiopay-test get --output=yaml configmaps | tee "runtime.configmaps/backup$(date '+%Y%m%d%H%M%S')-cexiopay-test-configmaps.yaml"
+kubectl --namespace=cexpay-infra get --output=yaml configmaps | tee "runtime.configmaps/backup$(date '+%Y%m%d%H%M%S')-cexpay-infra-configmaps.yaml"
+kubectl --namespace=cexpay-evolution get --output=yaml configmaps | tee "runtime.configmaps/backup$(date '+%Y%m%d%H%M%S')-cexpay-evolution-configmaps.yaml"
+kubectl --namespace=cexpay-presentation get --output=yaml configmaps | tee "runtime.configmaps/backup$(date '+%Y%m%d%H%M%S')-cexpay-presentation-configmaps.yaml"
+kubectl --namespace=cexpay-test get --output=yaml configmaps | tee "runtime.configmaps/backup$(date '+%Y%m%d%H%M%S')-cexpay-test-configmaps.yaml"
 ```

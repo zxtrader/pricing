@@ -4,4 +4,4 @@ runtime/tmp/
 runtime.secrets/
 runtime.secrets
 .DS_Store
-.kube-config-cexiopay-gitlab
+.kube-config-cexpay-gitlab

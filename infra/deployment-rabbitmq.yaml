@@ -1,5 +1,5 @@
-# kubectl --namespace cexiopay-infra get --output=yaml Deployment/rabbitmq
-# kubectl --namespace cexiopay-infra apply --filename=infra/deployment-rabbitmq.yaml
+# kubectl --namespace cexpay-infra get --output=yaml Deployment/rabbitmq
+# kubectl --namespace cexpay-infra apply --filename=infra/deployment-rabbitmq.yaml
 
 apiVersion: apps/v1
 kind: Deployment
@@ -7,7 +7,7 @@ metadata:
   labels:
     app: rabbitmq
   name: rabbitmq
-  namespace: cexiopay-infra
+  namespace: cexpay-infra
 spec:
   progressDeadlineSeconds: 600
   replicas: 1

@@ -6,7 +6,7 @@ metadata:
     app: helm
     name: tiller
   name: tiller-deploy
-  namespace: cexiopay-preproduction
+  namespace: cexpay-preproduction
 spec:
   progressDeadlineSeconds: 600
   replicas: 1
@@ -33,7 +33,7 @@ spec:
         - name: TILLER_HISTORY_MAX
           value: "5"
         - name: TILLER_NAMESPACE
-          value: cexiopay-preproduction
+          value: cexpay-preproduction
         image: harbor.infra.kube/rancherdefaultimg/tiller:v2.14.2
         imagePullPolicy: IfNotPresent
         livenessProbe:
@@ -84,7 +84,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   name: tiller-manager
-  namespace: cexiopay-preproduction
+  namespace: cexpay-preproduction
 rules:
   - apiGroups:
       - ""
@@ -104,7 +104,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: tiller-binding
-  namespace: cexiopay-preproduction
+  namespace: cexpay-preproduction
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
@@ -112,5 +112,5 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: tiller
-    namespace: cexiopay-preproduction
+    namespace: cexpay-preproduction
 ```

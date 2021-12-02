@@ -1,11 +1,11 @@
-# kubectl --namespace cexiopay-test-admin get --output=yaml ConfigMap/processing-envvars
-# kubectl --namespace cexiopay-test-admin apply --filename=runtime.configmaps/test/processing-envvars.yaml
+# kubectl --namespace cexpay-test-admin get --output=yaml ConfigMap/processing-envvars
+# kubectl --namespace cexpay-test-admin apply --filename=runtime.configmaps/test/processing-envvars.yaml
 
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: processing-envvars
-  namespace: cexiopay-test-admin
+  namespace: cexpay-test-admin
 data:
   runtime.aggregator.url: wss://external-api-aggr-demo.dev.kube/ws
   runtime.endpoint.gateUi.bindPath: /
@@ -17,7 +17,7 @@ data:
   runtime.gate.smtpGmail.user: service@zxteam.net
   # runtime.aggregator.url: wss://external-api-aggr-demo.dev.kube/ws
   # runtime.pss.aggregator.url: https://pss-rpc.dev.kube/aggregator
-  # runtime.pss.cexiopay.url: https://pss-rpc.dev.kube/cryptopay
+  # runtime.pss.cexpay.url: https://pss-rpc.dev.kube/cryptopay
   # runtime.pss.cryptoWalletHelper.url: https://pss-rpc.dev.kube/cryptopay
   # runtime.pss.es.url: https://pss-rpc.dev.kube/cryptopay
   # runtime.wtf2pss.url: https://pss-provider-wtf2.dev.kube
