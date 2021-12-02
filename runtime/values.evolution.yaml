@@ -13,7 +13,7 @@ application:
         "--log-json"
       ]
     env:
-      IdentityServerAuthentication__ValidIssuers: https://id-evolution-cexiopay.dev.kube
+      IdentityServerAuthentication__ValidIssuers: https://id-evolution-cexpay.dev.kube
       WTFProviderConfigurationFile: /etc/cexiolabs/cexiopay.api/legacy-cpservice-config/WTF-dev.json
 
   board:
@@ -27,7 +27,7 @@ application:
       BASE_PATH: /widget-demo/
       GATE_API_ORIGIN: https://processing:8443
       GATE_ID: 09635610-6109-4179-833b-8675fa709d9b
-      GATE_URL: https://gate-evolution-cexiopay.dev.kube
+      GATE_URL: https://gate-evolution-cexpay.dev.kube
       NODE_TLS_REJECT_UNAUTHORIZED: 0
     replicas: 0
 
@@ -44,6 +44,18 @@ application:
         "--config-env",
         "--log-json"
       ]
+
+  invoice:
+    serviceImage: harbor.infra.kube/cexiopay/invoice/snapshot/amd64
+    args:
+      [
+        "--config-json-file=/etc/cexiolabs/cexiopay.invoice/appsettings.json",
+        "--config-json-file=/etc/cexiolabs/cexiopay.invoice/appsettings.evolution.json",
+        "--config-keyperfile-directory=/etc/cexiolabs/cexiopay.invoice/secrets",
+        "--config-env",
+        "--log-json"
+      ]
+    replicas: 1
 
   landing:
     serviceImage: docker-cexpay.infra.kube/cexiopay/landing/snapshot
@@ -69,14 +81,14 @@ application:
       DEBUG_PORT: 9229
       DEBUG_WAIT: "no"
       LOG_LEVEL: "debug"
-      GATE_URL: https://gate-evolution-cexiopay.dev.kube
+      GATE_URL: https://gate-evolution-cexpay.dev.kube
 
 
 ingress:
 
   API:
     blue:
-      domain: api-evolution-cexiopay.dev.kube
+      domain: api-evolution-cexpay.dev.kube
       certSecretName: dev
     backendInsecure: false
     nginxConfigurationSnippet: |
@@ -94,7 +106,7 @@ ingress:
 
   Board:
     blue:
-      domain: board-evolution-cexiopay.dev.kube
+      domain: board-evolution-cexpay.dev.kube
       certSecretName: dev
     backendInsecure: false
     nginxConfigurationSnippet: |
@@ -110,7 +122,7 @@ ingress:
 
   Callbacks:
     blue:
-      domain: callback-evolution-cexiopay.dev.kube
+      domain: callback-evolution-cexpay.dev.kube
       certSecretName: dev
     paths:
       "/ws/":
@@ -119,7 +131,7 @@ ingress:
 
   Dashboard:
     blue:
-      domain: dashboard-evolution-cexiopay.dev.kube
+      domain: dashboard-evolution-cexpay.dev.kube
       certSecretName: dev
     backendInsecure: false
     nginxConfigurationSnippet: |
@@ -138,7 +150,7 @@ ingress:
 
   Echo:
     blue:
-      domain: echo-evolution-cexiopay.dev.kube
+      domain: echo-evolution-cexpay.dev.kube
       certSecretName: dev
     backendInsecure: false
     paths:
@@ -148,7 +160,7 @@ ingress:
 
   # Gate:
   #   blue:
-  #     domain: gate-evolution-cexiopay.dev.kube
+  #     domain: gate-evolution-cexpay.dev.kube
   #     certSecretName: dev
   #   backendInsecure: false
   #   nginxConfigurationSnippet: |
@@ -164,7 +176,7 @@ ingress:
 
   Gate:
     blue:
-      domain: gate-evolution-cexiopay.dev.kube
+      domain: gate-evolution-cexpay.dev.kube
       certSecretName: dev
     backendInsecure: false
     nginxConfigurationSnippet: |
@@ -180,7 +192,7 @@ ingress:
 
   Identity:
     blue:
-      domain: id-evolution-cexiopay.dev.kube
+      domain: id-evolution-cexpay.dev.kube
       certSecretName: dev
     backendInsecure: false
     paths:
@@ -190,7 +202,7 @@ ingress:
   MessengerBridge:
     blue:
       # THIS endpoint just for development purposes
-      domain: messengerbridge-evolution-cexiopay.dev.kube
+      domain: messengerbridge-evolution-cexpay.dev.kube
       certSecretName: dev
     backendInsecure: false
     paths:
@@ -198,9 +210,25 @@ ingress:
         backendServiceName: messengerbridge
         backendServicePort: 8443
 
+  Invoice:
+    blue:
+      domain: invoice-evolution-cexpay.dev.kube
+      certSecretName: dev
+    backendInsecure: false
+    nginxConfigurationSnippet: |
+      add_header Last-Modified $date_gmt;
+      add_header Cache-Control 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0';
+      if_modified_since off;
+      expires off;
+      etag off;
+    paths:
+      "/":
+        backendServiceName: invoice
+        backendServicePort: 8443
+
   Landing:
     blue:
-      domain: evolution-cexiopay.dev.kube
+      domain: evolution-cexpay.dev.kube
       certSecretName: dev
     backendInsecure: false
     nginxConfigurationSnippet: |

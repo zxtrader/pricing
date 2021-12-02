@@ -1,0 +1,111 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: {{ template "prefix" . }}invoice
+  name: {{ template "prefix" . }}invoice
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "prefix" . }}invoice
+  replicas: {{ .Values.application.invoice.replicas | default 0 }}
+  strategy:
+    type: RollingUpdate
+  revisionHistoryLimit: 3
+  template:
+    metadata:
+      labels:
+        app: {{ template "prefix" . }}invoice
+    spec:
+      containers:
+      - name: invoice
+        image: {{ .Values.application.invoice.serviceImage }}:{{ .Values.application.invoice.tag }}
+{{- if .Values.application.invoice.command }}
+        command:
+{{ range .Values.application.invoice.command }}
+        - {{ . }}
+{{ end }}
+{{- end }}
+{{- if .Values.application.invoice.args }}
+        args:
+{{ range .Values.application.invoice.args }}
+        - {{ . }}
+{{ end }}
+{{- end }}
+        # envFrom:
+        # - configMapRef:
+        #     name: {{ template "prefix" . }}api
+        # envFrom:
+        # - secretRef:
+        #     name: {{ template "prefix" . }}api
+        env:
+        - name: Serilog__MinimumLevel__Default
+          value: Information
+        # - name: GatewayOrderHttpClient__Url
+        #   value: https://{{ template "prefix" . }}processing:8085/
+{{- if .Values.application.invoice.env }}
+{{ range $key, $value := .Values.application.invoice.env }}
+        - name: "{{ $key }}"
+          value: "{{ $value }}"
+{{ end }}
+{{- end }}
+        livenessProbe:
+          httpGet:
+            path: /v3/info
+            port: 8443
+            scheme: HTTPS
+          initialDelaySeconds: 180
+          periodSeconds: 60
+        ports:
+        - containerPort: 8443
+          protocol: TCP
+        # readinessProbe:
+        #   httpGet:
+        #     path: /info
+        #     port: 8443
+        #     scheme: HTTPS
+        #   initialDelaySeconds: 60
+        #   periodSeconds: 30
+        resources:
+          limits:
+            cpu: 512m
+            memory: 4096Mi
+          requests:
+            cpu: 128m
+            memory: 2048Mi
+        # # Will be available with Kubernetes 1.20
+        # startupProbe:
+        #   httpGet:
+        #     path: /info
+        #     port: 8443
+        #   failureThreshold: 60
+        #   periodSeconds: 5
+        volumeMounts:
+        # - name: config-files
+        #   mountPath: /etc/cexiolabs/cexiopay.api/
+        #   readOnly: true
+        # - name: legacy-cpservice-config
+        #   mountPath: /etc/cexiolabs/cexiopay.invoice/legacy-cpservice-config/
+        #   readOnly: true
+        - name: secret-certificate
+          mountPath: /etc/cexiolabs/cexiopay.invoice/ssl/
+        - name: ca-certificates-stub
+          mountPath: /etc/cexiolabs/cexiopay.invoice/ssl/ca-certificates
+        - name: secret-files
+          mountPath: /etc/cexiolabs/cexiopay.invoice/secrets/
+      volumes:
+      # - name: legacy-cpservice-config
+      #   configMap:
+      #     defaultMode: 420
+      #     name: {{ template "prefix" . }}cpservice
+      # - name: config-files
+      #   configMap:
+      #     name: {{ template "prefix" . }}invoice-files
+      - name: secret-certificate
+        secret:
+          secretName: {{ template "prefix" . }}invoice-certificate
+      - name: secret-files
+        secret:
+          secretName: {{ template "prefix" . }}invoice
+      - name: ca-certificates-stub
+        emptyDir: {}
