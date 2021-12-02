@@ -15,6 +15,16 @@ application:
       Authentication__indexer: ""
       Emailer__SendGrid__senderEmail: "no-reply@cexpay.io"
 
+  invoice:
+    args:
+      [
+        "--config-json-file=/etc/cexiolabs/cexiopay.invoice/appsettings.json",
+        "--config-keyperfile-directory=/etc/cexiolabs/cexiopay.invoice/secrets",
+        "--config-env",
+        "--log-json"
+      ]
+    replicas: 1
+
   processing:
     args:
       [
@@ -231,6 +241,28 @@ ingress:
     paths:
       "/":
         backendServiceName: identity
+        backendServicePort: 8443
+
+  Invoice:
+    blue:
+      domain: invoice.cexpay.io
+      certSecretName: ingress-cexpayio-certificate
+    nonblue:
+      # Make final domain "invoice-<HelmReleaseName>.prodcryptopay.kube" like a:
+      #   invoice-green.prodcryptopay.kube
+      domainPerfix: invoice-
+      domainSuffix: .prodcryptopay.kube
+      certSecretName: wildcard-prodcryptopay-kube
+    backendInsecure: false
+    nginxConfigurationSnippet: |
+      add_header Last-Modified $date_gmt;
+      add_header Cache-Control 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0';
+      if_modified_since off;
+      expires off;
+      etag off;
+    paths:
+      "/":
+        backendServiceName: invoice
         backendServicePort: 8443
 
   MessengerBridge-Internal:

@@ -47,6 +47,11 @@ application:
     tag: 0.2.5
     replicas: 1
 
+  invoice:
+    serviceImage: harbor.infra.kube/cexiopay/invoice/amd64
+    tag: 0.1.1
+    replicas: 1
+
   landing:
     serviceImage: harbor.infra.kube/cexiopay/landing
     tag: 0.1.1

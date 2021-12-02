@@ -45,6 +45,18 @@ application:
         "--log-json"
       ]
 
+  invoice:
+    serviceImage: harbor.infra.kube/cexiopay/invoice/snapshot/amd64
+    args:
+      [
+        "--config-json-file=/etc/cexiolabs/cexiopay.invoice/appsettings.json",
+        "--config-json-file=/etc/cexiolabs/cexiopay.invoice/appsettings.test.json",
+        "--config-keyperfile-directory=/etc/cexiolabs/cexiopay.invoice/secrets",
+        "--config-env",
+        "--log-json"
+      ]
+    replicas: 1
+
   landing:
     serviceImage: harbor.infra.kube/cexiopay/landing/snapshot
 
@@ -82,11 +94,11 @@ ingress:
       domain: api.pay-cex-test.net
       certSecretName: ingress-pay-cex-test-certificate
     nonblue:
-      # Make final domain "api-<HelmReleaseName>-test-cexiopay.dev.kube" like a:
-      #   api-green-test-cexiopay.dev.kube
-      #   api-master-test-cexiopay.dev.kube
+      # Make final domain "api-<HelmReleaseName>-test-cexpay.dev.kube" like a:
+      #   api-green-test-cexpay.dev.kube
+      #   api-master-test-cexpay.dev.kube
       domainPerfix: api-
-      domainSuffix: -test-cexiopay.dev.kube
+      domainSuffix: -test-cexpay.dev.kube
       certSecretName: dev
     backendInsecure: false
     nginxConfigurationSnippet: |
@@ -104,11 +116,11 @@ ingress:
 
   Board:
     nonblue:
-      # Make final domain "board-<HelmReleaseName>-test-cexiopay.dev.kube" like a:
-      #   board-green-test-cexiopay.dev.kube
-      #   board-master-test-cexiopay.dev.kube
+      # Make final domain "board-<HelmReleaseName>-test-cexpay.dev.kube" like a:
+      #   board-green-test-cexpay.dev.kube
+      #   board-master-test-cexpay.dev.kube
       domainPerfix: board-
-      domainSuffix: -test-cexiopay.dev.kube
+      domainSuffix: -test-cexpay.dev.kube
       certSecretName: dev
     backendInsecure: false
     nginxConfigurationSnippet: |
@@ -124,14 +136,14 @@ ingress:
 
   Callbacks:
     blue:
-      domain: callback-test-cexiopay.dev.kube
+      domain: callback-test-cexpay.dev.kube
       certSecretName: dev
     nonblue:
-      # Make final domain "callback-<HelmReleaseName>-test-cexiopay.dev.kube" like a:
-      #   callback-green-test-cexiopay.dev.kube
-      #   callback-master-test-cexiopay.dev.kube
+      # Make final domain "callback-<HelmReleaseName>-test-cexpay.dev.kube" like a:
+      #   callback-green-test-cexpay.dev.kube
+      #   callback-master-test-cexpay.dev.kube
       domainPerfix: callback-
-      domainSuffix: -test-cexiopay.dev.kube
+      domainSuffix: -test-cexpay.dev.kube
       certSecretName: dev
     paths:
       "/v2/callback/cryptoproviders/pss-provider-wtf2/":
@@ -146,11 +158,11 @@ ingress:
       domain: dashboard-testnet.cryptopay.band
       certSecretName: cryptopay-band
     nonblue:
-      # Make final domain "dashboard-<HelmReleaseName>-test-cexiopay.dev.kube" like a:
-      #   dashboard-green-test-cexiopay.dev.kube
-      #   dashboard-master-test-cexiopay.dev.kube
+      # Make final domain "dashboard-<HelmReleaseName>-test-cexpay.dev.kube" like a:
+      #   dashboard-green-test-cexpay.dev.kube
+      #   dashboard-master-test-cexpay.dev.kube
       domainPerfix: dashboard-
-      domainSuffix: -test-cexiopay.dev.kube
+      domainSuffix: -test-cexpay.dev.kube
       certSecretName: dev
     nginxConfigurationSnippet: |
       add_header Last-Modified $date_gmt;
@@ -171,11 +183,11 @@ ingress:
       domain: echo.pay-cex-test.net
       certSecretName: ingress-pay-cex-test-certificate
     nonblue:
-      # Make final domain "echo-<HelmReleaseName>-test-cexiopay.dev.kube" like a:
-      #   echo-green-test-cexiopay.dev.kube
-      #   echo-master-test-cexiopay.dev.kube
+      # Make final domain "echo-<HelmReleaseName>-test-cexpay.dev.kube" like a:
+      #   echo-green-test-cexpay.dev.kube
+      #   echo-master-test-cexpay.dev.kube
       domainPerfix: echo-
-      domainSuffix: -test-cexiopay.dev.kube
+      domainSuffix: -test-cexpay.dev.kube
       certSecretName: dev
     backendInsecure: false
     paths:
@@ -188,11 +200,11 @@ ingress:
       domain: gate.pay-cex-test.net
       certSecretName: ingress-pay-cex-test-certificate
     nonblue:
-      # Make final domain "gate-<HelmReleaseName>-test-cexiopay.dev.kube" like a:
-      #   gate-green-test-cexiopay.dev.kube
-      #   gate-master-test-cexiopay.dev.kube
+      # Make final domain "gate-<HelmReleaseName>-test-cexpay.dev.kube" like a:
+      #   gate-green-test-cexpay.dev.kube
+      #   gate-master-test-cexpay.dev.kube
       domainPerfix: gate-
-      domainSuffix: -test-cexiopay.dev.kube
+      domainSuffix: -test-cexpay.dev.kube
       certSecretName: dev
     backendInsecure: false
     nginxConfigurationSnippet: |
@@ -211,11 +223,11 @@ ingress:
       domain: id.pay-cex-test.net
       certSecretName: ingress-pay-cex-test-certificate
     nonblue:
-      # Make final domain "id-<HelmReleaseName>-test-cexiopay.dev.kube" like a:
-      #   id-green-test-cexiopay.dev.kube
-      #   id-master-test-cexiopay.dev.kube
+      # Make final domain "id-<HelmReleaseName>-test-cexpay.dev.kube" like a:
+      #   id-green-test-cexpay.dev.kube
+      #   id-master-test-cexpay.dev.kube
       domainPerfix: id-
-      domainSuffix: -test-cexiopay.dev.kube
+      domainSuffix: -test-cexpay.dev.kube
       certSecretName: dev
     backendInsecure: false
     paths:
@@ -223,16 +235,40 @@ ingress:
         backendServiceName: identity
         backendServicePort: 8443
 
+  Invoice:
+    blue:
+      domain: invoice.pay-cex-test.net
+      certSecretName: ingress-pay-cex-test-certificate
+    nonblue:
+      # Make final domain "id-<HelmReleaseName>-test-cexpay.dev.kube" like a:
+      #   invoice-green-test-cexpay.dev.kube
+      #   invoice-master-test-cexpay.dev.kube
+      domainPerfix: invoice-
+      domainSuffix: -test-cexpay.dev.kube
+      certSecretName: dev
+    backendInsecure: false
+    nginxConfigurationSnippet: |
+      add_header Last-Modified $date_gmt;
+      add_header Cache-Control 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0';
+      if_modified_since off;
+      expires off;
+      etag off;
+    paths:
+      "/":
+        backendServiceName: invoice
+        backendServicePort: 8443
+
+
   Landing:
     blue:
       domain: pay-cex-test.net
       certSecretName: ingress-pay-cex-test-certificate
     nonblue:
-      # Make final domain "id-<HelmReleaseName>-test-cexiopay.dev.kube" like a:
-      #   id-green-test-cexiopay.dev.kube
-      #   id-master-test-cexiopay.dev.kube
+      # Make final domain "id-<HelmReleaseName>-test-cexpay.dev.kube" like a:
+      #   id-green-test-cexpay.dev.kube
+      #   id-master-test-cexpay.dev.kube
       domainPerfix: ""
-      domainSuffix: -test-cexiopay.dev.kube
+      domainSuffix: -test-cexpay.dev.kube
       certSecretName: dev
     backendInsecure: false
     nginxConfigurationSnippet: |
@@ -253,15 +289,15 @@ ingress:
   MessengerBridge:
     blue:
       # THIS endpoint just for development purposes
-      domain: messengerbridge-test-cexiopay.dev.kube
+      domain: messengerbridge-test-cexpay.dev.kube
       certSecretName: dev
     nonblue:
       # THIS endpoint just for development purposes
-      # Make final domain "messengerbridge-<HelmReleaseName>-test-cexiopay.dev.kube" like a:
-      #   messengerbridge-green-test-cexiopay.dev.kube
-      #   messengerbridge-master-test-cexiopay.dev.kube
+      # Make final domain "messengerbridge-<HelmReleaseName>-test-cexpay.dev.kube" like a:
+      #   messengerbridge-green-test-cexpay.dev.kube
+      #   messengerbridge-master-test-cexpay.dev.kube
       domainPerfix: messengerbridge-
-      domainSuffix: -test-cexiopay.dev.kube
+      domainSuffix: -test-cexpay.dev.kube
       certSecretName: dev
     backendInsecure: false
     paths:
