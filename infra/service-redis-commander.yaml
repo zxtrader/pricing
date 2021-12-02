@@ -1,0 +1,18 @@
+# kubectl --namespace cexpay-infra get --output=yaml Service/redis-commander
+# kubectl --namespace cexpay-infra apply --filename=infra/service-redis-commander.yaml
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-commander
+  namespace: cexpay-infra
+spec:
+  type: ClusterIP
+  sessionAffinity: None
+  selector:
+    app: redis-commander
+  ports:
+  - name: http
+    port: 8081
+    protocol: TCP
+    targetPort: 8081

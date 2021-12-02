@@ -1,0 +1,48 @@
+# kubectl --namespace cexpay-infra get --output=yaml Deployment/redis-commander
+# kubectl --namespace cexpay-infra apply --filename=infra/deployment-redis-commander.yaml
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis-commander
+  namespace: cexpay-infra
+  labels:
+    app: redis-commander
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: redis-commander
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: redis-commander
+    spec:
+      imagePullSecrets:
+      - name: cexpay-registry
+      containers:
+      - env:
+        - name: URL_PREFIX
+          value: /redis
+        - name: REDIS_HOSTS
+          valueFrom:
+            secretKeyRef:
+              key: REDIS_HOSTS
+              name: redis-commander
+        image: docker-cexpay.infra.kube/rediscommander/redis-commander
+        imagePullPolicy: IfNotPresent
+        name: redis-commander
+        ports:
+        - containerPort: 8081
+          name: http
+          protocol: TCP
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30

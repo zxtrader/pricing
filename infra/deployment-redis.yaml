@@ -4,10 +4,10 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  labels:
-    app: redis
   name: redis
   namespace: cexpay-infra
+  labels:
+    app: redis
 spec:
   progressDeadlineSeconds: 600
   replicas: 1
@@ -28,6 +28,8 @@ spec:
       labels:
         app: redis
     spec:
+      imagePullSecrets:
+      - name: cexpay-registry
       containers:
       - env:
         - name: REDIS_PORT
@@ -37,7 +39,7 @@ spec:
             secretKeyRef:
               key: redis-password
               name: redis
-        image: bitnami/redis:4.0
+        image: docker-cexpay.infra.kube/bitnami/redis:4.0
         imagePullPolicy: IfNotPresent
         name: redis
         ports:
@@ -59,7 +61,7 @@ spec:
             secretKeyRef:
               key: redis-password
               name: redis
-        image: oliver006/redis_exporter:latest
+        image: docker-cexpay.infra.kube/oliver006/redis_exporter:v1.31.4
         imagePullPolicy: Always
         name: redis-exporter
         ports:

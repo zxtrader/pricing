@@ -6,8 +6,6 @@ kind: Service
 metadata:
   name: redis
   namespace: cexpay-infra
-  labels:
-    app: redis
 spec:
   type: ClusterIP
   sessionAffinity: None
