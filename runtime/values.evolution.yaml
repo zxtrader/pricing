@@ -3,7 +3,8 @@ zone: evolution
 application:
 
   api:
-    serviceImage: harbor.infra.kube/cexpay/api/snapshot/amd64
+    # serviceImage: harbor.infra.kube/cexpay/api/snapshot/amd64
+    serviceImage: docker-cexpay.infra.kube/cexpay/api/snapshot/amd64
     tag: latest
     args:
       [
@@ -18,7 +19,8 @@ application:
       WTFProviderConfigurationFile: /etc/cexiolabs/cexpay.api/legacy-cpservice-config/WTF-dev.json
 
   board:
-    serviceImage: harbor.infra.kube/cexpay/board/snapshot
+    # serviceImage: harbor.infra.kube/cexpay/board/snapshot
+    serviceImage: docker-cexpay.infra.kube/cexpay/board/snapshot
     tag: latest
 
   demo:
@@ -32,11 +34,13 @@ application:
     replicas: 0
 
   gatehostinternal:
-    serviceImage: harbor.infra.kube/cexpay/gate/hostinternal/snapshot/amd64
+    # serviceImage: harbor.infra.kube/cexpay/gate/hostinternal/snapshot/amd64
+    serviceImage: docker-cexpay.infra.kube/cexpay/gate/hostinternal/snapshot/amd64
     tag: latest
 
   identity:
-    serviceImage: harbor.infra.kube/cexpay/identity/snapshot/amd64
+    # serviceImage: harbor.infra.kube/cexpay/identity/snapshot/amd64
+    serviceImage: docker-cexpay.infra.kube/cexpay/identity/snapshot/amd64
     tag: latest
     args:
       [
@@ -48,7 +52,8 @@ application:
       ]
 
   invoice:
-    serviceImage: harbor.infra.kube/cexpay/invoice/snapshot/amd64
+    # serviceImage: harbor.infra.kube/cexpay/invoice/snapshot/amd64
+    serviceImage: docker-cexpay.infra.kube/cexpay/invoice/snapshot/amd64
     tag: latest
     args:
       [
@@ -65,11 +70,13 @@ application:
     tag: latest
 
   notifier:
-    serviceImage: harbor.infra.kube/cexiolabs/communitysoft/notifier/csharp/snapshot/amd64
+    # serviceImage: harbor.infra.kube/cexiolabs/communitysoft/notifier/csharp/snapshot/amd64
+    serviceImage: hdocker-cexpay.infra.kube/cexiolabs/communitysoft/notifier/csharp/snapshot/amd64
     tag: latest
 
   processing:
-    serviceImage: harbor.infra.kube/cexpay/processing/snapshot/amd64
+    # serviceImage: harbor.infra.kube/cexpay/processing/snapshot/amd64
+    serviceImage: docker-cexpay.infra.kube/cexpay/processing/snapshot/amd64
     tag: latest
     args:
       [
