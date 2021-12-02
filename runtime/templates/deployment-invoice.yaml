@@ -93,6 +93,10 @@ spec:
           mountPath: /etc/cexiolabs/cexpay.invoice/ssl/ca-certificates
         - name: secret-files
           mountPath: /etc/cexiolabs/cexpay.invoice/secrets/
+{{- if ne .Values.zone "production" }}
+      imagePullSecrets:
+      - name: cexpay-registry
+{{- end }}
       volumes:
       # - name: legacy-cpservice-config
       #   configMap:

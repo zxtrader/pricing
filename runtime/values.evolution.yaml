@@ -71,7 +71,7 @@ application:
 
   notifier:
     # serviceImage: harbor.infra.kube/cexiolabs/communitysoft/notifier/csharp/snapshot/amd64
-    serviceImage: hdocker-cexpay.infra.kube/cexiolabs/communitysoft/notifier/csharp/snapshot/amd64
+    serviceImage: docker-cexpay.infra.kube/cexiolabs/communitysoft/notifier/csharp/snapshot/amd64
     tag: latest
 
   processing:
