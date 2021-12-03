@@ -44,17 +44,17 @@ spec:
           valueFrom:
             configMapKeyRef:
               name: {{ template "prefix" . }}api-envvars
-              key: setup.createGateway__0__uuid
+              key: setup__createGateway__0__uuid
         - name: GATE_PASSPHRASE
           valueFrom:
             secretKeyRef:
               name: {{ template "prefix" . }}api
-              key: setup.createGateway__0__passphrase
+              key: setup__createGateway__0__passphrase
         - name: GATE_SECRET
           valueFrom:
             secretKeyRef:
               name: {{ template "prefix" . }}api
-              key: setup.createGateway__0__secret
+              key: setup__createGateway__0__secret
         ports:
         - containerPort: 8443
           protocol: TCP
