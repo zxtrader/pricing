@@ -52,7 +52,7 @@ spec:
 {{- end }}
         livenessProbe:
           httpGet:
-            path: /info
+            path: /v3/info
             port: 8443
             scheme: HTTPS
           initialDelaySeconds: 180
@@ -62,7 +62,7 @@ spec:
           protocol: TCP
         # readinessProbe:
         #   httpGet:
-        #     path: /info
+        #     path: /v3/info
         #     port: 8443
         #     scheme: HTTPS
         #   initialDelaySeconds: 60
