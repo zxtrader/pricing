@@ -34,7 +34,7 @@ spec:
 {{- end }}
         envFrom:
         - configMapRef:
-            name: {{ template "prefix" . }}api
+            name: {{ template "prefix" . }}api-envvars
         env:
         - name: Serilog__MinimumLevel__Default
           value: Information

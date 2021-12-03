@@ -35,9 +35,6 @@ spec:
         envFrom:
         - configMapRef:
             name: {{ template "prefix" . }}gatehostinternal-envvars
-        # envFrom:
-        # - secretRef:
-        #     name: {{ template "prefix" . }}gatehostinternal-envvars
         env:
         - name: Serilog__MinimumLevel__Default
           value: Information
@@ -88,8 +85,6 @@ spec:
           mountPath: /etc/cexiolabs/cexpay.gate.hostinternal/ssl/ca-certificates
         - name: secret-files
           mountPath: /etc/cexiolabs/cexpay.gate.hostinternal/secrets/
-      # - name: local-temporary-postgres
-      #   image: zxteamorg/devel.postgres-13:20210515
 {{- if ne .Values.zone "production" }}
       imagePullSecrets:
       - name: cexpay-registry
