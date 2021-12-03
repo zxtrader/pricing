@@ -28,6 +28,8 @@ application:
     # serviceImage: harbor.infra.kube/cexpay/gate/hostinternal/snapshot/amd64
     serviceImage: docker-cexpay.infra.kube/cexpay/gate/hostinternal/snapshot/amd64
     tag: latest
+    env:
+      GATE_BASE_URL: https://gate-evolution-cexpay.dev.kube/
 
   gateintegrationdemo:
     serviceImage: docker-cexpay.infra.kube/cexiolabs/cexpay.gate.integration-demo
