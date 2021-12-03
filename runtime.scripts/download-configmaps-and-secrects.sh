@@ -29,6 +29,7 @@ if [ ! -d "${TARGET_DIRECTORY}" ]; then
 	mkdir -p "${TARGET_DIRECTORY}"
 fi
 
+kubectl --namespace "${KUBE_NAMESPACE}" get --output=json ConfigMap/api-envvars               | jq -r ".data" | yq eval -P  > "${TARGET_DIRECTORY}/configmap-api-envvars.yaml"
 kubectl --namespace "${KUBE_NAMESPACE}" get --output=json ConfigMap/cpservice                 | jq -r ".data" | yq eval -P  > "${TARGET_DIRECTORY}/configmap-cpservice.yaml"
 kubectl --namespace "${KUBE_NAMESPACE}" get --output=json ConfigMap/gatehostinternal-envvars  | jq -r ".data" | yq eval -P  > "${TARGET_DIRECTORY}/configmap-gatehostinternal-envvars.yaml"
 kubectl --namespace "${KUBE_NAMESPACE}" get --output=json ConfigMap/gatehostinternal-files    | jq -r ".data" | yq eval -P  > "${TARGET_DIRECTORY}/configmap-gatehostinternal-files.yaml"

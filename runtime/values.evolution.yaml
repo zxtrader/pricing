@@ -29,7 +29,7 @@ application:
     tag: latest
 
   gateintegrationdemo:
-    serviceImage: docker-cexpay.infra.kube/cexiolabs/cexpay.gate.integration-demo:20211202-1
+    serviceImage: docker-cexpay.infra.kube/cexiolabs/cexpay.gate.integration-demo
     tag: latest
     env:
       GATE_URL: https://gate-evolution-cexpay.dev.kube

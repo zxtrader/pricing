@@ -1,0 +1,13 @@
+# kubectl --namespace cexpay-evolution-admin get --output=yaml ConfigMap/api-envvars
+# kubectl --namespace cexpay-evolution-admin apply --filename=runtime.configmaps/evolution/api-envvars.yaml
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: api-envvars
+  namespace: cexpay-evolution-admin
+data:
+  setup.createGateway__0__uuid: "c904ffc2-3824-44b8-a8f4-5c7870613c6f"
+  setup.createGateway__0__description: "Gate Intergration Demo Gateway 1 on merchant DEBUG"
+  setup.createGateway__0__merchantName: "DEBUG"
+  setup.createGateway__0__domainWhitelist: "*.cexpay.local 127.0.0.1 localhost"
