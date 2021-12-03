@@ -34,7 +34,7 @@ spec:
 {{- end }}
         envFrom:
         - configMapRef:
-            name: {{ template "prefix" . }}identity
+            name: {{ template "prefix" . }}identity-envvars
         env:
         - name: Serilog__MinimumLevel__Default
           value: Information

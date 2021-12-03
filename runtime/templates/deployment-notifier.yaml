@@ -35,9 +35,6 @@ spec:
         envFrom:
         - configMapRef:
             name: {{ template "prefix" . }}notifier-envvars
-        # envFrom:
-        # - secretRef:
-        #     name: {{ template "prefix" . }}notifier-envvars
         env:
         - name: Serilog__MinimumLevel__Default
           value: Information
