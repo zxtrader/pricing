@@ -43,7 +43,7 @@ spec:
         - name: GATE_ID
           valueFrom:
             configMapKeyRef:
-              name: {{ template "prefix" . }}api
+              name: {{ template "prefix" . }}api-envvars
               key: setup.createGateway__0__uuid
         - name: GATE_PASSPHRASE
           valueFrom:
