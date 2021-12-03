@@ -1,0 +1,72 @@
+{{- if ne .Values.zone "production" }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: {{ template "prefix" . }}gateintegrationdemo
+  name: {{ template "prefix" . }}gateintegrationdemo
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "prefix" . }}gateintegrationdemo
+  replicas: {{ .Values.application.gateintegrationdemo.replicas | default 0 }}
+  strategy:
+    type: RollingUpdate
+  revisionHistoryLimit: 3
+  template:
+    metadata:
+      labels:
+        app: {{ template "prefix" . }}gateintegrationdemo
+    spec:
+      containers:
+      - name: gateintegrationdemo
+        image: {{ .Values.application.gateintegrationdemo.serviceImage }}:{{ .Values.application.gateintegrationdemo.tag }}
+{{- if .Values.application.gateintegrationdemo.command }}
+        command:
+{{ range .Values.application.gateintegrationdemo.command }}
+        - {{ . }}
+{{ end }}
+{{- end }}
+{{- if .Values.application.gateintegrationdemo.args }}
+        args:
+{{ range .Values.application.gateintegrationdemo.args }}
+        - {{ . }}
+{{ end }}
+{{- end }}
+        env:
+{{- if .Values.application.gateintegrationdemo.env }}
+{{ range $key, $value := .Values.application.gateintegrationdemo.env }}
+        - name: "{{ $key }}"
+          value: "{{ $value }}"
+{{ end }}
+{{- end }}
+        - name: GATE_ID
+          valueFrom:
+            configMapKeyRef:
+              name: {{ template "prefix" . }}api
+              key: setup.createGateway.gateintegrationdemo-gateway1.uuid
+        - name: GATE_PASSPHRASE
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "prefix" . }}api
+              key: setup.createGateway.gateintegrationdemo-gateway1.passphrase
+        - name: GATE_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "prefix" . }}api
+              key: setup.createGateway.gateintegrationdemo-gateway1.secret
+        ports:
+        - containerPort: 8443
+          protocol: TCP
+        resources:
+          limits:
+            cpu: 256m
+            memory: 32Mi
+          requests:
+            cpu: 128m
+            memory: 16Mi
+{{- if ne .Values.zone "production" }}
+      imagePullSecrets:
+      - name: cexpay-registry
+{{- end }}
+{{- end }}

@@ -23,18 +23,16 @@ application:
     serviceImage: docker-cexpay.infra.kube/cexpay/board/snapshot
     tag: latest
 
-  demo:
-    tag: latest
-    # env:
-    #   BASE_PATH: /widget-demo/
-    #   GATE_API_ORIGIN: https://processing:8443
-    #   GATE_ID: 09635610-6109-4179-833b-8675fa709d9b
-    #   GATE_URL: https://gate-evolution-cexpay.dev.kube
-
   gatehostinternal:
     # serviceImage: harbor.infra.kube/cexpay/gate/hostinternal/snapshot/amd64
     serviceImage: docker-cexpay.infra.kube/cexpay/gate/hostinternal/snapshot/amd64
     tag: latest
+
+  gateintegrationdemo:
+    serviceImage: docker-cexpay.infra.kube/cexiolabs/cexpay.gate.integration-demo:20211202-1
+    tag: latest
+    env:
+      GATE_URL: https://gate-evolution-cexpay.dev.kube
 
   identity:
     # serviceImage: harbor.infra.kube/cexpay/identity/snapshot/amd64

@@ -16,11 +16,6 @@ application:
       BASE_PATH: /
     replicas: 1
 
-  demo:
-    serviceImage: cexiolabs/cexpay.gate.integration-demo
-    tag: 20211129-3
-    replicas: 1
-
   echo:
     serviceImage: cexiolabs/http-https-echo
     tag: latest
@@ -29,6 +24,11 @@ application:
   gatehostinternal:
     serviceImage: harbor.infra.kube/cexpay/gate/hostinternal/amd64
     tag: 0.2.4
+    replicas: 1
+
+  gateintegrationdemo:
+    serviceImage: cexiolabs/cexpay.gate.integration-demo
+    tag: 20211202-1
     replicas: 1
 
   identity:
