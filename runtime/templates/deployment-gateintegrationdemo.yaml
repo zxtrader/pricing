@@ -18,6 +18,8 @@ spec:
       labels:
         app: {{ template "prefix" . }}gateintegrationdemo
     spec:
+      imagePullSecrets:
+      - name: cexpay-registry
       containers:
       - name: gateintegrationdemo
         image: {{ .Values.application.gateintegrationdemo.serviceImage }}:{{ .Values.application.gateintegrationdemo.tag }}
@@ -65,8 +67,4 @@ spec:
           requests:
             cpu: 128m
             memory: 16Mi
-{{- if ne .Values.zone "production" }}
-      imagePullSecrets:
-      - name: cexpay-registry
-{{- end }}
 {{- end }}
