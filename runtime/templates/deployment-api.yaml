@@ -90,8 +90,6 @@ spec:
           readOnly: true
         - name: secret-certificate
           mountPath: /etc/cexiolabs/cexpay.api/ssl/
-        - name: ca-certificates-stub
-          mountPath: /etc/cexiolabs/cexpay.api/ssl/ca-certificates
         - name: secret-files
           mountPath: /etc/cexiolabs/cexpay.api/secrets/
 {{- if ne .Values.zone "production" }}
@@ -112,5 +110,3 @@ spec:
       - name: secret-files
         secret:
           secretName: {{ template "prefix" . }}api
-      - name: ca-certificates-stub
-        emptyDir: {}

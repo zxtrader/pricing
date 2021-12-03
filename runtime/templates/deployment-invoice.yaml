@@ -89,8 +89,6 @@ spec:
         #   readOnly: true
         - name: secret-certificate
           mountPath: /etc/cexiolabs/cexpay.invoice/ssl/
-        - name: ca-certificates-stub
-          mountPath: /etc/cexiolabs/cexpay.invoice/ssl/ca-certificates
         - name: secret-files
           mountPath: /etc/cexiolabs/cexpay.invoice/secrets/
 {{- if ne .Values.zone "production" }}
@@ -111,5 +109,3 @@ spec:
       - name: secret-files
         secret:
           secretName: {{ template "prefix" . }}invoice
-      - name: ca-certificates-stub
-        emptyDir: {}

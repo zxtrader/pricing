@@ -84,8 +84,6 @@ spec:
           readOnly: true
         - name: secret-certificate
           mountPath: /etc/cexiolabs/communitysoft.notifier/ssl/
-        - name: ca-certificates-stub
-          mountPath: /etc/cexiolabs/communitysoft.notifier/ssl/ca-certificates
         - name: secret-files
           mountPath: /etc/cexiolabs/communitysoft.notifier/secrets/
       - name: local-temporary-postgres
@@ -104,5 +102,3 @@ spec:
       - name: secret-files
         secret:
           secretName: {{ template "prefix" . }}notifier
-      - name: ca-certificates-stub
-        emptyDir: {}

@@ -33,6 +33,7 @@ kubectl --namespace "${KUBE_NAMESPACE}" get --output=json ConfigMap/api-envvars 
 kubectl --namespace "${KUBE_NAMESPACE}" get --output=json ConfigMap/cpservice                 | jq -r ".data" | yq eval -P  > "${TARGET_DIRECTORY}/configmap-cpservice.yaml"
 kubectl --namespace "${KUBE_NAMESPACE}" get --output=json ConfigMap/gatehostinternal-envvars  | jq -r ".data" | yq eval -P  > "${TARGET_DIRECTORY}/configmap-gatehostinternal-envvars.yaml"
 kubectl --namespace "${KUBE_NAMESPACE}" get --output=json ConfigMap/gatehostinternal-files    | jq -r ".data" | yq eval -P  > "${TARGET_DIRECTORY}/configmap-gatehostinternal-files.yaml"
+kubectl --namespace "${KUBE_NAMESPACE}" get --output=json ConfigMap/identity-envvars          | jq -r ".data" | yq eval -P  > "${TARGET_DIRECTORY}/configmap-identity-envvars.yaml"
 kubectl --namespace "${KUBE_NAMESPACE}" get --output=json ConfigMap/messengerbridge-files     | jq -r ".data" | yq eval -P  > "${TARGET_DIRECTORY}/configmap-messengerbridge-files.yaml"
 kubectl --namespace "${KUBE_NAMESPACE}" get --output=json ConfigMap/notifier-envvars          | jq -r ".data" | yq eval -P  > "${TARGET_DIRECTORY}/configmap-notifier-envvars.yaml"
 kubectl --namespace "${KUBE_NAMESPACE}" get --output=json ConfigMap/notifier-files            | jq -r ".data" | yq eval -P  > "${TARGET_DIRECTORY}/configmap-notifier-files.yaml"
