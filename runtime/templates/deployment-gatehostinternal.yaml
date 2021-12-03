@@ -38,6 +38,8 @@ spec:
         env:
         - name: Serilog__MinimumLevel__Default
           value: Information
+        - name: Processing__BaseUrl
+          value: https://{{ template "prefix" . }}processing:8080/
 {{- if .Values.application.gatehostinternal.env }}
 {{ range $key, $value := .Values.application.gatehostinternal.env }}
         - name: "{{ $key }}"
