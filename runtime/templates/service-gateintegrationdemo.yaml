@@ -6,10 +6,10 @@ metadata:
   name: {{ template "prefix" . }}gateintegrationdemo
 spec:
   ports:
-    - port: 8443
+    - port: 8080
       name: gateintegrationdemo
       protocol: TCP
-      targetPort: 8443
+      targetPort: 8080
   type: ClusterIP
   selector:
     app: {{ template "prefix" . }}gateintegrationdemo

@@ -161,11 +161,11 @@ ingress:
     blue:
       domain: gateintegrationdemo-evolution-cexpay.dev.kube
       certSecretName: dev
-    backendInsecure: false
+    backendInsecure: true
     paths:
       "/":
         backendServiceName: gateintegrationdemo
-        backendServicePort: 8443
+        backendServicePort: 8080
 
   Identity:
     blue:
