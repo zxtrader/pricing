@@ -3,7 +3,9 @@ zone: test
 application:
 
   api:
-    serviceImage: harbor.infra.kube/cexpay/api/snapshot/amd64
+    # serviceImage: harbor.infra.kube/cexpay/api/snapshot/amd64
+    serviceImage: docker-cexpay.infra.kube/cexpay/api/snapshot/amd64
+    tag: latest
     args:
       [
         "--config-json-file=/etc/cexiolabs/cexpay.api/appsettings.json",
@@ -17,25 +19,30 @@ application:
       WTFProviderConfigurationFile: /etc/cexiolabs/cexpay.api/legacy-cpservice-config/WTF-dev.json
 
   board:
-    serviceImage: harbor.infra.kube/cexpay/board/snapshot
-
-  dashboardlegacy2:
-    serviceImage: harbor.infra.kube/cexpay/dashboard-react/snapshot
-
-  demo:
+    # serviceImage: harbor.infra.kube/cexpay/board/snapshot
+    # serviceImage: docker-cexpay.infra.kube/cexpay/board/snapshot
+    serviceImage: docker-cexpay.infra.kube/cexpay/dashboard-dart/snapshot/amd64
+    tag: latest
     env:
-      BASE_PATH: /widget-demo/
-      GATE_API_ORIGIN: https://processing:8443/
-      GATE_ID: d3812aab-e74e-4408-94ac-0f6029f680f6
-      GATE_URL: https://gate.pay-cex-test.net
-      NODE_TLS_REJECT_UNAUTHORIZED: 0
-    replicas: 0
+      BASE_PATH: "/wznk/"
 
   gatehostinternal:
-    serviceImage: harbor.infra.kube/cexpay/gate/hostinternal/snapshot/amd64
+    # serviceImage: harbor.infra.kube/cexpay/gate/hostinternal/snapshot/amd64
+    serviceImage: docker-cexpay.infra.kube/cexpay/gate/hostinternal/snapshot/amd64
+    tag: latest
+    env:
+      GATE_BASE_URL: https://gate.pay-cex-test.net
+
+  gateintegrationdemo:
+    serviceImage: docker-cexpay.infra.kube/cexiolabs/cexpay.gate.integration-demo
+    tag: latest
+    env:
+      GATE_URL: https://gate.pay-cex-test.net
 
   identity:
-    serviceImage: harbor.infra.kube/cexpay/identity/snapshot/amd64
+    # serviceImage: harbor.infra.kube/cexpay/identity/snapshot/amd64
+    serviceImage: docker-cexpay.infra.kube/cexpay/identity/snapshot/amd64
+    tag: latest
     args:
       [
         "--config-json-file=/etc/cexiolabs/cexpay.identity/appsettings.json",
@@ -46,7 +53,9 @@ application:
       ]
 
   invoice:
-    serviceImage: harbor.infra.kube/cexpay/invoice/snapshot/amd64
+    # serviceImage: harbor.infra.kube/cexpay/invoice/snapshot/amd64
+    serviceImage: docker-cexpay.infra.kube/cexpay/invoice/snapshot/amd64
+    tag: latest
     args:
       [
         "--config-json-file=/etc/cexiolabs/cexpay.invoice/appsettings.json",
@@ -58,16 +67,18 @@ application:
     replicas: 1
 
   landing:
-    serviceImage: harbor.infra.kube/cexpay/landing/snapshot
-
-  messengerbridge:
-    replicas: 0
+    serviceImage: docker-cexpay.infra.kube/cexpay/landing/snapshot/amd64
+    tag: latest
 
   notifier:
-    serviceImage: harbor.infra.kube/cexiolabs/communitysoft/notifier/csharp/snapshot/amd64
+    # serviceImage: harbor.infra.kube/cexiolabs/communitysoft/notifier/csharp/snapshot/amd64
+    serviceImage: docker-cexpay.infra.kube/cexiolabs/communitysoft/notifier/csharp/snapshot/amd64
+    tag: latest
 
   processing:
-    serviceImage: harbor.infra.kube/cexpay/processing/snapshot/amd64
+    # serviceImage: harbor.infra.kube/cexpay/processing/snapshot/amd64
+    serviceImage: docker-cexpay.infra.kube/cexpay/processing/snapshot/amd64
+    tag: latest
     args:
       [
         "--config-file=/etc/cexiolabs/cexpay.processing/service.config",
@@ -84,8 +95,6 @@ application:
       DEBUG_PORT: 9229
       DEBUG_WAIT: "no"
       LOG_LEVEL: "debug"
-      GATE_URL: https://gate.pay-cex-test.net
-
 
 ingress:
 
@@ -123,12 +132,6 @@ ingress:
       domainSuffix: -test-cexpay.dev.kube
       certSecretName: dev
     backendInsecure: false
-    nginxConfigurationSnippet: |
-      add_header Last-Modified $date_gmt;
-      add_header Cache-Control 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0';
-      if_modified_since off;
-      expires off;
-      etag off;
     paths:
       "/":
         backendServiceName: board
@@ -152,31 +155,6 @@ ingress:
       "/ws/":
         backendServiceName: processing
         backendServicePort: 8086
-
-  DashboardLegacy2:
-    blue:
-      domain: dashboard-testnet.cryptopay.band
-      certSecretName: cryptopay-band
-    nonblue:
-      # Make final domain "dashboard-<HelmReleaseName>-test-cexpay.dev.kube" like a:
-      #   dashboard-green-test-cexpay.dev.kube
-      #   dashboard-master-test-cexpay.dev.kube
-      domainPerfix: dashboard-
-      domainSuffix: -test-cexpay.dev.kube
-      certSecretName: dev
-    nginxConfigurationSnippet: |
-      add_header Last-Modified $date_gmt;
-      add_header Cache-Control 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0';
-      if_modified_since off;
-      expires off;
-      etag off;
-    paths:
-      "/":
-        backendServiceName: dashboardlegacy2
-        backendServicePort: 8443
-      "/v2/dashboard/":
-        backendServiceName: processing
-        backendServicePort: 8082
 
   Echo:
     blue:
@@ -207,16 +185,27 @@ ingress:
       domainSuffix: -test-cexpay.dev.kube
       certSecretName: dev
     backendInsecure: false
-    nginxConfigurationSnippet: |
-      add_header Last-Modified $date_gmt;
-      add_header Cache-Control 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0';
-      if_modified_since off;
-      expires off;
-      etag off;
     paths:
       "/":
         backendServiceName: gatehostinternal
         backendServicePort: 8443
+
+  GateIntegrationDemo:
+    blue:
+      domain: gateintegrationdemo.pay-cex-test.net
+      certSecretName: dev
+    nonblue:
+      # Make final domain "gateintegrationdemo-<HelmReleaseName>-test-cexpay.dev.kube" like a:
+      #   gateintegrationdemo-green-test-cexpay.dev.kube
+      #   gateintegrationdemo-master-test-cexpay.dev.kube
+      domainPerfix: gateintegrationdemo-
+      domainSuffix: -test-cexpay.dev.kube
+      certSecretName: dev
+    backendInsecure: true
+    paths:
+      "/":
+        backendServiceName: gateintegrationdemo
+        backendServicePort: 8080
 
   Identity:
     blue:
@@ -240,24 +229,17 @@ ingress:
       domain: invoice.pay-cex-test.net
       certSecretName: ingress-pay-cex-test-certificate
     nonblue:
-      # Make final domain "id-<HelmReleaseName>-test-cexpay.dev.kube" like a:
+      # Make final domain "invoice-<HelmReleaseName>-test-cexpay.dev.kube" like a:
       #   invoice-green-test-cexpay.dev.kube
       #   invoice-master-test-cexpay.dev.kube
       domainPerfix: invoice-
       domainSuffix: -test-cexpay.dev.kube
       certSecretName: dev
     backendInsecure: false
-    nginxConfigurationSnippet: |
-      add_header Last-Modified $date_gmt;
-      add_header Cache-Control 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0';
-      if_modified_since off;
-      expires off;
-      etag off;
     paths:
       "/":
         backendServiceName: invoice
         backendServicePort: 8443
-
 
   Landing:
     blue:
@@ -271,20 +253,10 @@ ingress:
       domainSuffix: -test-cexpay.dev.kube
       certSecretName: dev
     backendInsecure: false
-    nginxConfigurationSnippet: |
-      add_header Last-Modified $date_gmt;
-      add_header Cache-Control 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0';
-      if_modified_since off;
-      expires off;
-      etag off;
     paths:
       "/":
         backendServiceName: landing
         backendServicePort: 8443
-      "/widget-demo/":
-        backendServiceName: demo
-        backendServicePort: 8443
-
 
   MessengerBridge:
     blue:
