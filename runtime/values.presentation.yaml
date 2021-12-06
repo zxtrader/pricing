@@ -121,6 +121,7 @@ ingress:
       domain: board-presentation-cexpay.dev.kube
       certSecretName: dev
     backendInsecure: false
+    nginxAppRoot: "/wznk/"
     paths:
       "/":
         backendServiceName: board
