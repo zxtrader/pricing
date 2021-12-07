@@ -20,9 +20,8 @@ application:
 
   board:
     # serviceImage: harbor.infra.kube/cexpay/board/snapshot
-    # serviceImage: docker-cexpay.infra.kube/cexpay/board/snapshot
-    serviceImage: docker-cexpay.infra.kube/cexpay/dashboard-wznk/snapshot/amd64
-    tag: latest
+    serviceImage: docker-cexpay.infra.kube/cexpay/board/snapshot
+    tag: master
     env:
       BASE_PATH: "/wznk/"
 
