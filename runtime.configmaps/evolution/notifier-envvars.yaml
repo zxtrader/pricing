@@ -9,5 +9,5 @@ metadata:
 data:
   RabbitMQ__Hosts__0__Host: rabbitmq.cexiopay-infra
   RabbitMQ__Hosts__0__Port: "5672"
-  RabbitMQ__UserName: cexiopay-evolution-notifier
+  RabbitMQ__UserName: cexpay-evolution-notifier
   RabbitMQ__VirtualHost: evolution-merchant-notifications

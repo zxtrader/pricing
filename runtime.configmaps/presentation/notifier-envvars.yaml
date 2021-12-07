@@ -1,0 +1,13 @@
+# kubectl --namespace cexpay-presentation-admin get --output=yaml ConfigMap/notifier-envvars
+# kubectl --namespace cexpay-presentation-admin apply --filename=runtime.configmaps/presentation/notifier-envvars.yaml
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: notifier-envvars
+  namespace: cexpay-presentation-admin
+data:
+  RabbitMQ__Hosts__0__Host: rabbitmq.cexiopay-infra
+  RabbitMQ__Hosts__0__Port: "5672"
+  RabbitMQ__UserName: cexiopay-presentation-notifier
+  RabbitMQ__VirtualHost: presentation-merchant-notifications

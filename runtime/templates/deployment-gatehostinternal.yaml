@@ -78,9 +78,9 @@ spec:
         #   failureThreshold: 60
         #   periodSeconds: 5
         volumeMounts:
-        - name: config-files
-          mountPath: /etc/cexiolabs/cexpay.gate.hostinternal/extra
-          readOnly: true
+        # - name: config-files
+        #   mountPath: /etc/cexiolabs/cexpay.gate.hostinternal/extra
+        #   readOnly: true
         - name: secret-certificate
           mountPath: /etc/cexiolabs/cexpay.gate.hostinternal/ssl/
         - name: secret-files
@@ -90,9 +90,9 @@ spec:
       - name: cexpay-registry
 {{- end }}
       volumes:
-      - name: config-files
-        configMap:
-          name: {{ template "prefix" . }}gatehostinternal-files
+      # - name: config-files
+      #   configMap:
+      #     name: {{ template "prefix" . }}gatehostinternal-files
       - name: secret-certificate
         secret:
           secretName: {{ template "prefix" . }}gatehostinternal-certificate

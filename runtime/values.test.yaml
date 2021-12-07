@@ -21,7 +21,7 @@ application:
   board:
     # serviceImage: harbor.infra.kube/cexpay/board/snapshot
     # serviceImage: docker-cexpay.infra.kube/cexpay/board/snapshot
-    serviceImage: docker-cexpay.infra.kube/cexpay/dashboard-dart/snapshot/amd64
+    serviceImage: docker-cexpay.infra.kube/cexpay/dashboard-wznk/snapshot/amd64
     tag: latest
     env:
       BASE_PATH: "/wznk/"

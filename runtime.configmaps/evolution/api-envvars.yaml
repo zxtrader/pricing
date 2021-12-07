@@ -8,6 +8,6 @@ metadata:
   namespace: cexpay-evolution-admin
 data:
   setup__createGateway__0__uuid: "c904ffc2-3824-44b8-a8f4-5c7870613c6f"
-  setup__createGateway__0__description: "Gate Intergration Demo Gateway 1 on merchant DEBUG"
+  setup__createGateway__0__description: "Gate Intergration Demo Gateway 1 on merchant DEBUG in Evolution zone"
   setup__createGateway__0__merchantName: "DEBUG"
   setup__createGateway__0__domainWhitelist: "*.cexpay.local 127.0.0.1 localhost"

@@ -1,0 +1,13 @@
+# kubectl --namespace cexpay-presentation-admin get --output=yaml ConfigMap/api-envvars
+# kubectl --namespace cexpay-presentation-admin apply --filename=runtime.configmaps/presentation/api-envvars.yaml
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: api-envvars
+  namespace: cexpay-presentation-admin
+data:
+  setup__createGateway__0__uuid: "2723fb4e-ea12-4786-ab25-e1ec5197835f"
+  setup__createGateway__0__description: "Gate Intergration Demo Gateway 1 on merchant DEBUG in Presentation zone"
+  setup__createGateway__0__merchantName: "DEBUG"
+  setup__createGateway__0__domainWhitelist: "*.cexpay.local 127.0.0.1 localhost"

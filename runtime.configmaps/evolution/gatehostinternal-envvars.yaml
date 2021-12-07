@@ -1,0 +1,8 @@
+# kubectl --namespace cexpay-evolution-admin get --output=yaml ConfigMap/gatehostinternal-envvars
+# kubectl --namespace cexpay-evolution-admin apply --filename=runtime.configmaps/evolution/gatehostinternal-envvars.yaml
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: gatehostinternal-envvars
+  namespace: cexpay-evolution-admin

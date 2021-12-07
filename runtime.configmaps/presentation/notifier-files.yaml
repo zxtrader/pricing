@@ -1,10 +1,10 @@
-# kubectl --namespace cexpay-evolution-admin get --output=yaml ConfigMap/notifier-files
-# kubectl --namespace cexpay-evolution-admin apply --filename=runtime.configmaps/evolution/notifier-files.yaml
+# kubectl --namespace cexpay-presentation-admin get --output=yaml ConfigMap/notifier-files
+# kubectl --namespace cexpay-presentation-admin apply --filename=runtime.configmaps/presentation/notifier-files.yaml
 
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  namespace: cexpay-evolution-admin
+  namespace: cexpay-presentation-admin
   name: notifier-files
 data:
   setup.toml: |-
@@ -25,7 +25,7 @@ data:
 
           [[setup.topics.subscribers.listeners]]
             type = "webhook"
-            webhookUrl = "https://order-evolution-cexpay.requestcatcher.com/"
+            webhookUrl = "https://order-presentation-cexpay.requestcatcher.com/"
 
 
       [[setup.topics]]
@@ -43,7 +43,7 @@ data:
 
           [[setup.topics.subscribers.listeners]]
             type = "webhook"
-            webhookUrl = "https://auto-order-evolution-cexpay.requestcatcher.com/"
+            webhookUrl = "https://auto-order-presentation-cexpay.requestcatcher.com/"
 
 
       [[setup.topics]]
@@ -61,7 +61,7 @@ data:
 
           [[setup.topics.subscribers.listeners]]
             type = "webhook"
-            webhookUrl = "https://cryptosell-order-evolution-cexpay.requestcatcher.com/"
+            webhookUrl = "https://cryptosell-order-presentation-cexpay.requestcatcher.com/"
 
 
       [[setup.topics]]
@@ -79,7 +79,7 @@ data:
 
           [[setup.topics.subscribers.listeners]]
             type = "webhook"
-            webhookUrl = "https://cryptobuy-order-evolution-cexpay.requestcatcher.com/"
+            webhookUrl = "https://cryptobuy-order-presentation-cexpay.requestcatcher.com/"
 
 
       [[setup.topics]]
@@ -97,4 +97,4 @@ data:
 
           [[setup.topics.subscribers.listeners]]
             type = "webhook"
-            webhookUrl = "https://paidstatus-order-evolution-cexpay.requestcatcher.com/"
+            webhookUrl = "https://paidstatus-order-presentation-cexpay.requestcatcher.com/"

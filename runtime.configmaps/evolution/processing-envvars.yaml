@@ -16,7 +16,7 @@ data:
   runtime.endpoint.dashboard.cors.methods: GET, POST, PUT, DELETE
   runtime.endpoint.dashboard.cors.whiteList: https://evolution-cexpay.dev.kube
   runtime.endpoint.swaggerUi.servers: evolutionSrv
-  runtime.endpoint_indexer: account dashboard info instrument internalInfo merchant monitoring network order rate risk sysadmin time
+  runtime.endpoint_indexer: account dashboard info instrument internalInfo merchant monitoring network order rate risk time
   runtime.notifier.subscriber.kind: web-socket-client
   runtime.notifier.subscriber.url: ws://notifier.cexpay-infra:8080/subscriber/websockethost/evolution
   runtime.pss.aggregator.url: https://pss-rpc.dev.kube/aggregator
@@ -30,11 +30,5 @@ data:
   runtime.server.evolutionSrv.serverKey: /etc/cexiolabs/cexpay/ssl/tls.key
   runtime.server.evolutionSrv.trustProxy: "true"
   runtime.server.evolutionSrv.type: https
-  runtime.server.sysadminSrv.clientCertificateMode: none
-  runtime.server.sysadminSrv.listenHost: 0.0.0.0
-  runtime.server.sysadminSrv.serverCertificate: /etc/cexiolabs/cexpay/ssl/tls.crt
-  runtime.server.sysadminSrv.serverKey: /etc/cexiolabs/cexpay/ssl/tls.key
-  runtime.server.sysadminSrv.trustProxy: "true"
-  runtime.server.sysadminSrv.type: https
-  runtime.server_indexer: evolutionSrv dashboardApiSrv loopbackSrv monitoringSrv processingApiSrv sysadminSrv
+  runtime.server_indexer: evolutionSrv dashboardApiSrv loopbackSrv monitoringSrv processingApiSrv
   runtime.wtf2pss.url: https://pss-provider-wtf2.dev.kube
