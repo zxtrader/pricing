@@ -22,8 +22,6 @@ application:
     # serviceImage: harbor.infra.kube/cexpay/board/snapshot
     serviceImage: docker-cexpay.infra.kube/cexpay/board/snapshot
     tag: master
-    env:
-      BASE_PATH: "/wznk/"
 
   gatehostinternal:
     # serviceImage: harbor.infra.kube/cexpay/gate/hostinternal/snapshot/amd64
