@@ -60,7 +60,7 @@ application:
         "--config-keyperfile-directory=/etc/cexiolabs/cexpay.invoice/secrets",
         "--config-env",
         "--log-json"
-      ],
+      ]
     env:
       IdentityServerAuthentication__ValidIssuers: https://id-presentation-cexpay.dev.kube
 
