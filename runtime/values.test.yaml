@@ -63,7 +63,8 @@ application:
         "--config-env",
         "--log-json"
       ]
-    replicas: 1
+    env:
+      IdentityServerAuthentication__ValidIssuers: https://id.pay-cex-test.net
 
   landing:
     serviceImage: docker-cexpay.infra.kube/cexpay/landing/snapshot/amd64

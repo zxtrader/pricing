@@ -38,8 +38,10 @@ spec:
         env:
         - name: Serilog__MinimumLevel__Default
           value: Information
-        # - name: GatewayOrderHttpClient__Url
-        #   value: https://{{ template "prefix" . }}processing:8085/
+        - name: IdentityServerAuthentication__BearerAuthority
+          value: https://{{ template "prefix" . }}identity:8443/
+        - name: GatewayOrderHttpClient__Url
+          value: https://{{ template "prefix" . }}gatehostinternal:8085/
 {{- if .Values.application.invoice.env }}
 {{ range $key, $value := .Values.application.invoice.env }}
         - name: "{{ $key }}"

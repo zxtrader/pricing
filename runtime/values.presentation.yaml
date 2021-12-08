@@ -62,8 +62,9 @@ application:
         "--config-keyperfile-directory=/etc/cexiolabs/cexpay.invoice/secrets",
         "--config-env",
         "--log-json"
-      ]
-    replicas: 1
+      ],
+    env:
+      IdentityServerAuthentication__ValidIssuers: https://id-presentation-cexpay.dev.kube
 
   landing:
     serviceImage: docker-cexpay.infra.kube/cexpay/landing/snapshot/amd64
