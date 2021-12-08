@@ -41,7 +41,7 @@ spec:
         - name: IdentityServerAuthentication__BearerAuthority
           value: https://{{ template "prefix" . }}identity:8443/
         - name: GatewayOrderHttpClient__Url
-          value: https://{{ template "prefix" . }}gatehostinternal:8085/
+          value: https://{{ template "prefix" . }}gatehostinternal:8443/
 {{- if .Values.application.invoice.env }}
 {{ range $key, $value := .Values.application.invoice.env }}
         - name: "{{ $key }}"
@@ -50,7 +50,7 @@ spec:
 {{- end }}
         livenessProbe:
           httpGet:
-            path: /v3/info
+            path: /info
             port: 8443
             scheme: HTTPS
           initialDelaySeconds: 180
