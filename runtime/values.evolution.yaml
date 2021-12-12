@@ -48,7 +48,7 @@ application:
 
   invoice:
     # serviceImage: harbor.infra.kube/cexpay/invoice/snapshot/amd64
-    serviceImage: docker-cexpay.infra.kube/cexpay/invoice/snapshot/amd64
+    serviceImage: docker-cexpay.infra.kube/cexpay/invoice/amd64
     tag: latest
     args:
       [
