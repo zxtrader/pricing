@@ -1,4 +1,5 @@
 # kubectl --namespace cexpay-presentation-admin get --output=yaml ConfigMap/processing-envvars
+# kubectl --namespace cexpay-presentation-admin get --output=json ConfigMap/processing-envvars | jq -r ".data" | yq eval -P | sed 's/^/  /'
 # kubectl --namespace cexpay-presentation-admin apply --filename=runtime.configmaps/presentation/processing-envvars.yaml
 
 apiVersion: v1
@@ -8,20 +9,16 @@ metadata:
   namespace: cexpay-presentation-admin
 data:
   runtime.aggregator.url: wss://external-api-aggr-demo.dev.kube/ws
-  # runtime.dashboardAuth.apiKey: AKIA5YOJLJKEIFAKNWBV
-  # runtime.dashboardAuth.cognitoClientId: 6jusd0r1854j4aksj34dkuhuh
-  # runtime.dashboardAuth.cognitoUserPool: us-east-1_QNzFm4L9A
-  # runtime.dashboardAuth.region: us-east-1
   runtime.endpoint.dashboard.cors.allowedHeaders: '*'
   runtime.endpoint.dashboard.cors.methods: GET, POST, PUT, DELETE
-  runtime.endpoint.dashboard.cors.whiteList: https://presentation-cexpay.dev.kube https://pay-cex-test.net
+  runtime.endpoint.dashboard.cors.whiteList: https://presentation-cexpay.dev.kube
   runtime.endpoint.swaggerUi.servers: presentationSrv
   runtime.endpoint_indexer: account dashboard info instrument internalInfo merchant monitoring network order rate risk time
   runtime.notifier.subscriber.kind: web-socket-client
   runtime.notifier.subscriber.url: ws://notifier.cexpay-infra:8080/subscriber/websockethost/presentation
   runtime.pss.aggregator.url: https://pss-rpc.dev.kube/aggregator
-  runtime.pss.cryptoWalletHelper.url: https://pss-rpc.dev.kube/cryptopay
   runtime.pss.cexpay.url: https://pss-rpc.dev.kube/cryptopay
+  runtime.pss.cryptoWalletHelper.url: https://pss-rpc.dev.kube/cryptopay
   runtime.pss.es.url: https://pss-rpc.dev.kube/cryptopay
   runtime.server.presentationSrv.clientCertificateMode: none
   runtime.server.presentationSrv.listenHost: 0.0.0.0

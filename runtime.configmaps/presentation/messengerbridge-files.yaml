@@ -1,11 +1,12 @@
 # kubectl --namespace cexpay-presentation-admin get --output=yaml ConfigMap/messengerbridge-files
+# kubectl --namespace cexpay-presentation-admin get --output=json ConfigMap/messengerbridge-files | jq -r ".data" | yq eval -P | sed 's/^/  /'
 # kubectl --namespace cexpay-presentation-admin apply --filename=runtime.configmaps/presentation/messengerbridge-files.yaml
 
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  namespace: cexpay-presentation-admin
   name: messengerbridge-files
+  namespace: cexpay-presentation-admin
 data:
   messenger-bridge.toml: |-
     # File format: https://github.com/toml-lang/toml
@@ -74,7 +75,7 @@ data:
         #chatId = <Telegram's Unique identifier for the target chat or username of the target channel (in the format @channelusername)>
         renderTemplate = """
     <b>!TESTNET! Запрос на ручное подтверждение 0-confirmation (нет колбека от pss-provider-wtf2)</b>
-    <i>Order: </i><a href="https://board.pay-cex-text.net/order/{{cpoOrderId}}">{{cpoOrderId}}</a>
+    <i>Order: </i><a href="https://board-presentation-cexpay.dev.kube/order/{{cpoOrderId}}">{{cpoOrderId}}</a>
     <i>Amount: </i><b>{{amount}} {{currency}}</b>
     <i>Deposit address: </i><a href="https://blockstream.info/testnet/address/{{depositAddress}}/">{{depositAddress}}</a>. See also <a href="https://live.blockcypher.com/btc-testnet/address/{{depositAddress}}/">BlockCypher</a>, <a href="https://www.blockchain.com/btc-testnet/address/{{depositAddress}}">BlockchainInfo</a>.
     <i>Input TX hash: </i><a href="https://live.blockcypher.com/btc-testnet/tx/{{txHash}}/">{{txHash}}</a>. See also <a href="https://blockstream.info/testnet/tx/{{txHash}}">BlockCypher</a>, <a href="https://www.blockchain.com/btc-testnet/tx/{{txHash}}">BlockchainInfo</a>.
@@ -86,7 +87,7 @@ data:
         #chatId = <Telegram's Unique identifier for the target chat or username of the target channel (in the format @channelusername)>
         renderTemplate = """
     <b>!TESTNET! Запрос на ручное подтверждение депозита по достижению {{confirmations}}-confirmations (нет колбеков от pss-provider-wtf2)</b>
-    <i>Order: </i><a href="https://board.pay-cex-text.net/order/{{cpoOrderId}}">{{cpoOrderId}}</a>
+    <i>Order: </i><a href="https://board-presentation-cexpay.dev.kube/order/{{cpoOrderId}}">{{cpoOrderId}}</a>
     <i>Amount: </i><b>{{amount}} {{currency}}</b>
     <i>Public confirmations: </i><a href="https://live.blockcypher.com/btc-testnet/tx/{{txHash}}/">{{confirmations}}</a>
     <i>Deposit address: </i><a href="https://blockstream.info/testnet/address/{{depositAddress}}/">{{depositAddress}}</a>. See also <a href="https://live.blockcypher.com/btc-testnet/address/{{depositAddress}}/">BlockCypher</a>, <a href="https://www.blockchain.com/btc-testnet/address/{{depositAddress}}">BlockchainInfo</a>.

@@ -1,100 +1,101 @@
 # kubectl --namespace cexpay-evolution-admin get --output=yaml ConfigMap/notifier-files
+# kubectl --namespace cexpay-evolution-admin get --output=json ConfigMap/notifier-files | jq -r ".data" | yq eval -P | sed 's/^/  /'
 # kubectl --namespace cexpay-evolution-admin apply --filename=runtime.configmaps/evolution/notifier-files.yaml
 
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  namespace: cexpay-evolution-admin
   name: notifier-files
+  namespace: cexpay-evolution-admin
 data:
   setup.toml: |-
     [setup]
-
+  
       [[setup.topics]]
         topicId = "INTERMEDIATE:ORDER"
         description = "Topic INTERMEDIATE:ORDER"
         isDisabled = false
-
+  
         [setup.topics.maintainer]
           name = "System"
-          email = "cexpay@wnb.com.ua"
-
+          email = "cexiopay@wnb.com.ua"
+  
         [[setup.topics.subscribers]]
           subscriberId = "subscriber-INTERMEDIATE:ORDER"
           description = "Subscriber INTERMEDIATE:ORDER"
-
+  
           [[setup.topics.subscribers.listeners]]
             type = "webhook"
-            webhookUrl = "https://order-evolution-cexpay.requestcatcher.com/"
-
-
+            webhookUrl = "https://order-evolutions-cexiopay.requestcatcher.com/"
+  
+  
       [[setup.topics]]
         topicId = "INTERMEDIATE:ORDER-AUTO"
         description = "Topic INTERMEDIATE:ORDER-AUTO"
         isDisabled = false
-
+  
         [setup.topics.maintainer]
           name = "System"
-          email = "cexpay@wnb.com.ua"
-
+          email = "cexiopay@wnb.com.ua"
+  
         [[setup.topics.subscribers]]
           subscriberId = "subscriber-INTERMEDIATE:ORDER-AUTO"
           description = "Subscriber INTERMEDIATE:ORDER-AUTO"
-
+  
           [[setup.topics.subscribers.listeners]]
             type = "webhook"
-            webhookUrl = "https://auto-order-evolution-cexpay.requestcatcher.com/"
-
-
+            webhookUrl = "https://auto-order-evolutions-cexiopay.requestcatcher.com/"
+  
+  
       [[setup.topics]]
         topicId = "INTERMEDIATE:ORDER-CRYPTO_SELL"
         description = "Topic INTERMEDIATE:ORDER-CRYPTO_SELL"
         isDisabled = false
-
+  
         [setup.topics.maintainer]
           name = "System"
-          email = "cexpay@wnb.com.ua"
-
+          email = "cexiopay@wnb.com.ua"
+  
         [[setup.topics.subscribers]]
           subscriberId = "subscriber-INTERMEDIATE:ORDER-CRYPTO_SELL"
           description = "Subscriber INTERMEDIATE:ORDER-CRYPTO_SELL"
-
+  
           [[setup.topics.subscribers.listeners]]
             type = "webhook"
-            webhookUrl = "https://cryptosell-order-evolution-cexpay.requestcatcher.com/"
-
-
+            webhookUrl = "https://cryptosell-order-evolutions-cexiopay.requestcatcher.com/"
+  
+  
       [[setup.topics]]
         topicId = "INTERMEDIATE:ORDER-CRYPTO_BUY"
         description = "Topic INTERMEDIATE:ORDER-CRYPTO_BUY"
         isDisabled = false
-
+  
         [setup.topics.maintainer]
           name = "System"
-          email = "cexpay@wnb.com.ua"
-
+          email = "cexiopay@wnb.com.ua"
+  
         [[setup.topics.subscribers]]
           subscriberId = "subscriber-INTERMEDIATE:ORDER-CRYPTO_BUY"
           description = "Subscriber INTERMEDIATE:ORDER-CRYPTO_BUY"
-
+  
           [[setup.topics.subscribers.listeners]]
             type = "webhook"
-            webhookUrl = "https://cryptobuy-order-evolution-cexpay.requestcatcher.com/"
-
-
+            webhookUrl = "https://cryptobuy-order-evolutions-cexiopay.requestcatcher.com/"
+  
+  
       [[setup.topics]]
         topicId = "INTERMEDIATE:ORDER-PAID_STATUS"
         description = "Topic INTERMEDIATE:ORDER-PAID_STATUS"
         isDisabled = false
-
+  
         [setup.topics.maintainer]
           name = "System"
-          email = "cexpay@wnb.com.ua"
-
+          email = "cexiopay@wnb.com.ua"
+  
         [[setup.topics.subscribers]]
           subscriberId = "subscriber-INTERMEDIATE:ORDER-PAID_STATUS"
           description = "Subscriber INTERMEDIATE:ORDER-PAID_STATUS"
-
+  
           [[setup.topics.subscribers.listeners]]
             type = "webhook"
-            webhookUrl = "https://paidstatus-order-evolution-cexpay.requestcatcher.com/"
+            webhookUrl = "https://paidstatus-order-evolutions-cexiopay.requestcatcher.com/"

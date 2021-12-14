@@ -1,4 +1,5 @@
 # kubectl --namespace cexpay-presentation-admin get --output=yaml ConfigMap/identity-envvars
+# kubectl --namespace cexpay-presentation-admin get --output=json ConfigMap/identity-envvars | jq -r ".data" | yq eval -P | sed 's/^/  /'
 # kubectl --namespace cexpay-presentation-admin apply --filename=runtime.configmaps/presentation/identity-envvars.yaml
 
 apiVersion: v1

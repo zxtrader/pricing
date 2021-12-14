@@ -1,4 +1,5 @@
 # kubectl --namespace cexpay-evolution-admin get --output=yaml ConfigMap/processing-envvars
+# kubectl --namespace cexpay-evolution-admin get --output=json ConfigMap/processing-envvars | jq -r ".data" | yq eval -P | sed 's/^/  /'
 # kubectl --namespace cexpay-evolution-admin apply --filename=runtime.configmaps/evolution/processing-envvars.yaml
 
 apiVersion: v1
@@ -8,10 +9,6 @@ metadata:
   namespace: cexpay-evolution-admin
 data:
   runtime.aggregator.url: wss://external-api-aggr-demo.dev.kube/ws
-  # runtime.dashboardAuth.apiKey: AKIA5YOJLJKEIFAKNWBV
-  # runtime.dashboardAuth.cognitoClientId: 6jusd0r1854j4aksj34dkuhuh
-  # runtime.dashboardAuth.cognitoUserPool: us-east-1_QNzFm4L9A
-  # runtime.dashboardAuth.region: us-east-1
   runtime.endpoint.dashboard.cors.allowedHeaders: '*'
   runtime.endpoint.dashboard.cors.methods: GET, POST, PUT, DELETE
   runtime.endpoint.dashboard.cors.whiteList: https://evolution-cexpay.dev.kube

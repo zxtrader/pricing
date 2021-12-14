@@ -1,13 +1,9 @@
-# kubectl --namespace cexpay-evolution-admin get --output=yaml ConfigMap/notifier-envvars
-# kubectl --namespace cexpay-evolution-admin apply --filename=runtime.configmaps/evolution/notifier-envvars.yaml
+# kubectl --namespace cexpay-evolution-admin get --output=yaml ConfigMap/invoice-envvars
+# kubectl --namespace cexpay-evolution-admin get --output=json ConfigMap/invoice-envvars | jq -r ".data" | yq eval -P | sed 's/^/  /'
+# kubectl --namespace cexpay-evolution-admin apply --filename=runtime.configmaps/evolution/invoice-envvars.yaml
 
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: notifier-envvars
+  name: invoice-envvars
   namespace: cexpay-evolution-admin
-data:
-  RabbitMQ__Hosts__0__Host: rabbitmq.cexiopay-infra
-  RabbitMQ__Hosts__0__Port: "5672"
-  RabbitMQ__UserName: cexiopay-evolution-notifier
-  RabbitMQ__VirtualHost: evolution-merchant-notifications

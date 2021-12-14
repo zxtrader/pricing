@@ -1,4 +1,5 @@
 # kubectl --namespace cexpay-presentation-admin get --output=yaml ConfigMap/gatehostinternal-envvars
+# kubectl --namespace cexpay-presentation-admin get --output=json ConfigMap/gatehostinternal-envvars | jq -r ".data" | yq eval -P | sed 's/^/  /'
 # kubectl --namespace cexpay-presentation-admin apply --filename=runtime.configmaps/presentation/gatehostinternal-envvars.yaml
 
 apiVersion: v1

@@ -1,11 +1,12 @@
 # kubectl --namespace cexpay-presentation-admin get --output=yaml ConfigMap/notifier-files
+# kubectl --namespace cexpay-presentation-admin get --output=json ConfigMap/notifier-files | jq -r ".data" | yq eval -P | sed 's/^/  /'
 # kubectl --namespace cexpay-presentation-admin apply --filename=runtime.configmaps/presentation/notifier-files.yaml
 
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  namespace: cexpay-presentation-admin
   name: notifier-files
+  namespace: cexpay-presentation-admin
 data:
   setup.toml: |-
     [setup]

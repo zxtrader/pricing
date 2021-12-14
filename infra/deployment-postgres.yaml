@@ -48,13 +48,23 @@ spec:
           requests:
             cpu: 500m
             memory: 600Mi
+        securityContext:
+          capabilities: {}
+          procMount: Default
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
         volumeMounts:
         - mountPath: /var/lib/postgresql/data
           name: data
+      dnsConfig: {}
       dnsPolicy: ClusterFirst
       restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
       terminationGracePeriodSeconds: 30
       volumes:
+      # - name: data
+      #   persistentVolumeClaim:
+      #     claimName: postgres
       - name: data
-        persistentVolumeClaim:
-          claimName: postgres
+        emptyDir: {}

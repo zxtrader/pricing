@@ -1,11 +1,12 @@
 # kubectl --namespace cexpay-evolution-admin get --output=yaml ConfigMap/messengerbridge-files
+# kubectl --namespace cexpay-evolution-admin get --output=json ConfigMap/messengerbridge-files | jq -r ".data" | yq eval -P | sed 's/^/  /'
 # kubectl --namespace cexpay-evolution-admin apply --filename=runtime.configmaps/evolution/messengerbridge-files.yaml
 
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  namespace: cexpay-evolution-admin
   name: messengerbridge-files
+  namespace: cexpay-evolution-admin
 data:
   messenger-bridge.toml: |-
     # File format: https://github.com/toml-lang/toml
