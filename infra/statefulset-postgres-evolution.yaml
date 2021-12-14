@@ -1,0 +1,68 @@
+# kubectl --namespace cexpay-infra get --output=yaml StatefulSet/postgres-evolution
+# kubectl --namespace cexpay-infra apply --filename=infra/statefulset-postgres-evolution.yaml
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    workload.user.cattle.io/workloadselector: statefulset-cexpay-infra-postgres-evolution
+  name: postgres-evolution
+  namespace: cexpay-infra
+spec:
+  podManagementPolicy: OrderedReady
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      workload.user.cattle.io/workloadselector: statefulset-cexpay-infra-postgres-evolution
+  serviceName: postgres-evolution
+  template:
+    metadata:
+      labels:
+        workload.user.cattle.io/workloadselector: statefulset-cexpay-infra-postgres-evolution
+    spec:
+      containers:
+      - command:
+        - /bin/sh
+        - -exc
+        - set -e; cp /init-sql-scripts/*.sql /updates/; exec /usr/local/bin/docker-entrypoint.sh;
+        image: docker-cexpay.infra.kube/cexpay/database/postgres/evolution:v02.67-alpha6
+        imagePullPolicy: IfNotPresent
+        name: postgres-evolution
+        ports:
+        - containerPort: 5432
+          name: pg
+          protocol: TCP
+        resources: {}
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities: {}
+          privileged: false
+          readOnlyRootFilesystem: false
+          runAsNonRoot: false
+        stdin: true
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        tty: true
+        volumeMounts:
+        - mountPath: /init-sql-scripts
+          name: init-sql-scripts
+        - mountPath: /updates
+          name: updates-rw
+      dnsPolicy: ClusterFirst
+      imagePullSecrets:
+      - name: cexpay-registry
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - configMap:
+          defaultMode: 420
+          name: postgres-evolution-files
+          optional: false
+        name: init-sql-scripts
+      - emptyDir: {}
+        name: updates-rw
+  updateStrategy:
+    type: RollingUpdate

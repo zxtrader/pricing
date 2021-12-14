@@ -1,0 +1,49 @@
+# kubectl --namespace cexpay-infra get --output=yaml StatefulSet/null-docker
+# kubectl --namespace cexpay-infra apply --filename=infra/statefulset-null-docker.yaml
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    workload.user.cattle.io/workloadselector: statefulset-cexpay-infra-null-docker
+  name: null-docker
+  namespace: cexpay-infra
+spec:
+  podManagementPolicy: OrderedReady
+  replicas: 0
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      workload.user.cattle.io/workloadselector: statefulset-cexpay-infra-null-docker
+  serviceName: null-docker
+  template:
+    metadata:
+      labels:
+        workload.user.cattle.io/workloadselector: statefulset-cexpay-infra-null-docker
+    spec:
+      containers:
+      - image: registry:2.7.1
+        imagePullPolicy: IfNotPresent
+        name: null-docker
+        ports:
+        - containerPort: 5000
+          name: docker-registry
+          protocol: TCP
+        resources: {}
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities: {}
+          privileged: false
+          readOnlyRootFilesystem: false
+          runAsNonRoot: false
+        stdin: true
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        tty: true
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+  updateStrategy:
+    type: RollingUpdate

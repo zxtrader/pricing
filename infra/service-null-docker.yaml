@@ -1,0 +1,22 @@
+# kubectl --namespace cexpay-infra get --output=yaml Service/null-docker
+# kubectl --namespace cexpay-infra apply --filename=infra/service-null-docker.yaml
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: null-docker
+  namespace: cexpay-infra
+  annotations:
+    field.cattle.io/targetWorkloadIds: '["statefulset:cexpay-infra:null-docker"]'
+    workload.cattle.io/targetWorkloadIdNoop: "true"
+    workload.cattle.io/workloadPortBased: "true"
+spec:
+  type: ClusterIP
+  sessionAffinity: None
+  selector:
+    workload.user.cattle.io/workloadselector: statefulset-cexpay-infra-null-docker
+  ports:
+  - name: http
+    port: 8080
+    protocol: TCP
+    targetPort: 5000

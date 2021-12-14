@@ -1,0 +1,22 @@
+# kubectl --namespace cexpay-infra get --output=yaml Service/postgres-presentation
+# kubectl --namespace cexpay-infra apply --filename=infra/service-postgres-presentation.yaml
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-presentation
+  namespace: cexpay-infra
+  annotations:
+    field.cattle.io/targetWorkloadIds: '["statefulset:cexpay-infra:postgres-presentation"]'
+    workload.cattle.io/targetWorkloadIdNoop: "true"
+    workload.cattle.io/workloadPortBased: "true"
+spec:
+  type: ClusterIP
+  sessionAffinity: None
+  selector:
+    workload.user.cattle.io/workloadselector: statefulset-cexpay-infra-postgres-presentation
+  ports:
+  - name: pg
+    port: 5432
+    protocol: TCP
+    targetPort: 5432

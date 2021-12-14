@@ -1,0 +1,22 @@
+# kubectl --namespace cexpay-infra get --output=yaml Service/postgres-evolution
+# kubectl --namespace cexpay-infra apply --filename=infra/service-postgres-evolution.yaml
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-evolution
+  namespace: cexpay-infra
+  annotations:
+    field.cattle.io/targetWorkloadIds: '["statefulset:cexpay-infra:postgres-evolution"]'
+    workload.cattle.io/targetWorkloadIdNoop: "true"
+    workload.cattle.io/workloadPortBased: "true"
+spec:
+  type: ClusterIP
+  sessionAffinity: None
+  selector:
+    workload.user.cattle.io/workloadselector: statefulset-cexpay-infra-postgres-evolution
+  ports:
+  - name: pg
+    port: 5432
+    protocol: TCP
+    targetPort: 5432
