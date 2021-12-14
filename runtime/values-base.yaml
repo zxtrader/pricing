@@ -23,12 +23,12 @@ application:
 
   gatehostinternal:
     serviceImage: harbor.infra.kube/cexpay/gate/hostinternal/amd64
-    tag: 0.2.4
+    tag: 0.2.13
     replicas: 1
 
   gateintegrationdemo:
     serviceImage: cexiolabs/cexpay.gate.integration-demo
-    tag: 20211202-1
+    tag: 20211213-1
     replicas: 1
 
   identity:
