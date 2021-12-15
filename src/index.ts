@@ -36,44 +36,59 @@ export default async function (cancellationToken: CancellationToken, config?: Co
 		log.info("Using ConfigurationProvider provided by user...");
 	}
 
+	const hostingProvider: HostingProvider = Container.get(HostingProvider);
+
 	log.info("Initializing DI runtime...");
+
 	await Initable.initAll(cancellationToken,
-		Container.get(HostingProvider),
+		hostingProvider,
 		Container.get(ApiProvider),
 		Container.get(EndpointsProvider)
 	);
 
-	// coinGetRecorderRedisSubscriber = new CoinGetRecorderRedisSubscriber(new URL("redis://local00.zxteam.net:65505?keepAlive=5"));
-	// await coinGetRecorderRedisSubscriber.init(cancellationToken);
+	try {
+		hostingProvider.finalizeConfiguration();
 
-	// let swithcer = false;
-	// function fakeHandler(event: RealtimePriceStream.Event | Error) {
-	// 	//
-	// 	if (event instanceof Error) { return; }
-	// 	console.log(JSON.stringify(event.data));
-	// }
-	// const faker = setInterval(function () {
-	// 	swithcer = !swithcer;
-	// 	if (swithcer === true) {
-	// 		coinGetRecorderRedisSubscriber.addHandler(fakeHandler);
-	// 	} else {
-	// 		coinGetRecorderRedisSubscriber.removeHandler(fakeHandler);
-	// 	}
-	// }, 10000);
 
-	return {
-		async destroy() {
-			log.info("Destroying DI runtime...");
-			//clearInterval(faker);
-			await Disposable.disposeAll(
-				//coinGetRecorderRedisSubscriber,
-				// Endpoints should dispose first (reply 503, while finishing all active requests)
-				Container.get(EndpointsProvider),
-				Container.get(ApiProvider),
-				Container.get(HostingProvider)
-			);
-		}
-	};
+		// coinGetRecorderRedisSubscriber = new CoinGetRecorderRedisSubscriber(new URL("redis://local00.zxteam.net:65505?keepAlive=5"));
+		// await coinGetRecorderRedisSubscriber.init(cancellationToken);
+
+		// let swithcer = false;
+		// function fakeHandler(event: RealtimePriceStream.Event | Error) {
+		// 	//
+		// 	if (event instanceof Error) { return; }
+		// 	console.log(JSON.stringify(event.data));
+		// }
+		// const faker = setInterval(function () {
+		// 	swithcer = !swithcer;
+		// 	if (swithcer === true) {
+		// 		coinGetRecorderRedisSubscriber.addHandler(fakeHandler);
+		// 	} else {
+		// 		coinGetRecorderRedisSubscriber.removeHandler(fakeHandler);
+		// 	}
+		// }, 10000);
+
+		return {
+			async destroy() {
+				log.info("Destroying DI runtime...");
+				//clearInterval(faker);
+				await Disposable.disposeAll(
+					//coinGetRecorderRedisSubscriber,
+					// Endpoints should dispose first (reply 503, while finishing all active requests)
+					Container.get(EndpointsProvider),
+					Container.get(ApiProvider),
+					Container.get(HostingProvider)
+				);
+			}
+		};
+	} catch (e) {
+		await Disposable.disposeAll(
+			Container.get(EndpointsProvider),
+			Container.get(ApiProvider),
+			Container.get(HostingProvider)
+		);
+		throw e;
+	}
 }
 
 

@@ -21,43 +21,13 @@
 	},
 	"tasks": [
 		{
-			"label": "compile:src:lint",
+			"label": "build",
 			"group": "build",
-			"problemMatcher": {
-				"base": "$tslint5",
-				"fileLocation": "absolute"
-			},
-			"type": "shell"
-		},
-		{
-			"label": "compile:src:ts",
-			"group": {
-				"kind": "build",
-				"isDefault": true
-			},
-			"problemMatcher": {
-				"base": "$tsc",
-				"fileLocation": "relative"
-			},
-			"type": "shell"
-		},
-		{
-			"label": "compile:test:lint",
-			"group": "build",
-			"problemMatcher": {
-				"base": "$tslint5",
-				"fileLocation": "absolute"
-			},
-			"type": "shell"
-		},
-		{
-			"label": "compile:test:ts",
-			"group": "build",
-			"problemMatcher": {
-				"base": "$tsc",
-				"fileLocation": "relative"
-			},
-			"type": "shell"
+			"type": "npm",
+			"script": "build",
+			"problemMatcher": [
+				"$tsc"
+			]
 		}
 	]
 }

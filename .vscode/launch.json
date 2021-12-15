@@ -5,11 +5,11 @@
 			"name": "Service",
 			"type": "node",
 			"request": "launch",
-			"preLaunchTask": "compile:src:ts",
+			"preLaunchTask": "build",
 			"runtimeArgs": [
-				"--nolazy",
 				"--require",
 				"source-map-support/register",
+				"--nolazy"
 			],
 			"cwd": "${workspaceRoot}",
 			"env": {
@@ -19,7 +19,8 @@
 			},
 			"envFile": "${workspaceFolder}/.env",
 			"args": [
-				"--config=${workspaceRoot}/price-service.config"
+				"--config-file=${workspaceRoot}/price-service.config",
+				"--config-env"
 			],
 			"program": "${workspaceRoot}/bin/price-service.js"
 		},
@@ -27,12 +28,12 @@
 			"name": "Test",
 			"type": "node",
 			"request": "launch",
-			"preLaunchTask": "compile:test:ts",
+			"preLaunchTask": "build",
 			"runtimeExecutable": null,
 			"runtimeArgs": [
-				"--nolazy",
 				"--require",
 				"source-map-support/register",
+				"--nolazy"
 			],
 			"stopOnEntry": false,
 			"program": "${workspaceRoot}/node_modules/mocha/bin/_mocha",

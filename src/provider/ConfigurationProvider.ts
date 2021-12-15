@@ -5,7 +5,7 @@ import { Configuration } from "../Configuration";
 
 @Singleton
 export abstract class ConfigurationProvider implements Configuration {
-	abstract get servers(): ReadonlyArray<HostingConfiguration.WebServer | WebServer>;
+	abstract get servers(): ReadonlyArray<HostingConfiguration.WebServer | Configuration.GrpcServer>;
 	abstract get endpoints(): ReadonlyArray<Configuration.Endpoint>;
 	abstract get storageURL(): URL;
 	abstract get coingetRecorderStreamRedisURL(): URL;
@@ -25,7 +25,7 @@ export class ConfigurationProviderImpl extends ConfigurationProvider {
 		this._configuration = configuration;
 	}
 
-	public get servers(): ReadonlyArray<HostingConfiguration.WebServer | WebServer> { return this._configuration.servers; }
+	public get servers(): ReadonlyArray<HostingConfiguration.WebServer | Configuration.GrpcServer> { return this._configuration.servers; }
 	public get endpoints(): ReadonlyArray<Configuration.Endpoint> { return this._configuration.endpoints; }
 	public get storageURL(): URL { return this._configuration.storageURL; }
 	public get coingetRecorderStreamRedisURL(): URL { return this._configuration.coingetRecorderStreamRedisURL; }

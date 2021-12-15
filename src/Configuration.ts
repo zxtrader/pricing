@@ -6,7 +6,7 @@ import { HttpClient } from "@zxteam/http-client";
 import * as _ from "lodash";
 
 export interface Configuration {
-	readonly servers: ReadonlyArray<HostingConfiguration.WebServer | WebServer>;
+	readonly servers: ReadonlyArray<HostingConfiguration.WebServer | Configuration.GrpcServer>;
 	/** Set settings endponts or send new routers */
 	readonly endpoints: ReadonlyArray<Configuration.Endpoint>;
 	/** Connection URL to database */
@@ -19,6 +19,13 @@ export interface Configuration {
 
 export namespace Configuration {
 	export type Endpoint = RestEndpoint | WebSocketEndpoint;
+
+	export interface GrpcServer {
+		readonly type: "grpc";
+		readonly name: string;
+		readonly listenHost: string;
+		readonly listenPort: number;
+	}
 
 	export interface RestEndpoint extends HostingConfiguration.BindEndpoint, HostingConfiguration.ServerEndpoint {
 		readonly type: "rest";
