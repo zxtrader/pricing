@@ -20,7 +20,7 @@ application:
 
   board:
     # serviceImage: harbor.infra.kube/cexpay/board/snapshot
-    serviceImage: docker-cexpay.infra.kube/cexpay/board/snapshot
+    serviceImage: docker-cexpay.infra.kube/cexpay/board/snapshot/amd64
     tag: master
 
   gatehostinternal:

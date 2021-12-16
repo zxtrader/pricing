@@ -6,7 +6,7 @@ application:
     replicas: 1
 
   board:
-    serviceImage: harbor.infra.kube/cexpay/board
+    serviceImage: harbor.infra.kube/cexpay/board/amd64
     tag: 2.10.1
     args:
       [
