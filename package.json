@@ -41,12 +41,14 @@
 		"@zxteam/errors": "^6.0.62",
 		"@zxteam/financial": "^6.0.62",
 		"@zxteam/hosting": "^6.0.63",
+		"@zxteam/http-client": "^6.0.66",
 		"@zxteam/jsonrpc": "^6.0.43",
 		"@zxteam/launcher": "^6.0.64",
 		"@zxteam/limit": "^6.0.63",
 		"@zxteam/logger": "^6.0.63",
 		"@zxteam/sql": "^6.0.66",
 		"@zxteam/sql-mysql": "^6.0.56",
+		"@zxteam/sql-postgres": "^6.0.69",
 		"@zxteam/web-client": "^6.0.66",
 		"ajv": "^6.11.0",
 		"compression": "^1.7.4",
@@ -55,6 +57,7 @@
 		"lodash": "^4.17.15",
 		"moment": "^2.24.0",
 		"morgan": "^1.9.1",
+		"prom-client": "^14.0.1",
 		"uuid": "^3.4.0"
 	},
 	"engines": {

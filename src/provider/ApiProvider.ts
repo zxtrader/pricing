@@ -11,6 +11,7 @@ import { PriceApiImpl } from "../api/PriceApiImpl";
 import { RedisStorage } from "../storage/RedisStorage";
 import { PriceLoader } from "../input/PriceLoader";
 import Cryptocompare from "../input/Cryptocompare";
+import { PostgresStogare } from "../storage/PostgresStorage";
 
 @Singleton
 export abstract class ApiProvider extends Initable {

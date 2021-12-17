@@ -4,6 +4,7 @@ import { Configuration as HostingConfiguration, WebServer } from "@zxteam/hostin
 import { HttpClient } from "@zxteam/http-client";
 
 import * as _ from "lodash";
+import { PostresqlConnection } from "./provider/ConfigurationProvider";
 
 export interface Configuration {
 	readonly servers: ReadonlyArray<HostingConfiguration.WebServer | Configuration.GrpcServer>;
@@ -16,6 +17,7 @@ export interface Configuration {
 	readonly sources: Configuration.Sources;
 	readonly sourcesPriorityQueue: ReadonlyArray<string>;
 	readonly aggregatedPriceSourceName: string;
+	readonly postgresDbUrl: PostresqlConnection;
 }
 
 export namespace Configuration {
@@ -110,6 +112,11 @@ export namespace Configuration {
 			const storageURL: URL = configuration.getURL("dataStorageURL");
 			const sourcesPriorityQueue: ReadonlyArray<string> = configuration.getString("sourcesPriorityQueue").split(" ");
 			const coingetRecorderStreamRedisURL: URL = configuration.getURL("coingetRecorderStreamRedisURL");
+			const postgresDbUrl: PostresqlConnection = Object.freeze({
+				url: configuration.getURL("postgresDbUrl"),
+				ssl: null
+			});
+
 			const appConfig: Configuration = Object.freeze({
 				servers, endpoints, sources, sourcesPriorityQueue, storageURL,
 				coingetRecorderStreamRedisURL, aggregatedPriceSourceName
