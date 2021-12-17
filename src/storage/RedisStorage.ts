@@ -6,13 +6,17 @@ import { PriceApi } from "../api/PriceApi";
 import * as RedisClient from "ioredis";
 import { Redis, RedisOptions } from "ioredis";
 import { Storage } from "./Storage";
-import { financial } from "../financial.js";
 
 export class RedisStorage extends Initable implements Storage {
 	private readonly ioredis: Redis;
 	private readonly _logger = loggerFactory.getLogger("RedisStorage");
-	constructor(dataStorageUrl: URL) {
+	private readonly _sourcesQueue: ReadonlyArray<string>;
+	constructor(
+		dataStorageUrl: URL,
+		sourcesQueue: ReadonlyArray<string>
+	) {
 		super();
+		this._sourcesQueue = sourcesQueue;
 		const opts: RedisOptions = RedisStorage.parseRedisURL(dataStorageUrl);
 		this.ioredis = new RedisClient(opts);
 	}
@@ -108,72 +112,6 @@ export class RedisStorage extends Initable implements Storage {
 			}
 			await this.ioredis.hset(sourceIdPriceRedisKey, "price", newPrice);
 			cancellationToken.throwIfCancellationRequested();
-
-			// We can't use cancellationToken, need calculating avg price and save in database.
-
-			if (this._logger.isTraceEnabled) {
-				this._logger.trace("Check count sourceId");
-				this._logger.trace("Execute: LLEN", priceSourceIdsRedisKey);
-			}
-			const redisPriceSourceIdCount = await this.ioredis.llen(priceSourceIdsRedisKey);
-			cancellationToken.throwIfCancellationRequested();
-
-			// We can't use cancellationToken, need calculating avg price and save in database.
-
-			let totalSum: number = 0;
-
-			if (redisPriceSourceIdCount) {
-				if (this._logger.isTraceEnabled) {
-					this._logger.trace("Get list sourceId");
-					this._logger.trace("Execute: LRANGE", priceSourceIdsRedisKey, 0, redisPriceSourceIdCount);
-				}
-				const sourceIds = await this.ioredis.lrange(priceSourceIdsRedisKey, 0, redisPriceSourceIdCount);
-				cancellationToken.throwIfCancellationRequested();
-
-				// We can't use cancellationToken, need calculating avg price and save in database.
-
-				for (let x = 0; x < sourceIds.length; x++) {
-					const source = sourceIds[x];
-					const sourceIdAvgRedisKey = `${priceSourceIdsRedisKey}${source}`;
-					if (this._logger.isTraceEnabled) {
-						this._logger.trace("Execute: HGET", sourceIdAvgRedisKey, "price");
-					}
-					const sourceIdPrice = await this.ioredis.hget(sourceIdAvgRedisKey, "price");
-					cancellationToken.throwIfCancellationRequested();
-
-					// We can't use cancellationToken, need calculating avg price and save in database.
-
-					if (sourceIdPrice) {
-						totalSum += parseFloat(sourceIdPrice);
-					}
-				}
-			}
-
-			// const avgPrice = (totalSum + +newPrice) / (redisPriceSourceIdCount + 1);
-			const financialNewPrice: Financial = financial.parse(newPrice);
-			const financialTotalSum: Financial = financial.parse(totalSum.toFixed(8));
-			const financialredisPriceSourceIdCount = financial.parse(redisPriceSourceIdCount.toFixed(0));
-
-			const financialSum = financial.add(financialTotalSum, financialNewPrice);
-			const financialCount = financial.add(financialredisPriceSourceIdCount, financial.fromInt(1));
-
-			const financialAvgPrice: Financial = financial.divide(financialSum, financialCount);
-
-			if (this._logger.isTraceEnabled) {
-				this._logger.trace("Save new avg price");
-				this._logger.trace("Execute: HSET", corePriceRedisKey, "price", financialAvgPrice.toString());
-			}
-			await this.ioredis.hset(corePriceRedisKey, "price", financialAvgPrice.toString());
-			cancellationToken.throwIfCancellationRequested();
-
-			// We can't use cancellationToken, need calculating avg price and save in base.
-
-			if (this._logger.isTraceEnabled) {
-				this._logger.trace("Save sourceId as key");
-				this._logger.trace("Execute: LPUSH", priceSourceIdsRedisKey, sourceId);
-			}
-			await this.ioredis.lpush(priceSourceIdsRedisKey, sourceId);
-			cancellationToken.throwIfCancellationRequested();
 		}
 	}
 
@@ -191,20 +129,20 @@ export class RedisStorage extends Initable implements Storage {
 				this._logger.trace("List atr in arg: ", arg);
 			}
 
-			const { ts, marketCurrency, tradeCurrency, sourceId: sourceId, requiredAllSourceIds: requiredAllSourceId } = arg;
+			const { ts, marketCurrency, tradeCurrency, sourceId, requiredAllSourceIds: requiredAllSourceId } = arg;
 			const corePriceRedisKey = `${ts}:${marketCurrency}:${tradeCurrency}`;
 			const priceSourceIdsRedisKey = `${corePriceRedisKey}:`;
 
-			if (this._logger.isTraceEnabled) {
-				this._logger.trace("Save price by sourceId");
-				this._logger.trace("Execute: HGET", corePriceRedisKey, "price");
-			}
-			const avgPrice = await this.ioredis.hget(corePriceRedisKey, "price");
+			// if (this._logger.isTraceEnabled) {
+			// 	this._logger.trace("Save price by sourceId");
+			// 	this._logger.trace("Execute: HGET", corePriceRedisKey, "price");
+			// }
+			// const avgPrice = await this.ioredis.hget(corePriceRedisKey, "price");
 
-			this._logger.trace("Check cancellationToken for interrupt");
-			cancellationToken.throwIfCancellationRequested();
+			// this._logger.trace("Check cancellationToken for interrupt");
+			// cancellationToken.throwIfCancellationRequested();
 
-			helpers.addPriceTimeStamp(friendlyPricesChunk, ts, marketCurrency, tradeCurrency, avgPrice);
+			// helpers.addPriceTimeStamp(friendlyPricesChunk, ts, marketCurrency, tradeCurrency, avgPrice);
 
 			if (sourceId) {
 				const priceSourceIdRedisKey = `${corePriceRedisKey}:${sourceId}`;
@@ -220,42 +158,41 @@ export class RedisStorage extends Initable implements Storage {
 
 				helpers.addPriceTimeStamp(friendlyPricesChunk, ts, marketCurrency, tradeCurrency, null, sourceId, sourceIdPrice);
 
-			} else if (requiredAllSourceId) {
+			} else {
 				if (this._logger.isTraceEnabled) {
 					this._logger.trace("Check count sourceId");
 					this._logger.trace("Execute: LLEN", priceSourceIdsRedisKey);
 				}
 				const redisPriceSourceIdCount = await this.ioredis.llen(priceSourceIdsRedisKey);
+				const redisPriceSourceIdKeys = await this.ioredis.keys(`*${priceSourceIdsRedisKey}*`);
 
 				this._logger.trace("Check cancellationToken for interrupt");
 				cancellationToken.throwIfCancellationRequested();
 
-				if (redisPriceSourceIdCount) {
+				if (redisPriceSourceIdKeys.length > 0) {
 					if (this._logger.isTraceEnabled) {
-						this._logger.trace("Get list sourceId");
-						this._logger.trace("Execute: LRANGE", priceSourceIdsRedisKey, 0, redisPriceSourceIdCount);
+						this._logger.trace(`Get list sourceId keys ${redisPriceSourceIdKeys}`);
 					}
-					const sourceIds = await this.ioredis.lrange(priceSourceIdsRedisKey, 0, redisPriceSourceIdCount);
+				}
+
+				this._logger.trace("Check cancellationToken for interrupt");
+				cancellationToken.throwIfCancellationRequested();
+
+				for (const redisPriceSourceIdKey of redisPriceSourceIdKeys) {
+					const keyParts = redisPriceSourceIdKey.split(":");
+					keyParts.shift();
+					const fiendlyKey = keyParts.join(":");
+					const sourceIdPrice = await this.ioredis.hget(fiendlyKey, "price");
 
 					this._logger.trace("Check cancellationToken for interrupt");
 					cancellationToken.throwIfCancellationRequested();
 
-					for (let x = 0; x < sourceIds.length; x++) {
-						const source = sourceIds[x];
-						const sourceIdAvgRedisKey = `${priceSourceIdsRedisKey}${source}`;
-						if (this._logger.isTraceEnabled) {
-							this._logger.trace("Execute: HGET", sourceIdAvgRedisKey, "price");
-						}
-						const sourceIdPrice = await this.ioredis.hget(sourceIdAvgRedisKey, "price");
-
-						this._logger.trace("Check cancellationToken for interrupt");
-						cancellationToken.throwIfCancellationRequested();
-
-						helpers.addPriceTimeStamp(friendlyPricesChunk, ts, marketCurrency, tradeCurrency, null, source, sourceIdPrice);
-					}
+					helpers.addPriceTimeStamp(friendlyPricesChunk, ts, marketCurrency, tradeCurrency, null, keyParts[keyParts.length - 1], sourceIdPrice);
 				}
+
 			}
 		}
+		helpers.setPrimaryPrice(friendlyPricesChunk, this._sourcesQueue)
 		return friendlyPricesChunk;
 	}
 
@@ -324,18 +261,9 @@ export namespace helpers {
 			friendlyPrices[ts][marketCurrency] = {};
 		}
 		if (!(tradeCurrency in friendlyPrices[ts][marketCurrency])) {
-			if ((avgPrice)) {
-				friendlyPrices[ts][marketCurrency][tradeCurrency] = {
-					avg: {
-						price: avgPrice
-					}
-				};
-			}
-			if (!(avgPrice)) {
-				friendlyPrices[ts][marketCurrency][tradeCurrency] = {
-					avg: null
-				};
-			}
+			friendlyPrices[ts][marketCurrency][tradeCurrency] = {
+				avg: null
+			};
 		}
 		if ((sourceId) && (sourcePrice) && !(sourceId in friendlyPrices[ts][marketCurrency][tradeCurrency])) {
 			if (!("sources" in friendlyPrices[ts][marketCurrency][tradeCurrency])) {
@@ -351,5 +279,33 @@ export namespace helpers {
 					});
 		}
 		return friendlyPrices;
+	}
+
+	export function setPrimaryPrice(
+		friendlyPrices: PriceApi.Timestamp,
+		sourcesQueue: ReadonlyArray<string>
+	) {
+		for (const ts in friendlyPrices) {
+			for (const marketCurrency in friendlyPrices[ts]) {
+				for (const tradeCurrency in friendlyPrices[ts][marketCurrency]) {
+					const sources = friendlyPrices[ts][marketCurrency][tradeCurrency].sources;
+					if (!sources || Object.keys(sources).length === 0) {
+						throw new Error("Empty sources. Can not set primary price.");
+					}
+					friendlyPrices[ts][marketCurrency][tradeCurrency].avg = {
+						price: sources[Object.keys(sources)[0]].price,
+					};
+					const sourceIds = Object.keys(sources);
+					for (const source of sourcesQueue) {
+						if (sourceIds.includes(source)) {
+							friendlyPrices[ts][marketCurrency][tradeCurrency].avg = {
+								price: sources[source].price,
+							};
+							break;
+						}
+					}
+				}
+			}
+		}
 	}
 }

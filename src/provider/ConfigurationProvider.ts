@@ -10,6 +10,7 @@ export abstract class ConfigurationProvider implements Configuration {
 	abstract get storageURL(): URL;
 	abstract get coingetRecorderStreamRedisURL(): URL;
 	abstract get sources(): Configuration.Sources;
+	abstract get sourcesPriorityQueue(): ReadonlyArray<string>;
 	abstract get aggregatedPriceSourceName(): string;
 }
 
@@ -30,5 +31,6 @@ export class ConfigurationProviderImpl extends ConfigurationProvider {
 	public get storageURL(): URL { return this._configuration.storageURL; }
 	public get coingetRecorderStreamRedisURL(): URL { return this._configuration.coingetRecorderStreamRedisURL; }
 	public get sources(): Configuration.Sources { return this._configuration.sources; }
+	public get sourcesPriorityQueue(): ReadonlyArray<string> { return this._configuration.sourcesPriorityQueue; }
 	public get aggregatedPriceSourceName(): string { return this._configuration.aggregatedPriceSourceName; }
 }

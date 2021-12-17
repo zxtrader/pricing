@@ -274,11 +274,11 @@ namespace priceRuntime {
 	}
 
 	export function parseSingleParams(params: any): PriceApi.Argument {
-		const { date, marketCurrency, tradeCurrency } = params;
+		const { date, marketCurrency, tradeCurrency, exchange } = params;
 		const ts: number = date !== undefined ? Number.parseInt(date) : Number.parseInt(moment.utc().format("YYYYMMDDHHmmss"));
 		if (_.isString(marketCurrency) && _.isString(tradeCurrency)) {
 			return {
-				// sourceId: exchange,
+				sourceId: exchange,
 				ts,
 				marketCurrency,
 				tradeCurrency,
@@ -351,7 +351,7 @@ namespace priceRuntime {
 			const avgAndSource = prices[arg.ts][arg.marketCurrency][arg.tradeCurrency];
 			if ("avg" in avgAndSource) {
 				const avg = "avg";
-				const priceAvg = avgAndSource[avg];
+				const priceAvg =  avgAndSource[avg];
 				const priceName = "price";
 				if (priceAvg) {
 					const friendlyPrice = priceAvg[priceName];

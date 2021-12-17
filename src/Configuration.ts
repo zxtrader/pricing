@@ -14,6 +14,7 @@ export interface Configuration {
 	readonly coingetRecorderStreamRedisURL: URL;
 	/** List source system and settings */
 	readonly sources: Configuration.Sources;
+	readonly sourcesPriorityQueue: ReadonlyArray<string>;
 	readonly aggregatedPriceSourceName: string;
 }
 
@@ -107,9 +108,10 @@ export namespace Configuration {
 			const aggregatedPriceSourceName: string = configuration.getString("aggregatedPriceSourceName", "ZXTRADER");
 
 			const storageURL: URL = configuration.getURL("dataStorageURL");
+			const sourcesPriorityQueue: ReadonlyArray<string> = configuration.getString("sourcesPriorityQueue").split(" ");
 			const coingetRecorderStreamRedisURL: URL = configuration.getURL("coingetRecorderStreamRedisURL");
 			const appConfig: Configuration = Object.freeze({
-				servers, endpoints, sources, storageURL,
+				servers, endpoints, sources, sourcesPriorityQueue, storageURL,
 				coingetRecorderStreamRedisURL, aggregatedPriceSourceName
 			});
 			return appConfig;
