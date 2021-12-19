@@ -133,17 +133,6 @@ export class RedisStorage extends Initable implements Storage {
 			const corePriceRedisKey = `${ts}:${marketCurrency}:${tradeCurrency}`;
 			const priceSourceIdsRedisKey = `${corePriceRedisKey}:`;
 
-			// if (this._logger.isTraceEnabled) {
-			// 	this._logger.trace("Save price by sourceId");
-			// 	this._logger.trace("Execute: HGET", corePriceRedisKey, "price");
-			// }
-			// const avgPrice = await this.ioredis.hget(corePriceRedisKey, "price");
-
-			// this._logger.trace("Check cancellationToken for interrupt");
-			// cancellationToken.throwIfCancellationRequested();
-
-			// helpers.addPriceTimeStamp(friendlyPricesChunk, ts, marketCurrency, tradeCurrency, avgPrice);
-
 			if (sourceId) {
 				const priceSourceIdRedisKey = `${corePriceRedisKey}:${sourceId}`;
 
@@ -163,7 +152,6 @@ export class RedisStorage extends Initable implements Storage {
 					this._logger.trace("Check count sourceId");
 					this._logger.trace("Execute: LLEN", priceSourceIdsRedisKey);
 				}
-				const redisPriceSourceIdCount = await this.ioredis.llen(priceSourceIdsRedisKey);
 				const redisPriceSourceIdKeys = await this.ioredis.keys(`*${priceSourceIdsRedisKey}*`);
 
 				this._logger.trace("Check cancellationToken for interrupt");
