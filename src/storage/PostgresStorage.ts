@@ -12,10 +12,15 @@ import { Helpers } from "../utils/Helpers";
 
 export class PostgresStogare extends Initable implements Storage {
 	private readonly _postgresProviderFactory: PostgresProviderFactory;
-
+	private readonly _sourcesPriorityQueue: ReadonlyArray<string>;
 	private readonly _logger = loggerFactory.getLogger("PostgresStogare");
-	constructor(postgresUrl: PostresqlConnection) {
+
+	constructor(
+		postgresUrl: PostresqlConnection,
+		sourcesPriorityQueue: ReadonlyArray<string>
+		) {
 		super();
+		this._sourcesPriorityQueue = sourcesPriorityQueue;
 		const opts: PostgresProviderFactory.Opts = Object.freeze({
 			url: postgresUrl.url
 		});
@@ -126,31 +131,6 @@ export class PostgresStogare extends Initable implements Storage {
 			const { ts, marketCurrency, tradeCurrency, sourceId, requiredAllSourceIds } = arg;
 			const momentTimeStamp = moment.utc(ts, "YYYYMMDDHHmmss");
 
-			await this._postgresProviderFactory.usingProviderWithTransaction(cancellationToken, async (sqlProvider: SqlProvider) => {
-				if (this._logger.isTraceEnabled) {
-					this._logger.trace(`Get AVG price ${marketCurrency}, ${tradeCurrency}, ${momentTimeStamp.toString}`);
-				}
-
-				const sqlRow: SqlResultRecord | null = await sqlProvider.statement(
-					'SELECT (SELECT SUM("price") '
-					+ 'FROM "cp2_pricing"."pricing" '
-					+ 'WHERE "market_currency" = $1 AND "trade_currency" = $2 AND "utc_created_at" = to_timestamp($3::DOUBLE PRECISION)::TIMESTAMP WITHOUT TIME ZONE '
-					+ 'GROUP BY "market_currency", "trade_currency", "utc_created_at" '
-					+ ')::DECIMAL / (SELECT COUNT(*) '
-					+ 'FROM "cp2_pricing"."pricing" '
-					+ 'WHERE "market_currency" = $1 AND "trade_currency" = $2 AND "utc_created_at" = to_timestamp($3::DOUBLE PRECISION)::TIMESTAMP WITHOUT TIME ZONE '
-					+ 'GROUP BY "market_currency", "trade_currency", "utc_created_at" '
-					+ ') AS "avg_price"'
-				).executeSingleOrNull(cancellationToken, marketCurrency, tradeCurrency, momentTimeStamp.unix().toString());
-				cancellationToken.throwIfCancellationRequested();
-
-				if (sqlRow === null) {
-					this._logger.error(`Can not get AVG price ${marketCurrency}, ${tradeCurrency}, ${momentTimeStamp.toString}`);
-				} else {
-					Helpers.addPriceTimeStamp(friendlyPricesChunk, ts, marketCurrency, tradeCurrency, sqlRow.get("avg_price").asString);
-				}
-			});
-
 			if (sourceId) {
 				await this._postgresProviderFactory.usingProviderWithTransaction(cancellationToken, async (sqlProvider: SqlProvider) => {
 					if (this._logger.isTraceEnabled) {
@@ -168,28 +148,29 @@ export class PostgresStogare extends Initable implements Storage {
 						this._logger.error(`Can not get price by sourceId ${sourceId}, ${marketCurrency}, ${tradeCurrency}, ${ts}`);
 
 					} else {
-						Helpers.addPriceTimeStamp(friendlyPricesChunk, ts, marketCurrency, tradeCurrency, null, sourceId, sqlRow.get('price').asString);
+						Helpers.AddPriceTimeStamp(friendlyPricesChunk, ts, marketCurrency, tradeCurrency, null, sourceId, sqlRow.get('price').asString);
 					}
 				});
-			} else if (requiredAllSourceIds) {
+			} else {
 				await this._postgresProviderFactory.usingProviderWithTransaction(cancellationToken, async (sqlProvider: SqlProvider) => {
 					if (this._logger.isTraceEnabled) {
-						this._logger.trace(`Get price by sourceId ${sourceId}, ${marketCurrency}, ${tradeCurrency}, ${momentTimeStamp.toString()}`);
+						this._logger.trace(`Get all prices ${marketCurrency}, ${tradeCurrency}, ${momentTimeStamp.toString()}`);
 					}
 
 					const sqlRows: ReadonlyArray<SqlResultRecord> = await sqlProvider.statement(
-						'SELECT "price" FROM cp2_pricing.pricing '
+						'SELECT "price", "source" FROM cp2_pricing.pricing '
 						+ 'WHERE "market_currency" = $1 AND "trade_currency" = $2 '
 						+ 'AND "utc_created_at" = to_timestamp($3::DOUBLE PRECISION)::TIMESTAMP WITHOUT TIME ZONE'
 					).executeQuery(cancellationToken, marketCurrency, tradeCurrency, momentTimeStamp.unix().toString());
 					cancellationToken.throwIfCancellationRequested();
 
 					for (const sqlRow of sqlRows) {
-						Helpers.addPriceTimeStamp(friendlyPricesChunk, ts, marketCurrency, tradeCurrency, null, sourceId, sqlRow.get('price').asString);
+						Helpers.AddPriceTimeStamp(friendlyPricesChunk, ts, marketCurrency, tradeCurrency, null, sqlRow.get('source').asString, sqlRow.get('price').asString);
 					}
 				});
 			}
 		}
+		Helpers.SetPrimaryPrice(friendlyPricesChunk, this._sourcesPriorityQueue);
 		return friendlyPricesChunk;
 	}
 

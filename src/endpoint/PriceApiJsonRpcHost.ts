@@ -159,9 +159,9 @@ export class PriceApiJsonRpcHost extends Disposable implements JsonRpcHost {
 			requiredAllSourceIds: false
 		}]);
 
-		const avg = histPrice[ts][marketCurrency][tradeCurrency].avg;
-		if (avg !== null) {
-			return avg.price;
+		const primary = histPrice[ts][marketCurrency][tradeCurrency].primary;
+		if (primary !== null) {
+			return primary.price;
 		}
 
 		throw new Error("Cannot get rate");

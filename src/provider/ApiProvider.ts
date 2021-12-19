@@ -13,6 +13,7 @@ import { PriceLoader } from "../input/PriceLoader";
 import Cryptocompare from "../input/Cryptocompare";
 import { PostgresStogare } from "../storage/PostgresStorage";
 
+
 @Singleton
 export abstract class ApiProvider extends Initable {
 	protected readonly log: Logger;
@@ -41,7 +42,8 @@ class ApiProviderImpl extends ApiProvider {
 		const sourceProviders: Array<PriceLoader> = [new Cryptocompare({})];
 
 		this._priceApi = new PriceApiImpl({
-			storageFactory: () => new RedisStorage(this._configurationProvider.storageURL, this._configurationProvider.sourcesPriorityQueue),
+			// storageFactory: () => new RedisStorage(this._configurationProvider.storageURL, this._configurationProvider.sourcesPriorityQueue),
+			storageFactory: () => new PostgresStogare(this._configurationProvider.postgresDbUrl, this._configurationProvider.sourcesPriorityQueue),
 			sourceProviders,
 			coingetRecorderStreamRedisURL: this._configurationProvider.coingetRecorderStreamRedisURL,
 			log: this.log.getLogger("PriceApi"),

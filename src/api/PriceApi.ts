@@ -13,6 +13,10 @@ export interface PriceApi {
 		cancellationToken: CancellationToken, args: Array<PriceApi.Argument>
 	): Promise<PriceApi.Timestamp>;
 
+	preparePrices(
+		cancellationToken: CancellationToken, args: PriceApi.PreparePriceArgument
+	): Promise<PriceApi.Timestamp>;
+
 	ping(
 		cancellationToken: CancellationToken, echo: string
 	): Promise<{ readonly echo: string; readonly time: Date; readonly version: string; }>;
@@ -22,6 +26,16 @@ export interface PriceApi {
 export namespace PriceApi {
 	export interface Argument {
 		ts: number;
+		marketCurrency: string;
+		tradeCurrency: string;
+		sourceId?: string;
+		requiredAllSourceIds: boolean;
+	}
+
+	export interface PreparePriceArgument {
+		fromDate: number;
+		toDate: number;
+		points: number;
 		marketCurrency: string;
 		tradeCurrency: string;
 		sourceId?: string;
@@ -37,7 +51,7 @@ export namespace PriceApi {
 		[tradeCurrency: string]: Average;
 	}
 	export interface Average {
-		avg: Price | null;
+		primary: Price | null;
 		sources?: SourceId;
 	}
 	export interface SourceId {

@@ -118,7 +118,7 @@ export namespace Configuration {
 			});
 
 			const appConfig: Configuration = Object.freeze({
-				servers, endpoints, sources, sourcesPriorityQueue, storageURL,
+				servers, endpoints, sources, sourcesPriorityQueue, storageURL, postgresDbUrl,
 				coingetRecorderStreamRedisURL, aggregatedPriceSourceName
 			});
 			return appConfig;

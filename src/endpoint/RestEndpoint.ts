@@ -5,7 +5,6 @@ import { Configuration as HostingConfiguration, ServersBindEndpoint, WebServer }
 import * as _ from "lodash";
 import * as compression from "compression";
 import * as express from "express";
-import * as bodyParser from "body-parser";
 import * as moment from "moment";
 
 
@@ -31,6 +30,25 @@ export class RestEndpoint extends ServersBindEndpoint {
 		this._router.use(middlewareBindURL(opts.bindPath));
 		this._router.use(compression());
 		this._router.get("/ping", this.onPing.bind(this));
+		this._router.get("/prepare-prices", async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+			try {
+				if (log.isTraceEnabled) { log.trace(`Prepare prices request ${req.url}`); }
+				const args = priceRuntime.parsePreparePriceParams(req.query);
+				if (log.isTraceEnabled) { log.trace(`Args: ${JSON.stringify(args)}`); }
+				const prices = await priceService.preparePrices(DUMMY_CANCELLATION_TOKEN, args);
+				return res.status(200).end(priceRuntime.renderPreparedPrices(prices));
+			} catch (e) {
+				if (e instanceof ArgumentError) {
+					log.error(e.message);
+					return render400(res, "Bad argument in request");
+				}
+				if (e instanceof PriceApi.InvalidDateError) {
+					log.error(e.message);
+					return render400(res, "Invalid format date");
+				}
+				next(e);
+			}
+		});
 		this._router.get("/historical/:args", async (req: express.Request, res: express.Response, next: express.NextFunction) => {
 			try {
 				if (log.isTraceEnabled) { log.trace(`Price request ${req.url}`); }
@@ -289,6 +307,23 @@ namespace priceRuntime {
 		}
 	}
 
+	export function parsePreparePriceParams(params: any): PriceApi.PreparePriceArgument {
+		const { fromDate, toDate, points, marketCurrency, tradeCurrency, exchange } = params;
+		if (_.isString(marketCurrency) && _.isString(tradeCurrency) && _.isString(fromDate) && _.isString(toDate) && _.isString(points)) {
+			return {
+				sourceId: exchange,
+				fromDate: Number.parseInt(fromDate),
+				toDate: Number.parseInt(toDate),
+				points: Number.parseInt(points),
+				marketCurrency,
+				tradeCurrency,
+				requiredAllSourceIds: false
+			};
+		} else {
+			throw new ArgumentError("params");
+		}
+	}
+
 	export function parseBatchArgs(args: string): Array<PriceApi.Argument> {
 		const argsRegex = /^[0-9]{14}:[0-9A-Z]+:[0-9A-Z]+(,[0-9]{14}:[0-9A-Z]+:[0-9A-Z]+)*$/;
 		if (!args) { throw new ArgumentError("args"); }
@@ -314,11 +349,29 @@ namespace priceRuntime {
 		return JSON.stringify(prices, undefined, "  ");
 	}
 
+
+	export function renderPreparedPrices(prices: PriceApi.Timestamp): string {
+		const resultPrices: any = {};
+		for (const ts in prices) {
+			for (const marketCurrency in prices[ts]) {
+				for (const tradeCurrency in prices[ts][marketCurrency]) {
+					const primaryPrice = prices[ts][marketCurrency][tradeCurrency];
+					resultPrices[ts] = {
+						[marketCurrency]: {
+							[tradeCurrency]: primaryPrice.primary?.price
+						}
+					};
+				}
+			}
+		}
+		return JSON.stringify(resultPrices, undefined, "  ");
+	}
+
 	export function renderForSingle(prices: PriceApi.Timestamp, arg: PriceApi.Argument): string | null {
-		const avgAndSource = prices[arg.ts][arg.marketCurrency][arg.tradeCurrency];
-		if ("sources" in avgAndSource) {
+		const primaryAndSource = prices[arg.ts][arg.marketCurrency][arg.tradeCurrency];
+		if ("sources" in primaryAndSource) {
 			const sources = "sources";
-			const exchange = avgAndSource[sources];
+			const exchange = primaryAndSource[sources];
 			const nameExchange = arg.sourceId;
 			if (nameExchange && exchange) {
 				const priceName = "price";
@@ -329,13 +382,13 @@ namespace priceRuntime {
 	}
 
 	export function renderForRate(prices: PriceApi.Timestamp, arg: PriceApi.Argument): string | null {
-		const avgAndSource = prices[arg.ts][arg.marketCurrency][arg.tradeCurrency];
-		if ("avg" in avgAndSource) {
-			const avg = "avg";
-			const priceAvg = avgAndSource[avg];
+		const primaryAndSource = prices[arg.ts][arg.marketCurrency][arg.tradeCurrency];
+		if ("primary" in primaryAndSource) {
+			const primary = "primary";
+			const pricePrimary = primaryAndSource[primary];
 			const priceName = "price";
-			if (priceAvg) {
-				return priceAvg[priceName];
+			if (pricePrimary) {
+				return pricePrimary[priceName];
 			}
 			return null;
 		}
@@ -348,13 +401,13 @@ namespace priceRuntime {
 		for (let i = 0; i < args.length; i++) {
 			const arg = args[i];
 			const key = `${arg.ts}:${arg.marketCurrency}:${arg.tradeCurrency}`;
-			const avgAndSource = prices[arg.ts][arg.marketCurrency][arg.tradeCurrency];
-			if ("avg" in avgAndSource) {
-				const avg = "avg";
-				const priceAvg =  avgAndSource[avg];
+			const primaryAndSource = prices[arg.ts][arg.marketCurrency][arg.tradeCurrency];
+			if ("primary" in primaryAndSource) {
+				const primary = "primary";
+				const pricePrimary = primaryAndSource[primary];
 				const priceName = "price";
-				if (priceAvg) {
-					const friendlyPrice = priceAvg[priceName];
+				if (pricePrimary) {
+					const friendlyPrice = pricePrimary[priceName];
 					friendly[key] = friendlyPrice;
 				} else {
 					friendly[key] = null;

@@ -73,6 +73,32 @@ export class PriceApiImpl extends Initable implements PriceApi {
 		}
 	}
 
+	public async preparePrices(
+		cancellationToken: CancellationToken,
+		args: PriceApi.PreparePriceArgument):
+		Promise<PriceApi.Timestamp> {
+		this.verifyInitializedAndNotDisposed();
+		validatePreparePriceDate(args);
+
+		const fromDateTimestamp = moment.utc(args.fromDate, "YYYYMMDDHHmmss").unix();
+		const toDateTimestamp = moment.utc(args.toDate, "YYYYMMDDHHmmss").unix();
+		const segmantLengthSecond = (toDateTimestamp - fromDateTimestamp) / args.points;
+
+		const neededHistoricalPrices: Array<PriceApi.Argument> = new Array();
+		for (let currnetTimestamp = fromDateTimestamp; currnetTimestamp <= toDateTimestamp; currnetTimestamp += segmantLengthSecond) {
+			const currnetTimestampRaw: number = parseInt(moment.unix(currnetTimestamp).format("YYYYMMDDHHmmss"));
+			neededHistoricalPrices.push({
+				ts: currnetTimestampRaw,
+				marketCurrency: args.marketCurrency,
+				tradeCurrency: args.tradeCurrency,
+				sourceId: args.sourceId,
+				requiredAllSourceIds: args.requiredAllSourceIds
+			});
+		}
+		const prepraredPrices = await this.getHistoricalPrices(cancellationToken, neededHistoricalPrices);
+		return prepraredPrices;
+	}
+
 	/**
 	 * Get historical prices for few sources provider
 	 * @param cancellationToken Cancellation Token allows your to cancel execution process
@@ -527,6 +553,24 @@ export namespace PriceApiImpl {
 	}
 }
 
+
+function validatePreparePriceDate(args: PriceApi.PreparePriceArgument) {
+	const { fromDate, toDate } = args;
+	const fromDateStr = fromDate.toString();
+	const toDateStr = toDate.toString();
+
+	if (fromDate > toDate) {
+		throw new PriceApi.InvalidDateError(`Invalid format fromDate must be less than toDate. fromData: ${fromDateStr}, toDate ${toDateStr}`);
+	}
+	const isFromDateValid = moment(fromDate, "YYYYMMDDHHmmss", true).isValid();
+	const isToDateValid = moment(toDate, "YYYYMMDDHHmmss", true).isValid();
+	if (!isFromDateValid) {
+		throw new PriceApi.InvalidDateError(`Invalid format date ${isFromDateValid}`);
+	}
+	if (!isToDateValid) {
+		throw new PriceApi.InvalidDateError(`Invalid format date ${isToDateValid}`);
+	}
+}
 
 function validateDate(args: Array<PriceApi.Argument>) {
 	for (let i = 0; i < args.length; i++) {

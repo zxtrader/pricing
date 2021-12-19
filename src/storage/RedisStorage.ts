@@ -238,7 +238,7 @@ export namespace helpers {
 		ts: number,
 		marketCurrency: string,
 		tradeCurrency: string,
-		avgPrice?: string | null,
+		primaryPrice?: string | null,
 		sourceId?: string,
 		sourcePrice?: string | null
 	): PriceApi.Timestamp {
@@ -250,7 +250,7 @@ export namespace helpers {
 		}
 		if (!(tradeCurrency in friendlyPrices[ts][marketCurrency])) {
 			friendlyPrices[ts][marketCurrency][tradeCurrency] = {
-				avg: null
+				primary: null
 			};
 		}
 		if ((sourceId) && (sourcePrice) && !(sourceId in friendlyPrices[ts][marketCurrency][tradeCurrency])) {
@@ -280,13 +280,13 @@ export namespace helpers {
 					if (!sources || Object.keys(sources).length === 0) {
 						throw new Error("Empty sources. Can not set primary price.");
 					}
-					friendlyPrices[ts][marketCurrency][tradeCurrency].avg = {
+					friendlyPrices[ts][marketCurrency][tradeCurrency].primary = {
 						price: sources[Object.keys(sources)[0]].price,
 					};
 					const sourceIds = Object.keys(sources);
 					for (const source of sourcesQueue) {
 						if (sourceIds.includes(source)) {
-							friendlyPrices[ts][marketCurrency][tradeCurrency].avg = {
+							friendlyPrices[ts][marketCurrency][tradeCurrency].primary = {
 								price: sources[source].price,
 							};
 							break;
