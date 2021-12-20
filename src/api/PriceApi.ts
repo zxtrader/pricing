@@ -17,6 +17,10 @@ export interface PriceApi {
 		cancellationToken: CancellationToken, args: PriceApi.PreparePriceArgument
 	): Promise<PriceApi.Timestamp>;
 
+	preparePairPrices(
+		cancellationToken: CancellationToken, args: PriceApi.PreparePriceArgument
+	): Promise<PriceApi.Timestamp>;
+
 	ping(
 		cancellationToken: CancellationToken, echo: string
 	): Promise<{ readonly echo: string; readonly time: Date; readonly version: string; }>;
@@ -36,8 +40,9 @@ export namespace PriceApi {
 		fromDate: number;
 		toDate: number;
 		points: number;
-		marketCurrency: string;
-		tradeCurrency: string;
+		marketCurrency?: string;
+		tradeCurrency?: string;
+		pairs?: Array<string>;
 		sourceId?: string;
 		requiredAllSourceIds: boolean;
 	}

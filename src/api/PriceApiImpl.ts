@@ -73,6 +73,31 @@ export class PriceApiImpl extends Initable implements PriceApi {
 		}
 	}
 
+	public async preparePairPrices(
+		cancellationToken: CancellationToken, args: PriceApi.PreparePriceArgument
+	): Promise<PriceApi.Timestamp> {
+		this.verifyInitializedAndNotDisposed();
+		let prepraredPrices: PriceApi.Timestamp = {};
+		if (!args.pairs) {
+			throw new ArgumentError("Argument pairs must be set");
+		}
+		for (const pair of args.pairs) {
+			const [marketCurrency, tradeCurrency] = pair.split("/");
+			const neededHistoricalPrices: PriceApi.PreparePriceArgument = {
+				fromDate: args.fromDate,
+				toDate: args.toDate,
+				points: args.points,
+				marketCurrency,
+				tradeCurrency,
+				requiredAllSourceIds: false
+			};
+			const prepairedPricesForPair: PriceApi.Timestamp = await this.preparePrices(cancellationToken, neededHistoricalPrices);
+			assignPriceObjects(prepraredPrices, prepairedPricesForPair)
+
+		}
+		return prepraredPrices;
+	}
+
 	public async preparePrices(
 		cancellationToken: CancellationToken,
 		args: PriceApi.PreparePriceArgument):
@@ -85,15 +110,17 @@ export class PriceApiImpl extends Initable implements PriceApi {
 		const segmantLengthSecond = (toDateTimestamp - fromDateTimestamp) / args.points;
 
 		const neededHistoricalPrices: Array<PriceApi.Argument> = new Array();
-		for (let currnetTimestamp = fromDateTimestamp; currnetTimestamp <= toDateTimestamp; currnetTimestamp += segmantLengthSecond) {
-			const currnetTimestampRaw: number = parseInt(moment.unix(currnetTimestamp).format("YYYYMMDDHHmmss"));
-			neededHistoricalPrices.push({
-				ts: currnetTimestampRaw,
-				marketCurrency: args.marketCurrency,
-				tradeCurrency: args.tradeCurrency,
-				sourceId: args.sourceId,
-				requiredAllSourceIds: args.requiredAllSourceIds
-			});
+		if (args.marketCurrency && args.tradeCurrency) {
+			for (let currnetTimestamp = fromDateTimestamp; currnetTimestamp <= toDateTimestamp; currnetTimestamp += segmantLengthSecond) {
+				const currnetTimestampRaw: number = parseInt(moment.unix(currnetTimestamp).format("YYYYMMDDHHmmss"));
+				neededHistoricalPrices.push({
+					ts: currnetTimestampRaw,
+					marketCurrency: args.marketCurrency,
+					tradeCurrency: args.tradeCurrency,
+					sourceId: args.sourceId,
+					requiredAllSourceIds: args.requiredAllSourceIds
+				});
+			}
 		}
 		const prepraredPrices = await this.getHistoricalPrices(cancellationToken, neededHistoricalPrices);
 		return prepraredPrices;
@@ -789,4 +816,36 @@ function emulatorPriceChangingByNoise(
 		});
 
 	return pricesWithNoise;
+}
+
+function assignPriceObjects(target: PriceApi.Timestamp, source: PriceApi.Timestamp): void {
+	for (const ts in source) {
+		if (!(ts in target)) {
+			target[ts] = {};
+		}
+		for (const marketCurrency in source[ts]) {
+			if (!(marketCurrency in target[ts])) {
+				target[ts][marketCurrency] = {};
+			}
+			for (const tradeCurrency in source[ts][marketCurrency]) {
+				if (!(tradeCurrency in target[ts][marketCurrency])) {
+					target[ts][marketCurrency][tradeCurrency] = {
+							primary: source[ts][marketCurrency][tradeCurrency].primary,
+							sources: {}
+					};
+				}
+				const sourcePrices = source[ts][marketCurrency][tradeCurrency].sources;
+				const targetPrices = target[ts][marketCurrency][tradeCurrency].sources ?? {};
+				for (const sourcePrice in sourcePrices) {
+					if (sourcePrice in targetPrices) {
+						throw Error("Assign price objects, price duplicate");
+					}
+					targetPrices[sourcePrice] = {
+						price: sourcePrices[sourcePrice].price
+					}
+				}
+
+			}
+		}
+	}
 }

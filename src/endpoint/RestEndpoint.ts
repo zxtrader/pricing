@@ -33,9 +33,17 @@ export class RestEndpoint extends ServersBindEndpoint {
 		this._router.get("/prepare-prices", async (req: express.Request, res: express.Response, next: express.NextFunction) => {
 			try {
 				if (log.isTraceEnabled) { log.trace(`Prepare prices request ${req.url}`); }
+
 				const args = priceRuntime.parsePreparePriceParams(req.query);
 				if (log.isTraceEnabled) { log.trace(`Args: ${JSON.stringify(args)}`); }
-				const prices = await priceService.preparePrices(DUMMY_CANCELLATION_TOKEN, args);
+				let prices;
+				if (args.marketCurrency && args.tradeCurrency) {
+					prices = await priceService.preparePrices(DUMMY_CANCELLATION_TOKEN, args);
+				} else if (args.pairs) {
+					prices = await priceService.preparePairPrices(DUMMY_CANCELLATION_TOKEN, args);
+				} else {
+					throw new ArgumentError("Arguments marketCurrency and tradeCurrency or pairs must be set")
+				}
 				return res.status(200).end(priceRuntime.renderPreparedPrices(prices));
 			} catch (e) {
 				if (e instanceof ArgumentError) {
@@ -308,17 +316,24 @@ namespace priceRuntime {
 	}
 
 	export function parsePreparePriceParams(params: any): PriceApi.PreparePriceArgument {
-		const { fromDate, toDate, points, marketCurrency, tradeCurrency, exchange } = params;
-		if (_.isString(marketCurrency) && _.isString(tradeCurrency) && _.isString(fromDate) && _.isString(toDate) && _.isString(points)) {
-			return {
+		const { fromDate, toDate, pairs, points, marketCurrency, tradeCurrency, exchange } = params;
+		if (((_.isString(marketCurrency) && _.isString(tradeCurrency)) || _.isString(pairs)) && _.isString(fromDate) && _.isString(toDate) && _.isString(points)) {
+			const agrs: PriceApi.PreparePriceArgument = {
 				sourceId: exchange,
 				fromDate: Number.parseInt(fromDate),
 				toDate: Number.parseInt(toDate),
 				points: Number.parseInt(points),
-				marketCurrency,
-				tradeCurrency,
 				requiredAllSourceIds: false
 			};
+			if (_.isString(marketCurrency) && _.isString(tradeCurrency)) {
+				agrs.marketCurrency = marketCurrency;
+				agrs.tradeCurrency = tradeCurrency;
+			} else if (_.isString(pairs)) {
+				agrs.pairs = pairs.split(",");
+			} else {
+				throw new ArgumentError("Arguments marketCurrency and tradeCurrency or pairs must be set");
+			}
+			return agrs;
 		} else {
 			throw new ArgumentError("params");
 		}
@@ -353,14 +368,19 @@ namespace priceRuntime {
 	export function renderPreparedPrices(prices: PriceApi.Timestamp): string {
 		const resultPrices: any = {};
 		for (const ts in prices) {
+			if (!(ts in resultPrices)) {
+				resultPrices[ts] = {};
+			}
 			for (const marketCurrency in prices[ts]) {
+				if (!(marketCurrency in resultPrices[ts])) {
+					resultPrices[ts][marketCurrency] = {};
+				}
 				for (const tradeCurrency in prices[ts][marketCurrency]) {
+					if (!(tradeCurrency in resultPrices[ts][marketCurrency])) {
+						resultPrices[ts][marketCurrency][tradeCurrency] = {};
+					}
 					const primaryPrice = prices[ts][marketCurrency][tradeCurrency];
-					resultPrices[ts] = {
-						[marketCurrency]: {
-							[tradeCurrency]: primaryPrice.primary?.price
-						}
-					};
+					resultPrices[ts][marketCurrency][tradeCurrency] = primaryPrice.primary?.price;
 				}
 			}
 		}
