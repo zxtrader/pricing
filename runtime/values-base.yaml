@@ -2,12 +2,12 @@ application:
 
   api:
     serviceImage: harbor.infra.kube/cexpay/api/amd64
-    tag: 0.8.4
+    tag: 0.9.1
     replicas: 1
 
   board:
     serviceImage: harbor.infra.kube/cexpay/board/amd64
-    tag: 2.10.1
+    tag: 0.0.10
     args:
       [
         "--use-ssl"
@@ -33,7 +33,7 @@ application:
 
   identity:
     serviceImage: harbor.infra.kube/cexpay/identity/amd64
-    tag: 0.2.5
+    tag: 0.2.10
     replicas: 1
 
   invoice:
@@ -43,7 +43,7 @@ application:
 
   landing:
     serviceImage: harbor.infra.kube/cexpay/landing/amd64
-    tag: 0.1.1
+    tag: 0.0.1
     args:
       [
         "--use-ssl"

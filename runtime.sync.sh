@@ -1,7 +1,9 @@
 #!/bin/bash
 #
 
-ZONES="evolution"
+#ZONES="evolution"
+#ZONES="presentation"
+ZONES="evolution presentation"
 CONFIGMAPS="api-envvars cpservice gatehostinternal-envvars identity-envvars invoice-envvars messengerbridge-files notifier-envvars notifier-files processing-envvars processing-files"
 SECRETS="api gatehostinternal identity invoice messengerbridge migration notifier processing"
 
@@ -37,7 +39,7 @@ for ZONE in ${ZONES}; do
 		cat <<EOF > "${FULL_CONFIGMAP_FILE}"
 # kubectl --namespace cexpay-${ZONE}-admin get --output=yaml ConfigMap/${CONFIGMAP}
 # kubectl --namespace cexpay-${ZONE}-admin get --output=json ConfigMap/${CONFIGMAP} | jq -r ".data" | yq eval -P | sed 's/^/  /'
-# kubectl --namespace cexpay-${ZONE}-admin apply --filename=runtime.configmaps/evolution/${CONFIGMAP}.yaml
+# kubectl --namespace cexpay-${ZONE}-admin apply --filename=runtime.configmaps/${ZONE}/${CONFIGMAP}.yaml
 
 apiVersion: v1
 kind: ConfigMap
@@ -57,7 +59,7 @@ EOF
 		cat <<EOF > "${FULL_SECRET_FILE}"
 # kubectl --namespace cexpay-${ZONE}-admin get --output=yaml Secrets/${SECRET}
 # kubectl --namespace cexpay-${ZONE}-admin get --output=json Secrets/${SECRET} | jq -r ".data" | yq eval -P | sed 's/^/  /'
-# kubectl --namespace cexpay-${ZONE}-admin apply --filename=runtime.secrets/evolution/${SECRET}.yaml
+# kubectl --namespace cexpay-${ZONE}-admin apply --filename=runtime.secrets/${ZONE}/${SECRET}.yaml
 
 apiVersion: v1
 kind: Secret

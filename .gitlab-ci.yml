@@ -409,7 +409,7 @@ include:
     - (cd .github-data && git config --local user.name "${GITHUB_USER}" && git config --local user.email "${GITHUB_EMAIL}" && git add -A && git commit --amend --message "${VERSION_TAG}" && git push --force)
   when: manual
   environment:
-    name: production
+    name: production-board
     url: https://cexpay.io/
   # tags:
   #   - cexiolabs-github-pages
@@ -475,7 +475,7 @@ include:
     - helm --namespace "cexpay" history "green" --max=3
   when: manual
   environment:
-    name: production
+    name: production-green
     url: https://cexpay.io/
   tags:
     - crtpdpl
@@ -548,7 +548,7 @@ include:
     - helm --namespace "cexpay" uninstall  "green"
   when: manual
   environment:
-    name: production
+    name: production-green
     url: https://cexpay.io/
   tags:
     - crtpdpl
