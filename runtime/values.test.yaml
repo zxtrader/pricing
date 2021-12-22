@@ -3,9 +3,7 @@ zone: test
 application:
 
   api:
-    # serviceImage: harbor.infra.kube/cexpay/api/snapshot/amd64
-    serviceImage: docker-cexpay.infra.kube/cexpay/api/snapshot/amd64
-    tag: latest
+    serviceImage: harbor.infra.kube/cexpay/api/snapshot/amd64
     args:
       [
         "--config-json-file=/etc/cexiolabs/cexpay.api/appsettings.json",
@@ -19,27 +17,22 @@ application:
       WTFProviderConfigurationFile: /etc/cexiolabs/cexpay.api/legacy-cpservice-config/WTF-dev.json
 
   board:
-    # serviceImage: harbor.infra.kube/cexpay/board/snapshot
-    serviceImage: docker-cexpay.infra.kube/cexpay/board/snapshot/amd64
-    tag: master
+    serviceImage: harbor.infra.kube/cexpay/board/snapshot
+    env:
+      API_SERVICE_URL: https://api.pay-cex-test.net
+      IDENTITY_SERVICE_URL: https://id.pay-cex-test.net
 
   gatehostinternal:
-    # serviceImage: harbor.infra.kube/cexpay/gate/hostinternal/snapshot/amd64
-    serviceImage: docker-cexpay.infra.kube/cexpay/gate/hostinternal/snapshot/amd64
-    tag: latest
+    serviceImage: harbor.infra.kube/cexpay/gate/hostinternal/snapshot/amd64
     env:
       GATE_BASE_URL: https://gate.pay-cex-test.net
 
   gateintegrationdemo:
-    serviceImage: docker-cexpay.infra.kube/cexiolabs/cexpay.gate.integration-demo
-    tag: latest
     env:
       GATE_URL: https://gate.pay-cex-test.net
 
   identity:
-    # serviceImage: harbor.infra.kube/cexpay/identity/snapshot/amd64
-    serviceImage: docker-cexpay.infra.kube/cexpay/identity/snapshot/amd64
-    tag: latest
+    serviceImage: harbor.infra.kube/cexpay/identity/snapshot/amd64
     args:
       [
         "--config-json-file=/etc/cexiolabs/cexpay.identity/appsettings.json",
@@ -50,9 +43,7 @@ application:
       ]
 
   invoice:
-    # serviceImage: harbor.infra.kube/cexpay/invoice/snapshot/amd64
-    serviceImage: docker-cexpay.infra.kube/cexpay/invoice/amd64
-    tag: latest
+    serviceImage: harbor.infra.kube/cexpay/invoice/snapshot/amd64
     args:
       [
         "--config-json-file=/etc/cexiolabs/cexpay.invoice/appsettings.json",
@@ -66,17 +57,12 @@ application:
 
   landing:
     serviceImage: docker-cexpay.infra.kube/cexpay/landing/snapshot/amd64
-    tag: latest
 
   notifier:
-    # serviceImage: harbor.infra.kube/cexiolabs/communitysoft/notifier/csharp/snapshot/amd64
-    serviceImage: docker-cexpay.infra.kube/cexiolabs/communitysoft/notifier/csharp/snapshot/amd64
-    tag: latest
+    serviceImage: harbor.infra.kube/cexiolabs/communitysoft/notifier/csharp/snapshot/amd64
 
   processing:
-    # serviceImage: harbor.infra.kube/cexpay/processing/snapshot/amd64
-    serviceImage: docker-cexpay.infra.kube/cexpay/processing/snapshot/amd64
-    tag: latest
+    serviceImage: harbor.infra.kube/cexpay/processing/snapshot/amd64
     args:
       [
         "--config-file=/etc/cexiolabs/cexpay.processing/service.config",
@@ -94,6 +80,7 @@ application:
       DEBUG_WAIT: "no"
       LOG_LEVEL: "debug"
 
+
 ingress:
 
   API:
@@ -107,9 +94,6 @@ ingress:
       domainPerfix: api-
       domainSuffix: -test-cexpay.dev.kube
       certSecretName: dev
-    backendInsecure: false
-    nginxConfigurationSnippet: |
-      rewrite ^/$ /v2/time redirect;
     paths:
       "/":
         backendServiceName: api
@@ -120,6 +104,9 @@ ingress:
       "/v2/":
         backendServiceName: processing
         backendServicePort: 8080
+      "/v2/dashboard/":
+        backendServiceName: processing
+        backendServicePort: 8082
 
   Board:
     nonblue:
@@ -129,8 +116,6 @@ ingress:
       domainPerfix: board-
       domainSuffix: -test-cexpay.dev.kube
       certSecretName: dev
-    backendInsecure: false
-    nginxAppRoot: "/wznk/"
     paths:
       "/":
         backendServiceName: board
@@ -166,7 +151,6 @@ ingress:
       domainPerfix: echo-
       domainSuffix: -test-cexpay.dev.kube
       certSecretName: dev
-    backendInsecure: false
     paths:
       "/":
         backendServiceName: echo
@@ -183,7 +167,6 @@ ingress:
       domainPerfix: gate-
       domainSuffix: -test-cexpay.dev.kube
       certSecretName: dev
-    backendInsecure: false
     paths:
       "/":
         backendServiceName: gatehostinternal
@@ -192,14 +175,12 @@ ingress:
   GateIntegrationDemo:
     blue:
       domain: gateintegrationdemo.pay-cex-test.net
-      certSecretName: dev
     nonblue:
       # Make final domain "gateintegrationdemo-<HelmReleaseName>-test-cexpay.dev.kube" like a:
       #   gateintegrationdemo-green-test-cexpay.dev.kube
       #   gateintegrationdemo-master-test-cexpay.dev.kube
       domainPerfix: gateintegrationdemo-
       domainSuffix: -test-cexpay.dev.kube
-      certSecretName: dev
     backendInsecure: true
     paths:
       "/":
@@ -217,7 +198,6 @@ ingress:
       domainPerfix: id-
       domainSuffix: -test-cexpay.dev.kube
       certSecretName: dev
-    backendInsecure: false
     paths:
       "/":
         backendServiceName: identity
@@ -234,7 +214,6 @@ ingress:
       domainPerfix: invoice-
       domainSuffix: -test-cexpay.dev.kube
       certSecretName: dev
-    backendInsecure: false
     paths:
       "/":
         backendServiceName: invoice
@@ -245,13 +224,12 @@ ingress:
       domain: pay-cex-test.net
       certSecretName: ingress-pay-cex-test-certificate
     nonblue:
-      # Make final domain "id-<HelmReleaseName>-test-cexpay.dev.kube" like a:
-      #   id-green-test-cexpay.dev.kube
-      #   id-master-test-cexpay.dev.kube
+      # Make final domain "<HelmReleaseName>-test-cexpay.dev.kube" like a:
+      #   green-test-cexpay.dev.kube
+      #   master-test-cexpay.dev.kube
       domainPerfix: ""
       domainSuffix: -test-cexpay.dev.kube
       certSecretName: dev
-    backendInsecure: false
     paths:
       "/":
         backendServiceName: landing
@@ -270,7 +248,6 @@ ingress:
       domainPerfix: messengerbridge-
       domainSuffix: -test-cexpay.dev.kube
       certSecretName: dev
-    backendInsecure: false
     paths:
       "/":
         backendServiceName: messengerbridge

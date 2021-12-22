@@ -3,9 +3,6 @@ zone: evolution
 application:
 
   api:
-    serviceImage: harbor.infra.kube/cexpay/api/snapshot/amd64
-    # serviceImage: docker-cexpay.infra.kube/cexpay/api/snapshot/amd64
-    tag: latest
     args:
       [
         "--config-json-file=/etc/cexiolabs/cexpay.api/appsettings.json",
@@ -20,15 +17,12 @@ application:
 
   board:
     serviceImage: harbor.infra.kube/cexpay/board/snapshot
-    # serviceImage: docker-cexpay.infra.kube/cexpay/board/snapshot/amd64
-    tag: master
     env:
       API_SERVICE_URL: https://api-evolution-cexpay.dev.kube
       IDENTITY_SERVICE_URL: https://id-evolution-cexpay.dev.kube
 
   gatehostinternal:
     serviceImage: harbor.infra.kube/cexpay/gate/hostinternal/snapshot/amd64
-    # serviceImage: docker-cexpay.infra.kube/cexpay/gate/hostinternal/snapshot/amd64
     env:
       GATE_BASE_URL: https://gate-evolution-cexpay.dev.kube
 
@@ -38,8 +32,6 @@ application:
 
   identity:
     serviceImage: harbor.infra.kube/cexpay/identity/snapshot/amd64
-    # serviceImage: docker-cexpay.infra.kube/cexpay/identity/snapshot/amd64
-    tag: latest
     args:
       [
         "--config-json-file=/etc/cexiolabs/cexpay.identity/appsettings.json",
@@ -51,8 +43,6 @@ application:
 
   invoice:
     serviceImage: harbor.infra.kube/cexpay/invoice/snapshot/amd64
-    # serviceImage: docker-cexpay.infra.kube/cexpay/invoice/amd64
-    tag: latest
     args:
       [
         "--config-json-file=/etc/cexiolabs/cexpay.invoice/appsettings.json",
@@ -66,17 +56,12 @@ application:
 
   landing:
     serviceImage: docker-cexpay.infra.kube/cexpay/landing/snapshot/amd64
-    tag: latest
 
   notifier:
     serviceImage: harbor.infra.kube/cexiolabs/communitysoft/notifier/csharp/snapshot/amd64
-    # serviceImage: docker-cexpay.infra.kube/cexiolabs/communitysoft/notifier/csharp/snapshot/amd64
-    tag: latest
 
   processing:
     serviceImage: harbor.infra.kube/cexpay/processing/snapshot/amd64
-    # serviceImage: docker-cexpay.infra.kube/cexpay/processing/snapshot/amd64
-    tag: latest
     args:
       [
         "--config-file=/etc/cexiolabs/cexpay.processing/service.config",
@@ -94,15 +79,13 @@ application:
       DEBUG_WAIT: "no"
       LOG_LEVEL: "debug"
 
+
 ingress:
 
   API:
     blue:
       domain: api-evolution-cexpay.dev.kube
       certSecretName: dev
-    backendInsecure: false
-    nginxConfigurationSnippet: |
-      rewrite ^/$ /v2/time redirect;
     paths:
       "/":
         backendServiceName: api
@@ -121,8 +104,6 @@ ingress:
     blue:
       domain: board-evolution-cexpay.dev.kube
       certSecretName: dev
-    backendInsecure: false
-    nginxAppRoot: "/wznk/"
     paths:
       "/":
         backendServiceName: board
@@ -141,7 +122,6 @@ ingress:
     blue:
       domain: echo-evolution-cexpay.dev.kube
       certSecretName: dev
-    backendInsecure: false
     paths:
       "/":
         backendServiceName: echo
@@ -151,7 +131,6 @@ ingress:
     blue:
       domain: gate-evolution-cexpay.dev.kube
       certSecretName: dev
-    backendInsecure: false
     paths:
       "/":
         backendServiceName: gatehostinternal
@@ -160,7 +139,6 @@ ingress:
   GateIntegrationDemo:
     blue:
       domain: gateintegrationdemo-evolution-cexpay.dev.kube
-      certSecretName: dev
     backendInsecure: true
     paths:
       "/":
@@ -171,7 +149,6 @@ ingress:
     blue:
       domain: id-evolution-cexpay.dev.kube
       certSecretName: dev
-    backendInsecure: false
     paths:
       "/":
         backendServiceName: identity
@@ -181,7 +158,6 @@ ingress:
     blue:
       domain: invoice-evolution-cexpay.dev.kube
       certSecretName: dev
-    backendInsecure: false
     paths:
       "/":
         backendServiceName: invoice
@@ -191,7 +167,6 @@ ingress:
     blue:
       domain: evolution-cexpay.dev.kube
       certSecretName: dev
-    backendInsecure: false
     paths:
       "/":
         backendServiceName: landing
@@ -202,7 +177,6 @@ ingress:
       # THIS endpoint just for development purposes
       domain: messengerbridge-evolution-cexpay.dev.kube
       certSecretName: dev
-    backendInsecure: false
     paths:
       "/":
         backendServiceName: messengerbridge

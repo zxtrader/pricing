@@ -109,13 +109,6 @@ ingress:
       domainPerfix: board-
       domainSuffix: .prodcryptopay.kube
       certSecretName: wildcard-prodcryptopay-kube
-    backendInsecure: false
-    nginxConfigurationSnippet: |
-      add_header Last-Modified $date_gmt;
-      add_header Cache-Control 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0';
-      if_modified_since off;
-      expires off;
-      etag off;
     paths:
       "/":
         backendServiceName: board
@@ -141,18 +134,11 @@ ingress:
       domain: gate.cexpay.io
       certSecretName: ingress-cexpayio-certificate
     nonblue:
-      # Make final domain "gate3-<HelmReleaseName>.prodcryptopay.kube" like a:
+      # Make final domain "gate-<HelmReleaseName>.prodcryptopay.kube" like a:
       #   gate-green.prodcryptopay.kube
       domainPerfix: gate-
       domainSuffix: .prodcryptopay.kube
       certSecretName: wildcard-prodcryptopay-kube
-    backendInsecure: false
-    nginxConfigurationSnippet: |
-      add_header Last-Modified $date_gmt;
-      add_header Cache-Control 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0';
-      if_modified_since off;
-      expires off;
-      etag off;
     paths:
       "/":
         backendServiceName: gatehostinternal
@@ -192,13 +178,6 @@ ingress:
       domainPerfix: invoice-
       domainSuffix: .prodcryptopay.kube
       certSecretName: wildcard-prodcryptopay-kube
-    backendInsecure: false
-    nginxConfigurationSnippet: |
-      add_header Last-Modified $date_gmt;
-      add_header Cache-Control 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0';
-      if_modified_since off;
-      expires off;
-      etag off;
     paths:
       "/":
         backendServiceName: invoice

@@ -4,8 +4,6 @@ application:
 
   api:
     serviceImage: harbor.infra.kube/cexpay/api/snapshot/amd64
-    # serviceImage: docker-cexpay.infra.kube/cexpay/api/snapshot/amd64
-    tag: latest
     args:
       [
         "--config-json-file=/etc/cexiolabs/cexpay.api/appsettings.json",
@@ -20,27 +18,22 @@ application:
 
   board:
     serviceImage: harbor.infra.kube/cexpay/board/snapshot
-    # serviceImage: docker-cexpay.infra.kube/cexpay/board/snapshot/amd64
-    tag: master
+    env:
+      API_SERVICE_URL: https://api-presentation-cexpay.dev.kube
+      IDENTITY_SERVICE_URL: https://id-presentation-cexpay.dev.kube
 
   gatehostinternal:
     serviceImage: harbor.infra.kube/cexpay/gate/hostinternal/snapshot/amd64
-    # serviceImage: docker-cexpay.infra.kube/cexpay/gate/hostinternal/snapshot/amd64
-    tag: latest
     env:
       GATE_BASE_URL: https://gate-presentation-cexpay.dev.kube
 
   gateintegrationdemo:
     serviceImage: harbor.infra.kube/cexiolabs/cexpay.gate.integration-demo
-    # serviceImage: docker-cexpay.infra.kube/cexiolabs/cexpay.gate.integration-demo
-    tag: latest
     env:
       GATE_URL: https://gate-presentation-cexpay.dev.kube
 
   identity:
     serviceImage: harbor.infra.kube/cexpay/identity/snapshot/amd64
-    # serviceImage: docker-cexpay.infra.kube/cexpay/identity/snapshot/amd64
-    tag: latest
     args:
       [
         "--config-json-file=/etc/cexiolabs/cexpay.identity/appsettings.json",
@@ -52,8 +45,6 @@ application:
 
   invoice:
     serviceImage: harbor.infra.kube/cexpay/invoice/snapshot/amd64
-    # serviceImage: docker-cexpay.infra.kube/cexpay/invoice/amd64
-    tag: latest
     args:
       [
         "--config-json-file=/etc/cexiolabs/cexpay.invoice/appsettings.json",
@@ -67,17 +58,12 @@ application:
 
   landing:
     serviceImage: docker-cexpay.infra.kube/cexpay/landing/snapshot/amd64
-    tag: latest
 
   notifier:
     serviceImage: harbor.infra.kube/cexiolabs/communitysoft/notifier/csharp/snapshot/amd64
-    # serviceImage: docker-cexpay.infra.kube/cexiolabs/communitysoft/notifier/csharp/snapshot/amd64
-    tag: latest
 
   processing:
     serviceImage: harbor.infra.kube/cexpay/processing/snapshot/amd64
-    # serviceImage: docker-cexpay.infra.kube/cexpay/processing/snapshot/amd64
-    tag: latest
     args:
       [
         "--config-file=/etc/cexiolabs/cexpay.processing/service.config",
@@ -95,15 +81,13 @@ application:
       DEBUG_WAIT: "no"
       LOG_LEVEL: "debug"
 
+
 ingress:
 
   API:
     blue:
       domain: api-presentation-cexpay.dev.kube
       certSecretName: dev
-    backendInsecure: false
-    nginxConfigurationSnippet: |
-      rewrite ^/$ /v2/time redirect;
     paths:
       "/":
         backendServiceName: api
@@ -122,8 +106,6 @@ ingress:
     blue:
       domain: board-presentation-cexpay.dev.kube
       certSecretName: dev
-    backendInsecure: false
-    nginxAppRoot: "/wznk/"
     paths:
       "/":
         backendServiceName: board
@@ -142,7 +124,6 @@ ingress:
     blue:
       domain: echo-presentation-cexpay.dev.kube
       certSecretName: dev
-    backendInsecure: false
     paths:
       "/":
         backendServiceName: echo
@@ -152,7 +133,6 @@ ingress:
     blue:
       domain: gate-presentation-cexpay.dev.kube
       certSecretName: dev
-    backendInsecure: false
     paths:
       "/":
         backendServiceName: gatehostinternal
@@ -161,7 +141,6 @@ ingress:
   GateIntegrationDemo:
     blue:
       domain: gateintegrationdemo-presentation-cexpay.dev.kube
-      certSecretName: dev
     backendInsecure: true
     paths:
       "/":
@@ -172,7 +151,6 @@ ingress:
     blue:
       domain: id-presentation-cexpay.dev.kube
       certSecretName: dev
-    backendInsecure: false
     paths:
       "/":
         backendServiceName: identity
@@ -182,7 +160,6 @@ ingress:
     blue:
       domain: invoice-presentation-cexpay.dev.kube
       certSecretName: dev
-    backendInsecure: false
     paths:
       "/":
         backendServiceName: invoice
@@ -192,7 +169,6 @@ ingress:
     blue:
       domain: presentation-cexpay.dev.kube
       certSecretName: dev
-    backendInsecure: false
     paths:
       "/":
         backendServiceName: landing
@@ -203,7 +179,6 @@ ingress:
       # THIS endpoint just for development purposes
       domain: messengerbridge-presentation-cexpay.dev.kube
       certSecretName: dev
-    backendInsecure: false
     paths:
       "/":
         backendServiceName: messengerbridge
