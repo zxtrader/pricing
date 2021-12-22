@@ -3,8 +3,8 @@ zone: presentation
 application:
 
   api:
-    # serviceImage: harbor.infra.kube/cexpay/api/snapshot/amd64
-    serviceImage: docker-cexpay.infra.kube/cexpay/api/snapshot/amd64
+    serviceImage: harbor.infra.kube/cexpay/api/snapshot/amd64
+    # serviceImage: docker-cexpay.infra.kube/cexpay/api/snapshot/amd64
     tag: latest
     args:
       [
@@ -19,26 +19,27 @@ application:
       WTFProviderConfigurationFile: /etc/cexiolabs/cexpay.api/legacy-cpservice-config/WTF-dev.json
 
   board:
-    # serviceImage: harbor.infra.kube/cexpay/board/snapshot
-    serviceImage: docker-cexpay.infra.kube/cexpay/board/snapshot/amd64
+    serviceImage: harbor.infra.kube/cexpay/board/snapshot
+    # serviceImage: docker-cexpay.infra.kube/cexpay/board/snapshot/amd64
     tag: master
 
   gatehostinternal:
-    # serviceImage: harbor.infra.kube/cexpay/gate/hostinternal/snapshot/amd64
-    serviceImage: docker-cexpay.infra.kube/cexpay/gate/hostinternal/snapshot/amd64
+    serviceImage: harbor.infra.kube/cexpay/gate/hostinternal/snapshot/amd64
+    # serviceImage: docker-cexpay.infra.kube/cexpay/gate/hostinternal/snapshot/amd64
     tag: latest
     env:
       GATE_BASE_URL: https://gate-presentation-cexpay.dev.kube
 
   gateintegrationdemo:
-    serviceImage: docker-cexpay.infra.kube/cexiolabs/cexpay.gate.integration-demo
+    serviceImage: harbor.infra.kube/cexiolabs/cexpay.gate.integration-demo
+    # serviceImage: docker-cexpay.infra.kube/cexiolabs/cexpay.gate.integration-demo
     tag: latest
     env:
       GATE_URL: https://gate-presentation-cexpay.dev.kube
 
   identity:
-    # serviceImage: harbor.infra.kube/cexpay/identity/snapshot/amd64
-    serviceImage: docker-cexpay.infra.kube/cexpay/identity/snapshot/amd64
+    serviceImage: harbor.infra.kube/cexpay/identity/snapshot/amd64
+    # serviceImage: docker-cexpay.infra.kube/cexpay/identity/snapshot/amd64
     tag: latest
     args:
       [
@@ -50,8 +51,8 @@ application:
       ]
 
   invoice:
-    # serviceImage: harbor.infra.kube/cexpay/invoice/snapshot/amd64
-    serviceImage: docker-cexpay.infra.kube/cexpay/invoice/amd64
+    serviceImage: harbor.infra.kube/cexpay/invoice/snapshot/amd64
+    # serviceImage: docker-cexpay.infra.kube/cexpay/invoice/amd64
     tag: latest
     args:
       [
@@ -69,13 +70,13 @@ application:
     tag: latest
 
   notifier:
-    # serviceImage: harbor.infra.kube/cexiolabs/communitysoft/notifier/csharp/snapshot/amd64
-    serviceImage: docker-cexpay.infra.kube/cexiolabs/communitysoft/notifier/csharp/snapshot/amd64
+    serviceImage: harbor.infra.kube/cexiolabs/communitysoft/notifier/csharp/snapshot/amd64
+    # serviceImage: docker-cexpay.infra.kube/cexiolabs/communitysoft/notifier/csharp/snapshot/amd64
     tag: latest
 
   processing:
-    # serviceImage: harbor.infra.kube/cexpay/processing/snapshot/amd64
-    serviceImage: docker-cexpay.infra.kube/cexpay/processing/snapshot/amd64
+    serviceImage: harbor.infra.kube/cexpay/processing/snapshot/amd64
+    # serviceImage: docker-cexpay.infra.kube/cexpay/processing/snapshot/amd64
     tag: latest
     args:
       [
@@ -113,6 +114,9 @@ ingress:
       "/v2/":
         backendServiceName: processing
         backendServicePort: 8080
+      "/v2/dashboard/":
+        backendServiceName: processing
+        backendServicePort: 8082
 
   Board:
     blue:

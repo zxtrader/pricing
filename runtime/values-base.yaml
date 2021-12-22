@@ -33,7 +33,7 @@ application:
 
   identity:
     serviceImage: harbor.infra.kube/cexpay/identity/amd64
-    tag: 0.2.10
+    tag: 0.2.11
     replicas: 1
 
   invoice:
@@ -80,5 +80,5 @@ application:
 
   processing:
     serviceImage: harbor.infra.kube/cexpay/processing/amd64
-    tag: 2.7.3
+    tag: 2.7.11
     replicas: 1
