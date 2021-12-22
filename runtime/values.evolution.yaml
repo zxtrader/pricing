@@ -3,6 +3,7 @@ zone: evolution
 application:
 
   api:
+    serviceImage: harbor.infra.kube/cexpay/api/snapshot/amd64
     args:
       [
         "--config-json-file=/etc/cexiolabs/cexpay.api/appsettings.json",
@@ -16,7 +17,7 @@ application:
       WTFProviderConfigurationFile: /etc/cexiolabs/cexpay.api/legacy-cpservice-config/WTF-dev.json
 
   board:
-    serviceImage: harbor.infra.kube/cexpay/board/snapshot
+    serviceImage: harbor.infra.kube/cexpay/board/snapshot/amd64
     env:
       API_SERVICE_URL: https://api-evolution-cexpay.dev.kube
       IDENTITY_SERVICE_URL: https://id-evolution-cexpay.dev.kube
@@ -62,6 +63,7 @@ application:
 
   processing:
     serviceImage: harbor.infra.kube/cexpay/processing/snapshot/amd64
+    tag: 2.7.7
     args:
       [
         "--config-file=/etc/cexiolabs/cexpay.processing/service.config",
