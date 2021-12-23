@@ -65,7 +65,7 @@ application:
 
   notifier:
     serviceImage: harbor.infra.kube/cexiolabs/communitysoft/notifier/csharp/amd64
-    tag: 0.1.3
+    tag: 0.1.6
     args:
       [
         "--config-json-file=/etc/cexiolabs/communitysoft.notifier/appsettings.json",
