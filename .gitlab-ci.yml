@@ -576,7 +576,7 @@ include:
     - echo "$KUBECONF_BASE64" | base64 -d > "${KUBECONFIG}"
     - DATABASE_IMAGE_TAG=$(grep -e '^DATABASE_IMAGE_TAG:' migration/MANIFEST | cut -d ':' -f 2 | tr -d '[:space:]')
     - INSTALL_VERSION=$(grep -e '^INSTALL_VERSION:' migration/MANIFEST | cut -d ':' -f 2 | tr -d '[:space:]')
-    - ./migration/migration-exec.sh --kube-context=evolution --kube-namespace=cexpay-evolution --kube-admin-namespace=cexpay-evolution-admin --image=harbor.infra.kube/cexpay/database-evolution --tag="${DATABASE_IMAGE_TAG}" --target-version="${INSTALL_VERSION}" --install
+    - ./migration/migration-exec.sh --kube-context=evolution --kube-namespace=cexpay-evolution --kube-admin-namespace=cexpay-evolution-admin --image=harbor.infra.kube/cexpay/database/migration/evolution --tag="${DATABASE_IMAGE_TAG}" --target-version="${INSTALL_VERSION}" --install
   when: manual
   environment:
     name: evolution
@@ -598,7 +598,7 @@ include:
     - echo "$KUBECONF_BASE64" | base64 -d > "${KUBECONFIG}"
     - DATABASE_IMAGE_TAG=$(grep -e '^DATABASE_IMAGE_TAG:' migration/MANIFEST | cut -d ':' -f 2 | tr -d '[:space:]')
     - test -z "${ROLLBACK_VERSION}" && ROLLBACK_VERSION=$(grep -e '^ROLLBACK_VERSION:' migration/MANIFEST | cut -d ':' -f 2 | tr -d '[:space:]')
-    - ./migration/migration-exec.sh --kube-context=evolution --kube-namespace=cexpay-evolution --kube-admin-namespace=cexpay-evolution-admin --image=harbor.infra.kube/cexpay/database-evolution --tag="${DATABASE_IMAGE_TAG}" --target-version="${ROLLBACK_VERSION}" --rollback
+    - ./migration/migration-exec.sh --kube-context=evolution --kube-namespace=cexpay-evolution --kube-admin-namespace=cexpay-evolution-admin --image=harbor.infra.kube/cexpay/database/migration/evolution --tag="${DATABASE_IMAGE_TAG}" --target-version="${ROLLBACK_VERSION}" --rollback
   when: manual
   environment:
     name: evolution
@@ -620,7 +620,7 @@ include:
     - echo "$KUBECONF_BASE64" | base64 -d > "${KUBECONFIG}"
     - DATABASE_IMAGE_TAG=$(grep -e '^DATABASE_IMAGE_TAG:' migration/MANIFEST | cut -d ':' -f 2 | tr -d '[:space:]')
     - INSTALL_VERSION=$(grep -e '^INSTALL_VERSION:' migration/MANIFEST | cut -d ':' -f 2 | tr -d '[:space:]')
-    - ./migration/migration-exec.sh --kube-context=presentation --kube-namespace=cexpay-presentation --kube-admin-namespace=cexpay-presentation-admin --image=harbor.infra.kube/cexpay/database-presentation --tag="${DATABASE_IMAGE_TAG}" --target-version="${INSTALL_VERSION}" --install
+    - ./migration/migration-exec.sh --kube-context=presentation --kube-namespace=cexpay-presentation --kube-admin-namespace=cexpay-presentation-admin --image=harbor.infra.kube/cexpay/database/migration/presentation --tag="${DATABASE_IMAGE_TAG}" --target-version="${INSTALL_VERSION}" --install
   when: manual
   environment:
     name: presentation
@@ -642,7 +642,7 @@ include:
     - echo "$KUBECONF_BASE64" | base64 -d > "${KUBECONFIG}"
     - DATABASE_IMAGE_TAG=$(grep -e '^DATABASE_IMAGE_TAG:' migration/MANIFEST | cut -d ':' -f 2 | tr -d '[:space:]')
     - test -z "${ROLLBACK_VERSION}" && ROLLBACK_VERSION=$(grep -e '^ROLLBACK_VERSION:' migration/MANIFEST | cut -d ':' -f 2 | tr -d '[:space:]')
-    - ./migration/migration-exec.sh --kube-context=presentation --kube-namespace=cexpay-presentation --kube-admin-namespace=cexpay-presentation-admin --image=harbor.infra.kube/cexpay/database-presentation --tag="${DATABASE_IMAGE_TAG}" --target-version="${ROLLBACK_VERSION}" --rollback
+    - ./migration/migration-exec.sh --kube-context=presentation --kube-namespace=cexpay-presentation --kube-admin-namespace=cexpay-presentation-admin --image=harbor.infra.kube/cexpay/database/migration/presentation --tag="${DATABASE_IMAGE_TAG}" --target-version="${ROLLBACK_VERSION}" --rollback
   when: manual
   environment:
     name: presentation
@@ -664,7 +664,7 @@ include:
     - echo "$KUBECONF_BASE64" | base64 -d > "${KUBECONFIG}"
     - DATABASE_IMAGE_TAG=$(grep -e '^DATABASE_IMAGE_TAG:' migration/MANIFEST | cut -d ':' -f 2 | tr -d '[:space:]')
     - INSTALL_VERSION=$(grep -e '^INSTALL_VERSION:' migration/MANIFEST | cut -d ':' -f 2 | tr -d '[:space:]')
-    - ./migration/migration-exec.sh --kube-context=test --kube-namespace=cexpay-test --kube-admin-namespace=cexpay-test-admin --image=harbor.infra.kube/cexpay/database-test --tag="${DATABASE_IMAGE_TAG}" --target-version="${INSTALL_VERSION}" --install
+    - ./migration/migration-exec.sh --kube-context=test --kube-namespace=cexpay-test --kube-admin-namespace=cexpay-test-admin --image=harbor.infra.kube/cexpay/database/migration/test --tag="${DATABASE_IMAGE_TAG}" --target-version="${INSTALL_VERSION}" --install
   when: manual
   environment:
     name: test
@@ -686,7 +686,7 @@ include:
     - echo "$KUBECONF_BASE64" | base64 -d > "${KUBECONFIG}"
     - DATABASE_IMAGE_TAG=$(grep -e '^DATABASE_IMAGE_TAG:' migration/MANIFEST | cut -d ':' -f 2 | tr -d '[:space:]')
     - test -z "${ROLLBACK_VERSION}" && ROLLBACK_VERSION=$(grep -e '^ROLLBACK_VERSION:' migration/MANIFEST | cut -d ':' -f 2 | tr -d '[:space:]')
-    - ./migration/migration-exec.sh --kube-context=test --kube-namespace=cexpay-test --kube-admin-namespace=cexpay-test-admin --image=harbor.infra.kube/cexpay/database-test --tag="${DATABASE_IMAGE_TAG}" --target-version="${ROLLBACK_VERSION}" --rollback
+    - ./migration/migration-exec.sh --kube-context=test --kube-namespace=cexpay-test --kube-admin-namespace=cexpay-test-admin --image=harbor.infra.kube/cexpay/database/migration/test --tag="${DATABASE_IMAGE_TAG}" --target-version="${ROLLBACK_VERSION}" --rollback
   when: manual
   environment:
     name: test
@@ -708,7 +708,7 @@ include:
     - echo "$KUBECONF_BASE64" | base64 -d > "${KUBECONFIG}"
     - DATABASE_IMAGE_TAG=$(grep -e '^DATABASE_IMAGE_TAG:' migration/MANIFEST | cut -d ':' -f 2 | tr -d '[:space:]')
     - INSTALL_VERSION=$(grep -e '^INSTALL_VERSION:' migration/MANIFEST | cut -d ':' -f 2 | tr -d '[:space:]')
-    - ./migration/migration-exec.sh --kube-context=prod --kube-namespace=cexpay --kube-admin-namespace=cexpay-admin --image=harbor.infra.kube/cexpay/database-production --tag="${DATABASE_IMAGE_TAG}" --target-version="${INSTALL_VERSION}" --install
+    - ./migration/migration-exec.sh --kube-context=prod --kube-namespace=cexpay --kube-admin-namespace=cexpay-admin --image=harbor.infra.kube/cexpay/database/migration/production --tag="${DATABASE_IMAGE_TAG}" --target-version="${INSTALL_VERSION}" --install
   when: manual
   environment:
     name: production
@@ -732,7 +732,7 @@ include:
     - echo "$KUBECONF_BASE64" | base64 -d > "${KUBECONFIG}"
     - DATABASE_IMAGE_TAG=$(grep -e '^DATABASE_IMAGE_TAG:' migration/MANIFEST | cut -d ':' -f 2 | tr -d '[:space:]')
     - ROLLBACK_VERSION=$(grep -e '^ROLLBACK_VERSION:' migration/MANIFEST | cut -d ':' -f 2 | tr -d '[:space:]')
-    - ./migration/migration-exec.sh --kube-context=prod --kube-namespace=cexpay --kube-admin-namespace=cexpay-admin --image=harbor.infra.kube/cexpay/database-production --tag="${DATABASE_IMAGE_TAG}" --target-version="${ROLLBACK_VERSION}" --rollback
+    - ./migration/migration-exec.sh --kube-context=prod --kube-namespace=cexpay --kube-admin-namespace=cexpay-admin --image=harbor.infra.kube/cexpay/database/migration/production --tag="${DATABASE_IMAGE_TAG}" --target-version="${ROLLBACK_VERSION}" --rollback
   when: manual
   environment:
     name: production
