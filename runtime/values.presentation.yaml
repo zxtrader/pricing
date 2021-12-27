@@ -17,7 +17,7 @@ application:
       WTFProviderConfigurationFile: /etc/cexiolabs/cexpay.api/legacy-cpservice-config/WTF-dev.json
 
   board:
-    serviceImage: harbor.infra.kube/cexpay/board/snapshot
+    serviceImage: harbor.infra.kube/cexpay/board/snapshot/amd64
     env:
       API_SERVICE_URL: https://api-presentation-cexpay.dev.kube
       IDENTITY_SERVICE_URL: https://id-presentation-cexpay.dev.kube
