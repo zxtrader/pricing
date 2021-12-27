@@ -56,11 +56,14 @@ ingress:
       certSecretName: ingress-cexpayio-certificate
     paths:
       "/":
-        backendServiceName: processing
-        backendServicePort: 8080
-      "/v3/":
         backendServiceName: api
         backendServicePort: 8443
+      "/v2/":
+        backendServiceName: processing
+        backendServicePort: 8080
+      "/v2/dashboard/":
+        backendServiceName: processing
+        backendServicePort: 8082
 
   API-Obsolete-1:
     blue:
@@ -68,11 +71,14 @@ ingress:
       certSecretName: ingress-pay-cex-certificate
     paths:
       "/":
-        backendServiceName: processing
-        backendServicePort: 8080
-      "/v3/":
         backendServiceName: api
         backendServicePort: 8443
+      "/v2/":
+        backendServiceName: processing
+        backendServicePort: 8080
+      "/v2/dashboard/":
+        backendServiceName: processing
+        backendServicePort: 8082
 
   API-Obsolete-2:
     blue:
@@ -80,11 +86,14 @@ ingress:
       certSecretName: ingress-gate-api-dashboard
     paths:
       "/":
-        backendServiceName: processing
-        backendServicePort: 8080
-      "/v3/":
         backendServiceName: api
         backendServicePort: 8443
+      "/v2/":
+        backendServiceName: processing
+        backendServicePort: 8080
+      "/v2/dashboard/":
+        backendServiceName: processing
+        backendServicePort: 8082
 
   API-Internal:
     blue:
@@ -96,15 +105,16 @@ ingress:
       domainPerfix: api-
       domainSuffix: .prodcryptopay.kube
       certSecretName: wildcard-prodcryptopay-kube
-    nginxConfigurationSnippet: |
-      rewrite ^/$ /v2/time redirect;
     paths:
       "/":
-        backendServiceName: processing
-        backendServicePort: 8080
-      "/v3/":
         backendServiceName: api
         backendServicePort: 8443
+      "/v2/":
+        backendServiceName: processing
+        backendServicePort: 8080
+      "/v2/dashboard/":
+        backendServiceName: processing
+        backendServicePort: 8082
 
   Board-Internal:
     nonblue:
@@ -117,9 +127,6 @@ ingress:
       "/":
         backendServiceName: board
         backendServicePort: 8443
-      "/v2/dashboard/":
-        backendServiceName: processing
-        backendServicePort: 8082
 
   Callbacks-Internal:
     blue:
