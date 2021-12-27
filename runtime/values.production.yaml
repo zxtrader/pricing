@@ -6,7 +6,6 @@ application:
     env:
       IdentityServerAuthentication__ValidIssuers: https://id.cexpay.io
       WTFProviderConfigurationFile: /etc/cexiolabs/cexpay.api/legacy-cpservice-config/WTF-prod.json
-      Serilog__MinimumLevel__Default:	Verbose
 
   board:
     env:
