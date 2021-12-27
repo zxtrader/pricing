@@ -48,7 +48,12 @@ application:
         "--config-secrets-dir=/etc/cexiolabs/cexpay/secrets",
         "--config-env"
       ]
-
+    env:
+      setup.createCryptoWallet_indexer: ""
+      setup.createExchange_indexer: ""
+      setup.setMissingDepositTransaction_indexer: ""
+      setup.setMissingWithdrawalTransaction_indexer: ""
+      setup.subscribeNotification_indexer: ""
 
 ingress:
 
