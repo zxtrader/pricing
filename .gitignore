@@ -3,5 +3,6 @@ infra.secrets
 runtime/tmp/
 runtime.secrets/
 runtime.secrets
+*.local*
 .DS_Store
 .kube-config-cexpay-gitlab

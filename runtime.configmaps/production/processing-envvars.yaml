@@ -1,12 +1,16 @@
-# kubectl --namespace cryptopay get --output=yaml ConfigMap/processing-envvars
-# kubectl --namespace cryptopay apply --filename=runtime.configmaps/production/processing-envvars.yaml
+# kubectl --namespace cexpay-admin get --output=yaml ConfigMap/processing-envvars
+# kubectl --namespace cexpay-admin get --output=json ConfigMap/processing-envvars | jq -r ".data" | yq eval -P | sed 's/^/  /'
+# kubectl --namespace cexpay-admin apply --filename=runtime.configmaps/production/processing-envvars.yaml
 
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: processing-envvars
-  namespace: cryptopay
+  namespace: cexpay-admin
 data:
   runtime.aggregator.url: wss://externalapi.aggrprod.kube/ws
+  runtime.endpoint.dashboard.cors.allowedHeaders: Content-Type
+  runtime.endpoint.dashboard.cors.methods: GET POST PUT DELETE
+  runtime.endpoint.dashboard.cors.whiteList: https://board.cexpay.io
   runtime.pss.cryptoWalletHelper.url: https://rpc.prodpss.kube/cryptopay
   runtime.wtf2pss.url: https://provider-wtf2.prodpss.kube

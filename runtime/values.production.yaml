@@ -10,6 +10,10 @@ application:
   echo:
     replicas: 0
 
+  gatehostinternal:
+    env:
+      GATE_BASE_URL: https://gate.cexpay.io
+
   identity:
     env:
       Authentication__indexer: ""

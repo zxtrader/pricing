@@ -1,13 +1,14 @@
-# kubectl --namespace cryptopay get --output=yaml ConfigMap/notifier-envvars
-# kubectl --namespace cryptopay apply --filename=runtime.configmaps/production/notifier-envvars.yaml
+# kubectl --namespace cexpay-admin get --output=yaml ConfigMap/notifier-envvars
+# kubectl --namespace cexpay-admin get --output=json ConfigMap/notifier-envvars | jq -r ".data" | yq eval -P | sed 's/^/  /'
+# kubectl --namespace cexpay-admin apply --filename=runtime.configmaps/production/notifier-envvars.yaml
 
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: notifier-envvars
-  namespace: cryptopay
+  namespace: cexpay-admin
 data:
-  RabbitMQ__Hosts__0__Host: rabbitmq.cryptopay
+  RabbitMQ__Hosts__0__Host: rabbitmq.cexpay-admin
   RabbitMQ__Hosts__0__Port: "5672"
   RabbitMQ__UserName: cexpay-notifier
   RabbitMQ__VirtualHost: merchant-notifications

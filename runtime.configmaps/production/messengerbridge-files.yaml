@@ -1,5 +1,6 @@
-# kubectl --namespace cryptopay get --output=yaml ConfigMap/messengerbridge-files
-# kubectl --namespace cryptopay apply --filename=runtime.configmaps/production/messengerbridge-files.yaml
+# kubectl --namespace cexpay-admin get --output=yaml ConfigMap/messengerbridge-files
+# kubectl --namespace cexpay-admin get --output=json ConfigMap/messengerbridge-files | jq -r ".data" | yq eval -P | sed 's/^/  /'
+# kubectl --namespace cexpay-admin apply --filename=runtime.configmaps/production/messengerbridge-files.yaml
 
 apiVersion: v1
 kind: ConfigMap
