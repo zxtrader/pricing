@@ -80,5 +80,5 @@ application:
 
   processing:
     serviceImage: harbor.infra.kube/cexpay/processing/amd64
-    tag: 2.7.11
+    tag: 2.7.12
     replicas: 1
