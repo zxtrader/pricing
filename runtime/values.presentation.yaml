@@ -28,7 +28,6 @@ application:
       GATE_BASE_URL: https://gate-presentation-cexpay.dev.kube
 
   gateintegrationdemo:
-    serviceImage: harbor.infra.kube/cexiolabs/cexpay.gate.integration-demo
     env:
       GATE_URL: https://gate-presentation-cexpay.dev.kube
 
