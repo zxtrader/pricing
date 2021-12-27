@@ -7,6 +7,11 @@ application:
       IdentityServerAuthentication__ValidIssuers: https://id.cexpay.io
       WTFProviderConfigurationFile: /etc/cexiolabs/cexpay.api/legacy-cpservice-config/WTF-prod.json
 
+  board:
+    env:
+      API_SERVICE_URL: https://api.cexpay.io
+      IDENTITY_SERVICE_URL: https://id.cexpay.io
+
   echo:
     replicas: 0
 
@@ -17,7 +22,8 @@ application:
   identity:
     env:
       Authentication__indexer: ""
-      Emailer__SendGrid__senderEmail: "no-reply@cexpay.io"
+      DeploymentOpts__AccountApiEndpointUrl: "https://id.cexpay.io/account/"
+      Emailer__SendGrid__senderEmail: "no-reply-identity@cexpay.io"
 
   invoice:
     args:
@@ -28,6 +34,8 @@ application:
         "--log-json"
       ]
     env:
+      CorsOrigins__0: "https://board-evolution-cexpay.dev.kube"
+      Emailer__SendGrid__senderEmail: "no-reply-invoice@cexpay.io"
       IdentityServerAuthentication__ValidIssuers: https://id.cexpay.io
 
   processing:
@@ -40,13 +48,7 @@ application:
         "--config-secrets-dir=/etc/cexiolabs/cexpay/secrets",
         "--config-env"
       ]
-    env:
-      runtime.endpoint.gateUi.bindPath: "/"
-      setup.createCryptoWallet_indexer: ""
-      setup.createExchange_indexer: ""
-      setup.setMissingDepositTransaction_indexer: ""
-      setup.setMissingWithdrawalTransaction_indexer: ""
-      setup.subscribeNotification_indexer: ""
+
 
 ingress:
 

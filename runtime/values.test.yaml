@@ -63,7 +63,6 @@ application:
 
   processing:
     serviceImage: harbor.infra.kube/cexpay/processing/snapshot/amd64
-    tag: 2.7.7
     args:
       [
         "--config-file=/etc/cexiolabs/cexpay.processing/service.config",
