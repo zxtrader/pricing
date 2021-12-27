@@ -34,7 +34,7 @@ application:
         "--log-json"
       ]
     env:
-      CorsOrigins__0: "https://board-evolution-cexpay.dev.kube"
+      CorsOrigins__0: "https://board.cexpay.io"
       Emailer__SendGrid__senderEmail: "no-reply-invoice@cexpay.io"
       IdentityServerAuthentication__ValidIssuers: https://id.cexpay.io
 
