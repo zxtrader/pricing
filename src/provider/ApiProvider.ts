@@ -12,6 +12,9 @@ import { RedisStorage } from "../storage/RedisStorage";
 import { PriceLoader } from "../input/PriceLoader";
 import Cryptocompare from "../input/Cryptocompare";
 import { PostgresStogare } from "../storage/PostgresStorage";
+import { YahooFinance } from "../input/YahooFinance";
+import { CoinApi } from "../input/CoinApi";
+import { InputClientFactory } from "../input/InputClientFactory";
 
 
 @Singleton
@@ -38,8 +41,8 @@ class ApiProviderImpl extends ApiProvider {
 		super();
 
 		this._configurationProvider = Container.get(ConfigurationProvider);
-
-		const sourceProviders: Array<PriceLoader> = [new Cryptocompare({})];
+		const inputClientFactory = new InputClientFactory(this._configurationProvider);
+		const sourceProviders: Array<PriceLoader> = inputClientFactory.getClients();
 
 		this._priceApi = new PriceApiImpl({
 			// storageFactory: () => new RedisStorage(this._configurationProvider.storageURL, this._configurationProvider.sourcesPriorityQueue),

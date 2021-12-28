@@ -1,1 +1,16 @@
-include: 'http://dev.zxteam.net/pub/gitlab-pipelines/raw/v1/node/internal-service.yml'
+variables:
+  DOCKER_BUILD_OMIT_ARM64V8: "yes"
+
+include:
+  - https://dev.zxteam.net/pub/pipelines/-/raw/master/imgaddons-alpine.yml
+  - https://dev.zxteam.net/pub/pipelines/-/raw/master/functions-nodejs.yml
+  - https://dev.zxteam.net/pub/pipelines/-/raw/master/build-docker-vars.yml
+  - https://dev.zxteam.net/pub/pipelines/-/raw/master/build-docker-snapshot.yml
+  - https://dev.zxteam.net/pub/pipelines/-/raw/master/build-docker-release.yml
+  # - https://dev.zxteam.net/pub/pipelines/-/raw/master/deploy-snapshot-evolution.yml
+  # - https://dev.zxteam.net/pub/pipelines/-/raw/master/deploy-snapshot-presentation.yml
+
+stages:
+  - build
+  - manifest
+  - deploy

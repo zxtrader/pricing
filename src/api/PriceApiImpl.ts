@@ -445,6 +445,9 @@ export class PriceApiImpl extends Initable implements PriceApi {
 		const taskSourceResults: Array<Array<PriceApi.HistoricalPrices>> = [];
 		const taskSources: Array<Promise<void>> = [];
 		const countSources: number = sourceIds.length;
+		const sources: Array<PriceLoader> = [];
+
+
 		for (let i = 0; i < countSources; i++) {
 			const sourceId = sourceIds[i];
 			if (this._log.isTraceEnabled) {
@@ -453,6 +456,7 @@ export class PriceApiImpl extends Initable implements PriceApi {
 			const source: PriceLoader | undefined = this._sourceProviders.find(sourceProvider => sourceProvider.sourceId === sourceId);
 
 			if (source !== undefined) {
+				sources.push(source);
 				taskSources.push(
 					source
 						.loadPrices(cancellationToken, multyLoadDataRequest[sourceId])
@@ -463,13 +467,16 @@ export class PriceApiImpl extends Initable implements PriceApi {
 				this._log.error(`Not implement yet ${source}`);
 			}
 		}
+		
+		{ 	// Local scope for error handling
+			const errors: Array<Error> = [];
+			await Promise.all(
+				taskSources.map(taskSource => taskSource.catch(err => { errors.push(wrapErrorIfNeeded(err)); }))
+			);
 
-		const errors: Array<Error> = [];
-		await Promise.all(
-			taskSources.map(taskSource => taskSource.catch(err => { errors.push(wrapErrorIfNeeded(err)); }))
-		);
-		if (errors.length > 0) {
-			throw new AggregateError(errors);
+			if (errors.length > 0) {
+				throw new AggregateError(errors);
+			}
 		}
 
 		const friendlyPrices: Array<PriceApi.HistoricalPrices> = taskSourceResults.reduce((previous, current) => {
@@ -830,8 +837,8 @@ function assignPriceObjects(target: PriceApi.Timestamp, source: PriceApi.Timesta
 			for (const tradeCurrency in source[ts][marketCurrency]) {
 				if (!(tradeCurrency in target[ts][marketCurrency])) {
 					target[ts][marketCurrency][tradeCurrency] = {
-							primary: source[ts][marketCurrency][tradeCurrency].primary,
-							sources: {}
+						primary: source[ts][marketCurrency][tradeCurrency].primary,
+						sources: {}
 					};
 				}
 				const sourcePrices = source[ts][marketCurrency][tradeCurrency].sources;

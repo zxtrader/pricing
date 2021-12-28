@@ -39,9 +39,19 @@ export namespace Configuration {
 
 	export interface Sources {
 		CRYPTOCOMPARE?: HttpClient.Opts;
-		// POLONIEX?: WebClient.Opts;
+		YAHOOFINANCE?: HttpClient.Opts & { apiKey: string };
+		COINAPI?: HttpClient.Opts & { apiKey: string };
 		// BINANCE?: WebClient.Opts;
 		[source: string]: any;
+	}
+
+	export interface YahooFinanceConfiguration {
+		apiKey: string,
+		limitParallel: number,
+		limitPerSecond: number,
+		limitPerMinute: number,
+		limitPerHour: number,
+		timeout: number
 	}
 
 	export function parseEndpoint(configuration: RawConfiguration, endpointIndex: string): Configuration.Endpoint {
@@ -92,6 +102,10 @@ export namespace Configuration {
 					timeout
 				}
 			};
+
+			if (sourceId === "YAHOOFINANCE" || sourceId === "COINAPI") {
+				sources[sourceId]!.apiKey = configuration.getString(`source.${sourceId}.apiKey`);
+			}
 		}
 		return sources;
 	}
@@ -110,7 +124,7 @@ export namespace Configuration {
 			const aggregatedPriceSourceName: string = configuration.getString("aggregatedPriceSourceName", "ZXTRADER");
 
 			const storageURL: URL = configuration.getURL("dataStorageURL");
-			const sourcesPriorityQueue: ReadonlyArray<string> = configuration.getString("sourcesPriorityQueue").split(" ");
+			const sourcesPriorityQueue: ReadonlyArray<string> = configuration.getString("sources").split(" ");
 			const coingetRecorderStreamRedisURL: URL = configuration.getURL("coingetRecorderStreamRedisURL");
 			const postgresDbUrl: PostresqlConnection = Object.freeze({
 				url: configuration.getURL("postgresDbUrl"),

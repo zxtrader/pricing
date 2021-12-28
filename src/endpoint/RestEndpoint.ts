@@ -10,6 +10,7 @@ import * as moment from "moment";
 
 import { PriceApi } from "../api/PriceApi";
 import { DUMMY_CANCELLATION_TOKEN } from "@zxteam/cancellation";
+import { BuildInfo, BuildInfoImpl, DevelBuildInfo } from "../BuildInfo";
 
 export class RestEndpoint extends ServersBindEndpoint {
 	protected readonly _router: express.Router;
@@ -29,6 +30,15 @@ export class RestEndpoint extends ServersBindEndpoint {
 
 		this._router.use(middlewareBindURL(opts.bindPath));
 		this._router.use(compression());
+		this._router.get("/info", (req: express.Request, res: express.Response, next: express.NextFunction) => {
+			let info: BuildInfo;
+			if (process.env["NODE_ENV"] === "development") {
+				info = new DevelBuildInfo();
+			} else {
+				info = new BuildInfoImpl();
+			}
+			return res.status(200).end(JSON.stringify(info, null, "  "));
+		});
 		this._router.get("/ping", this.onPing.bind(this));
 		this._router.get("/prepare-prices", async (req: express.Request, res: express.Response, next: express.NextFunction) => {
 			try {

@@ -18,7 +18,7 @@ export class PostgresStogare extends Initable implements Storage {
 	constructor(
 		postgresUrl: PostresqlConnection,
 		sourcesPriorityQueue: ReadonlyArray<string>
-		) {
+	) {
 		super();
 		this._sourcesPriorityQueue = sourcesPriorityQueue;
 		const opts: PostgresProviderFactory.Opts = Object.freeze({
@@ -71,26 +71,22 @@ export class PostgresStogare extends Initable implements Storage {
 				}
 				cancellationToken.throwIfCancellationRequested();
 
-				const emptyPriceSources = Array<string>();
-				if (sqlRows.length === 0) {
-					const selectedSources: Array<string> = sqlRows.map((e: SqlResultRecord) => e.get("source").asString);
-					emptyPriceSources.push(...sources.filter((e: string) => !selectedSources.includes(e)));
+				const priceSources = sqlRows.map((e: SqlResultRecord) => e.get("source").asString);
+				const emptyPriceSources = sources.filter((e: string) => !priceSources.includes(e));
+				
+				if (this._logger.isTraceEnabled) {
+					this._logger.trace("Formatting data and push to friendly array");
+				}
+				for (const emptyPriceSource of emptyPriceSources) {
+					const sourceNameId = emptyPriceSource;
+					friendlyRequest.push({
+						sourceId: sourceNameId,
+						ts,
+						marketCurrency,
+						tradeCurrency
+					});
 				}
 
-				if (emptyPriceSources.length > 0) {
-					if (this._logger.isTraceEnabled) {
-						this._logger.trace("Formatting data and push to friendly array");
-					}
-					for (const emptyPriceSource of emptyPriceSources) {
-						const sourceNameId = emptyPriceSource;
-						friendlyRequest.push({
-							sourceId: sourceNameId,
-							ts,
-							marketCurrency,
-							tradeCurrency
-						});
-					}
-				}
 			}
 		});
 		return friendlyRequest;
