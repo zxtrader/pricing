@@ -9,10 +9,10 @@ echo "Enter to Price Service Entrypoint..."
 # 		exec /bin/sh
 # 		;;
 # 	"price")
-		echo
-		echo "Starting Price Service..."
-		exec /usr/local/bin/node /usr/local/cexiolabs/zxteam.pricing/bin/price-service.js --config-file=/etc/zxteam.pricing/price-service.config --config-env
-		;;
+echo
+echo "Starting Price Service..."
+exec /usr/local/bin/node /usr/local/cexiolabs/zxteam.pricing/bin/price-service.js $@
+# ;;
 # 	*)
 # 		echo "Wrong CMD argument: ${1}" >&2
 # 		echo
