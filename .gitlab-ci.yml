@@ -6,7 +6,7 @@ include:
   - https://dev.zxteam.net/pub/pipelines/-/raw/master/functions-nodejs.yml
   - https://dev.zxteam.net/pub/pipelines/-/raw/master/build-docker-vars.yml
   - https://dev.zxteam.net/pub/pipelines/-/raw/master/build-docker-snapshot.yml
-  - https://dev.zxteam.net/pub/pipelines/-/raw/master/build-docker-release.yml
+  # - https://dev.zxteam.net/pub/pipelines/-/raw/master/build-docker-release.yml
   # - https://dev.zxteam.net/pub/pipelines/-/raw/master/deploy-snapshot-evolution.yml
   # - https://dev.zxteam.net/pub/pipelines/-/raw/master/deploy-snapshot-presentation.yml
 

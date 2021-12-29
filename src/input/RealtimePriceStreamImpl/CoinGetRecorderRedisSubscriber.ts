@@ -84,21 +84,26 @@ export class CoinGetRecorderRedisSubscriber
 		}
 	}
 
-	private static parseRedisURL(dataStorageUrl: URL): RedisOptions {
-		const host = dataStorageUrl.hostname;
-		const port = Number(dataStorageUrl.port);
-		const db = Number(dataStorageUrl.pathname.slice(1));
-		const family: 4 | 6 = dataStorageUrl.searchParams.has("ip_family") && dataStorageUrl.searchParams.get("ip_family") === "6" ? 6 : 4;
+	private static parseRedisURL(redisUrl: URL): RedisOptions {
+		// TODO Add SSL
+
+		const host = redisUrl.hostname;
+		const port = Number(redisUrl.port);
+		const db = Number(redisUrl.pathname.slice(1));
+		const family: 4 | 6 = redisUrl.searchParams.has("ip_family") && redisUrl.searchParams.get("ip_family") === "6" ? 6 : 4;
 		const opts: RedisOptions = {
 			host, port, db, family,
 			lazyConnect: true
 		};
 
-		if (dataStorageUrl.searchParams.has("name")) {
-			opts.connectionName = dataStorageUrl.searchParams.get("name") as string;
+		if (redisUrl.searchParams.has("name")) {
+			opts.connectionName = redisUrl.searchParams.get("name") as string;
 		}
-		if (dataStorageUrl.searchParams.has("keepAlive")) {
-			const keepAliveStr = dataStorageUrl.searchParams.get("keepAlive") as string;
+		if (redisUrl.searchParams.has("prefix")) {
+			opts.keyPrefix = redisUrl.searchParams.get("prefix") as string;
+		}
+		if (redisUrl.searchParams.has("keepAlive")) {
+			const keepAliveStr = redisUrl.searchParams.get("keepAlive") as string;
 			const keepAlive = Number.parseInt(keepAliveStr);
 			if (!Number.isSafeInteger(keepAlive) || keepAlive <= 0) {
 				throw new Error(`Wrong keepAlive value: ${keepAliveStr}. Expected positive integer.`);
@@ -106,11 +111,9 @@ export class CoinGetRecorderRedisSubscriber
 			opts.keepAlive = keepAlive;
 		}
 
-		opts.reconnectOnError = (err) => {
-			console.log(err);
-			return 1;
-		};
-		opts.autoResubscribe = true;
+		if (!_.isEmpty(redisUrl.password)) {
+			opts.password = redisUrl.password;
+		}
 
 		return opts;
 	}
