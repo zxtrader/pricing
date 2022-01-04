@@ -23,7 +23,7 @@ application:
 
   gatehostinternal:
     serviceImage: harbor.infra.kube/cexpay/gate/hostinternal/amd64
-    tag: 0.2.13
+    tag: 0.2.14
     replicas: 1
 
   gateintegrationdemo:
