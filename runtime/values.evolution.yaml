@@ -75,7 +75,7 @@ application:
         "--runtime-use-notifier-service"
       ]
     env:
-      CMDBIN: "devel"
+      CMDBIN: "snapshot"
       DEBUG_PORT: 9229
       DEBUG_WAIT: "no"
       LOG_LEVEL: "debug"
