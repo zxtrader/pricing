@@ -175,12 +175,14 @@ ingress:
   GateIntegrationDemo:
     blue:
       domain: gateintegrationdemo.pay-cex-test.net
+      certSecretName: ingress-pay-cex-test-certificate
     nonblue:
       # Make final domain "gateintegrationdemo-<HelmReleaseName>-test-cexpay.dev.kube" like a:
       #   gateintegrationdemo-green-test-cexpay.dev.kube
       #   gateintegrationdemo-master-test-cexpay.dev.kube
       domainPerfix: gateintegrationdemo-
       domainSuffix: -test-cexpay.dev.kube
+      certSecretName: dev
     backendInsecure: true
     paths:
       "/":

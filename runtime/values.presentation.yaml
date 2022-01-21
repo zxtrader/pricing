@@ -140,6 +140,7 @@ ingress:
   GateIntegrationDemo:
     blue:
       domain: gateintegrationdemo-presentation-cexpay.dev.kube
+      certSecretName: dev
     backendInsecure: true
     paths:
       "/":
