@@ -30,6 +30,7 @@ application:
   gateintegrationdemo:
     env:
       GATE_URL: https://gate-evolution-cexpay.dev.kube
+      GATE_CA_FILE: /etc/cexiolabs/cexpay/InfraWNBCA.crt
 
   identity:
     serviceImage: harbor.infra.kube/cexpay/identity/snapshot/amd64

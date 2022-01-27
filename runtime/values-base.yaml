@@ -28,7 +28,7 @@ application:
 
   gateintegrationdemo:
     serviceImage: cexiolabs/cexpay.gate.integration-demo
-    tag: 20220120-2
+    tag: "20220127-2"
     replicas: 1
 
   identity:

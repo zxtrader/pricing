@@ -60,6 +60,9 @@ spec:
         ports:
         - containerPort: 8443
           protocol: TCP
+        volumeMounts:
+        - name: config-files
+          mountPath: /etc/cexiolabs/cexpay/
         resources:
           limits:
             cpu: 256m
@@ -68,3 +71,7 @@ spec:
             cpu: 128m
             memory: 16Mi
 {{- end }}
+      volumes:
+      - name: config-files
+        configMap:
+          name: {{ template "prefix" . }}gateintegrationdemo-files
