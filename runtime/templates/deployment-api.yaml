@@ -42,8 +42,11 @@ spec:
           value: https://{{ template "prefix" . }}identity:8443/
         - name: IdentityHttpClient__Url
           value: https://{{ template "prefix" . }}identity:8443/
+        # GatewayOrderHttpClient__Url removed form API service, delete in next deploy
         - name: GatewayOrderHttpClient__Url
           value: https://{{ template "prefix" . }}processing:8085/
+        - name: ProcessingHttpClient__Url
+          value: https://{{ template "prefix" . }}processing:8082/
 {{- if .Values.application.api.env }}
 {{ range $key, $value := .Values.application.api.env }}
         - name: "{{ $key }}"
