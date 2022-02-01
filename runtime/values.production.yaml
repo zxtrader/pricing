@@ -49,7 +49,7 @@ application:
         "--config-env"
       ]
     env:
-      setup.createCryptoWallet_indexer: ""
+      # setup.createCryptoWallet_indexer: ""
       setup.createExchange_indexer: ""
       setup.setMissingDepositTransaction_indexer: ""
       setup.setMissingWithdrawalTransaction_indexer: ""
