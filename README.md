@@ -83,6 +83,7 @@ Tag name format: `<RELEASE_TAG>-database`
 	```shell
 	$ rm -rf tmp
 	$ ../runtime.scripts/download-configmaps-and-secrects.sh "cexpay-${ENV}-admin"
+	$ ../runtime.scripts/download-configmaps-and-secrects-devel.sh "cexpay-${ENV}-admin"
 	```
 
 ### Useful commands

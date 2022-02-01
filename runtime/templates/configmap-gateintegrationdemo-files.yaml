@@ -1,6 +1,8 @@
+{{- if ne .Values.zone "production" }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ template "prefix" . }}gateintegrationdemo-files
 data:
 {{ .Files.Get "tmp/configmap-gateintegrationdemo-files.yaml" | indent 2 }}
+{{- end }}

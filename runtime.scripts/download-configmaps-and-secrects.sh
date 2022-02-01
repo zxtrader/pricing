@@ -29,21 +29,32 @@ if [ ! -d "${TARGET_DIRECTORY}" ]; then
 	mkdir -p "${TARGET_DIRECTORY}"
 fi
 
-kubectl --namespace "${KUBE_NAMESPACE}" get --output=json ConfigMap/api-envvars                  | jq -r ".data" | yq eval -P  > "${TARGET_DIRECTORY}/configmap-api-envvars.yaml"
-kubectl --namespace "${KUBE_NAMESPACE}" get --output=json ConfigMap/cpservice                    | jq -r ".data" | yq eval -P  > "${TARGET_DIRECTORY}/configmap-cpservice.yaml"
-kubectl --namespace "${KUBE_NAMESPACE}" get --output=json ConfigMap/gatehostinternal-envvars     | jq -r ".data" | yq eval -P  > "${TARGET_DIRECTORY}/configmap-gatehostinternal-envvars.yaml"
-kubectl --namespace "${KUBE_NAMESPACE}" get --output=json ConfigMap/gatehostinternal-files       | jq -r ".data" | yq eval -P  > "${TARGET_DIRECTORY}/configmap-gatehostinternal-files.yaml"
-kubectl --namespace "${KUBE_NAMESPACE}" get --output=json ConfigMap/gateintegrationdemo-files    | jq -r ".data" | yq eval -P  > "${TARGET_DIRECTORY}/configmap-gateintegrationdemo-files.yaml"
-kubectl --namespace "${KUBE_NAMESPACE}" get --output=json ConfigMap/identity-envvars             | jq -r ".data" | yq eval -P  > "${TARGET_DIRECTORY}/configmap-identity-envvars.yaml"
-kubectl --namespace "${KUBE_NAMESPACE}" get --output=json ConfigMap/messengerbridge-files        | jq -r ".data" | yq eval -P  > "${TARGET_DIRECTORY}/configmap-messengerbridge-files.yaml"
-kubectl --namespace "${KUBE_NAMESPACE}" get --output=json ConfigMap/notifier-envvars             | jq -r ".data" | yq eval -P  > "${TARGET_DIRECTORY}/configmap-notifier-envvars.yaml"
-kubectl --namespace "${KUBE_NAMESPACE}" get --output=json ConfigMap/notifier-files               | jq -r ".data" | yq eval -P  > "${TARGET_DIRECTORY}/configmap-notifier-files.yaml"
-kubectl --namespace "${KUBE_NAMESPACE}" get --output=json ConfigMap/processing-envvars           | jq -r ".data" | yq eval -P  > "${TARGET_DIRECTORY}/configmap-processing-envvars.yaml"
-kubectl --namespace "${KUBE_NAMESPACE}" get --output=json ConfigMap/processing-files             | jq -r ".data" | yq eval -P  > "${TARGET_DIRECTORY}/configmap-processing-files.yaml"
-kubectl --namespace "${KUBE_NAMESPACE}" get --output=json Secrets/api                            | jq -r ".data" | yq eval -P  > "${TARGET_DIRECTORY}/secret-api.yaml"
-kubectl --namespace "${KUBE_NAMESPACE}" get --output=json Secrets/gatehostinternal               | jq -r ".data" | yq eval -P  > "${TARGET_DIRECTORY}/secret-gatehostinternal.yaml"
-kubectl --namespace "${KUBE_NAMESPACE}" get --output=json Secrets/identity                       | jq -r ".data" | yq eval -P  > "${TARGET_DIRECTORY}/secret-identity.yaml"
-kubectl --namespace "${KUBE_NAMESPACE}" get --output=json Secrets/invoice                        | jq -r ".data" | yq eval -P  > "${TARGET_DIRECTORY}/secret-invoice.yaml"
-kubectl --namespace "${KUBE_NAMESPACE}" get --output=json Secrets/messengerbridge                | jq -r ".data" | yq eval -P  > "${TARGET_DIRECTORY}/secret-messengerbridge.yaml"
-kubectl --namespace "${KUBE_NAMESPACE}" get --output=json Secrets/notifier                       | jq -r ".data" | yq eval -P  > "${TARGET_DIRECTORY}/secret-notifier.yaml"
-kubectl --namespace "${KUBE_NAMESPACE}" get --output=json Secrets/processing                     | jq -r ".data" | yq eval -P  > "${TARGET_DIRECTORY}/secret-processing.yaml"
+download () {
+	kubectl --namespace "${KUBE_NAMESPACE}" get --output=json $1 | jq -r ".data" | yq eval -P  > "$2"
+	FILE_SIZE=$(cat "$2" | wc -c | tr -d " ")
+	# Convert string value in FILE_SIZE to integer
+	FILE_SIZE=$(($FILE_SIZE + 0))
+
+	if [ ${FILE_SIZE} -le 1 ]; then
+		echo "Downloaded '$1' ${FILE_SIZE} bytes, check that '$1' exist in '${KUBE_NAMESPACE}' enviroment"
+		exit 42
+	fi
+	echo "Downloaded '$1' $FILE_SIZE bytes"
+}
+
+download "ConfigMap/api-envvars"                       "${TARGET_DIRECTORY}/configmap-api-envvars.yaml"
+download "ConfigMap/cpservice"                         "${TARGET_DIRECTORY}/configmap-cpservice.yaml"
+download "ConfigMap/gatehostinternal-envvars"          "${TARGET_DIRECTORY}/configmap-gatehostinternal-envvars.yaml"
+download "ConfigMap/identity-envvars"                  "${TARGET_DIRECTORY}/configmap-identity-envvars.yaml"
+download "ConfigMap/messengerbridge-files"             "${TARGET_DIRECTORY}/configmap-messengerbridge-files.yaml"
+download "ConfigMap/notifier-envvars"                  "${TARGET_DIRECTORY}/configmap-notifier-envvars.yaml"
+download "ConfigMap/notifier-files"                    "${TARGET_DIRECTORY}/configmap-notifier-files.yaml"
+download "ConfigMap/processing-envvars"                "${TARGET_DIRECTORY}/configmap-processing-envvars.yaml"
+download "ConfigMap/processing-files"                  "${TARGET_DIRECTORY}/configmap-processing-files.yaml"
+download "Secrets/api"                                 "${TARGET_DIRECTORY}/secret-api.yaml"
+download "Secrets/gatehostinternal"                    "${TARGET_DIRECTORY}/secret-gatehostinternal.yaml"
+download "Secrets/identity"                            "${TARGET_DIRECTORY}/secret-identity.yaml"
+download "Secrets/invoice"                             "${TARGET_DIRECTORY}/secret-invoice.yaml"
+download "Secrets/messengerbridge"                     "${TARGET_DIRECTORY}/secret-messengerbridge.yaml"
+download "Secrets/notifier"                            "${TARGET_DIRECTORY}/secret-notifier.yaml"
+download "Secrets/processing"                          "${TARGET_DIRECTORY}/secret-processing.yaml"

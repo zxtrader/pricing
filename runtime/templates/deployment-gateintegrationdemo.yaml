@@ -70,8 +70,8 @@ spec:
           requests:
             cpu: 128m
             memory: 16Mi
-{{- end }}
       volumes:
       - name: config-files
         configMap:
           name: {{ template "prefix" . }}gateintegrationdemo-files
+{{- end }}
