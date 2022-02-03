@@ -1,0 +1,9 @@
+# kubectl --namespace cexpay-evolution-admin get --output=yaml ConfigMap/ptmerchant-envvars
+# kubectl --namespace cexpay-evolution-admin get --output=json ConfigMap/ptmerchant-envvars | jq -r ".data" | yq eval -P | sed 's/^/  /'
+# kubectl --namespace cexpay-evolution-admin apply --filename=runtime.configmaps/evolution/ptmerchant-envvars.yaml
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ptmerchant-envvars
+  namespace: cexpay-evolution-admin

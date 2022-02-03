@@ -18,6 +18,45 @@ application:
   gatehostinternal:
     env:
       GATE_BASE_URL: https://gate.cexpay.io
+  
+  ptinvoice:
+    serviceImage: harbor.infra.kube/cexpay/paytools/amd64
+    tag: 0.0.2
+    replicas: 1
+    args:
+      [
+        "CEXPay.InvoiceAPI",
+        "--config-json-file=/etc/cexiolabs/cexpay.paytools/CEXPay.InvoiceAPI/appsettings.json",
+        "--config-keyperfile-directory=/etc/cexiolabs/cexpay.paytools/secrets",
+        "--config-env",
+        "--log-json"
+      ]
+  
+  ptmerchant:
+    serviceImage: harbor.infra.kube/cexpay/paytools/amd64
+    tag: 0.0.2
+    replicas: 1
+    args:
+      [
+        "CEXPay.InvoiceMerchantAPI",
+        "--config-json-file=/etc/cexiolabs/cexpay.paytools/CEXPay.InvoiceMerchantAPI/appsettings.json",
+        "--config-keyperfile-directory=/etc/cexiolabs/cexpay.paytools/secrets",
+        "--config-env",
+        "--log-json"
+      ]
+  
+  ptservice:
+    serviceImage: harbor.infra.kube/cexpay/paytools/amd64
+    tag: 0.0.2
+    replicas: 1
+    args:
+      [
+        "CEXPay.InvoiceService",
+        "--config-json-file=/etc/cexiolabs/cexpay.paytools/CEXPay.InvoiceService/appsettings.json",
+        "--config-keyperfile-directory=/etc/cexiolabs/cexpay.paytools/secrets",
+        "--config-env",
+        "--log-json"
+      ]
 
   identity:
     env:
@@ -160,6 +199,51 @@ ingress:
     paths:
       "/":
         backendServiceName: gatehostinternal
+        backendServicePort: 8443
+  
+  PaymentToolsInvoice:
+    blue:
+      domain: ptinvoice.cexpay.io
+      certSecretName: ingress-cexpayio-certificate
+    nonblue:
+      # Make final domain "ptinvoice-<HelmReleaseName>.prodcryptopay.kube" like a:
+      #   ptinvoice-green.prodcryptopay.kube
+      domainPerfix: ptinvoice-
+      domainSuffix: .prodcryptopay.kube
+      certSecretName: wildcard-prodcryptopay-kube
+    paths:
+      "/":
+        backendServiceName: ptinvoice
+        backendServicePort: 8443
+  
+  PaymentToolsMerchant:
+    blue:
+      domain: ptmerchant.cexpay.io
+      certSecretName: ingress-cexpayio-certificate
+    nonblue:
+      # Make final domain "ptmerchant-<HelmReleaseName>.prodcryptopay.kube" like a:
+      #   ptmerchant-green.prodcryptopay.kube
+      domainPerfix: ptmerchant-
+      domainSuffix: .prodcryptopay.kube
+      certSecretName: wildcard-prodcryptopay-kube
+    paths:
+      "/":
+        backendServiceName: ptmerchant
+        backendServicePort: 8443
+  
+  PaymentToolsService:
+    blue:
+      domain: ptservice.cexpay.io
+      certSecretName: ingress-cexpayio-certificate
+    nonblue:
+      # Make final domain "ptservice-<HelmReleaseName>.prodcryptopay.kube" like a:
+      #   ptservice-green.prodcryptopay.kube
+      domainPerfix: ptservice-
+      domainSuffix: .prodcryptopay.kube
+      certSecretName: wildcard-prodcryptopay-kube
+    paths:
+      "/":
+        backendServiceName: ptservice
         backendServicePort: 8443
 
   Identity:

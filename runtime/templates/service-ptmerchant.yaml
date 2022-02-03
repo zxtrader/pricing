@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: {{ template "prefix" . }}ptmerchant
+  name: {{ template "prefix" . }}ptmerchant
+spec:
+  ports:
+    - port: 8443
+      name: ptmerchant
+      protocol: TCP
+      targetPort: 8443
+  type: ClusterIP
+  selector:
+    app: {{ template "prefix" . }}ptmerchant

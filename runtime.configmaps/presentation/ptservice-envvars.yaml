@@ -1,0 +1,9 @@
+# kubectl --namespace cexpay-presentation-admin get --output=yaml ConfigMap/ptservice-envvars
+# kubectl --namespace cexpay-presentation-admin get --output=json ConfigMap/ptservice-envvars | jq -r ".data" | yq eval -P | sed 's/^/  /'
+# kubectl --namespace cexpay-presentation-admin apply --filename=runtime.configmaps/presentation/ptservice-envvars.yaml
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ptservice-envvars
+  namespace: cexpay-presentation-admin

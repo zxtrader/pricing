@@ -1,0 +1,101 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: {{ template "prefix" . }}ptservice
+  name: {{ template "prefix" . }}ptservice
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "prefix" . }}ptservice
+  replicas: {{ .Values.application.ptservice.replicas | default 0 }}
+  strategy:
+    type: RollingUpdate
+  revisionHistoryLimit: 3
+  template:
+    metadata:
+      labels:
+        app: {{ template "prefix" . }}ptservice
+    spec:
+      containers:
+      - name: ptservice
+        image: {{ .Values.application.ptservice.serviceImage }}:{{ .Values.application.ptservice.tag }}
+{{- if .Values.application.ptservice.command }}
+        command:
+{{ range .Values.application.ptservice.command }}
+        - {{ . }}
+{{ end }}
+{{- end }}
+{{- if .Values.application.ptservice.args }}
+        args:
+{{ range .Values.application.ptservice.args }}
+        - {{ . }}
+{{ end }}
+{{- end }}
+        envFrom:
+        - configMapRef:
+            name: {{ template "prefix" . }}ptservice-envvars
+        env:
+        - name: Serilog__MinimumLevel__Default
+          value: Information
+        - name: GatewayHttpClient__Url
+          value: https://{{ template "prefix" . }}gatehostinternal:8443/
+{{- if .Values.application.ptservice.env }}
+{{ range $key, $value := .Values.application.ptservice.env }}
+        - name: "{{ $key }}"
+          value: "{{ $value }}"
+{{ end }}
+{{- end }}
+        livenessProbe:
+          httpGet:
+            path: /info
+            port: 8443
+            scheme: HTTPS
+          initialDelaySeconds: 180
+          periodSeconds: 60
+        ports:
+        - containerPort: 8443
+          protocol: TCP
+        # readinessProbe:
+        #   httpGet:
+        #     path: /info
+        #     port: 8443
+        #     scheme: HTTPS
+        #   initialDelaySeconds: 60
+        #   periodSeconds: 30
+        resources:
+          limits:
+            cpu: 512m
+            memory: 512Mi
+          requests:
+            cpu: 128m
+            memory: 128Mi
+        # # Will be available with Kubernetes 1.20
+        # startupProbe:
+        #   httpGet:
+        #     path: /info
+        #     port: 8443
+        #   failureThreshold: 60
+        #   periodSeconds: 5
+        volumeMounts:
+        # - name: config-files
+        #   mountPath: /etc/cexiolabs/cexpay.paytools/extra
+        #   readOnly: true
+        - name: secret-certificate
+          mountPath: /etc/cexiolabs/cexpay.paytools/ssl/
+        - name: secret-files
+          mountPath: /etc/cexiolabs/cexpay.paytools/secrets/
+{{- if ne .Values.zone "production" }}
+      imagePullSecrets:
+      - name: cexpay-registry
+{{- end }}
+      volumes:
+      # - name: config-files
+      #   configMap:
+      #     name: {{ template "prefix" . }}ptservice-files
+      - name: secret-certificate
+        secret:
+          secretName: {{ template "prefix" . }}ptservice-certificate
+      - name: secret-files
+        secret:
+          secretName: {{ template "prefix" . }}ptservice

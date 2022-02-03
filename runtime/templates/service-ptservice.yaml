@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: {{ template "prefix" . }}ptservice
+  name: {{ template "prefix" . }}ptservice
+spec:
+  ports:
+    - port: 8443
+      name: ptservice
+      protocol: TCP
+      targetPort: 8443
+  type: ClusterIP
+  selector:
+    app: {{ template "prefix" . }}ptservice

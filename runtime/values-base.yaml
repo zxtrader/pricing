@@ -30,6 +30,21 @@ application:
     serviceImage: cexiolabs/cexpay.gate.integration-demo
     tag: "20220127-2"
     replicas: 1
+  
+  ptinvoice:
+    serviceImage: docker-cexpay.infra.kube/cexpay/paytools/snapshot/amd64
+    tag: 0.0.4
+    replicas: 1
+  
+  ptmerchant:
+    serviceImage: docker-cexpay.infra.kube/cexpay/paytools/snapshot/amd64
+    tag: 0.0.4
+    replicas: 1
+  
+  ptservice:
+    serviceImage: docker-cexpay.infra.kube/cexpay/paytools/snapshot/amd64
+    tag: 0.0.4
+    replicas: 1
 
   identity:
     serviceImage: harbor.infra.kube/cexpay/identity/amd64

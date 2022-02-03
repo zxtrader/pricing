@@ -31,6 +31,48 @@ application:
     env:
       GATE_URL: https://gate-presentation-cexpay.dev.kube
       GATE_CA_FILE: /etc/cexiolabs/cexpay/InfraWNBCA.crt
+  
+  ptinvoice:
+    serviceImage: harbor.infra.kube/cexpay/paytools/amd64
+    tag: 0.0.2
+    replicas: 1
+    args:
+      [
+        "CEXPay.InvoiceAPI",
+        "--config-json-file=/etc/cexiolabs/cexpay.paytools/CEXPay.InvoiceAPI/appsettings.json",
+        "--config-json-file=/etc/cexiolabs/cexpay.paytools/CEXPay.InvoiceAPI/appsettings.presentation.json",
+        "--config-keyperfile-directory=/etc/cexiolabs/cexpay.paytools/secrets",
+        "--config-env",
+        "--log-json"
+      ]
+  
+  ptmerchant:
+    serviceImage: harbor.infra.kube/cexpay/paytools/amd64
+    tag: 0.0.2
+    replicas: 1
+    args:
+      [
+        "CEXPay.InvoiceMerchantAPI",
+        "--config-json-file=/etc/cexiolabs/cexpay.paytools/CEXPay.InvoiceMerchantAPI/appsettings.json",
+        "--config-json-file=/etc/cexiolabs/cexpay.paytools/CEXPay.InvoiceMerchantAPI/appsettings.presentation.json",
+        "--config-keyperfile-directory=/etc/cexiolabs/cexpay.paytools/secrets",
+        "--config-env",
+        "--log-json"
+      ]
+  
+  ptservice:
+    serviceImage: harbor.infra.kube/cexpay/paytools/amd64
+    tag: 0.0.2
+    replicas: 1
+    args:
+      [
+        "CEXPay.InvoiceService",
+        "--config-json-file=/etc/cexiolabs/cexpay.paytools/CEXPay.InvoiceService/appsettings.json",
+        "--config-json-file=/etc/cexiolabs/cexpay.paytools/CEXPay.InvoiceService/appsettings.presentation.json",
+        "--config-keyperfile-directory=/etc/cexiolabs/cexpay.paytools/secrets",
+        "--config-env",
+        "--log-json"
+      ]
 
   identity:
     serviceImage: harbor.infra.kube/cexpay/identity/snapshot/amd64
@@ -136,6 +178,33 @@ ingress:
     paths:
       "/":
         backendServiceName: gatehostinternal
+        backendServicePort: 8443
+  
+  PaymentToolsInvoice:
+    blue:
+      domain: ptinvoice-presentation-cexpay.dev.kube
+      certSecretName: dev
+    paths:
+      "/":
+        backendServiceName: ptinvoice
+        backendServicePort: 8443
+  
+  PaymentToolsMerchant:
+    blue:
+      domain: ptmerchant-presentation-cexpay.dev.kube
+      certSecretName: dev
+    paths:
+      "/":
+        backendServiceName: ptmerchant
+        backendServicePort: 8443
+  
+  PaymentToolsService:
+    blue:
+      domain: ptservice-presentation-cexpay.dev.kube
+      certSecretName: dev
+    paths:
+      "/":
+        backendServiceName: ptservice
         backendServicePort: 8443
 
   GateIntegrationDemo:
