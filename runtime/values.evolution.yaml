@@ -33,6 +33,7 @@ application:
       GATE_CA_FILE: /etc/cexiolabs/cexpay/InfraWNBCA.crt
   
   ptinvoice:
+    serviceImage: harbor.infra.kube/cexpay/paytools/snapshot/amd64
     args:
       [
         "CEXPAY.InvoiceAPI",
@@ -44,6 +45,7 @@ application:
       ]
   
   ptmerchant:
+    serviceImage: harbor.infra.kube/cexpay/paytools/snapshot/amd64
     args:
       [
         "CEXPAY.InvoiceMerchantAPI",
@@ -55,6 +57,7 @@ application:
       ]
   
   ptservice:
+    serviceImage: harbor.infra.kube/cexpay/paytools/snapshot/amd64
     args:
       [
         "CEXPAY.InvoiceService",
@@ -134,6 +137,9 @@ ingress:
       "/v2/dashboard/":
         backendServiceName: processing
         backendServicePort: 8082
+      "/paytools/v1/":
+        backendServiceName: ptinvoice
+        backendServicePort: 8443
 
   Board:
     blue:
@@ -169,33 +175,6 @@ ingress:
     paths:
       "/":
         backendServiceName: gatehostinternal
-        backendServicePort: 8443
-  
-  PaymentToolsInvoice:
-    blue:
-      domain: ptinvoice-evolution-cexpay.dev.kube
-      certSecretName: dev
-    paths:
-      "/":
-        backendServiceName: ptinvoice
-        backendServicePort: 8443
-  
-  PaymentToolsMerchant:
-    blue:
-      domain: ptmerchant-evolution-cexpay.dev.kube
-      certSecretName: dev
-    paths:
-      "/":
-        backendServiceName: ptmerchant
-        backendServicePort: 8443
-  
-  PaymentToolsService:
-    blue:
-      domain: ptservice-evolution-cexpay.dev.kube
-      certSecretName: dev
-    paths:
-      "/":
-        backendServiceName: ptservice
         backendServicePort: 8443
 
   GateIntegrationDemo:

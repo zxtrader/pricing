@@ -33,7 +33,7 @@ application:
       GATE_CA_FILE: /etc/cexiolabs/cexpay/InfraWNBCA.crt
   
   ptinvoice:
-    serviceImage: harbor.infra.kube/cexpay/paytools/amd64
+    serviceImage: harbor.infra.kube/cexpay/paytools/snapshot/amd64
     tag: 0.0.2
     replicas: 1
     args:
@@ -47,7 +47,7 @@ application:
       ]
   
   ptmerchant:
-    serviceImage: harbor.infra.kube/cexpay/paytools/amd64
+    serviceImage: harbor.infra.kube/cexpay/paytools/snapshot/amd64
     tag: 0.0.2
     replicas: 1
     args:
@@ -61,7 +61,7 @@ application:
       ]
   
   ptservice:
-    serviceImage: harbor.infra.kube/cexpay/paytools/amd64
+    serviceImage: harbor.infra.kube/cexpay/paytools/snapshot/amd64
     tag: 0.0.2
     replicas: 1
     args:
@@ -143,6 +143,9 @@ ingress:
       "/v2/dashboard/":
         backendServiceName: processing
         backendServicePort: 8082
+      "/paytools/v1/":
+        backendServiceName: ptinvoice
+        backendServicePort: 8443
 
   Board:
     blue:
@@ -178,33 +181,6 @@ ingress:
     paths:
       "/":
         backendServiceName: gatehostinternal
-        backendServicePort: 8443
-  
-  PaymentToolsInvoice:
-    blue:
-      domain: ptinvoice-presentation-cexpay.dev.kube
-      certSecretName: dev
-    paths:
-      "/":
-        backendServiceName: ptinvoice
-        backendServicePort: 8443
-  
-  PaymentToolsMerchant:
-    blue:
-      domain: ptmerchant-presentation-cexpay.dev.kube
-      certSecretName: dev
-    paths:
-      "/":
-        backendServiceName: ptmerchant
-        backendServicePort: 8443
-  
-  PaymentToolsService:
-    blue:
-      domain: ptservice-presentation-cexpay.dev.kube
-      certSecretName: dev
-    paths:
-      "/":
-        backendServiceName: ptservice
         backendServicePort: 8443
 
   GateIntegrationDemo:

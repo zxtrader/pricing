@@ -32,17 +32,17 @@ application:
     replicas: 1
   
   ptinvoice:
-    serviceImage: docker-cexpay.infra.kube/cexpay/paytools/snapshot/amd64
+    serviceImage: harbor.infra.kube/cexpay/paytools/amd64
     tag: 0.0.4
-    replicas: 1
-  
+    replicas: 2
+
   ptmerchant:
-    serviceImage: docker-cexpay.infra.kube/cexpay/paytools/snapshot/amd64
+    serviceImage: harbor.infra.kube/cexpay/paytools/amd64
     tag: 0.0.4
-    replicas: 1
+    replicas: 0
   
   ptservice:
-    serviceImage: docker-cexpay.infra.kube/cexpay/paytools/snapshot/amd64
+    serviceImage: harbor.infra.kube/cexpay/paytools/amd64
     tag: 0.0.4
     replicas: 1
 

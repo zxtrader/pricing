@@ -33,9 +33,7 @@ application:
       GATE_CA_FILE: /etc/cexiolabs/cexpay/InfraWNBCA.crt
   
   ptinvoice:
-    serviceImage: harbor.infra.kube/cexpay/paytools/amd64
-    tag: 0.0.2
-    replicas: 1
+    serviceImage: harbor.infra.kube/cexpay/paytools/snapshot/amd64
     args:
       [
         "CEXPay.InvoiceAPI",
@@ -47,9 +45,7 @@ application:
       ]
   
   ptmerchant:
-    serviceImage: harbor.infra.kube/cexpay/paytools/amd64
-    tag: 0.0.2
-    replicas: 1
+    serviceImage: harbor.infra.kube/cexpay/paytools/snapshot/amd64
     args:
       [
         "CEXPay.InvoiceMerchantAPI",
@@ -61,9 +57,7 @@ application:
       ]
   
   ptservice:
-    serviceImage: harbor.infra.kube/cexpay/paytools/amd64
-    tag: 0.0.2
-    replicas: 1
+    serviceImage: harbor.infra.kube/cexpay/paytools/snapshot/amd64
     args:
       [
         "CEXPay.InvoiceService",
@@ -150,6 +144,9 @@ ingress:
       "/v2/dashboard/":
         backendServiceName: processing
         backendServicePort: 8082
+      "/paytools/v1/":
+        backendServiceName: ptinvoice
+        backendServicePort: 8443
 
   Board:
     nonblue:
@@ -213,54 +210,6 @@ ingress:
     paths:
       "/":
         backendServiceName: gatehostinternal
-        backendServicePort: 8443
-  
-  PaymentToolsInvoice:
-    blue:
-      domain: ptinvoice.pay-cex-test.net
-      certSecretName: ingress-pay-cex-test-certificate
-    nonblue:
-      # Make final domain "ptinvoice-<HelmReleaseName>-test-cexpay.dev.kube" like a:
-      #   ptinvoice-green-test-cexpay.dev.kube
-      #   ptinvoice-master-test-cexpay.dev.kube
-      domainPerfix: ptinvoice-
-      domainSuffix: -test-cexpay.dev.kube
-      certSecretName: dev
-    paths:
-      "/":
-        backendServiceName: ptinvoice
-        backendServicePort: 8443
-  
-  PaymentToolsMerchant:
-    blue:
-      domain: ptmerchant.pay-cex-test.net
-      certSecretName: ingress-pay-cex-test-certificate
-    nonblue:
-      # Make final domain "ptmerchant-<HelmReleaseName>-test-cexpay.dev.kube" like a:
-      #   ptmerchant-green-test-cexpay.dev.kube
-      #   ptmerchant-master-test-cexpay.dev.kube
-      domainPerfix: ptmerchant-
-      domainSuffix: -test-cexpay.dev.kube
-      certSecretName: dev
-    paths:
-      "/":
-        backendServiceName: ptmerchant
-        backendServicePort: 8443
-  
-  PaymentToolsService:
-    blue:
-      domain: ptservice.pay-cex-test.net
-      certSecretName: ingress-pay-cex-test-certificate
-    nonblue:
-      # Make final domain "ptservice-<HelmReleaseName>-test-cexpay.dev.kube" like a:
-      #   ptservice-green-test-cexpay.dev.kube
-      #   ptservice-master-test-cexpay.dev.kube
-      domainPerfix: ptservice-
-      domainSuffix: -test-cexpay.dev.kube
-      certSecretName: dev
-    paths:
-      "/":
-        backendServiceName: ptservice
         backendServicePort: 8443
 
   GateIntegrationDemo:
