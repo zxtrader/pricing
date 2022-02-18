@@ -9,9 +9,9 @@ metadata:
   namespace: cexpay-evolution-admin
 data:
   runtime.aggregator.url: wss://external-api-aggr-demo.dev.kube/ws
-  runtime.endpoint.dashboard.cors.allowedHeaders: '*'
-  runtime.endpoint.dashboard.cors.methods: GET, POST, PUT, DELETE
-  runtime.endpoint.dashboard.cors.whiteList: https://evolution-cexpay.dev.kube
+  runtime.endpoint.dashboard.cors.allowedHeaders: Content-Type
+  runtime.endpoint.dashboard.cors.methods: GET POST PUT DELETE
+  runtime.endpoint.dashboard.cors.whiteList: https://board-evolution-cexpay.dev.kube https://dashboardpscl-evolution-cexpay.dev.kube https://dashboardshan-evolution-cexpay.dev.kube https://dashboardwznk-evolution-cexpay.dev.kube https://dashboardyong-evolution-cexpay.dev.kube
   runtime.endpoint.swaggerUi.servers: evolutionSrv
   runtime.endpoint_indexer: account dashboard info instrument internalInfo merchant monitoring network order rate risk time
   runtime.notifier.subscriber.kind: web-socket-client
