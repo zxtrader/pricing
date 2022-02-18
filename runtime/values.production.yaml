@@ -73,9 +73,9 @@ ingress:
       "/v2/dashboard/":
         backendServiceName: processing
         backendServicePort: 8082
-      "/paytools/v1/":
-        backendServiceName: ptinvoice
-        backendServicePort: 8443
+      # "/paytools/v1/":
+      #   backendServiceName: ptinvoice
+      #   backendServicePort: 8443
 
 
   API-Obsolete-1:

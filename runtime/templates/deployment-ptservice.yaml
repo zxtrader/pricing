@@ -1,3 +1,4 @@
+{{- if ne .Values.zone "production" }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -102,3 +103,4 @@ spec:
       - name: secret-files
         secret:
           secretName: {{ template "prefix" . }}ptservice
+{{- end }}
