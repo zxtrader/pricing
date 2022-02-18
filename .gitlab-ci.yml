@@ -253,6 +253,7 @@ include:
     - docker rm -v "${CONTAINER_ID}"
     - export OAUTH_CALLBACK_PATH=/pscl/profile/oauth-challenge/
     - export CEXPAY_IDENTITY_API_URL=https://id.pay-cex-test.net/
+    - export CEXPAY_INVOICE_API_URL=https://invoice.pay-cex-test.net/
     - export CEXPAY_PAYTOOLS_INVOICE_API_URL=https://api.pay-cex-test.net/paytools/v1/invoice/
     - export CEXPAY_PROCESSING_V2_API_URL=https://api.pay-cex-test.net/v2/
     - export CEXPAY_PROCESSING_V3_API_URL=https://api.pay-cex-test.net/v3/
@@ -419,6 +420,7 @@ include:
     - docker rm -v "${CONTAINER_ID}"
     - export OAUTH_CALLBACK_PATH=/pscl/profile/oauth-challenge/
     - export CEXPAY_IDENTITY_API_URL=https://id.cexpay.io/
+    - export CEXPAY_INVOICE_API_URL=https://invoice.cexpay.io/
     - export CEXPAY_PAYTOOLS_INVOICE_API_URL=https://api.cexpay.io/paytools/v1/invoice/
     - export CEXPAY_PROCESSING_V2_API_URL=https://api.cexpay.io/v2/
     - export CEXPAY_PROCESSING_V3_API_URL=https://api.cexpay.io/v3/
