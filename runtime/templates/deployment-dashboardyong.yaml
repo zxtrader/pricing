@@ -1,4 +1,4 @@
-{{ if or (ne .Values.zone "evolution") (ne .Values.zone "presentation") }}
+{{ if or (eq .Values.zone "evolution") (eq .Values.zone "presentation") }}
 # This is a standalone container for evolution and presentation zones ONLY.
 # For production-like, this application embeds into composite container (see https://gitlab.wnb:28443/cexpay/board).
 apiVersion: apps/v1
