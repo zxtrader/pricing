@@ -9,45 +9,17 @@ application:
 
   board:
     env:
-      API_SERVICE_URL: https://api.cexpay.io
-      IDENTITY_SERVICE_URL: https://id.cexpay.io
-
-  echo:
-    replicas: 0
+      CEXPAY_IDENTITY_API_URL: https://id.cexpay.io/
+      CEXPAY_PAYTOOLS_INVOICE_API_URL: https://api.cexpay.io/paytools/v1/invoice/
+      CEXPAY_PROCESSING_V2_API_URL: https://api.cexpay.io/v2/
+      CEXPAY_PROCESSING_V3_API_URL: https://api.cexpay.io/v3/
+      OAUTH_CLIENT_ID: CEXPay.Board
+      OAUTH_CALLBACK_PATH: /profile/oauth-challenge/
+      POST_LOGOUT_REDIRECT_URL: https://www.cexpay.io
 
   gatehostinternal:
     env:
       GATE_BASE_URL: https://gate.cexpay.io
-  
-  ptinvoice:
-    args:
-      [
-        "CEXPay.InvoiceAPI",
-        "--config-json-file=/etc/cexiolabs/cexpay.paytools/CEXPay.InvoiceAPI/appsettings.json",
-        "--config-keyperfile-directory=/etc/cexiolabs/cexpay.paytools/secrets",
-        "--config-env",
-        "--log-json"
-      ]
-  
-  ptmerchant:
-    args:
-      [
-        "CEXPay.InvoiceMerchantAPI",
-        "--config-json-file=/etc/cexiolabs/cexpay.paytools/CEXPay.InvoiceMerchantAPI/appsettings.json",
-        "--config-keyperfile-directory=/etc/cexiolabs/cexpay.paytools/secrets",
-        "--config-env",
-        "--log-json"
-      ]
-  
-  ptservice:
-    args:
-      [
-        "CEXPay.InvoiceService",
-        "--config-json-file=/etc/cexiolabs/cexpay.paytools/CEXPay.InvoiceService/appsettings.json",
-        "--config-keyperfile-directory=/etc/cexiolabs/cexpay.paytools/secrets",
-        "--config-env",
-        "--log-json"
-      ]
 
   identity:
     env:
@@ -101,9 +73,9 @@ ingress:
       "/v2/dashboard/":
         backendServiceName: processing
         backendServicePort: 8082
-      "/paytools/":
-        backendServiceName: processing
-        backendServicePort: 8082
+      "/paytools/v1/":
+        backendServiceName: ptinvoice
+        backendServicePort: 8443
 
 
   API-Obsolete-1:

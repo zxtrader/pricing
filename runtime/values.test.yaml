@@ -19,8 +19,13 @@ application:
   board:
     serviceImage: harbor.infra.kube/cexpay/board/snapshot/amd64
     env:
-      API_SERVICE_URL: https://api.pay-cex-test.net
-      IDENTITY_SERVICE_URL: https://id.pay-cex-test.net
+      CEXPAY_IDENTITY_API_URL: https://id.pay-cex-test.net/
+      CEXPAY_PAYTOOLS_INVOICE_API_URL: https://api.pay-cex-test.net/paytools/v1/invoice/
+      CEXPAY_PROCESSING_V2_API_URL: https://api.pay-cex-test.net/v2/
+      CEXPAY_PROCESSING_V3_API_URL: https://api.pay-cex-test.net/v3/
+      OAUTH_CLIENT_ID: CEXPay.Board
+      OAUTH_CALLBACK_PATH: /profile/oauth-challenge/
+      POST_LOGOUT_REDIRECT_URL: https://www.cexpay.io
 
   gatehostinternal:
     serviceImage: harbor.infra.kube/cexpay/gate/hostinternal/snapshot/amd64
@@ -31,42 +36,6 @@ application:
     env:
       GATE_URL: https://gate.pay-cex-test.net
       GATE_CA_FILE: /etc/cexiolabs/cexpay/InfraWNBCA.crt
-  
-  ptinvoice:
-    serviceImage: harbor.infra.kube/cexpay/paytools/snapshot/amd64
-    args:
-      [
-        "CEXPay.InvoiceAPI",
-        "--config-json-file=/etc/cexiolabs/cexpay.paytools/CEXPay.InvoiceAPI/appsettings.json",
-        "--config-json-file=/etc/cexiolabs/cexpay.paytools/CEXPay.InvoiceAPI/appsettings.test.json",
-        "--config-keyperfile-directory=/etc/cexiolabs/cexpay.paytools/secrets",
-        "--config-env",
-        "--log-json"
-      ]
-  
-  ptmerchant:
-    serviceImage: harbor.infra.kube/cexpay/paytools/snapshot/amd64
-    args:
-      [
-        "CEXPay.InvoiceMerchantAPI",
-        "--config-json-file=/etc/cexiolabs/cexpay.paytools/CEXPay.InvoiceMerchantAPI/appsettings.json",
-        "--config-json-file=/etc/cexiolabs/cexpay.paytools/CEXPay.InvoiceMerchantAPI/appsettings.test.json",
-        "--config-keyperfile-directory=/etc/cexiolabs/cexpay.paytools/secrets",
-        "--config-env",
-        "--log-json"
-      ]
-  
-  ptservice:
-    serviceImage: harbor.infra.kube/cexpay/paytools/snapshot/amd64
-    args:
-      [
-        "CEXPay.InvoiceService",
-        "--config-json-file=/etc/cexiolabs/cexpay.paytools/CEXPay.InvoiceService/appsettings.json",
-        "--config-json-file=/etc/cexiolabs/cexpay.paytools/CEXPay.InvoiceService/appsettings.test.json",
-        "--config-keyperfile-directory=/etc/cexiolabs/cexpay.paytools/secrets",
-        "--config-env",
-        "--log-json"
-      ]
 
   identity:
     serviceImage: harbor.infra.kube/cexpay/identity/snapshot/amd64
@@ -116,6 +85,39 @@ application:
       DEBUG_PORT: 9229
       DEBUG_WAIT: "no"
       LOG_LEVEL: "debug"
+
+  ptinvoice:
+    serviceImage: harbor.infra.kube/cexpay/paytools/snapshot/amd64
+    args:
+      [
+        "--config-json-file=/etc/cexiolabs/cexpay.paytools/CEXPay.PaymentTools.InvoiceAPI/appsettings.json",
+        "--config-json-file=/etc/cexiolabs/cexpay.paytools/CEXPay.PaymentTools.InvoiceAPI/appsettings.test.json",
+        "--config-keyperfile-directory=/etc/cexiolabs/cexpay.paytools/secrets",
+        "--config-env",
+        "--log-json"
+      ]
+
+  ptmerchant:
+    serviceImage: harbor.infra.kube/cexpay/paytools/snapshot/amd64
+    args:
+      [
+        "--config-json-file=/etc/cexiolabs/cexpay.paytools/CEXPay.PaymentTools.InvoiceMerchantAPI/appsettings.json",
+        "--config-json-file=/etc/cexiolabs/cexpay.paytools/CEXPay.PaymentTools.InvoiceMerchantAPI/appsettings.test.json",
+        "--config-keyperfile-directory=/etc/cexiolabs/cexpay.paytools/secrets",
+        "--config-env",
+        "--log-json"
+      ]
+  
+  ptservice:
+    serviceImage: harbor.infra.kube/cexpay/paytools/snapshot/amd64
+    args:
+      [
+        "--config-json-file=/etc/cexiolabs/cexpay.paytools/CEXPay.PaymentTools.InvoiceService/appsettings.json",
+        "--config-json-file=/etc/cexiolabs/cexpay.paytools/CEXPay.PaymentTools.InvoiceService/appsettings.test.json",
+        "--config-keyperfile-directory=/etc/cexiolabs/cexpay.paytools/secrets",
+        "--config-env",
+        "--log-json"
+      ]
 
 
 ingress:
