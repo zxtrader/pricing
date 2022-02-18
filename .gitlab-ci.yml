@@ -243,15 +243,17 @@ include:
     # Remove old data
     - (cd .github-data && rm -rf * && git add -A)
     # Grab image content
+    - mkdir board-bin-tools
     - IMAGE="${DOCKER_IMAGE_REPOSITORY}:${VERSION_TAG}"
     - echo "Create a container to grab content of image '${IMAGE}'"
     - docker pull "${IMAGE}"
     - CONTAINER_ID=$(docker create ${IMAGE})
     - docker cp "${CONTAINER_ID}:/usr/local/cexiolabs/cexpay.board/." .github-data
+    - docker cp "${CONTAINER_ID}:/usr/local/bin/." board-bin-tools
     - docker rm -v "${CONTAINER_ID}"
-    # - find .github-data/ -type f -exec sed -i "s~/PLACEHOLDER_BASE_PATH~~g" {} \;
-    # - find .github-data/ -type f -exec sed -i "s~PLACEHOLDER_API_SERVICE_URL~${API_SERVICE_URL}~g" {} \;
-    # - find .github-data/ -type f -exec sed -i "s~PLACEHOLDER_IDENTITY_SERVICE_URL~${IDENTITY_SERVICE_URL}~g" {} \;
+    - OMIT_NGINX=yes DIST_PATH=.github-data/pscl BASE_PATH=/pscl/ OAUTH_CALLBACK_PATH=/pscl/profile/oauth-challenge/ ./board-bin-tools/docker-entrypoint-pscl.sh
+    - OMIT_NGINX=yes DIST_PATH=.github-data/wznk BASE_PATH=/wznk/ OAUTH_CALLBACK_PATH=/wznk/profile/oauth-challenge/ ./board-bin-tools/docker-entrypoint-wznk.sh
+    - OMIT_NGINX=yes DIST_PATH=.github-data/yong BASE_PATH=/yong/ OAUTH_CALLBACK_PATH=/yong/profile/oauth-challenge/ ./board-bin-tools/docker-entrypoint-yong.sh
     - echo -n "board.pay-cex-test.net" > .github-data/CNAME
     - touch .github-data/.nojekyll
     - (cd .github-data && git config --local user.name "${GITHUB_USER}" && git config --local user.email "${GITHUB_EMAIL}" && git add -A && git commit --amend --message "${VERSION_TAG}" && git push --force)
@@ -259,8 +261,6 @@ include:
   environment:
     name: test
     url: https://pay-cex-test.net/
-  # tags:
-  #   - cexiolabs-github-pages
   only:
     refs:
       - tags
@@ -401,12 +401,17 @@ include:
     # Remove old data
     - (cd .github-data && rm -rf * && git add -A)
     # Grab image content
+    - mkdir board-bin-tools
     - IMAGE="${DOCKER_IMAGE_REPOSITORY}:${VERSION_TAG}"
     - echo "Create a container to grab content of image '${IMAGE}'"
     - docker pull "${IMAGE}"
     - CONTAINER_ID=$(docker create ${IMAGE})
     - docker cp "${CONTAINER_ID}:/usr/local/cexiolabs/cexpay.board/." .github-data
+    - docker cp "${CONTAINER_ID}:/usr/local/bin/." board-bin-tools
     - docker rm -v "${CONTAINER_ID}"
+    - OMIT_NGINX=yes DIST_PATH=.github-data/pscl BASE_PATH=/pscl/ OAUTH_CALLBACK_PATH=/pscl/profile/oauth-challenge/ ./board-bin-tools/docker-entrypoint-pscl.sh
+    - OMIT_NGINX=yes DIST_PATH=.github-data/wznk BASE_PATH=/wznk/ OAUTH_CALLBACK_PATH=/wznk/profile/oauth-challenge/ ./board-bin-tools/docker-entrypoint-wznk.sh
+    - OMIT_NGINX=yes DIST_PATH=.github-data/yong BASE_PATH=/yong/ OAUTH_CALLBACK_PATH=/yong/profile/oauth-challenge/ ./board-bin-tools/docker-entrypoint-yong.sh
     - echo -n "board.cexpay.io" > .github-data/CNAME
     - touch .github-data/.nojekyll
     - (cd .github-data && git config --local user.name "${GITHUB_USER}" && git config --local user.email "${GITHUB_EMAIL}" && git add -A && git commit --amend --message "${VERSION_TAG}" && git push --force)

@@ -19,8 +19,13 @@ application:
   board:
     serviceImage: harbor.infra.kube/cexpay/board/snapshot/amd64
     env:
-      API_SERVICE_URL: https://api-evolution-cexpay.dev.kube
-      IDENTITY_SERVICE_URL: https://id-evolution-cexpay.dev.kube
+      CEXPAY_IDENTITY_API_URL: https://id-evolution-cexpay.dev.kube/
+      CEXPAY_PAYTOOLS_INVOICE_API_URL: https://api-evolution-cexpay.dev.kube/paytools/v1/invoice/
+      CEXPAY_PROCESSING_V2_API_URL: https://api-evolution-cexpay.dev.kube/v2/
+      CEXPAY_PROCESSING_V3_API_URL: https://api-evolution-cexpay.dev.kube/v3/
+      OAUTH_CLIENT_ID: CEXPay.Board
+      OAUTH_CALLBACK_PATH: /profile/oauth-challenge/
+      POST_LOGOUT_REDIRECT_URL: https://dashboardpscl-evolution-cexpay.dev.kube
 
   dashboardpscl:
     serviceImage: harbor.infra.kube/cexpay/dashboard-pscl/snapshot/amd64
@@ -90,8 +95,7 @@ application:
     serviceImage: harbor.infra.kube/cexiolabs/communitysoft/notifier/csharp/snapshot/amd64
 
   processing:
-    serviceImage: docker-cexpay.infra.kube/cexpay/processing/snapshot/amd64
-    tag: master
+    serviceImage: harbor.infra.kube/cexpay/processing/snapshot/amd64
     args:
       [
         "--config-file=/etc/cexiolabs/cexpay.processing/service.config",
