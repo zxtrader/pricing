@@ -96,6 +96,7 @@ application:
         "--config-env",
         "--log-json"
       ]
+    replicas: 0
 
   ptmerchant:
     serviceImage: harbor.infra.kube/cexpay/paytools/snapshot/amd64
@@ -107,6 +108,7 @@ application:
         "--config-env",
         "--log-json"
       ]
+    replicas: 0
   
   ptservice:
     serviceImage: harbor.infra.kube/cexpay/paytools/snapshot/amd64
@@ -118,6 +120,7 @@ application:
         "--config-env",
         "--log-json"
       ]
+    replicas: 0
 
 
 ingress:
