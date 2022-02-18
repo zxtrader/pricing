@@ -28,6 +28,7 @@ spec:
 {{- end }}
 {{- if .Values.application.ptinvoice.args }}
         args:
+        - CEXPay.PaymentTools.InvoiceAPI
 {{ range .Values.application.ptinvoice.args }}
         - {{ . }}
 {{ end }}
@@ -38,6 +39,12 @@ spec:
         env:
         - name: Serilog__MinimumLevel__Default
           value: Information
+        - name: BasePath
+          value: /paytools/v1/invoice
+        - name: IdentityServerAuthentication__BearerAuthority
+          value: https://{{ template "prefix" . }}identity:8443/
+        - name: GatewayHttpClient__Url
+          value: https://{{ template "prefix" . }}gatehostinternal:8443/
 {{- if .Values.application.ptinvoice.env }}
 {{ range $key, $value := .Values.application.ptinvoice.env }}
         - name: "{{ $key }}"
@@ -46,7 +53,7 @@ spec:
 {{- end }}
         livenessProbe:
           httpGet:
-            path: /info
+            path: /paytools/v1/invoice/info
             port: 8443
             scheme: HTTPS
           initialDelaySeconds: 180

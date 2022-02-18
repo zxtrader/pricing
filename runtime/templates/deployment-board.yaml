@@ -31,13 +31,16 @@ spec:
         - {{ . }}
 {{ end }}
 {{- end }}
-{{- if .Values.application.board.args }}
         args:
+        - "--use-ssl"
+{{- if .Values.application.board.args }}
 {{ range .Values.application.board.args }}
         - {{ . }}
 {{ end }}
 {{- end }}
         env:
+        - name: BASE_PATH
+          value: /
 {{- if .Values.application.board.env }}
 {{ range $key, $value := .Values.application.board.env }}
         - name: "{{ $key }}"

@@ -28,6 +28,7 @@ spec:
 {{- end }}
 {{- if .Values.application.ptmerchant.args }}
         args:
+        - CEXPay.PaymentTools.InvoiceMerchantAPI
 {{ range .Values.application.ptmerchant.args }}
         - {{ . }}
 {{ end }}
@@ -38,6 +39,8 @@ spec:
         env:
         - name: Serilog__MinimumLevel__Default
           value: Information
+        - name: BasePath
+          value: /paytools/v1/merchant
 {{- if .Values.application.ptmerchant.env }}
 {{ range $key, $value := .Values.application.ptmerchant.env }}
         - name: "{{ $key }}"
@@ -46,7 +49,7 @@ spec:
 {{- end }}
         livenessProbe:
           httpGet:
-            path: /info
+            path: /paytools/v1/merchant
             port: 8443
             scheme: HTTPS
           initialDelaySeconds: 180

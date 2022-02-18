@@ -1,48 +1,46 @@
-{{ if and (ne .Values.zone "production") (eq .Release.Name "blue") }}
-# 1) In "production" zone, the "landing" is hosted on GitHub Pages:
-# - https://github.com/cexiolabs/cexpay.landing-hosting
-# 2) In non "production" zones deploy for "blue" release ONLY
-# so we deploy this conditionally
+{{ if or (ne .Values.zone "evolution") (ne .Values.zone "presentation") }}
+# This is a standalone container for evolution and presentation zones ONLY.
+# For production-like, this application embeds into composite container (see https://gitlab.wnb:28443/cexpay/board).
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: {{ template "prefix" . }}landing
-  name: {{ template "prefix" . }}landing
+    app: {{ template "prefix" . }}dashboardwznk
+  name: {{ template "prefix" . }}dashboardwznk
 spec:
   selector:
     matchLabels:
-      app: {{ template "prefix" . }}landing
-  replicas: {{ .Values.application.landing.replicas | default 0 }}
+      app: {{ template "prefix" . }}dashboardwznk
+  replicas: {{ .Values.application.dashboardwznk.replicas | default 0 }}
   strategy:
     type: RollingUpdate
   revisionHistoryLimit: 3
   template:
     metadata:
       labels:
-        app: {{ template "prefix" . }}landing
+        app: {{ template "prefix" . }}dashboardwznk
     spec:
       containers:
-      - name: landing
-        image: {{ .Values.application.landing.serviceImage }}:{{ .Values.application.landing.tag }}
-{{- if .Values.application.landing.command }}
+      - name: dashboardwznk
+        image: {{ .Values.application.dashboardwznk.serviceImage }}:{{ .Values.application.dashboardwznk.tag }}
+{{- if .Values.application.dashboardwznk.command }}
         command:
-{{ range .Values.application.landing.command }}
+{{ range .Values.application.dashboardwznk.command }}
         - {{ . }}
 {{ end }}
 {{- end }}
         args:
         - "--use-ssl"
-{{- if .Values.application.landing.args }}
-{{ range .Values.application.landing.args }}
+{{- if .Values.application.dashboardwznk.args }}
+{{ range .Values.application.dashboardwznk.args }}
         - {{ . }}
 {{ end }}
 {{- end }}
         env:
         - name: BASE_PATH
           value: /
-{{- if .Values.application.landing.env }}
-{{ range $key, $value := .Values.application.landing.env }}
+{{- if .Values.application.dashboardwznk.env }}
+{{ range $key, $value := .Values.application.dashboardwznk.env }}
         - name: "{{ $key }}"
           value: "{{ $value }}"
 {{ end }}
@@ -73,7 +71,7 @@ spec:
             memory: 32Mi
         volumeMounts:
         - name: secret-certificate
-          mountPath: /etc/cexiolabs/cexpay.landing/ssl/
+          mountPath: /etc/cexiolabs/cexpay.dashboard-wznk/ssl/
 {{- if ne .Values.zone "production" }}
       imagePullSecrets:
       - name: cexpay-registry
@@ -81,5 +79,5 @@ spec:
       volumes:
       - name: secret-certificate
         secret:
-          secretName: {{ template "prefix" . }}landing-certificate
+          secretName: {{ template "prefix" . }}dashboardwznk-certificate
 {{ end }}
