@@ -1,0 +1,14 @@
+# kubectl --namespace cexpay-test-admin get --output=yaml ConfigMap/api-envvars
+# kubectl --namespace cexpay-test-admin get --output=json ConfigMap/api-envvars | jq -r ".data" | yq eval -P | sed 's/^/  /'
+# kubectl --namespace cexpay-test-admin apply --filename=runtime.configmaps/production/api-envvars.yaml
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: api-envvars
+  namespace: cexpay-test-admin
+data:
+  setup__createGateway__0__description: Gate Integration Demo Gateway 1 on merchant DEBUG in Test zone
+  setup__createGateway__0__domainWhitelist: board.pay-cex-test.net gateintegrationdemo.pay-cex-test.net
+  setup__createGateway__0__merchantName: DEBUG
+  setup__createGateway__0__uuid: c904ffc2-3824-44b8-a8f4-5c7870613c6f

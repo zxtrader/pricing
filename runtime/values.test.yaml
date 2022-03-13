@@ -122,6 +122,10 @@ application:
       ]
     replicas: 0
 
+  supportbot:
+    env:
+      CEXPAY_API_CA_CERTIFICATE_FILE: /etc/cexiolabs/cexpay/trusted-ca.crt
+
 
 ingress:
 

@@ -42,9 +42,6 @@ spec:
             name: {{ template "prefix" . }}supportbot-envvars
         - secretRef:
             name: {{ template "prefix" . }}supportbot
-        env:
-        - name: CEXPAY_API_CA_CERTIFICATE_FILE
-          value: /etc/cexiolabs/cexpay/trusted-ca.crt
 {{- if .Values.application.supportbot.env }}
 {{ range $key, $value := .Values.application.supportbot.env }}
         - name: "{{ $key }}"

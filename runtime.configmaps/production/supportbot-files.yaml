@@ -1,0 +1,9 @@
+# kubectl --namespace cexpay-admin get --output=yaml ConfigMap/supportbot-files
+# kubectl --namespace cexpay-admin get --output=json ConfigMap/supportbot-files | jq -r ".data" | yq eval -P | sed 's/^/  /'
+# kubectl --namespace cexpay-admin apply --filename=runtime.configmaps/test/supportbot-files.yaml
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: supportbot-files
+  namespace: cexpay-admin

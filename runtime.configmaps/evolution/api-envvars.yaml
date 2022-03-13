@@ -12,3 +12,10 @@ data:
   setup__createGateway__0__domainWhitelist: board-evolution-cexpay.dev.kube gateintegrationdemo-evolution-cexpay.dev.kube
   setup__createGateway__0__merchantName: DEBUG
   setup__createGateway__0__uuid: c904ffc2-3824-44b8-a8f4-5c7870613c6f
+  setup__createGateway__1__allowUnsignedRequests: "true"
+  setup__createGateway__1__callbackUrl: https://a65f7fe6-ad2a-4fbe-9f2b-b939db70733c-gateway-evolution-cexpay.requestcatcher.com
+  setup__createGateway__1__description: Gateway 1 for merchant DEBUG
+  setup__createGateway__1__domainWhitelist: board-evolution-cexpay.dev.kube dashboardpscl-evolution-cexpay.dev.kube gateintegrationdemo-evolution-cexpay.dev.kube
+  setup__createGateway__1__enabled: "true"
+  setup__createGateway__1__merchantName: DEBUG
+  setup__createGateway__1__uuid: a65f7fe6-ad2a-4fbe-9f2b-b939db70733c

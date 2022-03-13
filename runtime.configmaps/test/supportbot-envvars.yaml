@@ -1,0 +1,15 @@
+# kubectl --namespace cexpay-test-admin get --output=yaml ConfigMap/supportbot-envvars
+# kubectl --namespace cexpay-test-admin get --output=json ConfigMap/supportbot-envvars | jq -r ".data" | yq eval -P | sed 's/^/  /'
+# kubectl --namespace cexpay-test-admin apply --filename=runtime.configmaps/test/supportbot-envvars.yaml
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: supportbot-envvars
+  namespace: cexpay-test-admin
+data:
+  BOT_TELEGRAM_ALLOWED_CHATS: CEX Pay Bots,DACH/CEX - tech chat
+  CEXPAY_API_KEY: 664ff1a4b1273c2d6091b79a602210f3
+  CEXPAY_API_URL: https://api.pay-cex-test.net
+  CEXPAY_BOARD_URL: https://board.pay-cex-test.net
+

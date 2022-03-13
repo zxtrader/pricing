@@ -1,0 +1,14 @@
+# kubectl --namespace cexpay-test-admin get --output=yaml ConfigMap/notifier-envvars
+# kubectl --namespace cexpay-test-admin get --output=json ConfigMap/notifier-envvars | jq -r ".data" | yq eval -P | sed 's/^/  /'
+# kubectl --namespace cexpay-test-admin apply --filename=runtime.configmaps/test/notifier-envvars.yaml
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: notifier-envvars
+  namespace: cexpay-test-admin
+data:
+  RabbitMQ__Hosts__0__Host: rabbitmq.cexiopay-infra
+  RabbitMQ__Hosts__0__Port: "5672"
+  RabbitMQ__UserName: cexiopay-test-notifier
+  RabbitMQ__VirtualHost: test-merchant-notifications

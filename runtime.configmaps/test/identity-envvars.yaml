@@ -1,0 +1,9 @@
+# kubectl --namespace cexpay-test-admin get --output=yaml ConfigMap/identity-envvars
+# kubectl --namespace cexpay-test-admin get --output=json ConfigMap/identity-envvars | jq -r ".data" | yq eval -P | sed 's/^/  /'
+# kubectl --namespace cexpay-test-admin apply --filename=runtime.configmaps/test/identity-envvars.yaml
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: identity-envvars
+  namespace: cexpay-test-admin

@@ -1,4 +1,5 @@
 # kubectl --namespace cexpay-test-admin get --output=yaml ConfigMap/processing-files
+# kubectl --namespace cexpay-test-admin get --output=json ConfigMap/processing-files | jq -r ".data" | yq eval -P | sed 's/^/  /'
 # kubectl --namespace cexpay-test-admin apply --filename=runtime.configmaps/test/processing-files.yaml
 
 apiVersion: v1

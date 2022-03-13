@@ -1,0 +1,9 @@
+# kubectl --namespace cexpay-presentation-admin get --output=yaml ConfigMap/statuspage-envvars
+# kubectl --namespace cexpay-presentation-admin get --output=json ConfigMap/statuspage-envvars | jq -r ".data" | yq eval -P | sed 's/^/  /'
+# kubectl --namespace cexpay-presentation-admin apply --filename=runtime.configmaps/presentation/statuspage-envvars.yaml
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: statuspage-envvars
+  namespace: cexpay-presentation-admin
