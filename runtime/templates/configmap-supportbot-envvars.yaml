@@ -1,0 +1,8 @@
+{{ if and (or (eq .Values.zone "production") (eq .Values.zone "test")) (eq .Release.Name "blue") }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "prefix" . }}supportbot-envvars
+data:
+{{ .Files.Get "tmp/configmap-supportbot-envvars.yaml" | indent 2 }}
+{{ end }}

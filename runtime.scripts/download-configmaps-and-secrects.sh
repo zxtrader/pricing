@@ -64,3 +64,12 @@ download "Secrets/invoice"                             "${TARGET_DIRECTORY}/secr
 download "Secrets/messengerbridge"                     "${TARGET_DIRECTORY}/secret-messengerbridge.yaml"
 download "Secrets/notifier"                            "${TARGET_DIRECTORY}/secret-notifier.yaml"
 download "Secrets/processing"                          "${TARGET_DIRECTORY}/secret-processing.yaml"
+
+case "${KUBE_NAMESPACE}" in
+	cexpay-test-admin|cexpay-admin)
+		# Support bot should be presented only in test and producction zones
+		download "ConfigMap/supportbot-envvars"                "${TARGET_DIRECTORY}/configmap-supportbot-envvars.yaml"
+		download "ConfigMap/supportbot-files"                  "${TARGET_DIRECTORY}/configmap-supportbot-files.yaml"
+		download "Secrets/supportbot"                          "${TARGET_DIRECTORY}/secret-supportbot.yaml"
+		;;
+esac

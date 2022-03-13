@@ -83,7 +83,7 @@ application:
 
   processing:
     serviceImage: harbor.infra.kube/cexpay/processing/amd64
-    tag: 2.9.0
+    tag: 2.9.2
     replicas: 1
 
   ptinvoice:
@@ -99,4 +99,9 @@ application:
   ptservice:
     serviceImage: harbor.infra.kube/cexpay/paytools/amd64
     tag: 0.0.7
+    replicas: 1
+
+  supportbot:
+    serviceImage: cexiolabs/cexpay.support-bot
+    tag: 2.0.2
     replicas: 1
