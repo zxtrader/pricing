@@ -5,7 +5,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  namespace: cryptopay
+  namespace: cexpay-admin
   name: messengerbridge-files
 data:
   messenger-bridge.toml: |-
