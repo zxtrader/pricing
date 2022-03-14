@@ -42,6 +42,7 @@ spec:
             name: {{ template "prefix" . }}supportbot-envvars
         - secretRef:
             name: {{ template "prefix" . }}supportbot
+        env:
 {{- if .Values.application.supportbot.env }}
 {{ range $key, $value := .Values.application.supportbot.env }}
         - name: "{{ $key }}"
