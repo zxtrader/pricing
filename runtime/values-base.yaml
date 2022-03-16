@@ -103,5 +103,5 @@ application:
 
   supportbot:
     serviceImage: cexiolabs/cexpay.support-bot
-    tag: 2.0.3
+    tag: 2.0.4
     replicas: 1

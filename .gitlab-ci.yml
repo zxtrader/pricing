@@ -72,7 +72,6 @@ include:
     - verify_runtime_version_helm3
     - kube_config_setup
     - ./runtime.scripts/download-configmaps-and-secrects.sh cexpay-evolution-admin
-    - ./runtime.scripts/download-configmaps-and-secrects-devel.sh cexpay-evolution-admin
     - cd runtime
     - helm --namespace "cexpay-evolution" list
     - helm --namespace "cexpay-evolution" upgrade --install --history-max 3 --values "values-base.yaml" --values "values.evolution.yaml" "blue" .
@@ -141,7 +140,6 @@ include:
     - verify_runtime_version_helm3
     - kube_config_setup
     - ./runtime.scripts/download-configmaps-and-secrects.sh cexpay-presentation-admin
-    - ./runtime.scripts/download-configmaps-and-secrects-devel.sh cexpay-presentation-admin
     - cd runtime
     - helm --namespace "cexpay-presentation" list
     - helm --namespace "cexpay-presentation" upgrade --install --history-max 3 --values "values-base.yaml" --values "values.presentation.yaml" "blue" .
@@ -210,7 +208,6 @@ include:
     - verify_runtime_version_helm3
     - kube_config_setup
     - ./runtime.scripts/download-configmaps-and-secrects.sh cexpay-test-admin
-    - ./runtime.scripts/download-configmaps-and-secrects-devel.sh cexpay-test-admin
     - cd runtime
     - helm --namespace "cexpay-test" list
     - helm --namespace "cexpay-test" upgrade --install --history-max 3 --values "values-base.yaml" --values "values.test.yaml" "blue" .

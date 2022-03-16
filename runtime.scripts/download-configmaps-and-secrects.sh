@@ -73,3 +73,11 @@ case "${KUBE_NAMESPACE}" in
 		download "Secrets/supportbot"                          "${TARGET_DIRECTORY}/secret-supportbot.yaml"
 		;;
 esac
+
+case "${KUBE_NAMESPACE}" in
+	cexpay-evolution-admin|cexpay-presentation-admin|cexpay-test-admin)
+		# Support bot should be presented only in evolution, presentation and test zones
+		download "ConfigMap/gateintegrationdemo-files"         "${TARGET_DIRECTORY}/configmap-gateintegrationdemo-files.yaml"
+		;;
+esac
+
