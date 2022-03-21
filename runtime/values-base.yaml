@@ -12,7 +12,7 @@ application:
 
   dashboardpscl:
     serviceImage: harbor.infra.kube/cexpay/dashboard-pscl/amd64
-    tag: 0.0.8
+    tag: 0.0.10
     replicas: 1
 
   dashboardwznk:
@@ -88,17 +88,17 @@ application:
 
   ptinvoice:
     serviceImage: harbor.infra.kube/cexpay/paytools/amd64
-    tag: 0.0.7
-    replicas: 2
+    tag: 0.0.9
+    replicas: 1
 
   ptmerchant:
     serviceImage: harbor.infra.kube/cexpay/paytools/amd64
-    tag: 0.0.7
+    tag: 0.0.9
     replicas: 0
 
   ptservice:
     serviceImage: harbor.infra.kube/cexpay/paytools/amd64
-    tag: 0.0.7
+    tag: 0.0.9
     replicas: 1
 
   supportbot:

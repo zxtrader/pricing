@@ -38,8 +38,8 @@ spec:
         - configMapRef:
             name: {{ template "prefix" . }}ptservice-envvars
         env:
-        - name: Serilog__MinimumLevel__Default
-          value: Information
+#        - name: Serilog__MinimumLevel__Default
+#          value: Information
         - name: BasePath
           value: /paytools/v1/service
         - name: GatewayHttpClient__Url

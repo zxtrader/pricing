@@ -32,11 +32,10 @@ application:
     env:
       CEXPAY_IDENTITY_API_URL: https://id-evolution-cexpay.dev.kube/
       CEXPAY_PAYTOOLS_INVOICE_API_URL: https://api-evolution-cexpay.dev.kube/paytools/v1/invoice/
-      CEXPAY_PROCESSING_V2_API_URL: https://api-evolution-cexpay.dev.kube/v2/
       CEXPAY_PROCESSING_V3_API_URL: https://api-evolution-cexpay.dev.kube/v3/
       OAUTH_CLIENT_ID: CEXPay.Board
       OAUTH_CALLBACK_PATH: /profile/oauth-challenge/
-      POST_LOGOUT_REDIRECT_URL: https://dashboardpscl-evolution-cexpay.dev.kube
+      POST_LOGOUT_REDIRECT_URL: https://dashboardpscl-evolution-cexpay.dev.kube/
 
   dashboardwznk:
     serviceImage: harbor.infra.kube/cexpay/dashboard-wznk/snapshot/amd64
@@ -47,7 +46,7 @@ application:
       CEXPAY_PROCESSING_V3_API_URL: https://api-evolution-cexpay.dev.kube/v3/
       OAUTH_CLIENT_ID: CEXPay.Board
       OAUTH_CALLBACK_PATH: /profile/oauth-challenge/
-      POST_LOGOUT_REDIRECT_URL: https://dashboardpscl-evolution-cexpay.dev.kube
+      POST_LOGOUT_REDIRECT_URL: https://dashboardwznk-evolution-cexpay.dev.kube
 
   dashboardyong:
     serviceImage: harbor.infra.kube/cexpay/dashboard-yong/snapshot/amd64
@@ -124,6 +123,8 @@ application:
         "--config-env",
         "--log-json"
       ]
+    env:
+      IdentityServerAuthentication__ValidIssuers: https://id-evolution-cexpay.dev.kube
 
   ptmerchant:
     serviceImage: harbor.infra.kube/cexpay/paytools/snapshot/amd64
@@ -135,7 +136,9 @@ application:
         "--config-env",
         "--log-json"
       ]
-  
+  env:
+    IdentityServerAuthentication__ValidIssuers: https://id-evolution-cexpay.dev.kube
+
   ptservice:
     serviceImage: harbor.infra.kube/cexpay/paytools/snapshot/amd64
     args:

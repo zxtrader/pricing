@@ -1,4 +1,4 @@
-# kubectl --namespace cexpay-evolution-admin get --output=yaml ConfigMap/ptinvoice-envvars
+# kubectl --namespace cexpay-evolution-admin get --output=yaml ConfigMap/ptinvoice-envvars -o yaml
 # kubectl --namespace cexpay-evolution-admin get --output=json ConfigMap/ptinvoice-envvars | jq -r ".data" | yq eval -P | sed 's/^/  /'
 # kubectl --namespace cexpay-evolution-admin apply --filename=runtime.configmaps/evolution/ptinvoice-envvars.yaml
 
