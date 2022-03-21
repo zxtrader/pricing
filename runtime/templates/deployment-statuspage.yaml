@@ -1,0 +1,103 @@
+{{- if ne .Values.zone "production" }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: {{ template "prefix" . }}statuspage
+  name: {{ template "prefix" . }}statuspage
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "prefix" . }}statuspage
+  replicas: {{ .Values.application.statuspage.replicas | default 0 }}
+  strategy:
+    type: RollingUpdate
+  revisionHistoryLimit: 3
+  template:
+    metadata:
+      labels:
+        app: {{ template "prefix" . }}statuspage
+    spec:
+      containers:
+      - name: statuspage
+        image: {{ .Values.application.statuspage.serviceImage }}:{{ .Values.application.statuspage.tag }}
+{{- if .Values.application.statuspage.command }}
+        command:
+{{ range .Values.application.statuspage.command }}
+        - {{ . }}
+{{ end }}
+{{- end }}
+{{- if .Values.application.statuspage.args }}
+        args:
+{{ range .Values.application.statuspage.args }}
+        - {{ . }}
+{{ end }}
+{{- end }}
+        envFrom:
+        - configMapRef:
+            name: {{ template "prefix" . }}statuspage-envvars
+        env:
+        - name: Serilog__MinimumLevel__Default
+          value: Information
+{{- if .Values.application.statuspage.env }}
+{{ range $key, $value := .Values.application.statuspage.env }}
+        - name: "{{ $key }}"
+          value: "{{ $value }}"
+{{ end }}
+{{- end }}
+        livenessProbe:
+          httpGet:
+            path: /info
+            port: 8443
+            scheme: HTTPS
+          initialDelaySeconds: 180
+          periodSeconds: 60
+        ports:
+        - containerPort: 8443
+          protocol: TCP
+        # readinessProbe:
+        #   httpGet:
+        #     path: /info
+        #     port: 8443
+        #     scheme: HTTPS
+        #   initialDelaySeconds: 60
+        #   periodSeconds: 30
+        resources:
+          limits:
+            cpu: 512m
+            memory: 512Mi
+          requests:
+            cpu: 128m
+            memory: 128Mi
+        # # Will be available with Kubernetes 1.20
+        # startupProbe:
+        #   httpGet:
+        #     path: /info
+        #     port: 8443
+        #   failureThreshold: 60
+        #   periodSeconds: 5
+        volumeMounts:
+        # - name: config-files
+        #   mountPath: /etc/cexiolabs/cexiolabs.statuspage.host/extra
+        #   readOnly: true
+        - name: secret-certificate
+          mountPath: /etc/cexiolabs/cexiolabs.statuspage.host/ssl/
+        - name: secret-files
+          mountPath: /etc/cexiolabs/cexiolabs.statuspage.host/secrets/
+      - name: local-temporary-postgres
+        image: zxteamorg/devel.postgres-13:20210515
+{{- if ne .Values.zone "production" }}
+      imagePullSecrets:
+      - name: cexpay-registry
+{{- end }}
+      volumes:
+      # - name: config-files
+      #   configMap:
+      #     name: {{ template "prefix" . }}statuspage-files
+      - name: secret-certificate
+        secret:
+          secretName: {{ template "prefix" . }}statuspage-certificate
+      - name: secret-files
+        secret:
+          secretName: {{ template "prefix" . }}statuspage
+{{- end }}

@@ -385,7 +385,7 @@ include:
     refs:
       - tags
     variables:
-      - $CI_COMMIT_TAG =~ /-runtime(-rc[0-9]+)?$/
+      - $CI_COMMIT_TAG =~ /-runtime$/
 
 4PROD:blue:board:install:
   stage: deploy
@@ -437,7 +437,7 @@ include:
     refs:
       - tags
     variables:
-      - $CI_COMMIT_TAG =~ /-runtime(-rc[0-9]+)?$/
+      - $CI_COMMIT_TAG =~ /-runtime$/
 
 4PROD:blue:landing:install:
   stage: deploy
@@ -478,7 +478,7 @@ include:
     refs:
       - tags
     variables:
-      - $CI_COMMIT_TAG =~ /-runtime(-rc[0-9]+)?$/
+      - $CI_COMMIT_TAG =~ /-runtime$/
 
 4PROD:green:runtime:install:
   stage: deploy
@@ -528,7 +528,7 @@ include:
     refs:
       - tags
     variables:
-      - $CI_COMMIT_TAG =~ /-runtime(-rc[0-9]+)?$/
+      - $CI_COMMIT_TAG =~ /-runtime$/
 
 4PROD:blue:runtime:delete:
   stage: delete
@@ -552,7 +552,7 @@ include:
     refs:
       - tags
     variables:
-      - $CI_COMMIT_TAG =~ /-runtime(-rc[0-9]+)?$/
+      - $CI_COMMIT_TAG =~ /-runtime$/
 
 4PROD:green:runtime:delete:
   stage: delete

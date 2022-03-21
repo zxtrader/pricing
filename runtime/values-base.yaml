@@ -95,7 +95,7 @@ application:
     serviceImage: harbor.infra.kube/cexpay/paytools/amd64
     tag: 0.0.7
     replicas: 0
-  
+
   ptservice:
     serviceImage: harbor.infra.kube/cexpay/paytools/amd64
     tag: 0.0.7
@@ -104,4 +104,12 @@ application:
   supportbot:
     serviceImage: cexiolabs/cexpay.support-bot
     tag: 2.0.4
+    replicas: 1
+
+  statuspage:
+    serviceImage: harbor.infra.kube/cexpay/statuspage/amd64
+    tag: 1.1.0
+    env:
+      ConnectionStrings__HangfireConnectionString: "Host=127.0.0.1;Port=5432;UserId=devadmin;Password=;Database=devdb;"
+      ConnectionStrings__StatusConnectionString: "Host=127.0.0.1;Port=5432;UserId=devadmin;Password=;Database=devdb;"
     replicas: 1

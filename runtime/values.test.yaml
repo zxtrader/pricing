@@ -126,6 +126,17 @@ application:
     env:
       CEXPAY_API_CA_CERTIFICATE_FILE: /etc/cexiolabs/cexpay/trusted-ca.crt
 
+  statuspage:
+    serviceImage: harbor.infra.kube/cexpay/statuspage/snapshot/amd64
+    args:
+      [
+        "--config-json-file=/etc/cexiolabs/cexiolabs.statuspage.host/StatusPage.AppHost/appsettings.json",
+        "--config-json-file=/etc/cexiolabs/cexiolabs.statuspage.host/StatusPage.AppHost/appsettings.test.json",
+        "--config-json-file=/etc/cexiolabs/cexiolabs.statuspage.host/checkers-setup.json",
+        "--config-keyperfile-directory=/etc/cexiolabs/cexiolabs.statuspage.host/secrets",
+        "--config-env",
+        "--log-json"
+      ]
 
 ingress:
 
@@ -155,6 +166,9 @@ ingress:
         backendServicePort: 8082
       "/paytools/v1/":
         backendServiceName: ptinvoice
+        backendServicePort: 8443
+      "/statuspage/":
+        backendServiceName: statuspage
         backendServicePort: 8443
 
   Board:
@@ -302,4 +316,20 @@ ingress:
     paths:
       "/":
         backendServiceName: messengerbridge
+        backendServicePort: 8443
+
+  StatusPage:
+    blue:
+      domain: status.pay-cex-test.net
+      certSecretName: ingress-pay-cex-test-certificate
+    nonblue:
+      # Make final domain "status-<HelmReleaseName>-test-cexpay.dev.kube" like a:
+      #   status-green-test-cexpay.dev.kube
+      #   status-master-test-cexpay.dev.kube
+      domainPerfix: status-
+      domainSuffix: -test-cexpay.dev.kube
+      certSecretName: dev
+    paths:
+      "/":
+        backendServiceName: statuspage
         backendServicePort: 8443

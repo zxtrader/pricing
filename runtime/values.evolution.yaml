@@ -146,6 +146,18 @@ application:
         "--config-env",
         "--log-json"
       ]
+  
+  statuspage:
+    serviceImage: docker-cexpay.infra.kube/cexpay/statuspage/snapshot/amd64
+    args:
+      [
+        "--config-json-file=/etc/cexiolabs/cexiolabs.statuspage.host/StatusPage.AppHost/appsettings.json",
+        "--config-json-file=/etc/cexiolabs/cexiolabs.statuspage.host/StatusPage.AppHost/appsettings.evolution.json",
+        "--config-json-file=/etc/cexiolabs/cexiolabs.statuspage.host/checkers-setup.json",
+        "--config-keyperfile-directory=/etc/cexiolabs/cexiolabs.statuspage.host/secrets",
+        "--config-env",
+        "--log-json"
+      ]
 
 ingress:
 
@@ -278,4 +290,13 @@ ingress:
     paths:
       "/":
         backendServiceName: messengerbridge
+        backendServicePort: 8443
+
+  StatusPage:
+    blue:
+      domain: status-evolution-cexpay.dev.kube
+      certSecretName: dev
+    paths:
+      "/":
+        backendServiceName: statuspage
         backendServicePort: 8443
