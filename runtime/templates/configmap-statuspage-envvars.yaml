@@ -1,0 +1,8 @@
+{{- if ne .Values.zone "production" }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "prefix" . }}statuspage-envvars
+data:
+{{ .Files.Get "tmp/configmap-statuspage-envvars.yaml" | indent 2 }}
+{{- end }}

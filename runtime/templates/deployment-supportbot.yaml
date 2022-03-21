@@ -51,11 +51,11 @@ spec:
 {{- end }}
         resources:
           limits:
-            cpu: 512m
-            memory: 1024Mi
-          requests:
             cpu: 128m
-            memory: 512Mi
+            memory: 256Mi
+          requests:
+            cpu: 64m
+            memory: 128Mi
 {{- if ne .Values.zone "production" }}
       imagePullSecrets:
       - name: cexpay-registry
