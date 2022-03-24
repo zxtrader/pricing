@@ -26,7 +26,8 @@ application:
       OAUTH_CLIENT_ID: CEXPay.Board
       OAUTH_CALLBACK_PATH: /profile/oauth-challenge/
       POST_LOGOUT_REDIRECT_URL: https://dashboardpscl-evolution-cexpay.dev.kube
-      CEXPAY_GATEWAY_WHITE_LIST: ['board-evolution-cexpay.dev.kube','gateintegrationdemo-evolution-cexpay.dev.kube', 'api-evolution-cexpay.dev.kube', '127.0.0.1']
+#      CEXPAY_GATEWAY_WHITE_LIST: "['board-evolution-cexpay.dev.kube','gateintegrationdemo-evolution-cexpay.dev.kube', 'api-evolution-cexpay.dev.kube', '127.0.0.1']"
+      {{ printf "CEXPAY_GATEWAY_WHITE_LIST: $s" ([\"board-evolution-cexpay.dev.kube\", \"gateintegrationdemo-evolution-cexpay.dev.kube\", \"api-evolution-cexpay.dev.kube\", \"127.0.0.1\"]) }}
 
   dashboardpscl:
     serviceImage: harbor.infra.kube/cexpay/dashboard-pscl/snapshot/amd64
@@ -37,8 +38,9 @@ application:
       OAUTH_CLIENT_ID: CEXPay.Board
       OAUTH_CALLBACK_PATH: /profile/oauth-challenge/
       POST_LOGOUT_REDIRECT_URL: https://dashboardpscl-evolution-cexpay.dev.kube/
-      CEXPAY_GATEWAY_WHITE_LIST: ['board-evolution-cexpay.dev.kube','gateintegrationdemo-evolution-cexpay.dev.kube', 'api-evolution-cexpay.dev.kube', '127.0.0.1']
-
+      {{ printf "CEXPAY_GATEWAY_WHITE_LIST: $s" ([\"board-evolution-cexpay.dev.kube\", \"gateintegrationdemo-evolution-cexpay.dev.kube\", \"api-evolution-cexpay.dev.kube\", \"127.0.0.1\"]) }}
+      #\[\"board-evolution-cexpay.dev.kube\", \"gateintegrationdemo-evolution-cexpay.dev.kube\", \"api-evolution-cexpay.dev.kube\", \"127.0.0.1\"\]
+      #sdsd: {{ printf "\"ports\": %s" (toJson .Values.ports) | squote }}
   dashboardwznk:
     serviceImage: harbor.infra.kube/cexpay/dashboard-wznk/snapshot/amd64
     env:
