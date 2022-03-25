@@ -19,43 +19,45 @@ application:
   board:
     serviceImage: harbor.infra.kube/cexpay/board/snapshot/amd64
     env:
-      CEXPAY_IDENTITY_API_URL: https://id-evolution-cexpay.dev.kube/
-      CEXPAY_GATEWAY_WHITE_LIST: |
-        ["board-evolution-cexpay.dev.kube", "gateintegrationdemo-evolution-cexpay.dev.kube", "api-evolution-cexpay.dev.kube", "127.0.0.1"]
-      CEXPAY_PAYTOOLS_INVOICE_API_URL: https://api-evolution-cexpay.dev.kube/paytools/v1/invoice/
-      CEXPAY_PROCESSING_V2_API_URL: https://api-evolution-cexpay.dev.kube/v2/
-      CEXPAY_PROCESSING_V3_API_URL: https://api-evolution-cexpay.dev.kube/v3/
+      CEXPAY_GATEWAY_ORIGIN_WHITE_LIST: |
+        ["api-evolution-cexpay.dev.kube", "board-evolution-cexpay.dev.kube", "dashboardpscl-evolution-cexpay.dev.kube", "127.0.0.1"]
+      CEXPAY_IDENTITY_API_URL: https://id-evolution-cexpay.dev.kube
+      CEXPAY_PAYTOOLS_INVOICE_API_URL: https://api-evolution-cexpay.dev.kube/paytools/v1/invoice
+      CEXPAY_PROCESSING_V2_API_URL: https://api-evolution-cexpay.dev.kube/v2
+      CEXPAY_PROCESSING_V3_API_URL: https://api-evolution-cexpay.dev.kube/v3
       OAUTH_CLIENT_ID: CEXPay.Board
       OAUTH_CALLBACK_PATH: /profile/oauth-challenge/
-      POST_LOGOUT_REDIRECT_URL: https://dashboardpscl-evolution-cexpay.dev.kube
+      POST_LOGOUT_REDIRECT_URL: https://board-evolution-cexpay.dev.kube
 
   dashboardpscl:
     serviceImage: harbor.infra.kube/cexpay/dashboard-pscl/snapshot/amd64
     env:
-      CEXPAY_IDENTITY_API_URL: https://id-evolution-cexpay.dev.kube/
-      CEXPAY_GATEWAY_WHITE_LIST: |
-        ["board-evolution-cexpay.dev.kube", "gateintegrationdemo-evolution-cexpay.dev.kube", "api-evolution-cexpay.dev.kube", "127.0.0.1"]
-      CEXPAY_PAYTOOLS_INVOICE_API_URL: https://api-evolution-cexpay.dev.kube/paytools/v1/invoice/
-      CEXPAY_PROCESSING_V3_API_URL: https://api-evolution-cexpay.dev.kube/v3/
+      CEXPAY_GATEWAY_ORIGIN_WHITE_LIST: |
+        ["api-evolution-cexpay.dev.kube", "board-evolution-cexpay.dev.kube", "dashboardpscl-evolution-cexpay.dev.kube", "127.0.0.1"]
+      CEXPAY_IDENTITY_API_URL: https://id-evolution-cexpay.dev.kube
+      CEXPAY_PAYTOOLS_INVOICE_API_URL: https://api-evolution-cexpay.dev.kube/paytools/v1/invoice
+      CEXPAY_PROCESSING_V3_API_URL: https://api-evolution-cexpay.dev.kube/v3
       OAUTH_CLIENT_ID: CEXPay.Board
       OAUTH_CALLBACK_PATH: /profile/oauth-challenge/
-      POST_LOGOUT_REDIRECT_URL: https://dashboardpscl-evolution-cexpay.dev.kube/
+      POST_LOGOUT_REDIRECT_URL: https://dashboardpscl-evolution-cexpay.dev.kube
 
   dashboardwznk:
     serviceImage: harbor.infra.kube/cexpay/dashboard-wznk/snapshot/amd64
     env:
-      CEXPAY_IDENTITY_API_URL: https://id-evolution-cexpay.dev.kube/
-      CEXPAY_PAYTOOLS_INVOICE_API_URL: https://api-evolution-cexpay.dev.kube/paytools/v1/invoice/
-      CEXPAY_PROCESSING_V2_API_URL: https://api-evolution-cexpay.dev.kube/v2/
-      CEXPAY_PROCESSING_V3_API_URL: https://api-evolution-cexpay.dev.kube/v3/
+      CEXPAY_GATEWAY_ORIGIN_WHITE_LIST: |
+        ["api-evolution-cexpay.dev.kube", "board-evolution-cexpay.dev.kube", "dashboardpscl-evolution-cexpay.dev.kube", "127.0.0.1"]
+      CEXPAY_IDENTITY_API_URL: https://id-evolution-cexpay.dev.kube
+      CEXPAY_PAYTOOLS_INVOICE_API_URL: https://api-evolution-cexpay.dev.kube/paytools/v1/invoice
+      CEXPAY_PROCESSING_V2_API_URL: https://api-evolution-cexpay.dev.kube/v2
+      CEXPAY_PROCESSING_V3_API_URL: https://api-evolution-cexpay.dev.kube/v3
       OAUTH_CLIENT_ID: CEXPay.Board
       OAUTH_CALLBACK_PATH: /profile/oauth-challenge/
-      CEXPAY_GATEWAY_WHITE_LIST: [\'board-evolution-cexpay.dev.kube\' \'gateintegrationdemo-evolution-cexpay.dev.kube\' \'api-evolution-cexpay.dev.kube\' \'127.0.0.1\']
+      POST_LOGOUT_REDIRECT_URL: https://dashboardwznk-evolution-cexpay.dev.kube
 
   dashboardyong:
     serviceImage: harbor.infra.kube/cexpay/dashboard-yong/snapshot/amd64
     env:
-      CEXPAY_PROCESSING_V2_API_URL: https://api-evolution-cexpay.dev.kube/v2/
+      CEXPAY_PROCESSING_V2_API_URL: https://api-evolution-cexpay.dev.kube/v2
 
   gatehostinternal:
     serviceImage: harbor.infra.kube/cexpay/gate/hostinternal/snapshot/amd64

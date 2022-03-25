@@ -83,11 +83,18 @@ Tag name format: `<RELEASE_TAG>-database`
 	```shell
 	$ rm -rf tmp
 	$ ../runtime.scripts/download-configmaps-and-secrects.sh "cexpay-${ENV}-admin"
-	$ ../runtime.scripts/download-configmaps-and-secrects-devel.sh "cexpay-${ENV}-admin"
 	```
 
 ### Useful commands
 See full doc https://v3.helm.sh/docs/helm
+
+#### Template
+
+To render chart templates locally and display the output:
+
+```shell
+helm template --values "values-base.yaml" --values "values.${ENV}.yaml" blue . | tee test.local.yaml
+```
 
 #### List
 ```bash

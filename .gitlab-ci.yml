@@ -249,13 +249,14 @@ include:
     - docker cp "${CONTAINER_ID}:/usr/local/cexiolabs/cexpay.board/." .github-data
     - docker cp "${CONTAINER_ID}:/usr/local/bin/." board-bin-tools
     - docker rm -v "${CONTAINER_ID}"
-    - export CEXPAY_IDENTITY_API_URL=https://id.pay-cex-test.net/
-    - export CEXPAY_INVOICE_API_URL=https://invoice.pay-cex-test.net/
-    - export CEXPAY_PAYTOOLS_INVOICE_API_URL=https://api.pay-cex-test.net/paytools/v1/invoice/
-    - export CEXPAY_PROCESSING_V2_API_URL=https://api.pay-cex-test.net/v2/
-    - export CEXPAY_PROCESSING_V3_API_URL=https://api.pay-cex-test.net/v3/
-    - export OAUTH_CLIENT_ID=CEXPay.Board
-    - export POST_LOGOUT_REDIRECT_URL=https://www.cexpay.io
+    - export CEXPAY_GATEWAY_ORIGIN_WHITE_LIST==$(yq eval '.application.dashboard.env.CEXPAY_GATEWAY_ORIGIN_WHITE_LIST' runtime/values.test.yaml)
+    - export CEXPAY_IDENTITY_API_URL=$(yq eval '.application.dashboard.env.CEXPAY_IDENTITY_API_URL' runtime/values.test.yaml)
+    - export CEXPAY_INVOICE_API_URL=$(yq eval '.application.dashboard.env.CEXPAY_INVOICE_API_URL' runtime/values.test.yaml)
+    - export CEXPAY_PAYTOOLS_INVOICE_API_URL=$(yq eval '.application.dashboard.env.CEXPAY_PAYTOOLS_INVOICE_API_URL' runtime/values.test.yaml)
+    - export CEXPAY_PROCESSING_V2_API_URL=$(yq eval '.application.dashboard.env.CEXPAY_PROCESSING_V2_API_URL' runtime/values.test.yaml)
+    - export CEXPAY_PROCESSING_V3_API_URL=$(yq eval '.application.dashboard.env.CEXPAY_PROCESSING_V3_API_URL' runtime/values.test.yaml)
+    - export OAUTH_CLIENT_ID=$(yq eval '.application.dashboard.env.OAUTH_CLIENT_ID' runtime/values.test.yaml)
+    - export POST_LOGOUT_REDIRECT_URL=$(yq eval '.application.dashboard.env.POST_LOGOUT_REDIRECT_URL' runtime/values.test.yaml)
     - OMIT_NGINX=yes DIST_PATH=.github-data/pscl BASE_PATH=/pscl/ OAUTH_CALLBACK_PATH=/pscl/profile/oauth-challenge/ ./board-bin-tools/docker-entrypoint-pscl.sh
     - OMIT_NGINX=yes DIST_PATH=.github-data/wznk BASE_PATH=/wznk/ OAUTH_CALLBACK_PATH=/wznk/profile/oauth-challenge/ ./board-bin-tools/docker-entrypoint-wznk.sh
     - OMIT_NGINX=yes DIST_PATH=.github-data/yong BASE_PATH=/yong/ OAUTH_CALLBACK_PATH=/wznk/profile/oauth-challenge/ ./board-bin-tools/docker-entrypoint-yong.sh
@@ -414,13 +415,14 @@ include:
     - docker cp "${CONTAINER_ID}:/usr/local/cexiolabs/cexpay.board/." .github-data
     - docker cp "${CONTAINER_ID}:/usr/local/bin/." board-bin-tools
     - docker rm -v "${CONTAINER_ID}"
-    - export CEXPAY_IDENTITY_API_URL=https://id.cexpay.io/
-    - export CEXPAY_INVOICE_API_URL=https://invoice.cexpay.io/
-    - export CEXPAY_PAYTOOLS_INVOICE_API_URL=https://api.cexpay.io/paytools/v1/invoice/
-    - export CEXPAY_PROCESSING_V2_API_URL=https://api.cexpay.io/v2/
-    - export CEXPAY_PROCESSING_V3_API_URL=https://api.cexpay.io/v3/
-    - export OAUTH_CLIENT_ID=CEXPay.Board
-    - export POST_LOGOUT_REDIRECT_URL=https://www.cexpay.io
+    - export CEXPAY_GATEWAY_ORIGIN_WHITE_LIST==$(yq eval '.application.dashboard.env.CEXPAY_GATEWAY_ORIGIN_WHITE_LIST' runtime/values.production.yaml)
+    - export CEXPAY_IDENTITY_API_URL=$(yq eval '.application.dashboard.env.CEXPAY_IDENTITY_API_URL' runtime/values.production.yaml)
+    - export CEXPAY_INVOICE_API_URL=$(yq eval '.application.dashboard.env.CEXPAY_INVOICE_API_URL' runtime/values.production.yaml)
+    - export CEXPAY_PAYTOOLS_INVOICE_API_URL=$(yq eval '.application.dashboard.env.CEXPAY_PAYTOOLS_INVOICE_API_URL' runtime/values.production.yaml)
+    - export CEXPAY_PROCESSING_V2_API_URL=$(yq eval '.application.dashboard.env.CEXPAY_PROCESSING_V2_API_URL' runtime/values.production.yaml)
+    - export CEXPAY_PROCESSING_V3_API_URL=$(yq eval '.application.dashboard.env.CEXPAY_PROCESSING_V3_API_URL' runtime/values.production.yaml)
+    - export OAUTH_CLIENT_ID=$(yq eval '.application.dashboard.env.OAUTH_CLIENT_ID' runtime/values.production.yaml)
+    - export POST_LOGOUT_REDIRECT_URL=$(yq eval '.application.dashboard.env.POST_LOGOUT_REDIRECT_URL' runtime/values.production.yaml)
     - OMIT_NGINX=yes DIST_PATH=.github-data/pscl BASE_PATH=/pscl/ OAUTH_CALLBACK_PATH=/pscl/profile/oauth-challenge/ ./board-bin-tools/docker-entrypoint-pscl.sh
     - OMIT_NGINX=yes DIST_PATH=.github-data/wznk BASE_PATH=/wznk/ OAUTH_CALLBACK_PATH=/wznk/profile/oauth-challenge/ ./board-bin-tools/docker-entrypoint-wznk.sh
     - OMIT_NGINX=yes DIST_PATH=.github-data/yong BASE_PATH=/yong/ OAUTH_CALLBACK_PATH=/wznk/profile/oauth-challenge/ ./board-bin-tools/docker-entrypoint-yong.sh
@@ -503,7 +505,7 @@ include:
     refs:
       - tags
     variables:
-      - $CI_COMMIT_TAG =~ /-runtime(-rc[0-9]+)?$/
+      - $CI_COMMIT_TAG =~ /-runtime$/
 
 4PROD:blue:runtime:rollback:
   stage: rollback
@@ -576,7 +578,7 @@ include:
     refs:
       - tags
     variables:
-      - $CI_COMMIT_TAG =~ /-runtime(-rc[0-9]+)?$/
+      - $CI_COMMIT_TAG =~ /-runtime$/
 
 
 
@@ -599,7 +601,7 @@ include:
     - ./migration/migration-exec.sh --kube-context=evolution --kube-namespace=cexpay-evolution --kube-admin-namespace=cexpay-evolution-admin --image=harbor.infra.kube/cexpay/database/migration/evolution --tag="${DATABASE_IMAGE_TAG}" --target-version="${INSTALL_VERSION}" --install
   when: manual
   environment:
-    name: evolution
+    name: evolution-database
     url: https://evolution-cexpay.dev.kube
   only:
     refs:
@@ -621,7 +623,7 @@ include:
     - ./migration/migration-exec.sh --kube-context=evolution --kube-namespace=cexpay-evolution --kube-admin-namespace=cexpay-evolution-admin --image=harbor.infra.kube/cexpay/database/migration/evolution --tag="${DATABASE_IMAGE_TAG}" --target-version="${ROLLBACK_VERSION}" --rollback
   when: manual
   environment:
-    name: evolution
+    name: evolution-database
     url: https://evolution-cexpay.dev.kube
   only:
     refs:
@@ -643,7 +645,7 @@ include:
     - ./migration/migration-exec.sh --kube-context=presentation --kube-namespace=cexpay-presentation --kube-admin-namespace=cexpay-presentation-admin --image=harbor.infra.kube/cexpay/database/migration/presentation --tag="${DATABASE_IMAGE_TAG}" --target-version="${INSTALL_VERSION}" --install
   when: manual
   environment:
-    name: presentation
+    name: presentation-database
     url: https://presentation-cexpay.dev.kube
   only:
     refs:
@@ -665,7 +667,7 @@ include:
     - ./migration/migration-exec.sh --kube-context=presentation --kube-namespace=cexpay-presentation --kube-admin-namespace=cexpay-presentation-admin --image=harbor.infra.kube/cexpay/database/migration/presentation --tag="${DATABASE_IMAGE_TAG}" --target-version="${ROLLBACK_VERSION}" --rollback
   when: manual
   environment:
-    name: presentation
+    name: presentation-database
     url: https://presentation-cexpay.dev.kube
   only:
     refs:
@@ -687,7 +689,7 @@ include:
     - ./migration/migration-exec.sh --kube-context=test --kube-namespace=cexpay-test --kube-admin-namespace=cexpay-test-admin --image=harbor.infra.kube/cexpay/database/migration/test --tag="${DATABASE_IMAGE_TAG}" --target-version="${INSTALL_VERSION}" --install
   when: manual
   environment:
-    name: test
+    name: test-database
     url: https://pay-cex-test.net
   only:
     refs:
@@ -709,7 +711,7 @@ include:
     - ./migration/migration-exec.sh --kube-context=test --kube-namespace=cexpay-test --kube-admin-namespace=cexpay-test-admin --image=harbor.infra.kube/cexpay/database/migration/test --tag="${DATABASE_IMAGE_TAG}" --target-version="${ROLLBACK_VERSION}" --rollback
   when: manual
   environment:
-    name: test
+    name: test-database
     url: https://pay-cex-test.net
   only:
     refs:
@@ -731,7 +733,7 @@ include:
     - ./migration/migration-exec.sh --kube-context=prod --kube-namespace=cexpay --kube-admin-namespace=cexpay-admin --image=harbor.infra.kube/cexpay/database/migration/production --tag="${DATABASE_IMAGE_TAG}" --target-version="${INSTALL_VERSION}" --install
   when: manual
   environment:
-    name: production
+    name: production-database
     url: https://cexpay.io/
   tags:
     - crtpdpl
@@ -755,7 +757,7 @@ include:
     - ./migration/migration-exec.sh --kube-context=prod --kube-namespace=cexpay --kube-admin-namespace=cexpay-admin --image=harbor.infra.kube/cexpay/database/migration/production --tag="${DATABASE_IMAGE_TAG}" --target-version="${ROLLBACK_VERSION}" --rollback
   when: manual
   environment:
-    name: production
+    name: production-database
     url: https://cexpay.io/
   tags:
     - crtpdpl
@@ -792,7 +794,7 @@ include:
     - kubectl --namespace cexpay-admin apply --filename=runtime.configmaps/production/supportbot-files.yaml
   when: manual
   environment:
-    name: production
+    name: production-database
     url: https://cexpay.io/
   tags:
     - crtpdpl

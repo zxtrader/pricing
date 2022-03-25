@@ -48,22 +48,25 @@ spec:
 {{ end }}
 {{- end }}
         livenessProbe:
+          failureThreshold: 20
           httpGet:
             path: /
             port: 8443
             scheme: HTTPS
           initialDelaySeconds: 180
           periodSeconds: 60
+          successThreshold: 1
+          timeoutSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8443
+            scheme: HTTPS
+          initialDelaySeconds: 30
+          periodSeconds: 60
         ports:
         - containerPort: 8443
           protocol: TCP
-        # readinessProbe:
-        #   httpGet:
-        #     path: /
-        #     port: 8443
-        #     scheme: HTTPS
-        #   initialDelaySeconds: 10
-        #   periodSeconds: 60
         resources:
           limits:
             cpu: 256m

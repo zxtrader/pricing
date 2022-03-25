@@ -9,10 +9,12 @@ application:
 
   board:
     env:
-      CEXPAY_IDENTITY_API_URL: https://id.cexpay.io/
-      CEXPAY_PAYTOOLS_INVOICE_API_URL: https://api.cexpay.io/paytools/v1/invoice/
-      CEXPAY_PROCESSING_V2_API_URL: https://api.cexpay.io/v2/
-      CEXPAY_PROCESSING_V3_API_URL: https://api.cexpay.io/v3/
+      CEXPAY_GATEWAY_ORIGIN_WHITE_LIST: |
+        ["board.cexpay.io"]
+      CEXPAY_IDENTITY_API_URL: https://id.cexpay.io
+      CEXPAY_PAYTOOLS_INVOICE_API_URL: https://api.cexpay.io/paytools/v1/invoice
+      CEXPAY_PROCESSING_V2_API_URL: https://api.cexpay.io/v2
+      CEXPAY_PROCESSING_V3_API_URL: https://api.cexpay.io/v3
       OAUTH_CLIENT_ID: CEXPay.Board
       OAUTH_CALLBACK_PATH: /profile/oauth-challenge/
       POST_LOGOUT_REDIRECT_URL: https://www.cexpay.io
