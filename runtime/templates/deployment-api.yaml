@@ -49,8 +49,8 @@ spec:
           value: https://{{ template "prefix" . }}processing:8082/
 {{- if .Values.application.api.env }}
 {{ range $key, $value := .Values.application.api.env }}
-        - name: "{{ $key }}"
-          value: "{{ $value }}"
+        - name: {{ $key | quote }}
+          value: {{ $value | quote }}
 {{ end }}
 {{- end }}
         livenessProbe:

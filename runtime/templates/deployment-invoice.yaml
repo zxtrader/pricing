@@ -44,8 +44,8 @@ spec:
           value: https://{{ template "prefix" . }}gatehostinternal:8443/
 {{- if .Values.application.invoice.env }}
 {{ range $key, $value := .Values.application.invoice.env }}
-        - name: "{{ $key }}"
-          value: "{{ $value }}"
+        - name: {{ $key | quote }}
+          value: {{ $value | quote }}
 {{ end }}
 {{- end }}
         livenessProbe:

@@ -44,8 +44,8 @@ spec:
           value: /paytools/v1/merchant
 {{- if .Values.application.ptmerchant.env }}
 {{ range $key, $value := .Values.application.ptmerchant.env }}
-        - name: "{{ $key }}"
-          value: "{{ $value }}"
+        - name: {{ $key | quote }}
+          value: {{ $value | quote }}
 {{ end }}
 {{- end }}
         livenessProbe:

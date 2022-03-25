@@ -38,8 +38,8 @@ spec:
         env:
 {{- if .Values.application.gateintegrationdemo.env }}
 {{ range $key, $value := .Values.application.gateintegrationdemo.env }}
-        - name: "{{ $key }}"
-          value: "{{ $value }}"
+        - name: {{ $key | quote }}
+          value: {{ $value | quote }}
 {{ end }}
 {{- end }}
         - name: GATE_ID

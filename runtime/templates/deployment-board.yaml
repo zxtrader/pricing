@@ -43,8 +43,8 @@ spec:
           value: /
 {{- if .Values.application.board.env }}
 {{ range $key, $value := .Values.application.board.env }}
-        - name: "{{ $key }}"
-          value: "{{ $value }}"
+        - name: {{ $key | quote }}
+          value: {{ $value | quote }}
 {{ end }}
 {{- end }}
         livenessProbe:

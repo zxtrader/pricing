@@ -51,8 +51,8 @@ spec:
           value: info
 {{- if .Values.application.messengerbridge.env }}
 {{ range $key, $value := .Values.application.messengerbridge.env }}
-        - name: "{{ $key }}"
-          value: "{{ $value }}"
+        - name: {{ $key | quote }}
+          value: {{ $value | quote }}
 {{ end }}
 {{- end }}
         livenessProbe:

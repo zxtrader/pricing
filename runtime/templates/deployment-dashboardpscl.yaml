@@ -41,8 +41,8 @@ spec:
           value: /
 {{- if .Values.application.dashboardpscl.env }}
 {{ range $key, $value := .Values.application.dashboardpscl.env }}
-        - name: "{{ $key }}"
-          value: "{{ $value }}"
+        - name: {{ $key | quote }}
+          value: {{ $value | quote }}
 {{ end }}
 {{- end }}
         livenessProbe:

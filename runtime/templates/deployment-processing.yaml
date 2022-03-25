@@ -82,8 +82,8 @@ spec:
           value: info
 {{- if .Values.application.processing.env }}
 {{ range $key, $value := .Values.application.processing.env }}
-        - name: "{{ $key }}"
-          value: "{{ $value }}"
+        - name: {{ $key | quote }}
+          value: {{ $value | quote }}
 {{ end }}
 {{- end }}
         # livenessProbe:

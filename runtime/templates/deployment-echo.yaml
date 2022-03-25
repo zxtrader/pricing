@@ -43,8 +43,8 @@ spec:
           value: "/etc/cexiolabs/cexpay/ssl/tls.key"
 {{- if .Values.application.echo.env }}
 {{ range $key, $value := .Values.application.echo.env }}
-        - name: "{{ $key }}"
-          value: "{{ $value }}"
+        - name: {{ $key | quote }}
+          value: {{ $value | quote }}
 {{ end }}
 {{- end }}
         ports:
