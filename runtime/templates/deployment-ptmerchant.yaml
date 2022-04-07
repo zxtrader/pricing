@@ -18,7 +18,8 @@ spec:
       labels:
         app: {{ template "prefix" . }}ptmerchant
     spec:
-{{- if and (.Values.misc .Values.misc.excludeHypervisors) }}
+{{- if .Values.misc }}
+{{- if .Values.misc.excludeHypervisors }}
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -29,6 +30,7 @@ spec:
                 values:
 {{- range .Values.misc.excludeHypervisors }}
                 - {{ . }}
+{{- end }}
 {{- end }}
 {{- end }}
       containers:

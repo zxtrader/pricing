@@ -1,5 +1,9 @@
 zone: presentation
 
+misc:
+  excludeHypervisors:
+  - defr109.itdep.org
+
 application:
 
   api:
