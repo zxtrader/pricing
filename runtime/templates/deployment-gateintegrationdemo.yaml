@@ -18,29 +18,40 @@ spec:
       labels:
         app: {{ template "prefix" . }}gateintegrationdemo
     spec:
-      imagePullSecrets:
-      - name: cexpay-registry
+{{- if .Values.misc.excludeHypervisors }}
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: hypervisor
+                operator: NotIn
+                values:
+{{- range .Values.misc.excludeHypervisors }}
+                - {{ . }}
+{{- end }}
+{{- end }}
       containers:
       - name: gateintegrationdemo
         image: {{ .Values.application.gateintegrationdemo.serviceImage }}:{{ .Values.application.gateintegrationdemo.tag }}
 {{- if .Values.application.gateintegrationdemo.command }}
         command:
-{{ range .Values.application.gateintegrationdemo.command }}
+{{- range .Values.application.gateintegrationdemo.command }}
         - {{ . }}
-{{ end }}
+{{- end }}
 {{- end }}
 {{- if .Values.application.gateintegrationdemo.args }}
         args:
-{{ range .Values.application.gateintegrationdemo.args }}
+{{- range .Values.application.gateintegrationdemo.args }}
         - {{ . }}
-{{ end }}
+{{- end }}
 {{- end }}
         env:
 {{- if .Values.application.gateintegrationdemo.env }}
-{{ range $key, $value := .Values.application.gateintegrationdemo.env }}
-        - name: "{{ $key }}"
-          value: "{{ $value }}"
-{{ end }}
+{{- range $key, $value := .Values.application.gateintegrationdemo.env }}
+        - name: {{ $key | quote }}
+          value: {{ $value | quote }}
+{{- end }}
 {{- end }}
         - name: GATE_ID
           valueFrom:
@@ -70,6 +81,10 @@ spec:
           requests:
             cpu: 128m
             memory: 16Mi
+{{- if ne .Values.zone "production" }}
+      imagePullSecrets:
+      - name: cexpay-registry
+{{- end }}
       volumes:
       - name: config-files
         configMap:

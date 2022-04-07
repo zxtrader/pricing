@@ -20,48 +20,64 @@ spec:
       labels:
         app: {{ template "prefix" . }}dashboardwznk
     spec:
+{{- if .Values.misc.excludeHypervisors }}
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: hypervisor
+                operator: NotIn
+                values:
+{{- range .Values.misc.excludeHypervisors }}
+                - {{ . }}
+{{- end }}
+{{- end }}
       containers:
       - name: dashboardwznk
         image: {{ .Values.application.dashboardwznk.serviceImage }}:{{ .Values.application.dashboardwznk.tag }}
 {{- if .Values.application.dashboardwznk.command }}
         command:
-{{ range .Values.application.dashboardwznk.command }}
+{{- range .Values.application.dashboardwznk.command }}
         - {{ . }}
-{{ end }}
+{{- end }}
 {{- end }}
         args:
         - "--use-ssl"
 {{- if .Values.application.dashboardwznk.args }}
-{{ range .Values.application.dashboardwznk.args }}
+{{- range .Values.application.dashboardwznk.args }}
         - {{ . }}
-{{ end }}
+{{- end }}
 {{- end }}
         env:
         - name: BASE_PATH
           value: /
 {{- if .Values.application.dashboardwznk.env }}
-{{ range $key, $value := .Values.application.dashboardwznk.env }}
-        - name: "{{ $key }}"
-          value: "{{ $value }}"
-{{ end }}
+{{- range $key, $value := .Values.application.dashboardwznk.env }}
+        - name: {{ $key | quote }}
+          value: {{ $value | quote }}
+{{- end }}
 {{- end }}
         livenessProbe:
+          failureThreshold: 20
           httpGet:
             path: /
             port: 8443
             scheme: HTTPS
           initialDelaySeconds: 180
           periodSeconds: 60
+          successThreshold: 1
+          timeoutSeconds: 5
         ports:
         - containerPort: 8443
           protocol: TCP
-        # readinessProbe:
-        #   httpGet:
-        #     path: /
-        #     port: 8443
-        #     scheme: HTTPS
-        #   initialDelaySeconds: 10
-        #   periodSeconds: 60
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8443
+            scheme: HTTPS
+          initialDelaySeconds: 30
+          periodSeconds: 60
         resources:
           limits:
             cpu: 256m

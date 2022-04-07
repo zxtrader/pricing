@@ -18,37 +18,50 @@ spec:
       labels:
         app: {{ template "prefix" . }}ptservice
     spec:
+{{- if .Values.misc.excludeHypervisors }}
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: hypervisor
+                operator: NotIn
+                values:
+{{- range .Values.misc.excludeHypervisors }}
+                - {{ . }}
+{{- end }}
+{{- end }}
       containers:
       - name: ptservice
         image: {{ .Values.application.ptservice.serviceImage }}:{{ .Values.application.ptservice.tag }}
 {{- if .Values.application.ptservice.command }}
         command:
-{{ range .Values.application.ptservice.command }}
+{{- range .Values.application.ptservice.command }}
         - {{ . }}
-{{ end }}
+{{- end }}
 {{- end }}
 {{- if .Values.application.ptservice.args }}
         args:
         - CEXPay.PaymentTools.InvoiceService
-{{ range .Values.application.ptservice.args }}
+{{- range .Values.application.ptservice.args }}
         - {{ . }}
-{{ end }}
+{{- end }}
 {{- end }}
         envFrom:
         - configMapRef:
             name: {{ template "prefix" . }}ptservice-envvars
         env:
-        - name: Serilog__MinimumLevel__Default
-          value: Information
+#        - name: Serilog__MinimumLevel__Default
+#          value: Information
         - name: BasePath
           value: /paytools/v1/service
         - name: GatewayHttpClient__Url
           value: https://{{ template "prefix" . }}gatehostinternal:8443/
 {{- if .Values.application.ptservice.env }}
-{{ range $key, $value := .Values.application.ptservice.env }}
-        - name: "{{ $key }}"
-          value: "{{ $value }}"
-{{ end }}
+{{- range $key, $value := .Values.application.ptservice.env }}
+        - name: {{ $key | quote }}
+          value: {{ $value | quote }}
+{{- end }}
 {{- end }}
         livenessProbe:
           httpGet:

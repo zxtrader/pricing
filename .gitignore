@@ -6,3 +6,4 @@ runtime.secrets
 *.local*
 .DS_Store
 .kube-config-cexpay-gitlab
+.idea/

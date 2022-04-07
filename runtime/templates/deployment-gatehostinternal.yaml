@@ -17,20 +17,33 @@ spec:
       labels:
         app: {{ template "prefix" . }}gatehostinternal
     spec:
+{{- if .Values.misc.excludeHypervisors }}
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: hypervisor
+                operator: NotIn
+                values:
+{{- range .Values.misc.excludeHypervisors }}
+                - {{ . }}
+{{- end }}
+{{- end }}
       containers:
       - name: gatehostinternal
         image: {{ .Values.application.gatehostinternal.serviceImage }}:{{ .Values.application.gatehostinternal.tag }}
 {{- if .Values.application.gatehostinternal.command }}
         command:
-{{ range .Values.application.gatehostinternal.command }}
+{{- range .Values.application.gatehostinternal.command }}
         - {{ . }}
-{{ end }}
+{{- end }}
 {{- end }}
 {{- if .Values.application.gatehostinternal.args }}
         args:
-{{ range .Values.application.gatehostinternal.args }}
+{{- range .Values.application.gatehostinternal.args }}
         - {{ . }}
-{{ end }}
+{{- end }}
 {{- end }}
         envFrom:
         - configMapRef:
@@ -43,28 +56,28 @@ spec:
         - name: Api__BaseUrl
           value: https://{{ template "prefix" . }}api:8443/
 {{- if .Values.application.gatehostinternal.env }}
-{{ range $key, $value := .Values.application.gatehostinternal.env }}
-        - name: "{{ $key }}"
-          value: "{{ $value }}"
-{{ end }}
+{{- range $key, $value := .Values.application.gatehostinternal.env }}
+        - name: {{ $key | quote }}
+          value: {{ $value | quote }}
 {{- end }}
-        # livenessProbe:
-        #   httpGet:
-        #     path: /info
-        #     port: 8443
-        #     scheme: HTTPS
-        #   initialDelaySeconds: 180
-        #   periodSeconds: 60
+{{- end }}
+        livenessProbe:
+          httpGet:
+            path: /info/host
+            port: 8443
+            scheme: HTTPS
+          initialDelaySeconds: 180
+          periodSeconds: 60
         ports:
         - containerPort: 8443
           protocol: TCP
-        # readinessProbe:
-        #   httpGet:
-        #     path: /info
-        #     port: 8443
-        #     scheme: HTTPS
-        #   initialDelaySeconds: 60
-        #   periodSeconds: 30
+        readinessProbe:
+          httpGet:
+            path: /info/host
+            port: 8443
+            scheme: HTTPS
+          initialDelaySeconds: 60
+          periodSeconds: 30
         resources:
           limits:
             cpu: 512m

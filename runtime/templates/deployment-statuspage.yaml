@@ -1,21 +1,22 @@
+{{- if ne .Values.zone "production" }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: {{ template "prefix" . }}invoice
-  name: {{ template "prefix" . }}invoice
+    app: {{ template "prefix" . }}statuspage
+  name: {{ template "prefix" . }}statuspage
 spec:
   selector:
     matchLabels:
-      app: {{ template "prefix" . }}invoice
-  replicas: {{ .Values.application.invoice.replicas | default 0 }}
+      app: {{ template "prefix" . }}statuspage
+  replicas: {{ .Values.application.statuspage.replicas | default 0 }}
   strategy:
     type: RollingUpdate
   revisionHistoryLimit: 3
   template:
     metadata:
       labels:
-        app: {{ template "prefix" . }}invoice
+        app: {{ template "prefix" . }}statuspage
     spec:
 {{- if .Values.misc.excludeHypervisors }}
       affinity:
@@ -31,32 +32,28 @@ spec:
 {{- end }}
 {{- end }}
       containers:
-      - name: invoice
-        image: {{ .Values.application.invoice.serviceImage }}:{{ .Values.application.invoice.tag }}
-{{- if .Values.application.invoice.command }}
+      - name: statuspage
+        image: {{ .Values.application.statuspage.serviceImage }}:{{ .Values.application.statuspage.tag }}
+{{- if .Values.application.statuspage.command }}
         command:
-{{- range .Values.application.invoice.command }}
+{{- range .Values.application.statuspage.command }}
         - {{ . }}
 {{- end }}
 {{- end }}
-{{- if .Values.application.invoice.args }}
+{{- if .Values.application.statuspage.args }}
         args:
-{{- range .Values.application.invoice.args }}
+{{- range .Values.application.statuspage.args }}
         - {{ . }}
 {{- end }}
 {{- end }}
         envFrom:
         - configMapRef:
-            name: {{ template "prefix" . }}invoice-envvars
+            name: {{ template "prefix" . }}statuspage-envvars
         env:
         - name: Serilog__MinimumLevel__Default
           value: Information
-        - name: IdentityServerAuthentication__BearerAuthority
-          value: https://{{ template "prefix" . }}identity:8443/
-        - name: GatewayOrderHttpClient__Url
-          value: https://{{ template "prefix" . }}gatehostinternal:8443/
-{{- if .Values.application.invoice.env }}
-{{- range $key, $value := .Values.application.invoice.env }}
+{{- if .Values.application.statuspage.env }}
+{{- range $key, $value := .Values.application.statuspage.env }}
         - name: {{ $key | quote }}
           value: {{ $value | quote }}
 {{- end }}
@@ -81,10 +78,10 @@ spec:
         resources:
           limits:
             cpu: 512m
-            memory: 4096Mi
+            memory: 512Mi
           requests:
             cpu: 128m
-            memory: 2048Mi
+            memory: 128Mi
         # # Will be available with Kubernetes 1.20
         # startupProbe:
         #   httpGet:
@@ -94,12 +91,14 @@ spec:
         #   periodSeconds: 5
         volumeMounts:
         # - name: config-files
-        #   mountPath: /etc/cexiolabs/cexpay.api/
+        #   mountPath: /etc/cexiolabs/cexiolabs.statuspage.host/extra
         #   readOnly: true
         - name: secret-certificate
-          mountPath: /etc/cexiolabs/cexpay.invoice/ssl/
+          mountPath: /etc/cexiolabs/cexiolabs.statuspage.host/ssl/
         - name: secret-files
-          mountPath: /etc/cexiolabs/cexpay.invoice/secrets/
+          mountPath: /etc/cexiolabs/cexiolabs.statuspage.host/secrets/
+      - name: local-temporary-postgres
+        image: zxteamorg/devel.postgres-13:20210515
 {{- if ne .Values.zone "production" }}
       imagePullSecrets:
       - name: cexpay-registry
@@ -107,10 +106,11 @@ spec:
       volumes:
       # - name: config-files
       #   configMap:
-      #     name: {{ template "prefix" . }}invoice-files
+      #     name: {{ template "prefix" . }}statuspage-files
       - name: secret-certificate
         secret:
-          secretName: {{ template "prefix" . }}invoice-certificate
+          secretName: {{ template "prefix" . }}statuspage-certificate
       - name: secret-files
         secret:
-          secretName: {{ template "prefix" . }}invoice
+          secretName: {{ template "prefix" . }}statuspage
+{{- end }}

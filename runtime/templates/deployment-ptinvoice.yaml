@@ -18,21 +18,34 @@ spec:
       labels:
         app: {{ template "prefix" . }}ptinvoice
     spec:
+{{- if .Values.misc.excludeHypervisors }}
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: hypervisor
+                operator: NotIn
+                values:
+{{- range .Values.misc.excludeHypervisors }}
+                - {{ . }}
+{{- end }}
+{{- end }}
       containers:
       - name: ptinvoice
         image: {{ .Values.application.ptinvoice.serviceImage }}:{{ .Values.application.ptinvoice.tag }}
 {{- if .Values.application.ptinvoice.command }}
         command:
-{{ range .Values.application.ptinvoice.command }}
+{{- range .Values.application.ptinvoice.command }}
         - {{ . }}
-{{ end }}
+{{- end }}
 {{- end }}
 {{- if .Values.application.ptinvoice.args }}
         args:
         - CEXPay.PaymentTools.InvoiceAPI
-{{ range .Values.application.ptinvoice.args }}
+{{- range .Values.application.ptinvoice.args }}
         - {{ . }}
-{{ end }}
+{{- end }}
 {{- end }}
         envFrom:
         - configMapRef:
@@ -47,10 +60,10 @@ spec:
         - name: GatewayHttpClient__Url
           value: https://{{ template "prefix" . }}gatehostinternal:8443/
 {{- if .Values.application.ptinvoice.env }}
-{{ range $key, $value := .Values.application.ptinvoice.env }}
-        - name: "{{ $key }}"
-          value: "{{ $value }}"
-{{ end }}
+{{- range $key, $value := .Values.application.ptinvoice.env }}
+        - name: {{ $key | quote }}
+          value: {{ $value | quote }}
+{{- end }}
 {{- end }}
         livenessProbe:
           httpGet:

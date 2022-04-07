@@ -22,48 +22,64 @@ spec:
       labels:
         app: {{ template "prefix" . }}board
     spec:
+{{- if .Values.misc.excludeHypervisors }}
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: hypervisor
+                operator: NotIn
+                values:
+{{- range .Values.misc.excludeHypervisors }}
+                - {{ . }}
+{{- end }}
+{{- end }}
       containers:
       - name: board
         image: {{ .Values.application.board.serviceImage }}:{{ .Values.application.board.tag }}
 {{- if .Values.application.board.command }}
         command:
-{{ range .Values.application.board.command }}
+{{- range .Values.application.board.command }}
         - {{ . }}
-{{ end }}
+{{- end }}
 {{- end }}
         args:
         - "--use-ssl"
 {{- if .Values.application.board.args }}
-{{ range .Values.application.board.args }}
+{{- range .Values.application.board.args }}
         - {{ . }}
-{{ end }}
+{{- end }}
 {{- end }}
         env:
         - name: BASE_PATH
           value: /
 {{- if .Values.application.board.env }}
-{{ range $key, $value := .Values.application.board.env }}
-        - name: "{{ $key }}"
-          value: "{{ $value }}"
-{{ end }}
+{{- range $key, $value := .Values.application.board.env }}
+        - name: {{ $key | quote }}
+          value: {{ $value | quote }}
+{{- end }}
 {{- end }}
         livenessProbe:
+          failureThreshold: 20
           httpGet:
             path: /
             port: 8443
             scheme: HTTPS
           initialDelaySeconds: 180
           periodSeconds: 60
+          successThreshold: 1
+          timeoutSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8443
+            scheme: HTTPS
+          initialDelaySeconds: 30
+          periodSeconds: 60
         ports:
         - containerPort: 8443
           protocol: TCP
-        # readinessProbe:
-        #   httpGet:
-        #     path: /
-        #     port: 8443
-        #     scheme: HTTPS
-        #   initialDelaySeconds: 10
-        #   periodSeconds: 60
         resources:
           limits:
             cpu: 256m
