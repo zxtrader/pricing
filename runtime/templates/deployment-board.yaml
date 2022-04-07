@@ -22,7 +22,7 @@ spec:
       labels:
         app: {{ template "prefix" . }}board
     spec:
-{{- if .Values.misc.excludeHypervisors }}
+{{- if and (.Values.misc .Values.misc.excludeHypervisors) }}
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:

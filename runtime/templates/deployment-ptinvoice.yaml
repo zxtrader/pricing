@@ -18,7 +18,7 @@ spec:
       labels:
         app: {{ template "prefix" . }}ptinvoice
     spec:
-{{- if .Values.misc.excludeHypervisors }}
+{{- if and (.Values.misc .Values.misc.excludeHypervisors) }}
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
