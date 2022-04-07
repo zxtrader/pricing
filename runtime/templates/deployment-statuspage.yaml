@@ -42,11 +42,12 @@ spec:
         - {{ . }}
 {{- end }}
 {{- end }}
-{{- if .Values.application.statuspage.args }}
         args:
+{{- if .Values.application.statuspage.args }}
 {{- range .Values.application.statuspage.args }}
         - {{ . }}
 {{- end }}
+        - --config-json-file=/etc/cexiolabs/cexpay.statuspage/checkers-configuration.json
 {{- end }}
         envFrom:
         - configMapRef:
@@ -92,9 +93,9 @@ spec:
         #   failureThreshold: 60
         #   periodSeconds: 5
         volumeMounts:
-        # - name: config-files
-        #   mountPath: /etc/cexiolabs/cexiolabs.statuspage.host/extra
-        #   readOnly: true
+        - name: config-files
+          mountPath: /etc/cexiolabs/cexpay.statuspage/
+          readOnly: true
         - name: secret-certificate
           mountPath: /etc/cexiolabs/cexiolabs.statuspage.host/ssl/
         - name: secret-files
@@ -106,9 +107,9 @@ spec:
       - name: cexpay-registry
 {{- end }}
       volumes:
-      # - name: config-files
-      #   configMap:
-      #     name: {{ template "prefix" . }}statuspage-files
+      - name: config-files
+        configMap:
+          name: {{ template "prefix" . }}statuspage-files
       - name: secret-certificate
         secret:
           secretName: {{ template "prefix" . }}statuspage-certificate

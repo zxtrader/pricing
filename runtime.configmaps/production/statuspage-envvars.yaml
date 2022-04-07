@@ -1,0 +1,17 @@
+# kubectl --namespace cexpay-admin get --output=yaml ConfigMap/statuspage-envvars
+# kubectl --namespace cexpay-admin get --output=json ConfigMap/statuspage-envvars | jq -r ".data" | yq eval -P | sed 's/^/  /'
+# kubectl --namespace cexpay-admin apply --filename=runtime.configmaps/production/statuspage-envvars.yaml
+
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: statuspage-envvars
+  namespace: cexpay-admin
+data:
+  API__CexApiUrl: https://cex.io/api/
+  API__PrimeRestApiUrl: https://liquidity.prime.cex.io/api/rest/
+  API__PssProviderWtf2ApiUrl: https://provider-wtf2.prodpss.kube/
+  Checkers__0__Parameters__CexApiKey: IT9cFcnpi0eRWv964JrSQarmMl8 # Account Balance permission only (https://jira.wnb:8083/browse/CP-679)
+  Checkers__0__Parameters__CexApiUserId: up131662574
+  Checkers__0__Parameters__PrimeApiKey: ???  # RO key

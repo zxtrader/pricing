@@ -1,0 +1,14 @@
+{
+    "Checkers": [
+        {
+            "Type": "BalanceChecker",
+            "Name": "Balance Checker",
+            "Cron": "*/2 * * * *",
+            "DowngradedFailureCount": 1,
+            "CriticalFailureCount": 2,
+            "Parameters": {
+                "CheckerOptions": "{\"currencies\":{\"ATOM\":{\"wtfWalletIds\":[\"a25484de-7c3b-473e-98cb-ce0762091b10\"]},\"BTC\":{\"wtfWalletIds\":[\"426990bf-782d-4db3-91c4-8423f9fdd0bc\"]},\"DASH\":{\"wtfWalletIds\":[\"370205de-d700-4231-b233-1abb76fda765\"]},\"DOGE\":{\"wtfWalletIds\":[\"fb7a59f2-7041-4cbf-8789-71b47bb30b4e\"]},\"ETH\":{\"wtfWalletIds\":[\"269e8d49-c428-47c7-8546-73b04e3e137c\"]},\"EUR\":{\"wtfWalletIds\":[]},\"LTC\":{\"wtfWalletIds\":[\"9a363246-04f3-4d0f-b531-635f32f87db7\"]},\"TRX\":{\"wtfWalletIds\":[\"9f59c38f-bfaf-498b-84ca-ec71b2fc0a83\"]},\"USD\":{\"wtfWalletIds\":[]}}}"
+            }
+        }
+    ]
+}

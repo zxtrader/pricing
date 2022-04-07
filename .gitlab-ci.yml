@@ -249,14 +249,14 @@ include:
     - docker cp "${CONTAINER_ID}:/usr/local/cexiolabs/cexpay.board/." .github-data
     - docker cp "${CONTAINER_ID}:/usr/local/bin/." board-bin-tools
     - docker rm -v "${CONTAINER_ID}"
-    - export CEXPAY_GATEWAY_ORIGIN_WHITE_LIST==$(yq eval '.application.dashboard.env.CEXPAY_GATEWAY_ORIGIN_WHITE_LIST' runtime/values.test.yaml)
-    - export CEXPAY_IDENTITY_API_URL=$(yq eval '.application.dashboard.env.CEXPAY_IDENTITY_API_URL' runtime/values.test.yaml)
-    - export CEXPAY_INVOICE_API_URL=$(yq eval '.application.dashboard.env.CEXPAY_INVOICE_API_URL' runtime/values.test.yaml)
-    - export CEXPAY_PAYTOOLS_INVOICE_API_URL=$(yq eval '.application.dashboard.env.CEXPAY_PAYTOOLS_INVOICE_API_URL' runtime/values.test.yaml)
-    - export CEXPAY_PROCESSING_V2_API_URL=$(yq eval '.application.dashboard.env.CEXPAY_PROCESSING_V2_API_URL' runtime/values.test.yaml)
-    - export CEXPAY_PROCESSING_V3_API_URL=$(yq eval '.application.dashboard.env.CEXPAY_PROCESSING_V3_API_URL' runtime/values.test.yaml)
-    - export OAUTH_CLIENT_ID=$(yq eval '.application.dashboard.env.OAUTH_CLIENT_ID' runtime/values.test.yaml)
-    - export POST_LOGOUT_REDIRECT_URL=$(yq eval '.application.dashboard.env.POST_LOGOUT_REDIRECT_URL' runtime/values.test.yaml)
+    - export CEXPAY_GATEWAY_ORIGIN_WHITE_LIST==$(yq eval '.application.board.env.CEXPAY_GATEWAY_ORIGIN_WHITE_LIST' runtime/values.test.yaml)
+    - export CEXPAY_IDENTITY_API_URL=$(yq eval '.application.board.env.CEXPAY_IDENTITY_API_URL' runtime/values.test.yaml)
+    - export CEXPAY_INVOICE_API_URL=$(yq eval '.application.board.env.CEXPAY_INVOICE_API_URL' runtime/values.test.yaml)
+    - export CEXPAY_PAYTOOLS_INVOICE_API_URL=$(yq eval '.application.board.env.CEXPAY_PAYTOOLS_INVOICE_API_URL' runtime/values.test.yaml)
+    - export CEXPAY_PROCESSING_V2_API_URL=$(yq eval '.application.board.env.CEXPAY_PROCESSING_V2_API_URL' runtime/values.test.yaml)
+    - export CEXPAY_PROCESSING_V3_API_URL=$(yq eval '.application.board.env.CEXPAY_PROCESSING_V3_API_URL' runtime/values.test.yaml)
+    - export OAUTH_CLIENT_ID=$(yq eval '.application.board.env.OAUTH_CLIENT_ID' runtime/values.test.yaml)
+    - export POST_LOGOUT_REDIRECT_URL=$(yq eval '.application.board.env.POST_LOGOUT_REDIRECT_URL' runtime/values.test.yaml)
     - OMIT_NGINX=yes DIST_PATH=.github-data/pscl BASE_PATH=/pscl/ OAUTH_CALLBACK_PATH=/pscl/profile/oauth-challenge/ ./board-bin-tools/docker-entrypoint-pscl.sh
     - OMIT_NGINX=yes DIST_PATH=.github-data/wznk BASE_PATH=/wznk/ OAUTH_CALLBACK_PATH=/wznk/profile/oauth-challenge/ ./board-bin-tools/docker-entrypoint-wznk.sh
     - OMIT_NGINX=yes DIST_PATH=.github-data/yong BASE_PATH=/yong/ OAUTH_CALLBACK_PATH=/wznk/profile/oauth-challenge/ ./board-bin-tools/docker-entrypoint-yong.sh
@@ -415,14 +415,14 @@ include:
     - docker cp "${CONTAINER_ID}:/usr/local/cexiolabs/cexpay.board/." .github-data
     - docker cp "${CONTAINER_ID}:/usr/local/bin/." board-bin-tools
     - docker rm -v "${CONTAINER_ID}"
-    - export CEXPAY_GATEWAY_ORIGIN_WHITE_LIST==$(yq eval '.application.dashboard.env.CEXPAY_GATEWAY_ORIGIN_WHITE_LIST' runtime/values.production.yaml)
-    - export CEXPAY_IDENTITY_API_URL=$(yq eval '.application.dashboard.env.CEXPAY_IDENTITY_API_URL' runtime/values.production.yaml)
-    - export CEXPAY_INVOICE_API_URL=$(yq eval '.application.dashboard.env.CEXPAY_INVOICE_API_URL' runtime/values.production.yaml)
-    - export CEXPAY_PAYTOOLS_INVOICE_API_URL=$(yq eval '.application.dashboard.env.CEXPAY_PAYTOOLS_INVOICE_API_URL' runtime/values.production.yaml)
-    - export CEXPAY_PROCESSING_V2_API_URL=$(yq eval '.application.dashboard.env.CEXPAY_PROCESSING_V2_API_URL' runtime/values.production.yaml)
-    - export CEXPAY_PROCESSING_V3_API_URL=$(yq eval '.application.dashboard.env.CEXPAY_PROCESSING_V3_API_URL' runtime/values.production.yaml)
-    - export OAUTH_CLIENT_ID=$(yq eval '.application.dashboard.env.OAUTH_CLIENT_ID' runtime/values.production.yaml)
-    - export POST_LOGOUT_REDIRECT_URL=$(yq eval '.application.dashboard.env.POST_LOGOUT_REDIRECT_URL' runtime/values.production.yaml)
+    - export CEXPAY_GATEWAY_ORIGIN_WHITE_LIST==$(yq eval '.application.board.env.CEXPAY_GATEWAY_ORIGIN_WHITE_LIST' runtime/values.production.yaml)
+    - export CEXPAY_IDENTITY_API_URL=$(yq eval '.application.board.env.CEXPAY_IDENTITY_API_URL' runtime/values.production.yaml)
+    - export CEXPAY_INVOICE_API_URL=$(yq eval '.application.board.env.CEXPAY_INVOICE_API_URL' runtime/values.production.yaml)
+    - export CEXPAY_PAYTOOLS_INVOICE_API_URL=$(yq eval '.application.board.env.CEXPAY_PAYTOOLS_INVOICE_API_URL' runtime/values.production.yaml)
+    - export CEXPAY_PROCESSING_V2_API_URL=$(yq eval '.application.board.env.CEXPAY_PROCESSING_V2_API_URL' runtime/values.production.yaml)
+    - export CEXPAY_PROCESSING_V3_API_URL=$(yq eval '.application.board.env.CEXPAY_PROCESSING_V3_API_URL' runtime/values.production.yaml)
+    - export OAUTH_CLIENT_ID=$(yq eval '.application.board.env.OAUTH_CLIENT_ID' runtime/values.production.yaml)
+    - export POST_LOGOUT_REDIRECT_URL=$(yq eval '.application.board.env.POST_LOGOUT_REDIRECT_URL' runtime/values.production.yaml)
     - OMIT_NGINX=yes DIST_PATH=.github-data/pscl BASE_PATH=/pscl/ OAUTH_CALLBACK_PATH=/pscl/profile/oauth-challenge/ ./board-bin-tools/docker-entrypoint-pscl.sh
     - OMIT_NGINX=yes DIST_PATH=.github-data/wznk BASE_PATH=/wznk/ OAUTH_CALLBACK_PATH=/wznk/profile/oauth-challenge/ ./board-bin-tools/docker-entrypoint-wznk.sh
     - OMIT_NGINX=yes DIST_PATH=.github-data/yong BASE_PATH=/yong/ OAUTH_CALLBACK_PATH=/wznk/profile/oauth-challenge/ ./board-bin-tools/docker-entrypoint-yong.sh
@@ -790,6 +790,8 @@ include:
     - kubectl --namespace cexpay-admin apply --filename=runtime.configmaps/production/notifier-files.yaml
     - kubectl --namespace cexpay-admin apply --filename=runtime.configmaps/production/processing-envvars.yaml
     - kubectl --namespace cexpay-admin apply --filename=runtime.configmaps/production/processing-files.yaml
+    - kubectl --namespace cexpay-admin apply --filename=runtime.configmaps/production/statuspage-envvars.yaml
+    - kubectl --namespace cexpay-admin apply --filename=runtime.configmaps/production/statuspage-files.yaml
     - kubectl --namespace cexpay-admin apply --filename=runtime.configmaps/production/supportbot-envvars.yaml
     - kubectl --namespace cexpay-admin apply --filename=runtime.configmaps/production/supportbot-files.yaml
   when: manual

@@ -36,7 +36,7 @@ download () {
 	FILE_SIZE=$(($FILE_SIZE + 0))
 
 	if [ ${FILE_SIZE} -le 1 ]; then
-		echo "Downloaded '$1' ${FILE_SIZE} bytes, check that '$1' exist in '${KUBE_NAMESPACE}' enviroment"
+		echo "Downloaded '$1' ${FILE_SIZE} bytes, check that '$1' exist in '${KUBE_NAMESPACE}' namespace."
 		exit 42
 	fi
 	echo "Downloaded '$1' $FILE_SIZE bytes"
@@ -45,27 +45,32 @@ download () {
 download "ConfigMap/api-envvars"                       "${TARGET_DIRECTORY}/configmap-api-envvars.yaml"
 download "ConfigMap/cpservice"                         "${TARGET_DIRECTORY}/configmap-cpservice.yaml"
 download "ConfigMap/gatehostinternal-envvars"          "${TARGET_DIRECTORY}/configmap-gatehostinternal-envvars.yaml"
-download "ConfigMap/ptinvoice-envvars"                 "${TARGET_DIRECTORY}/configmap-ptinvoice-envvars.yaml"
-# download "ConfigMap/ptmerchant-envvars"                "${TARGET_DIRECTORY}/configmap-ptmerchant-envvars.yaml"
-download "ConfigMap/ptservice-envvars"                 "${TARGET_DIRECTORY}/configmap-ptservice-envvars.yaml"
 download "ConfigMap/identity-envvars"                  "${TARGET_DIRECTORY}/configmap-identity-envvars.yaml"
 download "ConfigMap/messengerbridge-files"             "${TARGET_DIRECTORY}/configmap-messengerbridge-files.yaml"
 download "ConfigMap/notifier-envvars"                  "${TARGET_DIRECTORY}/configmap-notifier-envvars.yaml"
 download "ConfigMap/notifier-files"                    "${TARGET_DIRECTORY}/configmap-notifier-files.yaml"
 download "ConfigMap/processing-envvars"                "${TARGET_DIRECTORY}/configmap-processing-envvars.yaml"
 download "ConfigMap/processing-files"                  "${TARGET_DIRECTORY}/configmap-processing-files.yaml"
-download "ConfigMap/statuspage-envvars"                "${TARGET_DIRECTORY}/configmap-statuspage-envvars.yaml"
 download "Secrets/api"                                 "${TARGET_DIRECTORY}/secret-api.yaml"
 download "Secrets/gatehostinternal"                    "${TARGET_DIRECTORY}/secret-gatehostinternal.yaml"
-download "Secrets/ptinvoice"                           "${TARGET_DIRECTORY}/secret-ptinvoice.yaml"
-# download "Secrets/ptmerchant"                          "${TARGET_DIRECTORY}/secret-ptmerchant.yaml"
-download "Secrets/ptservice"                           "${TARGET_DIRECTORY}/secret-ptservice.yaml"
 download "Secrets/identity"                            "${TARGET_DIRECTORY}/secret-identity.yaml"
 download "Secrets/invoice"                             "${TARGET_DIRECTORY}/secret-invoice.yaml"
 download "Secrets/messengerbridge"                     "${TARGET_DIRECTORY}/secret-messengerbridge.yaml"
 download "Secrets/notifier"                            "${TARGET_DIRECTORY}/secret-notifier.yaml"
 download "Secrets/processing"                          "${TARGET_DIRECTORY}/secret-processing.yaml"
-download "Secrets/statuspage"                          "${TARGET_DIRECTORY}/secret-statuspage.yaml"
+
+if [ "${KUBE_NAMESPACE}" != "cexpay-admin" ]; then
+	# download "ConfigMap/ptinvoice-envvars"                 "${TARGET_DIRECTORY}/configmap-ptinvoice-envvars.yaml"
+	# download "ConfigMap/ptmerchant-envvars"                "${TARGET_DIRECTORY}/configmap-ptmerchant-envvars.yaml"
+	# download "ConfigMap/ptservice-envvars"                 "${TARGET_DIRECTORY}/configmap-ptservice-envvars.yaml"
+	download "Secrets/ptinvoice"                           "${TARGET_DIRECTORY}/secret-ptinvoice.yaml"
+	# download "Secrets/ptmerchant"                          "${TARGET_DIRECTORY}/secret-ptmerchant.yaml"
+	download "Secrets/ptservice"                           "${TARGET_DIRECTORY}/secret-ptservice.yaml"
+
+	download "ConfigMap/statuspage-envvars"                "${TARGET_DIRECTORY}/configmap-statuspage-envvars.yaml"
+	download "ConfigMap/statuspage-files"                  "${TARGET_DIRECTORY}/configmap-statuspage-files.yaml"
+	download "Secrets/statuspage"                          "${TARGET_DIRECTORY}/secret-statuspage.yaml"
+fi
 
 
 case "${KUBE_NAMESPACE}" in

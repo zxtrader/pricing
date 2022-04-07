@@ -7,3 +7,10 @@ kind: ConfigMap
 metadata:
   name: statuspage-envvars
   namespace: cexpay-presentation-admin
+data:
+  API__CexApiUrl: https://cex.io/api/
+  API__PrimeRestApiUrl: https://liquidity.prime.uat.kube/api/rest/
+  API__PssProviderWtf2ApiUrl: https://pss-provider-wtf2.dev.kube/
+  Checkers__0__Parameters__CexApiKey: Sf9ikZSxF20wRUxwbutucirIF8
+  Checkers__0__Parameters__CexApiUserId: up120080092
+  Checkers__0__Parameters__PrimeApiKey: b2d5cc661e9a26873f22196132dcd918ecc67c5aaba1e8a674d0d71235352fb1

@@ -1,0 +1,14 @@
+{
+    "Checkers": [
+        {
+            "Type": "BalanceChecker",
+            "Name": "Balance Checker",
+            "Cron": "*/2 * * * *",
+            "DowngradedFailureCount": 1,
+            "CriticalFailureCount": 2,
+            "Parameters": {
+                "CheckerOptions": "{\"currencies\":{\"BCH\":{\"wtfWalletIds\":[\"13a4d48b-563e-4c36-9ec0-67ebc865f7af\"]},\"BNB\":{\"wtfWalletIds\":[\"1511495b-bb53-4e09-8970-da7e2ff81cb9\"]},\"BTC\":{\"wtfWalletIds\":[\"ba25abba-b77e-4312-802f-105a81853922\"]},\"DASH\":{\"wtfWalletIds\":[\"0e558165-0493-42b6-8228-d9fb50e545f5\"]},\"DOGE\":{\"wtfWalletIds\":[\"deffb4d3-c2a5-4a0f-a70a-86ec4c5fb756\"]},\"ETH\":{\"wtfWalletIds\":[\"307eca86-5586-436c-b35f-342d37da4ba3\"]},\"EUR\":{\"wtfWalletIds\":[]},\"LTC\":{\"wtfWalletIds\":[\"b80d837c-09f8-4bad-a64a-bc7b038989b9\"]},\"MHC\":{\"wtfWalletIds\":[\"9896e895-3c93-44d7-857d-8261d45660ec\"]},\"TRX\":{\"wtfWalletIds\":[\"63a4bd7b-535a-4adb-8017-f990754c39f3\"]},\"USD\":{\"wtfWalletIds\":[]},\"USDT\":{\"wtfWalletIds\":[\"1511495b-bb53-4e09-8970-da7e2ff81cb9\",\"307eca86-5586-436c-b35f-342d37da4ba3\",\"63a4bd7b-535a-4adb-8017-f990754c39f3\"]}}}"
+            }
+        }
+    ]
+}

@@ -49,9 +49,9 @@ spec:
         - {{ . }}
 {{- end }}
 {{- end }}
-        envFrom:
-        - configMapRef:
-            name: {{ template "prefix" . }}ptinvoice-envvars
+        # envFrom:
+        # - configMapRef:
+        #     name: {{ template "prefix" . }}ptinvoice-envvars
         env:
         - name: Serilog__MinimumLevel__Default
           value: Information
