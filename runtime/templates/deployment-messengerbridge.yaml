@@ -17,20 +17,33 @@ spec:
       labels:
         app: {{ template "prefix" . }}messengerbridge
     spec:
+{{- if .Values.misc.excludeHypervisors }}
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: hypervisor
+                operator: NotIn
+                values:
+{{- range .Values.misc.excludeHypervisors }}
+                - {{ . }}
+{{- end }}
+{{- end }}
       containers:
       - name: messengerbridge
         image: {{ .Values.application.messengerbridge.serviceImage }}:{{ .Values.application.messengerbridge.tag }}
 {{- if .Values.application.messengerbridge.command }}
         command:
-{{ range .Values.application.messengerbridge.command }}
+{{- range .Values.application.messengerbridge.command }}
         - {{ . }}
-{{ end }}
+{{- end }}
 {{- end }}
 {{- if .Values.application.messengerbridge.args }}
         args:
-{{ range .Values.application.messengerbridge.args }}
+{{- range .Values.application.messengerbridge.args }}
         - {{ . }}
-{{ end }}
+{{- end }}
 {{- end }}
         ports:
         - containerPort: 8443
@@ -50,10 +63,10 @@ spec:
         - name: LOG_LEVEL
           value: info
 {{- if .Values.application.messengerbridge.env }}
-{{ range $key, $value := .Values.application.messengerbridge.env }}
+{{- range $key, $value := .Values.application.messengerbridge.env }}
         - name: {{ $key | quote }}
           value: {{ $value | quote }}
-{{ end }}
+{{- end }}
 {{- end }}
         livenessProbe:
           httpGet:

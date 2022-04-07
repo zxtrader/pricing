@@ -17,20 +17,33 @@ spec:
       labels:
         app: {{ template "prefix" . }}api
     spec:
+{{- if .Values.misc.excludeHypervisors }}
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: hypervisor
+                operator: NotIn
+                values:
+{{- range .Values.misc.excludeHypervisors }}
+                - {{ . }}
+{{- end }}
+{{- end }}
       containers:
       - name: api
         image: {{ .Values.application.api.serviceImage }}:{{ .Values.application.api.tag }}
 {{- if .Values.application.api.command }}
         command:
-{{ range .Values.application.api.command }}
+{{- range .Values.application.api.command }}
         - {{ . }}
-{{ end }}
+{{- end }}
 {{- end }}
 {{- if .Values.application.api.args }}
         args:
-{{ range .Values.application.api.args }}
+{{- range .Values.application.api.args }}
         - {{ . }}
-{{ end }}
+{{- end }}
 {{- end }}
         envFrom:
         - configMapRef:
@@ -48,10 +61,10 @@ spec:
         - name: ProcessingHttpClient__Url
           value: https://{{ template "prefix" . }}processing:8082/
 {{- if .Values.application.api.env }}
-{{ range $key, $value := .Values.application.api.env }}
+{{- range $key, $value := .Values.application.api.env }}
         - name: {{ $key | quote }}
           value: {{ $value | quote }}
-{{ end }}
+{{- end }}
 {{- end }}
         livenessProbe:
           httpGet:
@@ -63,13 +76,13 @@ spec:
         ports:
         - containerPort: 8443
           protocol: TCP
-        # readinessProbe:
-        #   httpGet:
-        #     path: /v3/info
-        #     port: 8443
-        #     scheme: HTTPS
-        #   initialDelaySeconds: 60
-        #   periodSeconds: 30
+        readinessProbe:
+          httpGet:
+            path: /v3/info
+            port: 8443
+            scheme: HTTPS
+          initialDelaySeconds: 5
+          periodSeconds: 5
         resources:
           limits:
             cpu: 512m

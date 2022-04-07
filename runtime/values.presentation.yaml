@@ -177,6 +177,9 @@ ingress:
       "/emulator-crypto":
         backendServiceName: processing
         backendServicePort: 8080
+      "/emulator-exchange":
+        backendServiceName: processing
+        backendServicePort: 8080
       "/v2/":
         backendServiceName: processing
         backendServicePort: 8080

@@ -18,20 +18,33 @@ spec:
       labels:
         app: {{ template "prefix" . }}statuspage
     spec:
+{{- if .Values.misc.excludeHypervisors }}
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: hypervisor
+                operator: NotIn
+                values:
+{{- range .Values.misc.excludeHypervisors }}
+                - {{ . }}
+{{- end }}
+{{- end }}
       containers:
       - name: statuspage
         image: {{ .Values.application.statuspage.serviceImage }}:{{ .Values.application.statuspage.tag }}
 {{- if .Values.application.statuspage.command }}
         command:
-{{ range .Values.application.statuspage.command }}
+{{- range .Values.application.statuspage.command }}
         - {{ . }}
-{{ end }}
+{{- end }}
 {{- end }}
 {{- if .Values.application.statuspage.args }}
         args:
-{{ range .Values.application.statuspage.args }}
+{{- range .Values.application.statuspage.args }}
         - {{ . }}
-{{ end }}
+{{- end }}
 {{- end }}
         envFrom:
         - configMapRef:
@@ -40,10 +53,10 @@ spec:
         - name: Serilog__MinimumLevel__Default
           value: Information
 {{- if .Values.application.statuspage.env }}
-{{ range $key, $value := .Values.application.statuspage.env }}
+{{- range $key, $value := .Values.application.statuspage.env }}
         - name: {{ $key | quote }}
           value: {{ $value | quote }}
-{{ end }}
+{{- end }}
 {{- end }}
         livenessProbe:
           httpGet:
@@ -55,13 +68,13 @@ spec:
         ports:
         - containerPort: 8443
           protocol: TCP
-        # readinessProbe:
-        #   httpGet:
-        #     path: /info
-        #     port: 8443
-        #     scheme: HTTPS
-        #   initialDelaySeconds: 60
-        #   periodSeconds: 30
+        readinessProbe:
+          httpGet:
+            path: /info
+            port: 8443
+            scheme: HTTPS
+          initialDelaySeconds: 5
+          periodSeconds: 5
         resources:
           limits:
             cpu: 512m

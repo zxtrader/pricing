@@ -1,5 +1,9 @@
 zone: evolution
 
+misc:
+  excludeHypervisors:
+  - defr109.itdep.org
+
 application:
 
   api:
@@ -179,6 +183,9 @@ ingress:
         backendServiceName: api
         backendServicePort: 8443
       "/emulator-crypto":
+        backendServiceName: processing
+        backendServicePort: 8080
+      "/emulator-exchange":
         backendServiceName: processing
         backendServicePort: 8080
       "/v2/":

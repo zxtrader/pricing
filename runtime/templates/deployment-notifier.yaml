@@ -17,20 +17,33 @@ spec:
       labels:
         app: {{ template "prefix" . }}notifier
     spec:
+{{- if .Values.misc.excludeHypervisors }}
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: hypervisor
+                operator: NotIn
+                values:
+{{- range .Values.misc.excludeHypervisors }}
+                - {{ . }}
+{{- end }}
+{{- end }}
       containers:
       - name: notifier
         image: {{ .Values.application.notifier.serviceImage }}:{{ .Values.application.notifier.tag }}
 {{- if .Values.application.notifier.command }}
         command:
-{{ range .Values.application.notifier.command }}
+{{- range .Values.application.notifier.command }}
         - {{ . }}
-{{ end }}
+{{- end }}
 {{- end }}
 {{- if .Values.application.notifier.args }}
         args:
-{{ range .Values.application.notifier.args }}
+{{- range .Values.application.notifier.args }}
         - {{ . }}
-{{ end }}
+{{- end }}
 {{- end }}
         envFrom:
         - configMapRef:
@@ -39,10 +52,10 @@ spec:
         - name: Serilog__MinimumLevel__Default
           value: Information
 {{- if .Values.application.notifier.env }}
-{{ range $key, $value := .Values.application.notifier.env }}
+{{- range $key, $value := .Values.application.notifier.env }}
         - name: {{ $key | quote }}
           value: {{ $value | quote }}
-{{ end }}
+{{- end }}
 {{- end }}
         # livenessProbe:
         #   httpGet:

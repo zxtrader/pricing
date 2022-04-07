@@ -16,7 +16,7 @@ if [ $# -eq 0 ]; then
 fi
 
 # Check args
-while [ "$1" != "" ]; do
+while (( "$#" )); do
 	case "$1" in
 		--kube-context=*)
 			ARG_KUBE_CONTEXT=$(echo "$1" | cut -d= -f2)

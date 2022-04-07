@@ -54,6 +54,7 @@ download "ConfigMap/notifier-envvars"                  "${TARGET_DIRECTORY}/conf
 download "ConfigMap/notifier-files"                    "${TARGET_DIRECTORY}/configmap-notifier-files.yaml"
 download "ConfigMap/processing-envvars"                "${TARGET_DIRECTORY}/configmap-processing-envvars.yaml"
 download "ConfigMap/processing-files"                  "${TARGET_DIRECTORY}/configmap-processing-files.yaml"
+download "ConfigMap/statuspage-envvars"                "${TARGET_DIRECTORY}/configmap-statuspage-envvars.yaml"
 download "Secrets/api"                                 "${TARGET_DIRECTORY}/secret-api.yaml"
 download "Secrets/gatehostinternal"                    "${TARGET_DIRECTORY}/secret-gatehostinternal.yaml"
 download "Secrets/ptinvoice"                           "${TARGET_DIRECTORY}/secret-ptinvoice.yaml"
@@ -64,6 +65,8 @@ download "Secrets/invoice"                             "${TARGET_DIRECTORY}/secr
 download "Secrets/messengerbridge"                     "${TARGET_DIRECTORY}/secret-messengerbridge.yaml"
 download "Secrets/notifier"                            "${TARGET_DIRECTORY}/secret-notifier.yaml"
 download "Secrets/processing"                          "${TARGET_DIRECTORY}/secret-processing.yaml"
+download "Secrets/statuspage"                          "${TARGET_DIRECTORY}/secret-statuspage.yaml"
+
 
 case "${KUBE_NAMESPACE}" in
 	cexpay-test-admin|cexpay-admin)

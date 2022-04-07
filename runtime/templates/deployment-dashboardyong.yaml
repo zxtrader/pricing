@@ -20,48 +20,64 @@ spec:
       labels:
         app: {{ template "prefix" . }}dashboardyong
     spec:
+{{- if .Values.misc.excludeHypervisors }}
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: hypervisor
+                operator: NotIn
+                values:
+{{- range .Values.misc.excludeHypervisors }}
+                - {{ . }}
+{{- end }}
+{{- end }}
       containers:
       - name: dashboardyong
         image: {{ .Values.application.dashboardyong.serviceImage }}:{{ .Values.application.dashboardyong.tag }}
 {{- if .Values.application.dashboardyong.command }}
         command:
-{{ range .Values.application.dashboardyong.command }}
+{{- range .Values.application.dashboardyong.command }}
         - {{ . }}
-{{ end }}
+{{- end }}
 {{- end }}
         args:
         - "--use-ssl"
 {{- if .Values.application.dashboardyong.args }}
-{{ range .Values.application.dashboardyong.args }}
+{{- range .Values.application.dashboardyong.args }}
         - {{ . }}
-{{ end }}
+{{- end }}
 {{- end }}
         env:
         - name: BASE_PATH
           value: /
 {{- if .Values.application.dashboardyong.env }}
-{{ range $key, $value := .Values.application.dashboardyong.env }}
+{{- range $key, $value := .Values.application.dashboardyong.env }}
         - name: {{ $key | quote }}
           value: {{ $value | quote }}
-{{ end }}
+{{- end }}
 {{- end }}
         livenessProbe:
+          failureThreshold: 20
           httpGet:
             path: /
             port: 8443
             scheme: HTTPS
           initialDelaySeconds: 180
           periodSeconds: 60
+          successThreshold: 1
+          timeoutSeconds: 5
         ports:
         - containerPort: 8443
           protocol: TCP
-        # readinessProbe:
-        #   httpGet:
-        #     path: /
-        #     port: 8443
-        #     scheme: HTTPS
-        #   initialDelaySeconds: 10
-        #   periodSeconds: 60
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8443
+            scheme: HTTPS
+          initialDelaySeconds: 30
+          periodSeconds: 60
         resources:
           limits:
             cpu: 256m

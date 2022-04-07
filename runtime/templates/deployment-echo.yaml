@@ -17,20 +17,33 @@ spec:
       labels:
         app: {{ template "prefix" . }}echo
     spec:
+{{- if .Values.misc.excludeHypervisors }}
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: hypervisor
+                operator: NotIn
+                values:
+{{- range .Values.misc.excludeHypervisors }}
+                - {{ . }}
+{{- end }}
+{{- end }}
       containers:
       - name: echo
         image: {{ .Values.application.echo.serviceImage }}:{{ .Values.application.echo.tag }}
 {{- if .Values.application.echo.command }}
         command:
-{{ range .Values.application.echo.command }}
+{{- range .Values.application.echo.command }}
         - {{ . }}
-{{ end }}
+{{- end }}
 {{- end }}
 {{- if .Values.application.echo.args }}
         args:
-{{ range .Values.application.echo.args }}
+{{- range .Values.application.echo.args }}
         - {{ . }}
-{{ end }}
+{{- end }}
 {{- end }}
         env:
         - name: HTTPS_PORT
@@ -42,10 +55,10 @@ spec:
         - name: SSL_KEY_FILE
           value: "/etc/cexiolabs/cexpay/ssl/tls.key"
 {{- if .Values.application.echo.env }}
-{{ range $key, $value := .Values.application.echo.env }}
+{{- range $key, $value := .Values.application.echo.env }}
         - name: {{ $key | quote }}
           value: {{ $value | quote }}
-{{ end }}
+{{- end }}
 {{- end }}
         ports:
         - containerPort: 8443

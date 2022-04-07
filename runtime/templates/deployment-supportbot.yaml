@@ -18,20 +18,33 @@ spec:
       labels:
         app: {{ template "prefix" . }}supportbot
     spec:
+{{- if .Values.misc.excludeHypervisors }}
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: hypervisor
+                operator: NotIn
+                values:
+{{- range .Values.misc.excludeHypervisors }}
+                - {{ . }}
+{{- end }}
+{{- end }}
       containers:
       - name: supportbot
         image: {{ .Values.application.supportbot.serviceImage }}:{{ .Values.application.supportbot.tag }}
 {{- if .Values.application.supportbot.command }}
         command:
-{{ range .Values.application.supportbot.command }}
+{{- range .Values.application.supportbot.command }}
         - {{ . }}
-{{ end }}
+{{- end }}
 {{- end }}
 {{- if .Values.application.supportbot.args }}
         args:
-{{ range .Values.application.supportbot.args }}
+{{- range .Values.application.supportbot.args }}
         - {{ . }}
-{{ end }}
+{{- end }}
 {{- end }}
         volumeMounts:
         - name: config-files
@@ -44,10 +57,10 @@ spec:
             name: {{ template "prefix" . }}supportbot
         env:
 {{- if .Values.application.supportbot.env }}
-{{ range $key, $value := .Values.application.supportbot.env }}
+{{- range $key, $value := .Values.application.supportbot.env }}
         - name: {{ $key | quote }}
           value: {{ $value | quote }}
-{{ end }}
+{{- end }}
 {{- end }}
         resources:
           limits:

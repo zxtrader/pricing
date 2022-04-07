@@ -20,20 +20,33 @@ spec:
       labels:
         app: {{ template "prefix" . }}processing
     spec:
+{{- if .Values.misc.excludeHypervisors }}
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: hypervisor
+                operator: NotIn
+                values:
+{{- range .Values.misc.excludeHypervisors }}
+                - {{ . }}
+{{- end }}
+{{- end }}
       containers:
       - name: processing
         image: {{ .Values.application.processing.serviceImage }}:{{ .Values.application.processing.tag }}
 {{- if .Values.application.processing.command }}
         command:
-{{ range .Values.application.processing.command }}
+{{- range .Values.application.processing.command }}
         - {{ . }}
-{{ end }}
+{{- end }}
 {{- end }}
 {{- if .Values.application.processing.args }}
         args:
-{{ range .Values.application.processing.args }}
+{{- range .Values.application.processing.args }}
         - {{ . }}
-{{ end }}
+{{- end }}
 {{- end }}
         ports:
         # Main Web server
@@ -42,18 +55,18 @@ spec:
         # Dashboard API Web server
         - containerPort: 8082
           protocol: TCP
-{{ if or (eq .Values.zone "evolution") (eq .Values.zone "presentation") }}
+{{- if or (eq .Values.zone "evolution") (eq .Values.zone "presentation") }}
         # Swagger and welcome page used in "evolution" and "presentation" only, 
         - containerPort: 8083
           protocol: TCP
-{{ end }}
-{{ if or (eq .Values.zone "test") (eq .Values.zone "production") }}
+{{- end }}
+{{- if or (eq .Values.zone "test") (eq .Values.zone "production") }}
         # In "evolution" and "presentation" we use proxy-service called "notifier", 
         # to handle callbacks via WebSocket, so we do need this port
         # for "test" and "production" only
         - containerPort: 8084
           protocol: TCP
-{{ end }}
+{{- end }}
         # Gateway API Web server
         - containerPort: 8085
           protocol: TCP
@@ -81,10 +94,10 @@ spec:
         - name: LOG_LEVEL
           value: info
 {{- if .Values.application.processing.env }}
-{{ range $key, $value := .Values.application.processing.env }}
+{{- range $key, $value := .Values.application.processing.env }}
         - name: {{ $key | quote }}
           value: {{ $value | quote }}
-{{ end }}
+{{- end }}
 {{- end }}
         # livenessProbe:
         #   httpGet:

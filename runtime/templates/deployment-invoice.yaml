@@ -17,20 +17,33 @@ spec:
       labels:
         app: {{ template "prefix" . }}invoice
     spec:
+{{- if .Values.misc.excludeHypervisors }}
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: hypervisor
+                operator: NotIn
+                values:
+{{- range .Values.misc.excludeHypervisors }}
+                - {{ . }}
+{{- end }}
+{{- end }}
       containers:
       - name: invoice
         image: {{ .Values.application.invoice.serviceImage }}:{{ .Values.application.invoice.tag }}
 {{- if .Values.application.invoice.command }}
         command:
-{{ range .Values.application.invoice.command }}
+{{- range .Values.application.invoice.command }}
         - {{ . }}
-{{ end }}
+{{- end }}
 {{- end }}
 {{- if .Values.application.invoice.args }}
         args:
-{{ range .Values.application.invoice.args }}
+{{- range .Values.application.invoice.args }}
         - {{ . }}
-{{ end }}
+{{- end }}
 {{- end }}
         envFrom:
         - configMapRef:
@@ -43,10 +56,10 @@ spec:
         - name: GatewayOrderHttpClient__Url
           value: https://{{ template "prefix" . }}gatehostinternal:8443/
 {{- if .Values.application.invoice.env }}
-{{ range $key, $value := .Values.application.invoice.env }}
+{{- range $key, $value := .Values.application.invoice.env }}
         - name: {{ $key | quote }}
           value: {{ $value | quote }}
-{{ end }}
+{{- end }}
 {{- end }}
         livenessProbe:
           httpGet:
@@ -58,13 +71,13 @@ spec:
         ports:
         - containerPort: 8443
           protocol: TCP
-        # readinessProbe:
-        #   httpGet:
-        #     path: /info
-        #     port: 8443
-        #     scheme: HTTPS
-        #   initialDelaySeconds: 60
-        #   periodSeconds: 30
+        readinessProbe:
+          httpGet:
+            path: /info
+            port: 8443
+            scheme: HTTPS
+          initialDelaySeconds: 5
+          periodSeconds: 5
         resources:
           limits:
             cpu: 512m

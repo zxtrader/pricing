@@ -2,7 +2,7 @@ application:
 
   api:
     serviceImage: harbor.infra.kube/cexpay/api/amd64
-    tag: 0.11.0
+    tag: 0.12.0
     replicas: 1
 
   board:
@@ -12,17 +12,17 @@ application:
 
   dashboardpscl:
     serviceImage: harbor.infra.kube/cexpay/dashboard-pscl/amd64
-    tag: 0.0.11
+    tag: 0.1.3
     replicas: 1
 
   dashboardwznk:
     serviceImage: harbor.infra.kube/cexpay/dashboard-wznk/amd64
-    tag: 2.13.0
+    tag: 2.13.3
     replicas: 1
 
   dashboardyong:
     serviceImage: harbor.infra.kube/cexpay/dashboard-yong/amd64
-    tag: 2.4.3
+    tag: 2.4.5
     replicas: 1
 
   echo:
@@ -42,7 +42,7 @@ application:
 
   identity:
     serviceImage: harbor.infra.kube/cexpay/identity/amd64
-    tag: 0.2.16
+    tag: 0.3.1
     replicas: 1
 
   invoice:
@@ -83,7 +83,7 @@ application:
 
   processing:
     serviceImage: harbor.infra.kube/cexpay/processing/amd64
-    tag: 2.9.5
+    tag: 2.10.0
     replicas: 1
 
   ptinvoice:
@@ -108,7 +108,7 @@ application:
 
   statuspage:
     serviceImage: harbor.infra.kube/cexpay/statuspage/amd64
-    tag: 1.1.1-rc3
+    tag: 1.2.0
     env:
       ConnectionStrings__HangfireConnectionString: "Host=127.0.0.1;Port=5432;UserId=devadmin;Password=;Database=devdb;"
       ConnectionStrings__StatusConnectionString: "Host=127.0.0.1;Port=5432;UserId=devadmin;Password=;Database=devdb;"

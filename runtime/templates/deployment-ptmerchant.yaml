@@ -18,21 +18,34 @@ spec:
       labels:
         app: {{ template "prefix" . }}ptmerchant
     spec:
+{{- if .Values.misc.excludeHypervisors }}
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: hypervisor
+                operator: NotIn
+                values:
+{{- range .Values.misc.excludeHypervisors }}
+                - {{ . }}
+{{- end }}
+{{- end }}
       containers:
       - name: ptmerchant
         image: {{ .Values.application.ptmerchant.serviceImage }}:{{ .Values.application.ptmerchant.tag }}
 {{- if .Values.application.ptmerchant.command }}
         command:
-{{ range .Values.application.ptmerchant.command }}
+{{- range .Values.application.ptmerchant.command }}
         - {{ . }}
-{{ end }}
+{{- end }}
 {{- end }}
 {{- if .Values.application.ptmerchant.args }}
         args:
         - CEXPay.PaymentTools.InvoiceMerchantAPI
-{{ range .Values.application.ptmerchant.args }}
+{{- range .Values.application.ptmerchant.args }}
         - {{ . }}
-{{ end }}
+{{- end }}
 {{- end }}
         envFrom:
         - configMapRef:
@@ -43,10 +56,10 @@ spec:
         - name: BasePath
           value: /paytools/v1/merchant
 {{- if .Values.application.ptmerchant.env }}
-{{ range $key, $value := .Values.application.ptmerchant.env }}
+{{- range $key, $value := .Values.application.ptmerchant.env }}
         - name: {{ $key | quote }}
           value: {{ $value | quote }}
-{{ end }}
+{{- end }}
 {{- end }}
         livenessProbe:
           httpGet:

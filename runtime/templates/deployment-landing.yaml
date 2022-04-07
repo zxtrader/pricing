@@ -22,30 +22,43 @@ spec:
       labels:
         app: {{ template "prefix" . }}landing
     spec:
+{{- if .Values.misc.excludeHypervisors }}
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: hypervisor
+                operator: NotIn
+                values:
+{{- range .Values.misc.excludeHypervisors }}
+                - {{ . }}
+{{- end }}
+{{- end }}
       containers:
       - name: landing
         image: {{ .Values.application.landing.serviceImage }}:{{ .Values.application.landing.tag }}
 {{- if .Values.application.landing.command }}
         command:
-{{ range .Values.application.landing.command }}
+{{- range .Values.application.landing.command }}
         - {{ . }}
-{{ end }}
+{{- end }}
 {{- end }}
         args:
         - "--use-ssl"
 {{- if .Values.application.landing.args }}
-{{ range .Values.application.landing.args }}
+{{- range .Values.application.landing.args }}
         - {{ . }}
-{{ end }}
+{{- end }}
 {{- end }}
         env:
         - name: BASE_PATH
           value: /
 {{- if .Values.application.landing.env }}
-{{ range $key, $value := .Values.application.landing.env }}
+{{- range $key, $value := .Values.application.landing.env }}
         - name: {{ $key | quote }}
           value: {{ $value | quote }}
-{{ end }}
+{{- end }}
 {{- end }}
         livenessProbe:
           httpGet:
@@ -57,13 +70,13 @@ spec:
         ports:
         - containerPort: 8443
           protocol: TCP
-        # readinessProbe:
-        #   httpGet:
-        #     path: /
-        #     port: 8443
-        #     scheme: HTTPS
-        #   initialDelaySeconds: 10
-        #   periodSeconds: 60
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8443
+            scheme: HTTPS
+          initialDelaySeconds: 5
+          periodSeconds: 5
         resources:
           limits:
             cpu: 256m
