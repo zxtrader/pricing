@@ -110,7 +110,6 @@ application:
       [
         "--config-file=/etc/cexiolabs/cexpay.processing/service.config",
         "--config-toml-file=/etc/cexiolabs/cexpay.processing/service.toml",
-        "--config-toml-file=/etc/cexiolabs/cexpay.processing/service-setup.toml",
         "--config-toml-file=/etc/cexiolabs/cexpay.processing/service-zone-presentation.toml",
         "--config-secrets-dir=/etc/cexiolabs/cexpay/secrets",
         "--config-env",
@@ -133,18 +132,9 @@ application:
         "--config-env",
         "--log-json"
       ]
+    env:
+      IdentityServerAuthentication__ValidIssuers: https://id-presentation-cexpay.dev.kube
 
-  ptmerchant:
-    serviceImage: harbor.infra.kube/cexpay/paytools/snapshot/amd64
-    args:
-      [
-        "--config-json-file=/etc/cexiolabs/cexpay.paytools/CEXPay.PaymentTools.InvoiceMerchantAPI/appsettings.json",
-        "--config-json-file=/etc/cexiolabs/cexpay.paytools/CEXPay.PaymentTools.InvoiceMerchantAPI/appsettings.presentation.json",
-        "--config-keyperfile-directory=/etc/cexiolabs/cexpay.paytools/secrets",
-        "--config-env",
-        "--log-json"
-      ]
-  
   ptservice:
     serviceImage: harbor.infra.kube/cexpay/paytools/snapshot/amd64
     args:
@@ -155,14 +145,16 @@ application:
         "--config-env",
         "--log-json"
       ]
-  
+    env:
+      IdentityServerAuthentication__ValidIssuers: https://id-presentation-cexpay.dev.kube
+
   statuspage:
     serviceImage: harbor.infra.kube/cexpay/statuspage/snapshot/amd64
     args:
       [
         "--config-json-file=/etc/cexiolabs/cexiolabs.statuspage.host/StatusPage.AppHost/appsettings.json",
         "--config-json-file=/etc/cexiolabs/cexiolabs.statuspage.host/StatusPage.AppHost/appsettings.presentation.json",
-        "--config-json-file=/etc/cexiolabs/cexiolabs.statuspage.host/checkers-setup.json",
+        "--config-json-file=/etc/cexiolabs/cexpay.statuspage/checkers-configuration.json",
         "--config-keyperfile-directory=/etc/cexiolabs/cexiolabs.statuspage.host/secrets",
         "--config-env",
         "--log-json"

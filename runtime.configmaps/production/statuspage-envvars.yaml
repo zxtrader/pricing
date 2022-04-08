@@ -14,4 +14,4 @@ data:
   API__PssProviderWtf2ApiUrl: https://provider-wtf2.prodpss.kube/
   Checkers__0__Parameters__CexApiKey: IT9cFcnpi0eRWv964JrSQarmMl8 # Account Balance permission only (https://jira.wnb:8083/browse/CP-679)
   Checkers__0__Parameters__CexApiUserId: up131662574
-  Checkers__0__Parameters__PrimeApiKey: ???  # RO key
+  Checkers__0__Parameters__PrimeApiKey: 5f94c0fed398af8c2c56fad3f477ae398b1ba364926b8ac566cbe9c6194a2901  # RO permission (https://jira.wnb:8083/browse/CP-1017)

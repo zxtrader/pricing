@@ -7,7 +7,7 @@ application:
 
   board:
     serviceImage: harbor.infra.kube/cexpay/board/amd64
-    tag:  0.1.6
+    tag: 0.2.1
     replicas: 1
 
   dashboardpscl:
@@ -91,11 +91,6 @@ application:
     tag: 0.0.10
     replicas: 1
 
-  ptmerchant:
-    serviceImage: harbor.infra.kube/cexpay/paytools/amd64
-    tag: 0.0.10
-    replicas: 0
-
   ptservice:
     serviceImage: harbor.infra.kube/cexpay/paytools/amd64
     tag: 0.0.10
@@ -108,7 +103,7 @@ application:
 
   statuspage:
     serviceImage: harbor.infra.kube/cexpay/statuspage/amd64
-    tag: 1.2.0
+    tag: 1.2.1
     env:
       ConnectionStrings__HangfireConnectionString: "Host=127.0.0.1;Port=5432;UserId=devadmin;Password=;Database=devdb;"
       ConnectionStrings__StatusConnectionString: "Host=127.0.0.1;Port=5432;UserId=devadmin;Password=;Database=devdb;"

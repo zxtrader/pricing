@@ -122,7 +122,6 @@ application:
       DEBUG_WAIT: "no"
       LOG_LEVEL: "debug"
 
-  
   ptinvoice:
     serviceImage: harbor.infra.kube/cexpay/paytools/snapshot/amd64
     args:
@@ -136,19 +135,6 @@ application:
     env:
       IdentityServerAuthentication__ValidIssuers: https://id-evolution-cexpay.dev.kube
 
-  ptmerchant:
-    serviceImage: harbor.infra.kube/cexpay/paytools/snapshot/amd64
-    args:
-      [
-        "--config-json-file=/etc/cexiolabs/cexpay.paytools/CEXPay.PaymentTools.InvoiceMerchantAPI/appsettings.json",
-        "--config-json-file=/etc/cexiolabs/cexpay.paytools/CEXPay.PaymentTools.InvoiceMerchantAPI/appsettings.evolution.json",
-        "--config-keyperfile-directory=/etc/cexiolabs/cexpay.paytools/secrets",
-        "--config-env",
-        "--log-json"
-      ]
-  env:
-    IdentityServerAuthentication__ValidIssuers: https://id-evolution-cexpay.dev.kube
-
   ptservice:
     serviceImage: harbor.infra.kube/cexpay/paytools/snapshot/amd64
     args:
@@ -159,14 +145,14 @@ application:
         "--config-env",
         "--log-json"
       ]
-  
+
   statuspage:
     serviceImage: docker-cexpay.infra.kube/cexpay/statuspage/snapshot/amd64
     args:
       [
         "--config-json-file=/etc/cexiolabs/cexiolabs.statuspage.host/StatusPage.AppHost/appsettings.json",
         "--config-json-file=/etc/cexiolabs/cexiolabs.statuspage.host/StatusPage.AppHost/appsettings.evolution.json",
-        "--config-json-file=/etc/cexiolabs/cexiolabs.statuspage.host/checkers-setup.json",
+        "--config-json-file=/etc/cexiolabs/cexpay.statuspage/checkers-configuration.json",
         "--config-keyperfile-directory=/etc/cexiolabs/cexiolabs.statuspage.host/secrets",
         "--config-env",
         "--log-json"

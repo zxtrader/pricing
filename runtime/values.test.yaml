@@ -76,7 +76,6 @@ application:
       [
         "--config-file=/etc/cexiolabs/cexpay.processing/service.config",
         "--config-toml-file=/etc/cexiolabs/cexpay.processing/service.toml",
-        "--config-toml-file=/etc/cexiolabs/cexpay.processing/service-setup.toml",
         "--config-toml-file=/etc/cexiolabs/cexpay.processing/service-zone-test.toml",
         "--config-secrets-dir=/etc/cexiolabs/cexpay/secrets",
         "--config-env",
@@ -99,20 +98,9 @@ application:
         "--config-env",
         "--log-json"
       ]
-    replicas: 0
+    env:
+      IdentityServerAuthentication__ValidIssuers: https://id.pay-cex-test.net
 
-  ptmerchant:
-    serviceImage: harbor.infra.kube/cexpay/paytools/snapshot/amd64
-    args:
-      [
-        "--config-json-file=/etc/cexiolabs/cexpay.paytools/CEXPay.PaymentTools.InvoiceMerchantAPI/appsettings.json",
-        "--config-json-file=/etc/cexiolabs/cexpay.paytools/CEXPay.PaymentTools.InvoiceMerchantAPI/appsettings.test.json",
-        "--config-keyperfile-directory=/etc/cexiolabs/cexpay.paytools/secrets",
-        "--config-env",
-        "--log-json"
-      ]
-    replicas: 0
-  
   ptservice:
     serviceImage: harbor.infra.kube/cexpay/paytools/snapshot/amd64
     args:
@@ -123,11 +111,8 @@ application:
         "--config-env",
         "--log-json"
       ]
-    replicas: 0
-
-  supportbot:
-    env:
-      CEXPAY_API_CA_CERTIFICATE_FILE: /etc/cexiolabs/cexpay/trusted-ca.crt
+  env:
+    IdentityServerAuthentication__ValidIssuers: https://id-evolution-cexpay.dev.kube
 
   statuspage:
     serviceImage: harbor.infra.kube/cexpay/statuspage/snapshot/amd64
@@ -135,11 +120,16 @@ application:
       [
         "--config-json-file=/etc/cexiolabs/cexiolabs.statuspage.host/StatusPage.AppHost/appsettings.json",
         "--config-json-file=/etc/cexiolabs/cexiolabs.statuspage.host/StatusPage.AppHost/appsettings.test.json",
-        "--config-json-file=/etc/cexiolabs/cexiolabs.statuspage.host/checkers-setup.json",
+        "--config-json-file=/etc/cexiolabs/cexpay.statuspage/checkers-configuration.json",
         "--config-keyperfile-directory=/etc/cexiolabs/cexiolabs.statuspage.host/secrets",
         "--config-env",
         "--log-json"
       ]
+    replicas: 0
+
+  supportbot:
+    env:
+      CEXPAY_API_CA_CERTIFICATE_FILE: /etc/cexiolabs/cexpay/trusted-ca.crt
 
 ingress:
 

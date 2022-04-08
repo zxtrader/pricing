@@ -48,7 +48,6 @@ application:
       [
         "--config-file=/etc/cexiolabs/cexpay.processing/service.config",
         "--config-toml-file=/etc/cexiolabs/cexpay.processing/service.toml",
-        "--config-toml-file=/etc/cexiolabs/cexpay.processing/service-setup.toml",
         "--config-toml-file=/etc/cexiolabs/cexpay.processing/service-zone-production.toml",
         "--config-secrets-dir=/etc/cexiolabs/cexpay/secrets",
         "--config-env"
@@ -59,6 +58,36 @@ application:
       setup.setMissingDepositTransaction_indexer: ""
       setup.setMissingWithdrawalTransaction_indexer: ""
       setup.subscribeNotification_indexer: ""
+
+  ptinvoice:
+    args:
+      [
+        "--config-json-file=/etc/cexiolabs/cexpay.paytools/CEXPay.PaymentTools.InvoiceAPI/appsettings.json",
+        "--config-keyperfile-directory=/etc/cexiolabs/cexpay.paytools/secrets",
+        "--config-env",
+        "--log-json"
+      ]
+    env:
+      IdentityServerAuthentication__ValidIssuers: https://id.cexpay.io
+
+  ptservice:
+    args:
+      [
+        "--config-json-file=/etc/cexiolabs/cexpay.paytools/CEXPay.PaymentTools.InvoiceService/appsettings.json",
+        "--config-keyperfile-directory=/etc/cexiolabs/cexpay.paytools/secrets",
+        "--config-env",
+        "--log-json"
+      ]
+
+  statuspage:
+    args:
+      [
+        "--config-json-file=/etc/cexiolabs/cexiolabs.statuspage.host/StatusPage.AppHost/appsettings.json",
+        "--config-json-file=/etc/cexiolabs/cexpay.statuspage/checkers-configuration.json",
+        "--config-keyperfile-directory=/etc/cexiolabs/cexiolabs.statuspage.host/secrets",
+        "--config-env",
+        "--log-json"
+      ]
 
 ingress:
 

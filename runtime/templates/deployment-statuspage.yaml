@@ -47,7 +47,6 @@ spec:
 {{- range .Values.application.statuspage.args }}
         - {{ . }}
 {{- end }}
-        - --config-json-file=/etc/cexiolabs/cexpay.statuspage/checkers-configuration.json
 {{- end }}
         envFrom:
         - configMapRef:
