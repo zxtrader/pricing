@@ -4,6 +4,13 @@
 apiVersion: certmanager.k8s.io/v1alpha1
 kind: Certificate
 metadata:
+  annotations:
+    cexpay.io/version: {{ .Chart.AppVersion | quote }}
+{{- if .Values.ci }}
+    cexpay.io/ci.tag: {{ .Values.ci.tag | quote }}
+    cexpay.io/ci.job: {{ .Values.ci.job | quote }}
+    cexpay.io/ci.pipeline: {{ .Values.ci.pipeline | quote }}
+{{- end }}
   name: {{ template "prefix" . }}dashboardwznk-certificate
 spec:
   secretName: {{ template "prefix" . }}dashboardwznk-certificate

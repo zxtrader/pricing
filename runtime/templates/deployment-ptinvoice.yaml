@@ -2,6 +2,13 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  annotations:
+    cexpay.io/version: {{ .Chart.AppVersion | quote }}
+{{- if .Values.ci }}
+    cexpay.io/ci.tag: {{ .Values.ci.tag | quote }}
+    cexpay.io/ci.job: {{ .Values.ci.job | quote }}
+    cexpay.io/ci.pipeline: {{ .Values.ci.pipeline | quote }}
+{{- end }}
   labels:
     app: {{ template "prefix" . }}ptinvoice
   name: {{ template "prefix" . }}ptinvoice
@@ -15,6 +22,13 @@ spec:
   revisionHistoryLimit: 3
   template:
     metadata:
+      annotations:
+        cexpay.io/version: {{ .Chart.AppVersion | quote }}
+{{- if .Values.ci }}
+        cexpay.io/ci.tag: {{ .Values.ci.tag | quote }}
+        cexpay.io/ci.job: {{ .Values.ci.job | quote }}
+        cexpay.io/ci.pipeline: {{ .Values.ci.pipeline | quote }}
+{{- end }}
       labels:
         app: {{ template "prefix" . }}ptinvoice
     spec:
@@ -61,6 +75,8 @@ spec:
           value: https://{{ template "prefix" . }}identity:8443/
         - name: GatewayHttpClient__Url
           value: https://{{ template "prefix" . }}gatehostinternal:8443/
+        - name: AuditExclude__ExcludeHeaders__0
+          value: "CP-ACCESS-PASSPHRASE"
 {{- if .Values.application.ptinvoice.env }}
 {{- range $key, $value := .Values.application.ptinvoice.env }}
         - name: {{ $key | quote }}

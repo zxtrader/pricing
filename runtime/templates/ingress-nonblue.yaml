@@ -8,6 +8,7 @@ kind: Ingress
 metadata:
   name: {{ template "prefix" $rootScope }}{{ $key | lower }}
   annotations:
+    cexpay.io/version: {{ $rootScope.Chart.AppVersion }}
     kubernetes.io/ingress.class: nginx
 {{ if $value.nginxAppRoot }}
     nginx.ingress.kubernetes.io/app-root: {{ $value.nginxAppRoot | quote }}

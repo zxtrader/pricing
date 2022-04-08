@@ -27,6 +27,9 @@ while [ "$1" != "" ]; do
 		--kube-admin-namespace=*)
 			ARG_KUBE_ADMIN_NAMESPACE=$(echo "$1" | cut -d= -f2)
 			;;
+		--release-version=*)
+			ARG_RELEASE_VERSION=$(echo "$1" | cut -d= -f2)
+			;;
 		--image=*)
 			ARG_IMAGE=$(echo "$1" | cut -d= -f2)
 			;;
@@ -61,6 +64,7 @@ validateArg() {
 	fi
 }
 
+validateArg "$ARG_RELEASE_VERSION" "--release-version"
 validateArg "$ARG_IMAGE" "--image"
 validateArg "$ARG_TAG" "--tag"
 validateArg "$ARG_ACTION" "--install|--rollback"
@@ -86,6 +90,7 @@ TEMP_FILE=$(mktemp)
 
 cat "${SCRIPT_DIR}/migration-job-template.yaml" \
 	| sed "s!ARG_JOB_NAME!${JOB_NAME}!g" \
+	| sed "s!ARG_RELEASE_VERSION!${ARG_RELEASE_VERSION}!g" \
 	| sed "s!ARG_IMAGE!${ARG_IMAGE}!g" \
 	| sed "s!ARG_ACTION!${ARG_ACTION}!g" \
 	| sed "s!ARG_TAG!${ARG_TAG}!g" \

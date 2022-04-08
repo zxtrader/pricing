@@ -1,6 +1,13 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  annotations:
+    cexpay.io/version: {{ .Chart.AppVersion | quote }}
+{{- if .Values.ci }}
+    cexpay.io/ci.tag: {{ .Values.ci.tag | quote }}
+    cexpay.io/ci.job: {{ .Values.ci.job | quote }}
+    cexpay.io/ci.pipeline: {{ .Values.ci.pipeline | quote }}
+{{- end }}
   labels:
     app: {{ template "prefix" . }}echo
   name: {{ template "prefix" . }}echo
@@ -14,6 +21,13 @@ spec:
   revisionHistoryLimit: 3
   template:
     metadata:
+      annotations:
+        cexpay.io/version: {{ .Chart.AppVersion | quote }}
+{{- if .Values.ci }}
+        cexpay.io/ci.tag: {{ .Values.ci.tag | quote }}
+        cexpay.io/ci.job: {{ .Values.ci.job | quote }}
+        cexpay.io/ci.pipeline: {{ .Values.ci.pipeline | quote }}
+{{- end }}
       labels:
         app: {{ template "prefix" . }}echo
     spec:

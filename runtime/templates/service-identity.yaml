@@ -1,6 +1,13 @@
 apiVersion: v1
 kind: Service
 metadata:
+  annotations:
+    cexpay.io/version: {{ .Chart.AppVersion | quote }}
+{{- if .Values.ci }}
+    cexpay.io/ci.tag: {{ .Values.ci.tag | quote }}
+    cexpay.io/ci.job: {{ .Values.ci.job | quote }}
+    cexpay.io/ci.pipeline: {{ .Values.ci.pipeline | quote }}
+{{- end }}
   labels:
     app: {{ template "prefix" . }}identity
   name: {{ template "prefix" . }}identity

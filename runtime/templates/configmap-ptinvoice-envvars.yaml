@@ -1,8 +1,0 @@
-# {{- if ne .Values.zone "production" }}
-# apiVersion: v1
-# kind: ConfigMap
-# metadata:
-#   name: {{ template "prefix" . }}ptinvoice-envvars
-# data:
-# {{ .Files.Get "tmp/configmap-ptinvoice-envvars.yaml" | indent 2 }}
-# {{- end }}

@@ -1,6 +1,13 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  annotations:
+    cexpay.io/version: {{ .Chart.AppVersion | quote }}
+{{- if .Values.ci }}
+    cexpay.io/ci.tag: {{ .Values.ci.tag | quote }}
+    cexpay.io/ci.job: {{ .Values.ci.job | quote }}
+    cexpay.io/ci.pipeline: {{ .Values.ci.pipeline | quote }}
+{{- end }}
   labels:
     app: {{ template "prefix" . }}api
   name: {{ template "prefix" . }}api
@@ -14,6 +21,13 @@ spec:
   revisionHistoryLimit: 3
   template:
     metadata:
+      annotations:
+        cexpay.io/version: {{ .Chart.AppVersion | quote }}
+{{- if .Values.ci }}
+        cexpay.io/ci.tag: {{ .Values.ci.tag | quote }}
+        cexpay.io/ci.job: {{ .Values.ci.job | quote }}
+        cexpay.io/ci.pipeline: {{ .Values.ci.pipeline | quote }}
+{{- end }}
       labels:
         app: {{ template "prefix" . }}api
     spec:
@@ -57,11 +71,10 @@ spec:
           value: https://{{ template "prefix" . }}identity:8443/
         - name: IdentityHttpClient__Url
           value: https://{{ template "prefix" . }}identity:8443/
-        # GatewayOrderHttpClient__Url removed form API service, delete in next deploy
-        - name: GatewayOrderHttpClient__Url
-          value: https://{{ template "prefix" . }}processing:8085/
         - name: ProcessingHttpClient__Url
           value: https://{{ template "prefix" . }}processing:8082/
+        - name: AuditExclude__ExcludeHeaders__0
+          value: "CP-ACCESS-PASSPHRASE"
 {{- if .Values.application.api.env }}
 {{- range $key, $value := .Values.application.api.env }}
         - name: {{ $key | quote }}
