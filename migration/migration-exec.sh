@@ -30,6 +30,15 @@ while [ "$1" != "" ]; do
 		--release-version=*)
 			ARG_RELEASE_VERSION=$(echo "$1" | cut -d= -f2)
 			;;
+		--release-ci-tag=*)
+			ARG_CI_TAG=$(echo "$1" | cut -d= -f2)
+			;;
+		--release-ci-job=*)
+			ARG_CI_JOB=$(echo "$1" | cut -d= -f2)
+			;;
+		--release-ci-pipeline=*)
+			ARG_CI_PIPELINE=$(echo "$1" | cut -d= -f2)
+			;;
 		--image=*)
 			ARG_IMAGE=$(echo "$1" | cut -d= -f2)
 			;;
@@ -65,6 +74,9 @@ validateArg() {
 }
 
 validateArg "$ARG_RELEASE_VERSION" "--release-version"
+validateArg "$ARG_CI_TAG" "--release-ci-tag"
+validateArg "$ARG_CI_JOB" "--release-ci-job"
+validateArg "$ARG_CI_PIPELINE" "--release-ci-pipeline"
 validateArg "$ARG_IMAGE" "--image"
 validateArg "$ARG_TAG" "--tag"
 validateArg "$ARG_ACTION" "--install|--rollback"
@@ -91,6 +103,9 @@ TEMP_FILE=$(mktemp)
 cat "${SCRIPT_DIR}/migration-job-template.yaml" \
 	| sed "s!ARG_JOB_NAME!${JOB_NAME}!g" \
 	| sed "s!ARG_RELEASE_VERSION!${ARG_RELEASE_VERSION}!g" \
+	| sed "s!ARG_CI_TAG!${ARG_CI_TAG}!g" \
+	| sed "s!ARG_CI_JOB!${ARG_CI_JOB}!g" \
+	| sed "s!ARG_CI_PIPELINE!${ARG_CI_PIPELINE}!g" \
 	| sed "s!ARG_IMAGE!${ARG_IMAGE}!g" \
 	| sed "s!ARG_ACTION!${ARG_ACTION}!g" \
 	| sed "s!ARG_TAG!${ARG_TAG}!g" \

@@ -109,7 +109,6 @@ application:
       [
         "--config-file=/etc/cexiolabs/cexpay.processing/service.config",
         "--config-toml-file=/etc/cexiolabs/cexpay.processing/service.toml",
-        "--config-toml-file=/etc/cexiolabs/cexpay.processing/service-setup.toml",
         "--config-toml-file=/etc/cexiolabs/cexpay.processing/service-zone-evolution.toml",
         "--config-secrets-dir=/etc/cexiolabs/cexpay/secrets",
         "--config-env",

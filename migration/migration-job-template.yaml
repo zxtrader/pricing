@@ -3,6 +3,9 @@ kind: Job
 metadata:
   annotations:
     cexpay.io/version: "ARG_RELEASE_VERSION"
+    cexpay.io/ci.tag: "ARG_CI_TAG"
+    cexpay.io/ci.job: "ARG_CI_JOB"
+    cexpay.io/ci.pipeline: "ARG_CI_PIPELINE"
   name: ARG_JOB_NAME
   namespace: ARG_KUBE_NAMESPACE
 spec:
