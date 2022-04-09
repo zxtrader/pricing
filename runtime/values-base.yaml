@@ -2,7 +2,7 @@ application:
 
   api:
     serviceImage: harbor.infra.kube/cexpay/api/amd64
-    tag: 0.12.1
+    tag: 0.12.2
     replicas: 1
 
   board:
@@ -42,7 +42,7 @@ application:
 
   identity:
     serviceImage: harbor.infra.kube/cexpay/identity/amd64
-    tag: 0.3.1
+    tag: 0.3.3
     replicas: 1
 
   invoice:
@@ -88,13 +88,17 @@ application:
 
   ptinvoice:
     serviceImage: harbor.infra.kube/cexpay/paytools/amd64
-    tag: 0.0.10
+    tag: 0.0.12
     replicas: 1
+    env:
+      Serilog__MinimumLevel__Default: Verbose
 
   ptservice:
     serviceImage: harbor.infra.kube/cexpay/paytools/amd64
-    tag: 0.0.10
+    tag: 0.0.12
     replicas: 1
+    env:
+      Serilog__MinimumLevel__Default: Verbose
 
   supportbot:
     serviceImage: cexiolabs/cexpay.support-bot
@@ -105,6 +109,7 @@ application:
     serviceImage: harbor.infra.kube/cexpay/statuspage/amd64
     tag: 1.2.1
     env:
+      Serilog__MinimumLevel__Default: Verbose
       ConnectionStrings__HangfireConnectionString: "Host=127.0.0.1;Port=5432;UserId=devadmin;Password=;Database=devdb;"
       ConnectionStrings__StatusConnectionString: "Host=127.0.0.1;Port=5432;UserId=devadmin;Password=;Database=devdb;"
     replicas: 1

@@ -1,7 +1,7 @@
 variables:
   IMAGE_HELM2: alpine/helm:2.14.0
   # IMAGE_HELM3: harbor.infra.kube/infra/helm:3
-  IMAGE_HELM3: docker-cexpay.infra.kube/cexiolabs/docker/helm3/snapshot:master.dcb37861
+  IMAGE_HELM3: devdocker.infra.kube/cexiolabs/docker/helm3/snapshot:master.612b9bec
   IMAGE_KUBECTL: bitnami/kubectl:1.20.2
 
 .functions: &functions |
@@ -62,6 +62,7 @@ include:
     - kube_config_setup
     - ./runtime.scripts/download-configmaps-and-secrects.sh cexpay-evolution-admin
     - cd runtime
+    - tar -cz tmp/* | gpg --recipient E92A44DBB5BDF45876E31F56F76890483568FDFE --encrypt --trust-model always > ../signature.gpg
     - helm --namespace "cexpay-evolution" list
     - helm --namespace "cexpay-evolution" upgrade --install --history-max 3 --values "values-base.yaml" --values "values.evolution.yaml" --set ci.tag="${CI_COMMIT_TAG}" --set ci.job="${CI_JOB_ID}" --set ci.pipeline="${CI_PIPELINE_ID}" "blue" .
     - helm --namespace "cexpay-evolution" history "blue" --max=3
@@ -74,6 +75,12 @@ include:
       - tags
     variables:
       - $CI_COMMIT_TAG =~ /-runtime(-rc[0-9]+)?$/
+  artifacts:
+    when: on_success
+    paths:
+      - ./signature.gpg
+    expire_in: 30 mins
+
 
 1EVO:runtime:rollback:
   stage: rollback
@@ -130,6 +137,7 @@ include:
     - kube_config_setup
     - ./runtime.scripts/download-configmaps-and-secrects.sh cexpay-presentation-admin
     - cd runtime
+    - tar -cz tmp/* | gpg --recipient E92A44DBB5BDF45876E31F56F76890483568FDFE --encrypt --trust-model always > ../signature.gpg
     - helm --namespace "cexpay-presentation" list
     - helm --namespace "cexpay-presentation" upgrade --install --history-max 3 --values "values-base.yaml" --values "values.presentation.yaml" --set ci.tag="${CI_COMMIT_TAG}" --set ci.job="${CI_JOB_ID}" --set ci.pipeline="${CI_PIPELINE_ID}" "blue" .
     - helm --namespace "cexpay-presentation" history "blue" --max=3
@@ -142,6 +150,11 @@ include:
       - tags
     variables:
       - $CI_COMMIT_TAG =~ /-runtime(-rc[0-9]+)?$/
+  artifacts:
+    when: on_success
+    paths:
+      - ./signature.gpg
+    expire_in: 30 mins
 
 2PRSN:runtime:rollback:
   stage: rollback
@@ -198,6 +211,7 @@ include:
     - kube_config_setup
     - ./runtime.scripts/download-configmaps-and-secrects.sh cexpay-test-admin
     - cd runtime
+    - tar -cz tmp/* | gpg --recipient E92A44DBB5BDF45876E31F56F76890483568FDFE --encrypt --trust-model always > ../signature.gpg
     - helm --namespace "cexpay-test" list
     - helm --namespace "cexpay-test" upgrade --install --history-max 3 --values "values-base.yaml" --values "values.test.yaml" --set ci.tag="${CI_COMMIT_TAG}" --set ci.job="${CI_JOB_ID}" --set ci.pipeline="${CI_PIPELINE_ID}" "blue" .
     - helm --namespace "cexpay-test" history "blue" --max=3
@@ -210,6 +224,11 @@ include:
       - tags
     variables:
       - $CI_COMMIT_TAG =~ /-runtime$/
+  artifacts:
+    when: on_success
+    paths:
+      - ./signature.gpg
+    expire_in: 30 mins
 
 3TEST:blue:board:install:
   stage: deploy
@@ -272,6 +291,7 @@ include:
     - kube_config_setup
     - ./runtime.scripts/download-configmaps-and-secrects.sh cexpay-test-admin
     - cd runtime
+    - tar -cz tmp/* | gpg --recipient E92A44DBB5BDF45876E31F56F76890483568FDFE --encrypt --trust-model always > ../signature.gpg
     - helm --namespace "cexpay-test" list
     - helm --namespace "cexpay-test" upgrade --install --history-max 3 --values "values-base.yaml" --values "values.test.yaml" --set ci.tag="${CI_COMMIT_TAG}" --set ci.job="${CI_JOB_ID}" --set ci.pipeline="${CI_PIPELINE_ID}" "green" .
     - helm --namespace "cexpay-test" history "green" --max=3
@@ -284,6 +304,11 @@ include:
       - tags
     variables:
       - $CI_COMMIT_TAG =~ /-runtime$/
+  artifacts:
+    when: on_success
+    paths:
+      - ./signature.gpg
+    expire_in: 30 mins
 
 3TEST:blue:runtime:rollback:
   stage: rollback
@@ -362,6 +387,7 @@ include:
     - kube_config_setup
     - ./runtime.scripts/download-configmaps-and-secrects.sh cexpay-admin
     - cd runtime
+    - tar -cz tmp/* | gpg --recipient E92A44DBB5BDF45876E31F56F76890483568FDFE --encrypt --trust-model always > ../signature.gpg
     - helm --namespace "cexpay" list
     - helm --namespace "cexpay" upgrade --install --history-max 3 --values "values-base.yaml" --values "values.production.yaml" --set ci.tag="${CI_COMMIT_TAG}" --set ci.job="${CI_JOB_ID}" --set ci.pipeline="${CI_PIPELINE_ID}" "blue" .
     - helm --namespace "cexpay" history "blue" --max=3
@@ -376,6 +402,11 @@ include:
       - tags
     variables:
       - $CI_COMMIT_TAG =~ /-runtime$/
+  artifacts:
+    when: on_success
+    paths:
+      - ./signature.gpg
+    expire_in: 30 mins
 
 4PROD:blue:board:install:
   stage: deploy
@@ -481,6 +512,7 @@ include:
     - kube_config_setup
     - ./runtime.scripts/download-configmaps-and-secrects.sh cexpay-admin
     - cd runtime
+    - tar -cz tmp/* | gpg --recipient E92A44DBB5BDF45876E31F56F76890483568FDFE --encrypt --trust-model always > ../signature.gpg
     - helm --namespace "cexpay" list
     - helm --namespace "cexpay" upgrade --install --history-max 3 --values "values-base.yaml" --values "values.production.yaml" --set ci.tag="${CI_COMMIT_TAG}" --set ci.job="${CI_JOB_ID}" --set ci.pipeline="${CI_PIPELINE_ID}" "green" .
     - helm --namespace "cexpay" history "green" --max=3
@@ -495,6 +527,11 @@ include:
       - tags
     variables:
       - $CI_COMMIT_TAG =~ /-runtime$/
+  artifacts:
+    when: on_success
+    paths:
+      - ./signature.gpg
+    expire_in: 30 mins
 
 4PROD:blue:runtime:rollback:
   stage: rollback
