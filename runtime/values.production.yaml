@@ -105,40 +105,39 @@ ingress:
       "/v2/dashboard/":
         backendServiceName: processing
         backendServicePort: 8082
-      # "/paytools/v1/":
-      #   backendServiceName: ptinvoice
-      #   backendServicePort: 8443
-
-
-  API-Obsolete-1:
-    blue:
-      domain: api.pay-cex.io
-      certSecretName: ingress-pay-cex-certificate
-    paths:
-      "/":
-        backendServiceName: api
+      "/paytools/v1/":
+        backendServiceName: ptinvoice
         backendServicePort: 8443
-      "/v2/":
-        backendServiceName: processing
-        backendServicePort: 8080
-      "/v2/dashboard/":
-        backendServiceName: processing
-        backendServicePort: 8082
 
-  API-Obsolete-2:
-    blue:
-      domain: api.cryptopay.band
-      certSecretName: ingress-gate-api-dashboard
-    paths:
-      "/":
-        backendServiceName: api
-        backendServicePort: 8443
-      "/v2/":
-        backendServiceName: processing
-        backendServicePort: 8080
-      "/v2/dashboard/":
-        backendServiceName: processing
-        backendServicePort: 8082
+  # API-Obsolete-1:
+  #   blue:
+  #     domain: api.pay-cex.io
+  #     certSecretName: ingress-pay-cex-certificate
+  #   paths:
+  #     "/":
+  #       backendServiceName: api
+  #       backendServicePort: 8443
+  #     "/v2/":
+  #       backendServiceName: processing
+  #       backendServicePort: 8080
+  #     "/v2/dashboard/":
+  #       backendServiceName: processing
+  #       backendServicePort: 8082
+
+  # API-Obsolete-2:
+  #   blue:
+  #     domain: api.cryptopay.band
+  #     certSecretName: ingress-gate-api-dashboard
+  #   paths:
+  #     "/":
+  #       backendServiceName: api
+  #       backendServicePort: 8443
+  #     "/v2/":
+  #       backendServiceName: processing
+  #       backendServicePort: 8080
+  #     "/v2/dashboard/":
+  #       backendServiceName: processing
+  #       backendServicePort: 8082
 
   API-Internal:
     blue:
@@ -215,14 +214,14 @@ ingress:
         backendServiceName: identity
         backendServicePort: 8443
 
-  Identity-Obsolete-1:
-    blue:
-      domain: id.pay-cex.io
-      certSecretName: ingress-pay-cex-certificate
-    paths:
-      "/":
-        backendServiceName: identity
-        backendServicePort: 8443
+  # Identity-Obsolete-1:
+  #   blue:
+  #     domain: id.pay-cex.io
+  #     certSecretName: ingress-pay-cex-certificate
+  #   paths:
+  #     "/":
+  #       backendServiceName: identity
+  #       backendServicePort: 8443
 
   Invoice:
     blue:
@@ -253,4 +252,28 @@ ingress:
     paths:
       "/":
         backendServiceName: messengerbridge
+        backendServicePort: 8443
+
+  StatusPage:
+    blue:
+      domain: status.cexpay.io
+      certSecretName: ingress-cexpayio-certificate
+    paths:
+      "/":
+        backendServiceName: statuspage
+        backendServicePort: 8443
+
+  StatusPage-Internal:
+    blue:
+      domain: status.prodcryptopay.kube
+      certSecretName: wildcard-prodcryptopay-kube
+    nonblue:
+      # Make final domain "status-<HelmReleaseName>.prodcryptopay.kube" like a:
+      #   status-green.prodcryptopay.kube
+      domainPerfix: status-
+      domainSuffix: .prodcryptopay.kube
+      certSecretName: wildcard-prodcryptopay-kube
+    paths:
+      "/":
+        backendServiceName: statuspage
         backendServicePort: 8443
