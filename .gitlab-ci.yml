@@ -257,7 +257,7 @@ include:
     - docker cp "${CONTAINER_ID}:/usr/local/cexiolabs/cexpay.board/." .github-data
     - docker cp "${CONTAINER_ID}:/usr/local/bin/." board-bin-tools
     - docker rm -v "${CONTAINER_ID}"
-    - export CEXPAY_GATEWAY_ORIGIN_WHITE_LIST==$(yq eval '.application.board.env.CEXPAY_GATEWAY_ORIGIN_WHITE_LIST' runtime/values.test.yaml)
+    - export CEXPAY_GATEWAY_ORIGIN_WHITE_LIST=$(yq eval '.application.board.env.CEXPAY_GATEWAY_ORIGIN_WHITE_LIST' runtime/values.test.yaml)
     - export CEXPAY_IDENTITY_API_URL=$(yq eval '.application.board.env.CEXPAY_IDENTITY_API_URL' runtime/values.test.yaml)
     - export CEXPAY_INVOICE_API_URL=$(yq eval '.application.board.env.CEXPAY_INVOICE_API_URL' runtime/values.test.yaml)
     - export CEXPAY_PAYTOOLS_INVOICE_API_URL=$(yq eval '.application.board.env.CEXPAY_PAYTOOLS_INVOICE_API_URL' runtime/values.test.yaml)
@@ -435,7 +435,7 @@ include:
     - docker cp "${CONTAINER_ID}:/usr/local/cexiolabs/cexpay.board/." .github-data
     - docker cp "${CONTAINER_ID}:/usr/local/bin/." board-bin-tools
     - docker rm -v "${CONTAINER_ID}"
-    - export CEXPAY_GATEWAY_ORIGIN_WHITE_LIST==$(yq eval '.application.board.env.CEXPAY_GATEWAY_ORIGIN_WHITE_LIST' runtime/values.production.yaml)
+    - export CEXPAY_GATEWAY_ORIGIN_WHITE_LIST=$(yq eval '.application.board.env.CEXPAY_GATEWAY_ORIGIN_WHITE_LIST' runtime/values.production.yaml)
     - export CEXPAY_IDENTITY_API_URL=$(yq eval '.application.board.env.CEXPAY_IDENTITY_API_URL' runtime/values.production.yaml)
     - export CEXPAY_INVOICE_API_URL=$(yq eval '.application.board.env.CEXPAY_INVOICE_API_URL' runtime/values.production.yaml)
     - export CEXPAY_PAYTOOLS_INVOICE_API_URL=$(yq eval '.application.board.env.CEXPAY_PAYTOOLS_INVOICE_API_URL' runtime/values.production.yaml)
