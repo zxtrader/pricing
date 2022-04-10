@@ -88,14 +88,14 @@ application:
 
   ptinvoice:
     serviceImage: harbor.infra.kube/cexpay/paytools/amd64
-    tag: 0.0.12
+    tag: 0.0.13
     replicas: 1
     env:
       Serilog__MinimumLevel__Default: Verbose
 
   ptservice:
     serviceImage: harbor.infra.kube/cexpay/paytools/amd64
-    tag: 0.0.12
+    tag: 0.0.13
     replicas: 1
     env:
       Serilog__MinimumLevel__Default: Verbose
