@@ -64,6 +64,7 @@ spec:
         envFrom:
         - configMapRef:
             name: {{ template "prefix" . }}invoice-envvars
+        env:
         - name: IdentityServerAuthentication__BearerAuthority
           value: https://{{ template "prefix" . }}identity:8443/
         - name: GatewayOrderHttpClient__Url
@@ -76,7 +77,6 @@ spec:
           value: {{ $value | quote }}
 {{- end }}
 {{- end }}
-        env:
         - name: Serilog__MinimumLevel__Default
           value: Information
         livenessProbe:
