@@ -107,14 +107,14 @@ spec:
         - configMapRef:
             name: {{ template "prefix" . }}processing-envvars
         env:
-        - name: LOG_LEVEL
-          value: info
 {{- if .Values.application.processing.env }}
 {{- range $key, $value := .Values.application.processing.env }}
         - name: {{ $key | quote }}
           value: {{ $value | quote }}
 {{- end }}
 {{- end }}
+        - name: LOG_LEVEL
+          value: info
         # livenessProbe:
         #   httpGet:
         #     path: /livenessProbe

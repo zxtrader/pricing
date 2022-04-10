@@ -75,15 +75,15 @@ spec:
           mountPath: /etc/cexiolabs/cexpay/secrets
           # The service will delete all files after read its. So need write access.
           readOnly: false
-        env:
-        - name: LOG_LEVEL
-          value: info
 {{- if .Values.application.messengerbridge.env }}
 {{- range $key, $value := .Values.application.messengerbridge.env }}
         - name: {{ $key | quote }}
           value: {{ $value | quote }}
 {{- end }}
 {{- end }}
+        env:
+        - name: LOG_LEVEL
+          value: info
         livenessProbe:
           httpGet:
             path: /

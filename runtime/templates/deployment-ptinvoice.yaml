@@ -66,22 +66,20 @@ spec:
         # - configMapRef:
         #     name: {{ template "prefix" . }}ptinvoice-envvars
         env:
-        - name: Serilog__MinimumLevel__Default
-          value: Information
-        - name: BasePath
-          value: /paytools/v1/invoice
         - name: IdentityServerAuthentication__BearerAuthority
           value: https://{{ template "prefix" . }}identity:8443/
         - name: GatewayHttpClient__Url
           value: https://{{ template "prefix" . }}gatehostinternal:8443/
-        - name: AuditExclude__ExcludeHeaders__0
-          value: "CP-ACCESS-PASSPHRASE"
 {{- if .Values.application.ptinvoice.env }}
 {{- range $key, $value := .Values.application.ptinvoice.env }}
         - name: {{ $key | quote }}
           value: {{ $value | quote }}
 {{- end }}
 {{- end }}
+        - name: Serilog__MinimumLevel__Default
+          value: Information
+        - name: BasePath
+          value: /paytools/v1/invoice
         livenessProbe:
           httpGet:
             path: /paytools/v1/invoice/info

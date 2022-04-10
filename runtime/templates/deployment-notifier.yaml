@@ -65,14 +65,14 @@ spec:
         - configMapRef:
             name: {{ template "prefix" . }}notifier-envvars
         env:
-        - name: Serilog__MinimumLevel__Default
-          value: Information
 {{- if .Values.application.notifier.env }}
 {{- range $key, $value := .Values.application.notifier.env }}
         - name: {{ $key | quote }}
           value: {{ $value | quote }}
 {{- end }}
 {{- end }}
+        - name: Serilog__MinimumLevel__Default
+          value: Information
         # livenessProbe:
         #   httpGet:
         #     path: /info

@@ -62,6 +62,12 @@ spec:
 {{- end }}
 {{- end }}
         env:
+{{- if .Values.application.echo.env }}
+{{- range $key, $value := .Values.application.echo.env }}
+        - name: {{ $key | quote }}
+          value: {{ $value | quote }}
+{{- end }}
+{{- end }}
         - name: HTTPS_PORT
           value: "8443"
         - name: LOG_LEVEL
@@ -70,12 +76,6 @@ spec:
           value: "/etc/cexiolabs/cexpay/ssl/tls.crt"
         - name: SSL_KEY_FILE
           value: "/etc/cexiolabs/cexpay/ssl/tls.key"
-{{- if .Values.application.echo.env }}
-{{- range $key, $value := .Values.application.echo.env }}
-        - name: {{ $key | quote }}
-          value: {{ $value | quote }}
-{{- end }}
-{{- end }}
         ports:
         - containerPort: 8443
           protocol: TCP

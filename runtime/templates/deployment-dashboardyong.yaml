@@ -66,14 +66,14 @@ spec:
 {{- end }}
 {{- end }}
         env:
-        - name: BASE_PATH
-          value: /
 {{- if .Values.application.dashboardyong.env }}
 {{- range $key, $value := .Values.application.dashboardyong.env }}
         - name: {{ $key | quote }}
           value: {{ $value | quote }}
 {{- end }}
 {{- end }}
+        - name: BASE_PATH
+          value: /
         livenessProbe:
           failureThreshold: 20
           httpGet:

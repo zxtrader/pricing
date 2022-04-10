@@ -65,8 +65,6 @@ spec:
         - configMapRef:
             name: {{ template "prefix" . }}gatehostinternal-envvars
         env:
-        - name: Serilog__MinimumLevel__Default
-          value: Information
         - name: Processing__BaseUrl
           value: https://{{ template "prefix" . }}processing:8080/
         - name: Api__BaseUrl
@@ -77,6 +75,8 @@ spec:
           value: {{ $value | quote }}
 {{- end }}
 {{- end }}
+        - name: Serilog__MinimumLevel__Default
+          value: Information
         livenessProbe:
           httpGet:
             path: /info/host

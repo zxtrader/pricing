@@ -64,15 +64,15 @@ spec:
         envFrom:
         - configMapRef:
             name: {{ template "prefix" . }}identity-envvars
-        env:
-        - name: Serilog__MinimumLevel__Default
-          value: Information
 {{- if .Values.application.identity.env }}
 {{- range $key, $value := .Values.application.identity.env }}
         - name: {{ $key | quote }}
           value: {{ $value | quote }}
 {{- end }}
 {{- end }}
+        env:
+        - name: Serilog__MinimumLevel__Default
+          value: Information
         livenessProbe:
           httpGet:
             path: /info

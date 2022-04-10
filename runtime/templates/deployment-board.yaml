@@ -68,14 +68,14 @@ spec:
 {{- end }}
 {{- end }}
         env:
-        - name: BASE_PATH
-          value: /
 {{- if .Values.application.board.env }}
 {{- range $key, $value := .Values.application.board.env }}
         - name: {{ $key | quote }}
           value: {{ $value | quote }}
 {{- end }}
 {{- end }}
+        - name: BASE_PATH
+          value: /
         livenessProbe:
           failureThreshold: 20
           httpGet:

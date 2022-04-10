@@ -65,14 +65,14 @@ spec:
         - configMapRef:
             name: {{ template "prefix" . }}statuspage-envvars
         env:
-        - name: Serilog__MinimumLevel__Default
-          value: Information
 {{- if .Values.application.statuspage.env }}
 {{- range $key, $value := .Values.application.statuspage.env }}
         - name: {{ $key | quote }}
           value: {{ $value | quote }}
 {{- end }}
 {{- end }}
+        - name: Serilog__MinimumLevel__Default
+          value: Information
         livenessProbe:
           httpGet:
             path: /info

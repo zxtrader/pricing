@@ -66,18 +66,18 @@ spec:
         # - configMapRef:
         #     name: {{ template "prefix" . }}ptservice-envvars
         env:
-        - name: Serilog__MinimumLevel__Default
-          value: Information
-        - name: BasePath
-          value: /paytools/v1/service
-        - name: GatewayHttpClient__Url
-          value: https://{{ template "prefix" . }}gatehostinternal:8443/
 {{- if .Values.application.ptservice.env }}
 {{- range $key, $value := .Values.application.ptservice.env }}
         - name: {{ $key | quote }}
           value: {{ $value | quote }}
 {{- end }}
 {{- end }}
+        - name: Serilog__MinimumLevel__Default
+          value: Information
+        - name: BasePath
+          value: /paytools/v1/service
+        - name: GatewayHttpClient__Url
+          value: https://{{ template "prefix" . }}gatehostinternal:8443/
         livenessProbe:
           httpGet:
             path: /paytools/v1/service/info
