@@ -95,7 +95,7 @@ application:
 
   ptservice:
     serviceImage: harbor.infra.kube/cexpay/paytools/amd64
-    tag: 0.0.13
+    tag: 0.0.14
     replicas: 1
     env:
       Serilog__MinimumLevel__Default: Verbose
