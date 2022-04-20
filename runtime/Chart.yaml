@@ -13,7 +13,7 @@ name: cexpay
 version: 2.0.0
 
 # The version of the app that this contains (optional). This needn't be SemVer.
-appVersion: 2.14.17
+appVersion: 2.14.18
 
 # The URL of this project's home page (optional)
 home: https://www.cexpay.io/
