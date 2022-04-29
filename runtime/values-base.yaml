@@ -103,7 +103,7 @@ application:
 
   statuspage:
     serviceImage: harbor.infra.kube/cexpay/statuspage/amd64
-    tag: 1.2.6
+    tag: 1.2.7
     env:
       Serilog__MinimumLevel__Default: Verbose
       ConnectionStrings__HangfireConnectionString: "Host=127.0.0.1;Port=5432;UserId=devadmin;Password=;Database=devdb;"
