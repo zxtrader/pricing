@@ -266,13 +266,13 @@ ingress:
   StatusPage-Internal:
     blue:
       domain: status.prodcexpay.kube
-      certSecretName: wildcard-prodcryptopay-kube
+      certSecretName: wildcard-prodcexpay-kube
     nonblue:
       # Make final domain "status-<HelmReleaseName>.prodcryptopay.kube" like a:
       #   status-green.prodcryptopay.kube
       domainPerfix: status-
       domainSuffix: .prodcexpay.kube
-      certSecretName: wildcard-prodcryptopay-kube
+      certSecretName: wildcard-prodcexpay-kube
     paths:
       "/":
         backendServiceName: statuspage
