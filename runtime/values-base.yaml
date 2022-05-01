@@ -83,7 +83,7 @@ application:
 
   processing:
     serviceImage: harbor.infra.kube/cexpay/processing/amd64
-    tag: 2.10.3
+    tag: 2.10.4
     replicas: 1
 
   ptinvoice:
