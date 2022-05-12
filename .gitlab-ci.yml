@@ -223,7 +223,7 @@ include:
     refs:
       - tags
     variables:
-      - $CI_COMMIT_TAG =~ /-runtime$/
+      - $CI_COMMIT_TAG =~ /-runtime(-rc[0-9]+)?$/
   artifacts:
     when: on_success
     paths:
@@ -279,7 +279,7 @@ include:
     refs:
       - tags
     variables:
-      - $CI_COMMIT_TAG =~ /-runtime$/
+      - $CI_COMMIT_TAG =~ /-runtime(-rc[0-9]+)?$/
 
 3TEST:green:runtime:install:
   stage: deploy
@@ -303,7 +303,7 @@ include:
     refs:
       - tags
     variables:
-      - $CI_COMMIT_TAG =~ /-runtime$/
+      - $CI_COMMIT_TAG =~ /-runtime(-rc[0-9]+)?$/
   artifacts:
     when: on_success
     paths:
@@ -331,7 +331,7 @@ include:
     refs:
       - tags
     variables:
-      - $CI_COMMIT_TAG =~ /-runtime$/
+      - $CI_COMMIT_TAG =~ /-runtime(-rc[0-9]+)?$/
 
 3TEST:blue:runtime:delete:
   stage: delete
@@ -353,7 +353,7 @@ include:
     refs:
       - tags
     variables:
-      - $CI_COMMIT_TAG =~ /-runtime$/
+      - $CI_COMMIT_TAG =~ /-runtime(-rc[0-9]+)?$/
 
 3TEST:green:runtime:delete:
   stage: delete
@@ -375,7 +375,7 @@ include:
     refs:
       - tags
     variables:
-      - $CI_COMMIT_TAG =~ /-runtime$/
+      - $CI_COMMIT_TAG =~ /-runtime(-rc[0-9]+)?$/
 
 4PROD:blue:runtime:install:
   stage: deploy
@@ -726,7 +726,7 @@ include:
     refs:
       - tags
     variables:
-      - $CI_COMMIT_TAG =~ /-database$/
+      - $CI_COMMIT_TAG =~ /-database(-rc[0-9]+)?$/
 
 3TEST:rollback:db:
   image:
@@ -749,7 +749,7 @@ include:
     refs:
       - tags
     variables:
-      - $CI_COMMIT_TAG =~ /-database$/
+      - $CI_COMMIT_TAG =~ /-database(-rc[0-9]+)?$/
 
 4PROD:install:db:
   image:
