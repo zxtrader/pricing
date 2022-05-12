@@ -7,7 +7,7 @@ application:
 
   board:
     serviceImage: harbor.infra.kube/cexpay/board/amd64
-    tag: 0.2.2
+    tag: 0.3.0-rc2
     replicas: 1
 
   dashboardpscl:
@@ -17,7 +17,7 @@ application:
 
   dashboardwznk:
     serviceImage: harbor.infra.kube/cexpay/dashboard-wznk/amd64
-    tag: 2.13.5-rc4
+    tag: 2.14.0-rc0
     replicas: 1
 
   dashboardyong:
