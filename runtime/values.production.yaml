@@ -142,7 +142,7 @@ ingress:
   API-Internal:
     blue:
       domain: api.prod.cexpay.internal
-      certSecretName: callback
+      certSecretName: wildcard-prod-cexpay-internal
     nonblue:
       # Make final domain "api-<HelmReleaseName>.prod.cexpay.internal" like a:
       #   api-green.prod.cexpay.internal
