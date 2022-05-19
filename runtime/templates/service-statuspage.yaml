@@ -11,6 +11,12 @@ metadata:
   labels:
     app: {{ template "prefix" . }}statuspage
   name: {{ template "prefix" . }}statuspage
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/path: /metrics
+    prometheus.io/port: "8443"
+    prometheus.io/scheme: https
+
 spec:
   ports:
     - port: 8443
