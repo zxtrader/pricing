@@ -141,14 +141,14 @@ ingress:
 
   API-Internal:
     blue:
-      domain: api.prodcryptopay.kube
+      domain: api.prod.cexpay.internal
       certSecretName: callback
     nonblue:
-      # Make final domain "api-<HelmReleaseName>.prodcryptopay.kube" like a:
-      #   api-green.prodcryptopay.kube
+      # Make final domain "api-<HelmReleaseName>.prod.cexpay.internal" like a:
+      #   api-green.prod.cexpay.internal
       domainPerfix: api-
-      domainSuffix: .prodcryptopay.kube
-      certSecretName: wildcard-prodcryptopay-kube
+      domainSuffix: .prod.cexpay.internal
+      certSecretName: wildcard-prod-cexpay-internal
     paths:
       "/":
         backendServiceName: api
@@ -162,17 +162,29 @@ ingress:
 
   Board-Internal:
     nonblue:
-      # Make final domain "board-<HelmReleaseName>.prodcryptopay.kube" like a:
-      #   board-green.prodcryptopay.kube
+      # Make final domain "board-<HelmReleaseName>.prod.cexpay.internal" like a:
+      #   board-green.prod.cexpay.internal
       domainPerfix: board-
-      domainSuffix: .prodcryptopay.kube
-      certSecretName: wildcard-prodcryptopay-kube
+      domainSuffix: .prod.cexpay.internal
+      certSecretName: wildcard-prod-cexpay-internal
     paths:
       "/":
         backendServiceName: board
         backendServicePort: 8443
 
   Callbacks-Internal:
+    blue:
+      domain: callback.prod.cexpay.internal
+      certSecretName: wildcard-prod-cexpay-internal
+    paths:
+      "/v2/callback/cryptoproviders/pss-provider-wtf2/":
+        backendServiceName: processing
+        backendServicePort: 8084
+      "/ws/":
+        backendServiceName: processing
+        backendServicePort: 8086
+
+  Callbacks-Internal-Obsolete:
     blue:
       domain: callback.prodcryptopay.kube
       certSecretName: wildcard-prodcryptopay-kube
@@ -189,11 +201,11 @@ ingress:
       domain: gate.cexpay.io
       certSecretName: ingress-cexpayio-certificate
     nonblue:
-      # Make final domain "gate-<HelmReleaseName>.prodcryptopay.kube" like a:
-      #   gate-green.prodcryptopay.kube
+      # Make final domain "gate-<HelmReleaseName>.prod.cexpay.internal" like a:
+      #   gate-green.prod.cexpay.internal
       domainPerfix: gate-
-      domainSuffix: .prodcryptopay.kube
-      certSecretName: wildcard-prodcryptopay-kube
+      domainSuffix: .prod.cexpay.internal
+      certSecretName: wildcard-prod-cexpay-internal
     paths:
       "/":
         backendServiceName: gatehostinternal
@@ -204,11 +216,11 @@ ingress:
       domain: id.cexpay.io
       certSecretName: ingress-cexpayio-certificate
     nonblue:
-      # Make final domain "id-<HelmReleaseName>.prodcryptopay.kube" like a:
-      #   id-green.prodcryptopay.kube
+      # Make final domain "id-<HelmReleaseName>.prod.cexpay.internal" like a:
+      #   id-green.prod.cexpay.internal
       domainPerfix: id-
-      domainSuffix: .prodcryptopay.kube
-      certSecretName: wildcard-prodcryptopay-kube
+      domainSuffix: .prod.cexpay.internal
+      certSecretName: wildcard-prod-cexpay-internal
     paths:
       "/":
         backendServiceName: identity
@@ -228,11 +240,11 @@ ingress:
       domain: invoice.cexpay.io
       certSecretName: ingress-cexpayio-certificate
     nonblue:
-      # Make final domain "invoice-<HelmReleaseName>.prodcryptopay.kube" like a:
-      #   invoice-green.prodcryptopay.kube
+      # Make final domain "invoice-<HelmReleaseName>.prod.cexpay.internal" like a:
+      #   invoice-green.prod.cexpay.internal
       domainPerfix: invoice-
-      domainSuffix: .prodcryptopay.kube
-      certSecretName: wildcard-prodcryptopay-kube
+      domainSuffix: .prod.cexpay.internal
+      certSecretName: wildcard-prod-cexpay-internal
     paths:
       "/":
         backendServiceName: invoice
@@ -241,44 +253,44 @@ ingress:
   MessengerBridge-Internal:
     # THIS temporary endpoint just for testing purposes
     blue:
-      domain: messengerbridge.prodcryptopay.kube
-      certSecretName: wildcard-prodcryptopay-kube
+      domain: messengerbridge.prod.cexpay.internal
+      certSecretName: wildcard-prod-cexpay-internal
     nonblue:
-      # Make final domain "messengerbridge-<HelmReleaseName>.prodcryptopay.kube" like a:
-      #   messengerbridge-green.prodcryptopay.kube
+      # Make final domain "messengerbridge-<HelmReleaseName>.prod.cexpay.internal" like a:
+      #   messengerbridge-green.prod.cexpay.internal
       domainPerfix: messengerbridge-
-      domainSuffix: .prodcryptopay.kube
-      certSecretName: wildcard-prodcryptopay-kube
+      domainSuffix: .prod.cexpay.internal
+      certSecretName: wildcard-prod-cexpay-internal
     paths:
       "/":
         backendServiceName: messengerbridge
         backendServicePort: 8443
 
-  StatusPage:
-    blue:
-      domain: status.cexpay.io
-      certSecretName: ingress-cexpayio-certificate
-    paths:
-      "/":
-        backendServiceName: statuspage
-        backendServicePort: 8443
+  # StatusPage:
+  #   blue:
+  #     domain: status.cexpay.io
+  #     certSecretName: ingress-cexpayio-certificate
+  #   paths:
+  #     "/":
+  #       backendServiceName: statuspage
+  #       backendServicePort: 8443
 
   StatusPage-Internal:
     blue:
-      domain: status.prodcexpay.kube
-      certSecretName: wildcard-prodcexpay-kube
+      domain: status.prod.cexpay.internal
+      certSecretName: wildcard-prod-cexpay-internal
     nonblue:
-      # Make final domain "status-<HelmReleaseName>.prodcryptopay.kube" like a:
-      #   status-green.prodcryptopay.kube
+      # Make final domain "status-<HelmReleaseName>.prod.cexpay.internal" like a:
+      #   status-green.prod.cexpay.internal
       domainPerfix: status-
-      domainSuffix: .prodcexpay.kube
-      certSecretName: wildcard-prodcexpay-kube
+      domainSuffix: .prod.cexpay.internal
+      certSecretName: wildcard-prod-cexpay-internal
     paths:
       "/":
         backendServiceName: statuspage
         backendServicePort: 8443
 
-  StatusPage-Internal-Deprecated:
+  StatusPage-Internal-Obsolete:
     blue:
       domain: status.prodcryptopay.kube
       certSecretName: wildcard-prodcryptopay-kube
