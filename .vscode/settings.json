@@ -2,7 +2,6 @@
 	"editor.detectIndentation": false,
 	"editor.insertSpaces": false,
 	"editor.lineNumbers": "on",
-	"editor.renderIndentGuides": true,
 	"editor.renderWhitespace": "all",
 	"editor.rulers": [
 		80,
@@ -19,5 +18,6 @@
 	"files.encoding": "utf8",
 	"files.eol": "\n",
 	"git.enabled": true,
-	"git.rebaseWhenSync": true
+	"git.rebaseWhenSync": true,
+	"editor.guides.indentation": true
 }
