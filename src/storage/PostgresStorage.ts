@@ -61,8 +61,8 @@ export class PostgresStogare extends Initable implements Storage {
 				}
 
 				const sqlRows: ReadonlyArray<SqlResultRecord> = await sqlProvider.statement(
-					'SELECT "source" FROM cp2_pricing.pricing '
-					+ 'WHERE "market_currency" = $1 AND "trade_currency" = $2 AND "source" = ANY($3) '
+					'SELECT "source" FROM "cp2_pricing"."historical_rate" '
+					+ 'WHERE "quote_currency" = $1 AND "base_currency" = $2 AND "source" = ANY($3) '
 					+ 'AND "utc_created_at" = to_timestamp($4::DOUBLE PRECISION)::TIMESTAMP WITHOUT TIME ZONE'
 				).executeQuery(cancellationToken, marketCurrency, tradeCurrency, sources, momentTimeStamp.unix().toString());
 
@@ -104,7 +104,7 @@ export class PostgresStogare extends Initable implements Storage {
 				}
 
 				await sqlProvider.statement(
-					'INSERT INTO "cp2_pricing"."pricing" ("market_currency", "trade_currency", "source", "price", "utc_created_at") '
+					'INSERT INTO "cp2_pricing"."historical_rate" ("quote_currency", "base_currency", "source", "price", "utc_created_at") '
 					+ 'VALUES ($1, $2, $3, $4, to_timestamp($5::DOUBLE PRECISION)::TIMESTAMP WITHOUT TIME ZONE)'
 				).execute(cancellationToken, marketCurrency, tradeCurrency, sourceId, price, momentTimeStamp.unix().toString());
 				cancellationToken.throwIfCancellationRequested();
@@ -134,8 +134,8 @@ export class PostgresStogare extends Initable implements Storage {
 					}
 
 					const sqlRow: SqlResultRecord | null = await sqlProvider.statement(
-						'SELECT "price" FROM cp2_pricing.pricing '
-						+ 'WHERE "market_currency" = $1 AND "trade_currency" = $2 AND "source" = $3 '
+						'SELECT "price" FROM "cp2_pricing"."historical_rate" '
+						+ 'WHERE "quote_currency" = $1 AND "base_currency" = $2 AND "source" = $3 '
 						+ 'AND "utc_created_at" = to_timestamp($4::DOUBLE PRECISION)::TIMESTAMP WITHOUT TIME ZONE'
 					).executeSingleOrNull(cancellationToken, marketCurrency, tradeCurrency, sourceId, momentTimeStamp.unix().toString());
 
@@ -154,8 +154,8 @@ export class PostgresStogare extends Initable implements Storage {
 					}
 
 					const sqlRows: ReadonlyArray<SqlResultRecord> = await sqlProvider.statement(
-						'SELECT "price", "source" FROM cp2_pricing.pricing '
-						+ 'WHERE "market_currency" = $1 AND "trade_currency" = $2 '
+						'SELECT "price", "source" FROM "cp2_pricing"."historical_rate" '
+						+ 'WHERE "quote_currency" = $1 AND "base_currency" = $2 '
 						+ 'AND "utc_created_at" = to_timestamp($3::DOUBLE PRECISION)::TIMESTAMP WITHOUT TIME ZONE'
 					).executeQuery(cancellationToken, marketCurrency, tradeCurrency, momentTimeStamp.unix().toString());
 					cancellationToken.throwIfCancellationRequested();
