@@ -2,12 +2,12 @@ application:
 
   api:
     serviceImage: harbor.infra.kube/cexpay/api/amd64
-    tag: 0.12.3-rc1
+    tag: 0.13.0-rc2
     replicas: 1
 
   board:
     serviceImage: harbor.infra.kube/cexpay/board/amd64
-    tag: 0.3.0-rc4
+    tag: 0.3.0-rc6
     replicas: 1
 
   dashboardpscl:
@@ -17,7 +17,7 @@ application:
 
   dashboardwznk:
     serviceImage: harbor.infra.kube/cexpay/dashboard-wznk/amd64
-    tag: 2.14.0-rc0
+    tag: 2.14.0-rc2
     replicas: 1
 
   dashboardyong:
@@ -83,7 +83,7 @@ application:
 
   processing:
     serviceImage: harbor.infra.kube/cexpay/processing/amd64
-    tag: 2.11.0-rc2
+    tag: 2.13.0-rc0
     replicas: 1
 
   ptinvoice:
