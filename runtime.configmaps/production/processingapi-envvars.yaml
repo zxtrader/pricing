@@ -1,0 +1,9 @@
+# kubectl --namespace cexpay-admin get --output=yaml ConfigMap/processingapi-envvars
+# kubectl --namespace cexpay-admin get --output=json ConfigMap/processingapi-envvars | jq -r ".data" | yq eval -P | sed 's/^/  /'
+# kubectl --namespace cexpay-admin apply --filename=runtime.configmaps/production/processingapi-envvars.yaml
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: api-envvars
+  namespace: cexpay-admin

@@ -815,7 +815,6 @@ include:
   script:
     - export KUBECONFIG=/tmp/.kube-config
     - echo "$KUBECONF_BASE64" | base64 -d > "${KUBECONFIG}"
-    - kubectl --namespace cexpay-admin apply --filename=runtime.configmaps/production/api-envvars.yaml
     - kubectl --namespace cexpay-admin apply --filename=runtime.configmaps/production/gatehostinternal-envvars.yaml
     - kubectl --namespace cexpay-admin apply --filename=runtime.configmaps/production/identity-envvars.yaml
     - kubectl --namespace cexpay-admin apply --filename=runtime.configmaps/production/invoice-envvars.yaml
@@ -824,6 +823,7 @@ include:
     - kubectl --namespace cexpay-admin apply --filename=runtime.configmaps/production/notifier-files.yaml
     - kubectl --namespace cexpay-admin apply --filename=runtime.configmaps/production/processing-envvars.yaml
     - kubectl --namespace cexpay-admin apply --filename=runtime.configmaps/production/processing-files.yaml
+    - kubectl --namespace cexpay-admin apply --filename=runtime.configmaps/production/processingapi-envvars.yaml
     - kubectl --namespace cexpay-admin apply --filename=runtime.configmaps/production/statuspage-envvars.yaml
     - kubectl --namespace cexpay-admin apply --filename=runtime.configmaps/production/statuspage-files.yaml
     - kubectl --namespace cexpay-admin apply --filename=runtime.configmaps/production/supportbot-envvars.yaml

@@ -4,8 +4,8 @@
 #ZONES="evolution"
 #ZONES="presentation"
 ZONES="evolution presentation"
-CONFIGMAPS="api-envvars cpservice gatehostinternal-envvars identity-envvars invoice-envvars messengerbridge-files notifier-envvars notifier-files processing-envvars processing-files"
-SECRETS="api gatehostinternal identity invoice messengerbridge migration notifier processing"
+CONFIGMAPS="cpservice gatehostinternal-envvars identity-envvars invoice-envvars messengerbridge-files notifier-envvars notifier-files processing-envvars processing-files processingapi-envvars"
+SECRETS="gatehostinternal identity invoice messengerbridge migration notifier processing processingapi"
 
 # Normalize SCRIPT_DIR
 SCRIPT_DIR=$(dirname "$0")

@@ -81,7 +81,7 @@ spec:
           value: Information
         livenessProbe:
           httpGet:
-            path: /v3/info
+            path: /processing/v3/info
             port: 8443
             scheme: HTTPS
           initialDelaySeconds: 180
@@ -91,7 +91,7 @@ spec:
           protocol: TCP
         readinessProbe:
           httpGet:
-            path: /v3/info
+            path: /processing/v3/info
             port: 8443
             scheme: HTTPS
           initialDelaySeconds: 5
