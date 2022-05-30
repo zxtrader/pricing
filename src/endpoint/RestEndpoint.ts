@@ -1,4 +1,4 @@
-import { Logger } from "@zxteam/contract";
+import { Financial, Logger } from "@zxteam/contract";
 import { wrapErrorIfNeeded, ArgumentError } from "@zxteam/errors";
 import { Configuration as HostingConfiguration, ServersBindEndpoint, WebServer } from "@zxteam/hosting";
 
@@ -11,6 +11,8 @@ import * as moment from "moment";
 import { PriceApi } from "../api/PriceApi";
 import { DUMMY_CANCELLATION_TOKEN } from "@zxteam/cancellation";
 import { BuildInfo, BuildInfoImpl, DevelBuildInfo } from "../BuildInfo";
+import financial from "@zxteam/financial";
+import { padStart } from "lodash";
 
 export class RestEndpoint extends ServersBindEndpoint {
 	protected readonly _router: express.Router;
@@ -111,6 +113,54 @@ export class RestEndpoint extends ServersBindEndpoint {
 				const args = priceRuntime.parseBatchArgs(req.query.items as string);
 				const prices = await priceService.getHistoricalPrices(DUMMY_CANCELLATION_TOKEN, args);
 				return res.status(200).end(priceRuntime.renderForBatch(prices, args));
+			} catch (e) {
+				if (e instanceof ArgumentError) {
+					log.error(e.message);
+					return render400(res, "Bad argument in request");
+				}
+				if (e instanceof PriceApi.InvalidDateError) {
+					log.error(e.message);
+					return render400(res, "Invalid format date");
+				}
+				next(e);
+			}
+		});
+		this._router.get("/history/:baseCurrency/:quoteCurrency", async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+			try {
+				const args: PriceApi.HistoryArgument = priceRuntime.parseHistoryParams(req.query);
+				const deltaUnixSpan: number = (args.toDate.getTime() - args.fromDate.getTime());
+				const middleUnixTime: number = args.fromDate.getTime() + (deltaUnixSpan / 2);
+				const middleDate: Date = new Date(middleUnixTime);
+				const middleTs: number = Number.parseInt(moment.utc(middleDate).format("YYYYMMDDHHmmss"));
+
+				const price: PriceApi.Timestamp = await this._priceService.getHistoricalPrices(DUMMY_CANCELLATION_TOKEN, [{
+					ts: middleTs,
+					marketCurrency: req.params.baseCurrency,
+					tradeCurrency: req.params.quoteCurrency,
+					sourceId: args.sourceId,
+					requiredAllSourceIds: false
+				}]);
+
+				const results: Array<{
+					date: Date;
+					rate: Financial;
+				}> = [];
+				const segement = deltaUnixSpan / (args.points);
+				const rate: Financial = financial.parse(price[middleTs][req.params.baseCurrency][req.params.quoteCurrency].primary!.price);
+				for (let point = 0; point < args.points; ++point) {
+					results.push({
+						date: new Date(args.fromDate.getTime() + point * segement),
+						rate: rate.multiply(financial.fromFloat(1 + Math.random() * 0.1), 8, Financial.RoundMode.Trunc)
+					});
+				}
+				return res.status(200).end(JSON.stringify(results.map(e => ({
+					date: e.date.toISOString(),
+					rate: e.rate.toString()
+				}))));
+				// if (log.isTraceEnabled) { log.trace(`Chart request ${req.url}`); }
+				// const args = priceRuntime.parseBatchArgs(req.query.items as string);
+				// const prices = await priceService.getHistoricalPrices(DUMMY_CANCELLATION_TOKEN, args);
+				// return res.status(200).end(priceRuntime.renderForBatch(prices, args));
 			} catch (e) {
 				if (e instanceof ArgumentError) {
 					log.error(e.message);
@@ -349,6 +399,21 @@ namespace priceRuntime {
 		}
 	}
 
+	export function parseHistoryParams(params: any): PriceApi.HistoryArgument {
+		const { fromDate, toDate, points, exchange } = params;
+		if (_.isString(fromDate) && _.isString(toDate) && _.isString(points)) {
+			const agrs: PriceApi.HistoryArgument = {
+				sourceId: exchange,
+				fromDate: new Date(fromDate),
+				toDate: new Date(toDate),
+				points: Number.parseInt(points)
+			};
+			return agrs;
+		} else {
+			throw new ArgumentError("params");
+		}
+	}
+
 	export function parseBatchArgs(args: string): Array<PriceApi.Argument> {
 		const argsRegex = /^[0-9]{14}:[0-9A-Z]+:[0-9A-Z]+(,[0-9]{14}:[0-9A-Z]+:[0-9A-Z]+)*$/;
 		if (!args) { throw new ArgumentError("args"); }
@@ -448,4 +513,6 @@ namespace priceRuntime {
 		}
 		return JSON.stringify(friendly);
 	}
+
+	// export function renderForChart 
 }

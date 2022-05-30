@@ -43,6 +43,39 @@ connected (press CTRL+C to quit)
 < {"jsonrpc":"2.0","id":42,"result":{"echo":"hello","time":"2019-07-14T22:15:38.410Z","version":"0.0.17"}}
 ```
 
+### Historical range rates
+Get list of historical rates(for charts)
+#### REST
+* Date format: ISO 8601
+* Arguments
+  * `baseCurrency` - a currency code of base asset
+  * `quoteCurrency` - a currency code of price asset
+  * `fromDate` - start date of requested range(included)
+  * `toDate` - end date of requested range (excluded)
+  * `points` - number of points
+  * `sourceId` - (optional)price source system
+```bash
+$ curl "http://127.0.0.1:8080/v0/api/history/{baseCurrency}/{quoteCurrency}?fromDate=2021-01-01&toDate=2022-05-01&points=10&sourceId=cex"
+$ curl "http://127.0.0.1:8080/v0/api/history/BTC/USD?fromDate=2021-01-01&toDate=2022-05-01&points=10"
+$ curl "http://127.0.0.1:8080/v0/api/history/BTC/USD?fromDate=2021-01-01&toDate=2022-05-01&points=10&sourceId=cex"
+```
+```json
+[
+  {
+    "date": "2021-01-01T00:00:00.000Z",
+    "rate": "0.0000217"
+  },
+  {
+    "date": "2021-02-18T12:00:00.000Z",
+    "rate": "0.00002086"
+  },
+  {
+    "date": "2021-04-08T00:00:00.000Z",
+    "rate": "0.00002172"
+  }
+]
+```
+
 ### Historical Rate
 Get a historical rate
 #### REST

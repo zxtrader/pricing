@@ -46,6 +46,13 @@ export namespace PriceApi {
 		sourceId?: string;
 		requiredAllSourceIds: boolean;
 	}
+
+	export interface HistoryArgument {
+		fromDate: Date;
+		toDate: Date;
+		points: number;
+		sourceId?: string;
+	}
 	export interface Timestamp {
 		[ts: number]: Market;
 	}

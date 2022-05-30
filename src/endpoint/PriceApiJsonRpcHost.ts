@@ -9,7 +9,6 @@ import * as moment from "moment";
 import { v4 as uuid } from "uuid";
 
 import { PriceApi } from "../api/PriceApi";
-import { InvalidOperationError } from "@zxteam/errors";
 
 const ensure: Ensure = ensureFactory();
 

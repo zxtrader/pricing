@@ -104,7 +104,7 @@ export class PostgresStogare extends Initable implements Storage {
 				}
 
 				await sqlProvider.statement(
-					'INSERT INTO "cp2_pricing"."historical_rate" ("quote_currency", "base_currency", "source", "price", "utc_created_at") '
+					'INSERT INTO "cp2_pricing"."historical_rate" ("quote_currency", "base_currency", "source", "rate", "utc_created_at") '
 					+ 'VALUES ($1, $2, $3, $4, to_timestamp($5::DOUBLE PRECISION)::TIMESTAMP WITHOUT TIME ZONE)'
 				).execute(cancellationToken, marketCurrency, tradeCurrency, sourceId, price, momentTimeStamp.unix().toString());
 				cancellationToken.throwIfCancellationRequested();
@@ -134,7 +134,7 @@ export class PostgresStogare extends Initable implements Storage {
 					}
 
 					const sqlRow: SqlResultRecord | null = await sqlProvider.statement(
-						'SELECT "price" FROM "cp2_pricing"."historical_rate" '
+						'SELECT "rate" FROM "cp2_pricing"."historical_rate" '
 						+ 'WHERE "quote_currency" = $1 AND "base_currency" = $2 AND "source" = $3 '
 						+ 'AND "utc_created_at" = to_timestamp($4::DOUBLE PRECISION)::TIMESTAMP WITHOUT TIME ZONE'
 					).executeSingleOrNull(cancellationToken, marketCurrency, tradeCurrency, sourceId, momentTimeStamp.unix().toString());
@@ -144,7 +144,7 @@ export class PostgresStogare extends Initable implements Storage {
 						this._logger.error(`Can not get price by sourceId ${sourceId}, ${marketCurrency}, ${tradeCurrency}, ${ts}`);
 
 					} else {
-						Helpers.AddPriceTimeStamp(friendlyPricesChunk, ts, marketCurrency, tradeCurrency, null, sourceId, sqlRow.get('price').asString);
+						Helpers.AddPriceTimeStamp(friendlyPricesChunk, ts, marketCurrency, tradeCurrency, null, sourceId, sqlRow.get("rate").asString);
 					}
 				});
 			} else {
@@ -154,14 +154,14 @@ export class PostgresStogare extends Initable implements Storage {
 					}
 
 					const sqlRows: ReadonlyArray<SqlResultRecord> = await sqlProvider.statement(
-						'SELECT "price", "source" FROM "cp2_pricing"."historical_rate" '
+						'SELECT "rate", "source" FROM "cp2_pricing"."historical_rate" '
 						+ 'WHERE "quote_currency" = $1 AND "base_currency" = $2 '
 						+ 'AND "utc_created_at" = to_timestamp($3::DOUBLE PRECISION)::TIMESTAMP WITHOUT TIME ZONE'
 					).executeQuery(cancellationToken, marketCurrency, tradeCurrency, momentTimeStamp.unix().toString());
 					cancellationToken.throwIfCancellationRequested();
 
 					for (const sqlRow of sqlRows) {
-						Helpers.AddPriceTimeStamp(friendlyPricesChunk, ts, marketCurrency, tradeCurrency, null, sqlRow.get('source').asString, sqlRow.get('price').asString);
+						Helpers.AddPriceTimeStamp(friendlyPricesChunk, ts, marketCurrency, tradeCurrency, null, sqlRow.get("source").asString, sqlRow.get("rate").asString);
 					}
 				});
 			}

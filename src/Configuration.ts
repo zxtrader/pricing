@@ -77,7 +77,7 @@ export namespace Configuration {
 				return webSocketEndpoint;
 			}
 			default:
-				throw new Error(`Non supported endpont type: ${endpointType}`);
+				throw new Error(`Non supported endpoint type: ${endpointType}`);
 		}
 	}
 
