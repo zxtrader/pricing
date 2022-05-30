@@ -223,7 +223,7 @@ include:
     refs:
       - tags
     variables:
-      - $CI_COMMIT_TAG =~ /-runtime(-rc[0-9]+)?$/
+      - $CI_COMMIT_TAG =~ /-runtime$/
   artifacts:
     when: on_success
     paths:
@@ -279,7 +279,7 @@ include:
     refs:
       - tags
     variables:
-      - $CI_COMMIT_TAG =~ /-runtime(-rc[0-9]+)?$/
+      - $CI_COMMIT_TAG =~ /-runtime$/
 
 3TEST:green:runtime:install:
   stage: deploy
@@ -353,7 +353,7 @@ include:
     refs:
       - tags
     variables:
-      - $CI_COMMIT_TAG =~ /-runtime(-rc[0-9]+)?$/
+      - $CI_COMMIT_TAG =~ /-runtime$/
 
 3TEST:green:runtime:delete:
   stage: delete
@@ -526,7 +526,7 @@ include:
     refs:
       - tags
     variables:
-      - $CI_COMMIT_TAG =~ /-runtime$/
+      - $CI_COMMIT_TAG =~ /-runtime(-rc[0-9]+)?$/
   artifacts:
     when: on_success
     paths:
@@ -604,7 +604,7 @@ include:
     refs:
       - tags
     variables:
-      - $CI_COMMIT_TAG =~ /-runtime$/
+      - $CI_COMMIT_TAG =~ /-runtime(-rc[0-9]+)?$/
 
 
 
