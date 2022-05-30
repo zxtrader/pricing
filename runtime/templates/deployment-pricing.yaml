@@ -1,0 +1,100 @@
+{{ if eq .Release.Name "blue" }}
+# Right now "pricing" is not able to work in few process
+# so we deploy this conditionally
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: {{ template "prefix" . }}pricing
+  name: {{ template "prefix" . }}pricing
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "prefix" . }}pricing
+  replicas: {{ .Values.application.pricing.replicas | default 0 }}
+  strategy:
+    type: RollingUpdate
+  revisionHistoryLimit: 3
+  template:
+    metadata:
+      labels:
+        app: {{ template "prefix" . }}pricing
+    spec:
+      containers:
+      - name: pricing
+        image: {{ .Values.application.pricing.serviceImage }}:{{ .Values.application.pricing.tag }}
+{{- if .Values.application.pricing.command }}
+        command:
+{{ range .Values.application.pricing.command }}
+        - {{ . }}
+{{ end }}
+{{- end }}
+{{- if .Values.application.pricing.args }}
+        args:
+{{ range .Values.application.pricing.args }}
+        - {{ . }}
+{{ end }}
+{{- end }}
+        ports:
+        # Main Web server
+        - containerPort: 8080
+          protocol: TCP
+        volumeMounts:
+        # - name: config-files
+        #   mountPath: /etc/cexiolabs/cexpay.pricing/
+        #   readOnly: true
+        - name: secret-certificate
+          mountPath: /etc/cexiolabs/cexpay.pricing/ssl/
+          readOnly: true
+        - name: secret-files
+          mountPath: /etc/cexiolabs/cexpay.pricing/secrets/
+          # The service will delete all files after read its. So need write access.
+          readOnly: false
+        envFrom:
+        - configMapRef:
+            name: {{ template "prefix" . }}pricing-envvars
+        env:
+        - name: LOG_LEVEL
+          value: info
+{{- if .Values.application.pricing.env }}
+{{ range $key, $value := .Values.application.pricing.env }}
+        - name: "{{ $key }}"
+          value: "{{ $value }}"
+{{ end }}
+{{- end }}
+        # livenessProbe:
+        #   httpGet:
+        #     path: /livenessProbe
+        #     port: 9090
+        #     scheme: HTTP
+        #   initialDelaySeconds: 10
+        #   periodSeconds: 10
+        # readinessProbe:
+        #   httpGet:
+        #     path: /v2/time
+        #     port: 8080
+        #     scheme: HTTPS
+        #   initialDelaySeconds: 10
+        #   periodSeconds: 10
+        resources:
+          limits:
+            cpu: 512m
+            memory: 1024Mi
+          requests:
+            cpu: 128m
+            memory: 256Mi
+{{- if ne .Values.zone "production" }}
+      imagePullSecrets:
+      - name: cexpay-registry
+{{- end }}
+      volumes:
+      # - name: config-files
+      #   configMap:
+      #     name: {{ template "prefix" . }}pricing-files
+      - name: secret-files
+        secret:
+          secretName: {{ template "prefix" . }}pricing
+      - name: secret-certificate
+        secret:
+          secretName: {{ template "prefix" . }}pricing-certificate
+{{ end }}

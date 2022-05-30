@@ -103,6 +103,13 @@ application:
   notifier:
     serviceImage: harbor.infra.kube/cexiolabs/communitysoft/notifier/csharp/snapshot/amd64
 
+  pricing:
+    args: [
+      "--config-file=/etc/zxteam.pricing/price-service.config",
+      "--config-secrets-dir=/etc/cexiolabs/cexpay.pricing/secrets/",
+      "--config-env"
+    ]
+
   processing:
     serviceImage: harbor.infra.kube/cexpay/processing/snapshot/amd64
     args:
@@ -288,6 +295,15 @@ ingress:
       "/":
         backendServiceName: landing
         backendServicePort: 8443
+
+  Pricing:
+    blue:
+      domain: pricing-evolution-cexpay.dev.kube
+      certSecretName: dev
+    paths:
+      "/":
+        backendServiceName: pricing
+        backendServicePort: 8080
 
   MessengerBridge:
     blue:
