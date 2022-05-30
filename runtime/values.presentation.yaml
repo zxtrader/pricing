@@ -10,15 +10,15 @@ application:
     serviceImage: harbor.infra.kube/cexpay/api/snapshot/amd64
     args:
       [
-        "--config-json-file=/etc/cexiolabs/cexpay.api/appsettings.json",
-        "--config-json-file=/etc/cexiolabs/cexpay.api/appsettings.presentation.json",
-        "--config-keyperfile-directory=/etc/cexiolabs/cexpay.api/secrets",
+        "--config-json-file=/etc/cexiolabs/cexpay.processingapi/appsettings.json",
+        "--config-json-file=/etc/cexiolabs/cexpay.processingapi/appsettings.presentation.json",
+        "--config-keyperfile-directory=/etc/cexiolabs/cexpay.processingapi/secrets",
         "--config-env",
         "--log-json"
       ]
     env:
       IdentityServerAuthentication__ValidIssuers: https://id-presentation-cexpay.dev.kube
-      WTFProviderConfigurationFile: /etc/cexiolabs/cexpay.api/legacy-cpservice-config/WTF-dev.json
+      WTFProviderConfigurationFile: /etc/cexiolabs/cexpay.processingapi/legacy-cpservice-config/WTF-dev.json
 
   board:
     serviceImage: harbor.infra.kube/cexpay/board/snapshot/amd64

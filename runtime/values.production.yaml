@@ -5,7 +5,7 @@ application:
   processingapi:
     env:
       IdentityServerAuthentication__ValidIssuers: https://id.cexpay.io
-      WTFProviderConfigurationFile: /etc/cexiolabs/cexpay.api/legacy-cpservice-config/WTF-prod.json
+      WTFProviderConfigurationFile: /etc/cexiolabs/cexpay.processingapi/legacy-cpservice-config/WTF-prod.json
 
   board:
     env:
