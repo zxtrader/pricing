@@ -6,7 +6,7 @@ misc:
 
 application:
 
-  api:
+  processingapi:
     serviceImage: harbor.infra.kube/cexpay/api/snapshot/amd64
     args:
       [
@@ -164,8 +164,14 @@ ingress:
       domain: api-evolution-cexpay.dev.kube
       certSecretName: dev
     paths:
-      "/":
-        backendServiceName: api
+      "/processing/v2/":
+        backendServiceName: processing
+        backendServicePort: 8080
+      "/processing/v2/dashboard/":
+        backendServiceName: processing
+        backendServicePort: 8082
+      "/processing/v3/":
+        backendServiceName: processingapi
         backendServicePort: 8443
       "/emulator-crypto":
         backendServiceName: processing

@@ -9,13 +9,13 @@ metadata:
     cexpay.io/ci.pipeline: {{ .Values.ci.pipeline | quote }}
 {{- end }}
   labels:
-    app: {{ template "prefix" . }}api
-  name: {{ template "prefix" . }}api
+    app: {{ template "prefix" . }}processingapi
+  name: {{ template "prefix" . }}processingapi
 spec:
   selector:
     matchLabels:
-      app: {{ template "prefix" . }}api
-  replicas: {{ .Values.application.api.replicas | default 0 }}
+      app: {{ template "prefix" . }}processingapi
+  replicas: {{ .Values.application.processingapi.replicas | default 0 }}
   strategy:
     type: RollingUpdate
   revisionHistoryLimit: 3
@@ -29,7 +29,7 @@ spec:
         cexpay.io/ci.pipeline: {{ .Values.ci.pipeline | quote }}
 {{- end }}
       labels:
-        app: {{ template "prefix" . }}api
+        app: {{ template "prefix" . }}processingapi
     spec:
 {{- if .Values.misc }}
 {{- if .Values.misc.excludeHypervisors }}
@@ -47,23 +47,23 @@ spec:
 {{- end }}
 {{- end }}
       containers:
-      - name: api
-        image: {{ .Values.application.api.serviceImage }}:{{ .Values.application.api.tag }}
-{{- if .Values.application.api.command }}
+      - name: processingapi
+        image: {{ .Values.application.processingapi.serviceImage }}:{{ .Values.application.processingapi.tag }}
+{{- if .Values.application.processingapi.command }}
         command:
-{{- range .Values.application.api.command }}
+{{- range .Values.application.processingapi.command }}
         - {{ . }}
 {{- end }}
 {{- end }}
-{{- if .Values.application.api.args }}
+{{- if .Values.application.processingapi.args }}
         args:
-{{- range .Values.application.api.args }}
+{{- range .Values.application.processingapi.args }}
         - {{ . }}
 {{- end }}
 {{- end }}
         envFrom:
         - configMapRef:
-            name: {{ template "prefix" . }}api-envvars
+            name: {{ template "prefix" . }}processingapi-envvars
         env:
         - name: IdentityServerAuthentication__BearerAuthority
           value: https://{{ template "prefix" . }}identity:8443/
@@ -71,8 +71,8 @@ spec:
           value: https://{{ template "prefix" . }}identity:8443/
         - name: ProcessingHttpClient__Url
           value: https://{{ template "prefix" . }}processing:8082/
-{{- if .Values.application.api.env }}
-{{- range $key, $value := .Values.application.api.env }}
+{{- if .Values.application.processingapi.env }}
+{{- range $key, $value := .Values.application.processingapi.env }}
         - name: {{ $key | quote }}
           value: {{ $value | quote }}
 {{- end }}
@@ -112,15 +112,15 @@ spec:
         #   periodSeconds: 5
         volumeMounts:
         # - name: config-files
-        #   mountPath: /etc/cexiolabs/cexpay.api/
+        #   mountPath: /etc/cexiolabs/cexpay.processingapi/
         #   readOnly: true
         - name: legacy-cpservice-config
-          mountPath: /etc/cexiolabs/cexpay.api/legacy-cpservice-config/
+          mountPath: /etc/cexiolabs/cexpay.processingapi/legacy-cpservice-config/
           readOnly: true
         - name: secret-certificate
-          mountPath: /etc/cexiolabs/cexpay.api/ssl/
+          mountPath: /etc/cexiolabs/cexpay.processingapi/ssl/
         - name: secret-files
-          mountPath: /etc/cexiolabs/cexpay.api/secrets/
+          mountPath: /etc/cexiolabs/cexpay.processingapi/secrets/
 {{- if ne .Values.zone "production" }}
       imagePullSecrets:
       - name: cexpay-registry
@@ -132,10 +132,10 @@ spec:
           name: {{ template "prefix" . }}cpservice
       # - name: config-files
       #   configMap:
-      #     name: {{ template "prefix" . }}api-files
+      #     name: {{ template "prefix" . }}processingapi-files
       - name: secret-certificate
         secret:
-          secretName: {{ template "prefix" . }}api-certificate
+          secretName: {{ template "prefix" . }}processingapi-certificate
       - name: secret-files
         secret:
-          secretName: {{ template "prefix" . }}api
+          secretName: {{ template "prefix" . }}processingapi

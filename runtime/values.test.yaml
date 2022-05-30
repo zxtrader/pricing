@@ -2,7 +2,7 @@ zone: test
 
 application:
 
-  api:
+  processingapi:
     serviceImage: harbor.infra.kube/cexpay/api/snapshot/amd64
     args:
       [
@@ -145,8 +145,14 @@ ingress:
       domainSuffix: -test-cexpay.dev.kube
       certSecretName: dev
     paths:
-      "/":
-        backendServiceName: api
+      "/processing/v2/":
+        backendServiceName: processing
+        backendServicePort: 8080
+      "/processing/v2/dashboard/":
+        backendServiceName: processing
+        backendServicePort: 8082
+      "/processing/v3/":
+        backendServiceName: processingapi
         backendServicePort: 8443
       "/emulator-crypto":
         backendServiceName: processing
@@ -162,9 +168,6 @@ ingress:
         backendServicePort: 8082
       "/paytools/v1/":
         backendServiceName: ptinvoice
-        backendServicePort: 8443
-      "/statuspage/":
-        backendServiceName: statuspage
         backendServicePort: 8443
 
   Board:
@@ -192,6 +195,9 @@ ingress:
       domainSuffix: -test-cexpay.dev.kube
       certSecretName: dev
     paths:
+      "/processing/v2/callback/cryptoproviders/pss-provider-wtf2/":
+        backendServiceName: processing
+        backendServicePort: 8084
       "/v2/callback/cryptoproviders/pss-provider-wtf2/":
         backendServiceName: processing
         backendServicePort: 8084

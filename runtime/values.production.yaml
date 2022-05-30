@@ -2,7 +2,7 @@ zone: production
 
 application:
 
-  api:
+  processingapi:
     env:
       IdentityServerAuthentication__ValidIssuers: https://id.cexpay.io
       WTFProviderConfigurationFile: /etc/cexiolabs/cexpay.api/legacy-cpservice-config/WTF-prod.json
@@ -96,8 +96,14 @@ ingress:
       domain: api.cexpay.io
       certSecretName: ingress-cexpayio-certificate
     paths:
-      "/":
-        backendServiceName: api
+      "/processing/v2/":
+        backendServiceName: processing
+        backendServicePort: 8080
+      "/processing/v2/dashboard/":
+        backendServiceName: processing
+        backendServicePort: 8082
+      "/processing/v3/":
+        backendServiceName: processingapi
         backendServicePort: 8443
       "/v2/":
         backendServiceName: processing
@@ -108,36 +114,6 @@ ingress:
       "/paytools/v1/":
         backendServiceName: ptinvoice
         backendServicePort: 8443
-
-  # API-Obsolete-1:
-  #   blue:
-  #     domain: api.pay-cex.io
-  #     certSecretName: ingress-pay-cex-certificate
-  #   paths:
-  #     "/":
-  #       backendServiceName: api
-  #       backendServicePort: 8443
-  #     "/v2/":
-  #       backendServiceName: processing
-  #       backendServicePort: 8080
-  #     "/v2/dashboard/":
-  #       backendServiceName: processing
-  #       backendServicePort: 8082
-
-  # API-Obsolete-2:
-  #   blue:
-  #     domain: api.cryptopay.band
-  #     certSecretName: ingress-gate-api-dashboard
-  #   paths:
-  #     "/":
-  #       backendServiceName: api
-  #       backendServicePort: 8443
-  #     "/v2/":
-  #       backendServiceName: processing
-  #       backendServicePort: 8080
-  #     "/v2/dashboard/":
-  #       backendServiceName: processing
-  #       backendServicePort: 8082
 
   API-Internal:
     blue:
@@ -151,7 +127,7 @@ ingress:
       certSecretName: wildcard-prod-cexpay-internal
     paths:
       "/":
-        backendServiceName: api
+        backendServiceName: processingapiapi
         backendServicePort: 8443
       "/v2/":
         backendServiceName: processing
@@ -177,6 +153,9 @@ ingress:
       domain: callback.prod.cexpay.internal
       certSecretName: wildcard-prod-cexpay-internal
     paths:
+      "/processing/v2/callback/pss-provider-wtf2/":
+        backendServiceName: processing
+        backendServicePort: 8084
       "/v2/callback/cryptoproviders/pss-provider-wtf2/":
         backendServiceName: processing
         backendServicePort: 8084
@@ -189,6 +168,9 @@ ingress:
       domain: callback.prodcryptopay.kube
       certSecretName: wildcard-prodcryptopay-kube
     paths:
+      "/processing/v2/callback/pss-provider-wtf2/":
+        backendServiceName: processing
+        backendServicePort: 8084
       "/v2/callback/cryptoproviders/pss-provider-wtf2/":
         backendServiceName: processing
         backendServicePort: 8084

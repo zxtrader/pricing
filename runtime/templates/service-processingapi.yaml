@@ -9,14 +9,14 @@ metadata:
     cexpay.io/ci.pipeline: {{ .Values.ci.pipeline | quote }}
 {{- end }}
   labels:
-    app: {{ template "prefix" . }}api
-  name: {{ template "prefix" . }}api
+    app: {{ template "prefix" . }}processingapi
+  name: {{ template "prefix" . }}processingapi
 spec:
   ports:
     - port: 8443
-      name: api
+      name: processingapi
       protocol: TCP
       targetPort: 8443
   type: ClusterIP
   selector:
-    app: {{ template "prefix" . }}api
+    app: {{ template "prefix" . }}processingapi
