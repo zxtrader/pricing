@@ -38,7 +38,7 @@ export namespace Configuration {
 	}
 
 	export interface Sources {
-		CRYPTOCOMPARE?: HttpClient.Opts;
+		CRYPTOCOMPARE?: HttpClient.Opts & { apiKey: string };
 		YAHOOFINANCE?: HttpClient.Opts & { apiKey: string };
 		COINAPI?: HttpClient.Opts & { apiKey: string };
 		// BINANCE?: WebClient.Opts;
@@ -100,12 +100,14 @@ export namespace Configuration {
 						perHour
 					},
 					timeout
-				}
+					
+				},
+				
 			};
 
-			if (sourceId === "YAHOOFINANCE" || sourceId === "COINAPI") {
+			// if (sourceId === "YAHOOFINANCE" || sourceId === "COINAPI") {
 				sources[sourceId]!.apiKey = configuration.getString(`source.${sourceId}.apiKey`);
-			}
+			// }
 		}
 		return sources;
 	}

@@ -6,6 +6,7 @@ import { HttpClient } from "@zxteam/http-client";
 
 import * as _ from "lodash";
 import * as moment from "moment";
+import * as http from "http";
 
 import { PriceLoader } from "./PriceLoader";
 import { PriceApi } from "../api/PriceApi";
@@ -19,9 +20,11 @@ abstract class CryptocompareRestClient extends WebClient {
 export class Cryptocompare extends CryptocompareRestClient implements PriceLoader {
 	public readonly sourceId = "CRYPTOCOMPARE";
 	public readonly _log: zxteam.Logger = loggerFactory.getLogger("Cryptocompare");
+	private readonly _apiKey: string;
 
-	public constructor(opts: WebClient.Opts) {
+	public constructor(opts: WebClient.Opts, apiKey: string) {
 		super(new URL("https://min-api.cryptocompare.com/data/"), opts);
+		this._apiKey = apiKey;
 	}
 
 	/**
@@ -63,12 +66,15 @@ export class Cryptocompare extends CryptocompareRestClient implements PriceLoade
 					ts: friendlyTimeStamp
 				};
 
+				const headers: http.OutgoingHttpHeaders = {};
+				headers["authorization"] = `Apikey ${this._apiKey}`;
+
 				this._log.trace("Check cancellationToken for interrupt");
 				cancellationToken.throwIfCancellationRequested();
 
 
 				this._log.trace("Make request to cryptocompare with args: ", args);
-				const data = await this.get(cancellationToken, "pricehistorical", { queryArgs: args });
+				const data = await this.get(cancellationToken, "pricehistorical", { queryArgs: args, headers });
 
 				const body = data.bodyAsJson;
 

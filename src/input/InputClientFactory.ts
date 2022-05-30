@@ -30,7 +30,10 @@ export class InputClientFactory {
 				}
 				return new CoinApi({}, this._configurationProvider.sources.COINAPI.apiKey);
 			case "CRYPTOCOMPARE":
-				return new Cryptocompare({});
+				if (!this._configurationProvider.sources.CRYPTOCOMPARE?.apiKey) {
+					throw new ConfigurationError("Must be set", "COINAPI.apiKey", "");
+				}
+				return new Cryptocompare({}, this._configurationProvider.sources.CRYPTOCOMPARE.apiKey);
 			default:
 				throw new ArgumentError(`Unknown input client ${name}`);
 		}
